@@ -1,9 +1,9 @@
 <template>
-  <div class="flex flex-wrap gap-2 mt-4">
+  <div class="flex flex-wrap gap-2">
     <span
       v-for="filter in filters"
       :key="filter.id"
-      class="bg-bg-secondary px-3 py-1 rounded-tag text-sm flex items-center gap-1"
+      class="bg-bg-secondary px-3 py-1 rounded-tag text-sm flex items-center gap-1 border border-brand-orange-light"
       :class="{ 'cursor-pointer': filter.hasDropdown }"
     >
       {{ filter.text }}

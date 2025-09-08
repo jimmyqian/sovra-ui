@@ -1,32 +1,34 @@
 <template>
   <div
-    class="bg-bg-card rounded-xl p-6 mb-4 flex flex-col items-start gap-4 shadow-card md:flex-row md:items-center"
+    class="bg-bg-card rounded-xl p-6 mb-4 flex flex-wrap items-start gap-4 shadow-card"
   >
-    <div class="w-15 h-15 bg-border-lighter rounded-full flex-shrink-0"></div>
-    <div class="flex-1">
-      <h3 class="text-xl font-semibold mb-2 text-text-primary">
-        {{ result.name }}
-      </h3>
-      <div class="flex gap-4 mb-3 text-sm text-text-secondary">
-        <span class="age">{{ result.age }} Years</span>
-        <span class="gender">{{ result.gender }}</span>
-        <span class="status">{{ result.maritalStatus }}</span>
-        <span class="location">{{ result.location }}</span>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="text-xs text-text-secondary">Sovra Rating</span>
-        <div class="w-25 h-1 bg-border-lighter rounded overflow-hidden">
-          <div
-            class="h-full bg-brand-orange transition-all duration-300"
-            :style="{ width: (result.rating / 5) * 100 + '%' }"
-          ></div>
+    <div class="flex items-start gap-4 flex-1 md:min-w-80">
+      <div class="w-15 h-15 bg-border-lighter rounded-full flex-shrink-0"></div>
+      <div class="flex-1 min-w-0">
+        <h3 class="text-xl font-semibold mb-2 text-text-primary">
+          {{ result.name }}
+        </h3>
+        <div class="flex gap-4 mb-3 text-sm text-text-secondary">
+          <span class="age">{{ result.age }} Years</span>
+          <span class="gender">{{ result.gender }}</span>
+          <span class="status">{{ result.maritalStatus }}</span>
+          <span class="location">{{ result.location }}</span>
         </div>
-        <span class="text-sm font-semibold text-text-primary">{{
-          result.rating
-        }}</span>
+        <div class="flex items-center gap-2">
+          <span class="text-xs text-text-secondary">Sovra Rating</span>
+          <div class="w-25 h-1 bg-border-lighter rounded overflow-hidden">
+            <div
+              class="h-full bg-brand-orange transition-all duration-300"
+              :style="{ width: (result.rating / 5) * 100 + '%' }"
+            ></div>
+          </div>
+          <span class="text-sm font-semibold text-text-primary">{{
+            result.rating
+          }}</span>
+        </div>
       </div>
     </div>
-    <div class="flex gap-4 md:gap-8">
+    <div class="flex gap-4 md:gap-8 w-full md:w-auto md:min-w-72">
       <div class="text-center">
         <span class="block text-2xl font-semibold text-text-primary">{{
           result.references

@@ -37,10 +37,10 @@
           />
         </div>
       </div>
-
-      <!-- Footer -->
-      <AppFooter />
     </div>
+
+    <!-- Page Footer -->
+    <CopyrightFooter />
   </div>
 </template>
 
@@ -49,7 +49,7 @@
   import { useRouter } from 'vue-router'
   import Logo from '@/components/common/Logo.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
-  import AppFooter from '@/components/layout/AppFooter.vue'
+  import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
 
   const router = useRouter()
   const searchQuery = ref('')
