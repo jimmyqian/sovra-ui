@@ -1,8 +1,10 @@
 <template>
-  <div class="results-container">
-    <div class="results-header">
-      <div class="results-info">
-        <span class="results-count">Results ({{ results.length }})</span>
+  <div class="w-1/2 bg-bg-primary flex flex-col lg:w-full lg:h-1/2">
+    <div class="px-8 py-4 bg-bg-card border-b border-border-light md:px-4">
+      <div>
+        <span class="text-xl font-semibold text-text-primary"
+          >Results ({{ results.length }})</span
+        >
         <FilterCriteria
           :filters="filterCriteria"
           @remove-filter="handleRemoveFilter"
@@ -13,12 +15,15 @@
       </div>
     </div>
 
-    <div class="results-list">
+    <div class="flex-1 px-8 py-4 overflow-y-auto md:px-4">
       <ResultCard v-for="result in results" :key="result.id" :result="result" />
     </div>
 
-    <div class="load-more">
-      <button class="load-more-btn" @click="handleLoadMore">
+    <div class="px-8 py-4 text-center md:px-4">
+      <button
+        class="bg-brand-orange text-bg-card border-none px-8 py-3 rounded-search text-base cursor-pointer transition-colors hover:bg-brand-orange-light"
+        @click="handleLoadMore"
+      >
         Load More Results
       </button>
     </div>
@@ -89,67 +94,3 @@
     console.log('Create more criteria')
   }
 </script>
-
-<style scoped>
-  .results-container {
-    width: 50%;
-    background: #f9f7f5;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .results-header {
-    padding: 1rem 2rem;
-    background: white;
-    border-bottom: 1px solid #e5e5e5;
-  }
-
-  .results-count {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #333;
-  }
-
-  .results-list {
-    flex: 1;
-    padding: 1rem 2rem;
-    overflow-y: auto;
-  }
-
-  .load-more {
-    padding: 1rem 2rem;
-    text-align: center;
-  }
-
-  .load-more-btn {
-    background: #ff6b35;
-    color: white;
-    border: none;
-    padding: 0.75rem 2rem;
-    border-radius: 24px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .load-more-btn:hover {
-    background: #e55a2b;
-  }
-
-  @media (max-width: 1024px) {
-    .results-container {
-      width: 100%;
-      height: 50vh;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .results-header {
-      padding: 1rem;
-    }
-
-    .results-list {
-      padding: 1rem;
-    }
-  }
-</style>

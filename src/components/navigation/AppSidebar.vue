@@ -1,6 +1,10 @@
 <template>
-  <div class="sidebar">
-    <div class="sidebar-item active">
+  <div
+    class="absolute left-0 top-0 bottom-0 w-15 bg-bg-card border-r border-border-light flex flex-col items-center py-8 gap-4 md:hidden"
+  >
+    <div
+      class="w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer transition-colors bg-brand-orange text-bg-card"
+    >
       <svg
         width="20"
         height="20"
@@ -12,7 +16,9 @@
         <path d="M21 21l-4.35-4.35" stroke="currentColor" stroke-width="2" />
       </svg>
     </div>
-    <div class="sidebar-item">
+    <div
+      class="w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer transition-colors hover:bg-border-hover text-text-secondary hover:text-text-primary"
+    >
       <svg
         width="20"
         height="20"
@@ -27,7 +33,9 @@
         />
       </svg>
     </div>
-    <div class="sidebar-item">
+    <div
+      class="w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer transition-colors hover:bg-border-hover text-text-secondary hover:text-text-primary"
+    >
       <svg
         width="20"
         height="20"
@@ -42,7 +50,9 @@
         />
       </svg>
     </div>
-    <div class="sidebar-item">
+    <div
+      class="w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer transition-colors hover:bg-border-hover text-text-secondary hover:text-text-primary"
+    >
       <svg
         width="20"
         height="20"
@@ -58,7 +68,9 @@
         />
       </svg>
     </div>
-    <div class="sidebar-item">
+    <div
+      class="w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer transition-colors hover:bg-border-hover text-text-secondary hover:text-text-primary"
+    >
       <svg
         width="20"
         height="20"
@@ -78,50 +90,3 @@
 </template>
 
 <script setup lang="ts"></script>
-
-<style scoped>
-  .sidebar {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 60px;
-    background: #fff;
-    border-right: 1px solid #e5e5e5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 0;
-    gap: 1rem;
-  }
-
-  .sidebar-item {
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-
-  .sidebar-item.active {
-    background: #ff6b35;
-    color: white;
-  }
-
-  .sidebar-item:hover {
-    background: #f0f0f0;
-  }
-
-  .sidebar-item.active:hover {
-    background: #ff6b35;
-  }
-
-  @media (max-width: 768px) {
-    .sidebar {
-      display: none;
-    }
-  }
-</style>

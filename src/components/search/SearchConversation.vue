@@ -1,6 +1,8 @@
 <template>
-  <div class="search-section">
-    <div class="user-avatar">
+  <div class="flex-1 px-8 py-8 overflow-y-auto">
+    <div
+      class="w-10 h-10 bg-border-hover rounded-full flex items-center justify-center mb-4"
+    >
       <svg
         width="20"
         height="20"
@@ -27,43 +29,55 @@
       </svg>
     </div>
 
-    <div class="search-content">
-      <div class="search-query">{{ searchQuery }}</div>
+    <div class="flex flex-col">
+      <div class="bg-bg-secondary p-4 rounded-lg mb-8 font-medium">
+        {{ searchQuery }}
+      </div>
 
-      <div class="ai-response">
-        <div class="ai-avatar">
-          <div class="ai-icon"></div>
+      <div class="flex gap-4">
+        <div
+          class="w-10 h-10 bg-gradient-brand rounded-full flex items-center justify-center flex-shrink-0"
+        >
+          <div class="w-6 h-6 bg-bg-card rounded-full"></div>
         </div>
-        <div class="response-content">
-          <p>
+        <div class="flex-1">
+          <p class="mb-4 leading-relaxed">
             <strong>Fantastic!</strong> 56 persons were found in the results.
             Please provide additional information about the person you're
             looking for.
           </p>
-          <p>
+          <p class="mb-4 leading-relaxed">
             Alternatively, you can use the hints below for finding the person
             you're looking for.
           </p>
 
-          <div class="suggestions">
-            <p class="suggestion-item">
+          <div class="my-6 pl-4">
+            <p
+              class="text-brand-orange mb-2 cursor-pointer hover:text-brand-orange-light"
+            >
               What specific software role does Johnson hold in his California
             </p>
-            <p class="suggestion-item">
+            <p
+              class="text-brand-orange mb-2 cursor-pointer hover:text-brand-orange-light"
+            >
               Which California tech hubs are most likely where Johnson works
             </p>
-            <p class="suggestion-item">
+            <p
+              class="text-brand-orange mb-2 cursor-pointer hover:text-brand-orange-light"
+            >
               What skills Johnson is from his current software role
             </p>
           </div>
 
-          <p>
+          <p class="mb-4 leading-relaxed">
             Or include further information, such as any documents you may have
             about him, web links, pictures, or videos; if so, submit them by
             using the upload option.
           </p>
 
-          <button class="filter-btn">
+          <button
+            class="bg-bg-secondary border border-border-light px-4 py-2 rounded-xl text-sm cursor-pointer hover:bg-border-hover transition-colors"
+          >
             construct a filter string using the details that you provided
           </button>
         </div>
@@ -79,82 +93,3 @@
 
   defineProps<Props>()
 </script>
-
-<style scoped>
-  .search-section {
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
-  }
-
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    background: #f0f0f0;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1rem;
-  }
-
-  .search-query {
-    background: #f8f9fa;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    font-weight: 500;
-  }
-
-  .ai-response {
-    display: flex;
-    gap: 1rem;
-  }
-
-  .ai-avatar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #ff6b35, #f7931e);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .ai-icon {
-    width: 24px;
-    height: 24px;
-    background: white;
-    border-radius: 50%;
-  }
-
-  .response-content {
-    flex: 1;
-  }
-
-  .response-content p {
-    margin-bottom: 1rem;
-    line-height: 1.6;
-  }
-
-  .suggestions {
-    margin: 1.5rem 0;
-    padding-left: 1rem;
-  }
-
-  .suggestion-item {
-    color: #ff6b35;
-    margin-bottom: 0.5rem;
-    cursor: pointer;
-  }
-
-  .filter-btn {
-    background: #f8f9fa;
-    border: 1px solid #e9ecef;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    cursor: pointer;
-  }
-</style>
