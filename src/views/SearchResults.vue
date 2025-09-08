@@ -2,26 +2,30 @@
   <div class="min-h-screen bg-bg-primary flex flex-col">
     <AppHeader />
 
-    <div class="flex-1 flex flex-col h-[calc(100vh-120px)] md:flex-row">
-      <!-- Left Panel: Search & Conversation -->
-      <div class="w-full bg-bg-card flex flex-col relative md:w-1/2 md:h-auto">
-        <SearchConversation :search-query="searchQuery" />
+    <div class="flex-1 flex h-[calc(100vh-120px)]">
+      <!-- Left Navigation Sidebar -->
+      <AppSidebar />
+      
+      <!-- Main Content Area -->
+      <div class="flex-1 flex flex-col md:flex-row">
+        <!-- Left Panel: Search & Conversation -->
+        <div class="w-full bg-bg-card flex flex-col md:w-1/2 md:h-auto">
+          <SearchConversation :search-query="searchQuery" />
 
-        <!-- Search Input -->
-        <div class="px-8 py-4 border-t border-border-light md:px-4">
-          <SearchBar
-            v-model="newQuery"
-            placeholder="Johnson, who is around 26 years old, works in a software company in California"
-            @search="handleSearch"
-            @file-upload="handleFileUpload"
-          />
+          <!-- Search Input -->
+          <div class="px-8 py-4 border-t border-border-light md:px-4">
+            <SearchBar
+              v-model="newQuery"
+              placeholder="Johnson, who is around 26 years old, works in a software company in California"
+              @search="handleSearch"
+              @file-upload="handleFileUpload"
+            />
+          </div>
         </div>
 
-        <AppSidebar />
+        <!-- Right Panel: Results -->
+        <ResultsList :results="results" @load-more="handleLoadMore" />
       </div>
-
-      <!-- Right Panel: Results -->
-      <ResultsList :results="results" @load-more="handleLoadMore" />
     </div>
 
     <!-- Footer -->
