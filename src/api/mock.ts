@@ -81,7 +81,7 @@ const mockResults: SearchResult[] = [
 ]
 
 export const searchPeople = async (query: string): Promise<SearchResponse> => {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve({
         query,
@@ -92,8 +92,10 @@ export const searchPeople = async (query: string): Promise<SearchResponse> => {
   })
 }
 
-export const uploadFile = async (file: File): Promise<{ success: boolean; message: string }> => {
-  return new Promise((resolve) => {
+export const uploadFile = async (
+  file: File
+): Promise<{ success: boolean; message: string }> => {
+  return new Promise(resolve => {
     setTimeout(() => {
       resolve({
         success: true,
