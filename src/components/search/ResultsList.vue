@@ -3,28 +3,13 @@
     <div class="results-header">
       <div class="results-info">
         <span class="results-count">Results ({{ results.length }})</span>
-        <div class="filter-tags">
-          <span class="filter-tag"
-            >Johnson <button class="remove-tag">×</button></span
-          >
-          <span class="filter-tag"
-            >who <button class="remove-tag">×</button></span
-          >
-          <span class="filter-tag"
-            >is around <span class="dropdown">26 ▼</span></span
-          >
-          <span class="filter-tag"
-            >years old, <span class="dropdown">Works ▼</span></span
-          >
-          <span class="filter-tag"
-            >in a <span class="dropdown">Software ▼</span></span
-          >
-          <span class="filter-tag"
-            >company in <span class="dropdown">California ▼</span></span
-          >
-          <button class="edit-btn">edit ✏️</button>
-          <button class="create-criteria-btn">🔍 Create more criteria</button>
-        </div>
+        <FilterCriteria
+          :filters="filterCriteria"
+          @remove-filter="handleRemoveFilter"
+          @dropdown-click="handleDropdownClick"
+          @edit="handleEdit"
+          @create-more="handleCreateMore"
+        />
       </div>
     </div>
 
@@ -41,7 +26,9 @@
 </template>
 
 <script setup lang="ts">
+  import { ref } from 'vue'
   import ResultCard from './ResultCard.vue'
+  import FilterCriteria from './FilterCriteria.vue'
 
   interface SearchResult {
     id: number
@@ -67,8 +54,39 @@
   defineProps<Props>()
   const emit = defineEmits<Emits>()
 
+  const filterCriteria = ref([
+    { id: '1', text: 'Johnson', removable: true },
+    { id: '2', text: 'who', removable: true },
+    { id: '3', text: 'is around', hasDropdown: true, dropdownText: '26' },
+    { id: '4', text: 'years old,', hasDropdown: true, dropdownText: 'Works' },
+    { id: '5', text: 'in a', hasDropdown: true, dropdownText: 'Software' },
+    {
+      id: '6',
+      text: 'company in',
+      hasDropdown: true,
+      dropdownText: 'California'
+    }
+  ])
+
   const handleLoadMore = () => {
     emit('loadMore')
+  }
+
+  const handleRemoveFilter = (filterId: string) => {
+    console.log('Remove filter:', filterId)
+    filterCriteria.value = filterCriteria.value.filter(f => f.id !== filterId)
+  }
+
+  const handleDropdownClick = (filterId: string) => {
+    console.log('Dropdown clicked:', filterId)
+  }
+
+  const handleEdit = () => {
+    console.log('Edit filters')
+  }
+
+  const handleCreateMore = () => {
+    console.log('Create more criteria')
   }
 </script>
 
@@ -90,50 +108,6 @@
     font-size: 1.2rem;
     font-weight: 600;
     color: #333;
-  }
-
-  .filter-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .filter-tag {
-    background: #f8f9fa;
-    padding: 0.25rem 0.75rem;
-    border-radius: 16px;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .dropdown {
-    cursor: pointer;
-  }
-
-  .remove-tag {
-    background: none;
-    border: none;
-    color: #999;
-    cursor: pointer;
-    font-size: 1rem;
-  }
-
-  .edit-btn,
-  .create-criteria-btn {
-    background: none;
-    border: 1px solid #ddd;
-    padding: 0.25rem 0.75rem;
-    border-radius: 16px;
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-
-  .create-criteria-btn {
-    color: #ff6b35;
-    border-color: #ff6b35;
   }
 
   .results-list {
