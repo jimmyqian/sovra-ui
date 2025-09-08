@@ -1,5 +1,5 @@
 <template>
-  <div class="w-1/2 bg-bg-primary flex flex-col lg:w-full lg:h-1/2">
+  <div class="w-full bg-bg-primary flex flex-col md:w-1/2 md:h-auto">
     <div class="px-8 py-4 bg-bg-card border-b border-border-light md:px-4">
       <div>
         <span class="text-xl font-semibold text-text-primary"

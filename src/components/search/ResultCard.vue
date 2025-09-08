@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-bg-card rounded-xl p-6 mb-4 flex items-center gap-4 shadow-card md:flex-col md:items-start"
+    class="bg-bg-card rounded-xl p-6 mb-4 flex flex-col items-start gap-4 shadow-card md:flex-row md:items-center"
   >
     <div class="w-15 h-15 bg-border-lighter rounded-full flex-shrink-0"></div>
     <div class="flex-1">
@@ -26,7 +26,7 @@
         }}</span>
       </div>
     </div>
-    <div class="flex gap-8 md:gap-4">
+    <div class="flex gap-4 md:gap-8">
       <div class="text-center">
         <span class="block text-2xl font-semibold text-text-primary">{{
           result.references

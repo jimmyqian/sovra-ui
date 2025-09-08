@@ -2,9 +2,9 @@
   <div class="min-h-screen bg-bg-primary flex flex-col">
     <AppHeader />
 
-    <div class="flex-1 flex h-[calc(100vh-120px)] lg:flex-col">
+    <div class="flex-1 flex flex-col h-[calc(100vh-120px)] md:flex-row">
       <!-- Left Panel: Search & Conversation -->
-      <div class="w-1/2 bg-bg-card flex flex-col relative lg:w-full lg:h-1/2">
+      <div class="w-full bg-bg-card flex flex-col relative md:w-1/2 md:h-auto">
         <SearchConversation :search-query="searchQuery" />
 
         <!-- Search Input -->
