@@ -134,6 +134,12 @@ export default [
       prettier
     },
     rules: {
+      // Disable TypeScript rules that require type information
+      '@typescript-eslint/prefer-optional-chain': 'off',
+      '@typescript-eslint/prefer-nullish-coalescing': 'off',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
+      '@typescript-eslint/consistent-type-imports': 'off',
+
       // Vue 3 specific rules
       'vue/multi-word-component-names': 'warn',
       'vue/component-definition-name-casing': ['error', 'PascalCase'],
