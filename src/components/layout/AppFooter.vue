@@ -1,24 +1,9 @@
 <template>
-  <footer class="footer">
+  <footer
+    class="text-center text-text-secondary text-xs p-4 bg-bg-card border-t border-border-light md:p-3"
+  >
     <span>©2025 sovra.ai</span>
   </footer>
 </template>
 
 <script setup lang="ts"></script>
-
-<style scoped>
-  .footer {
-    text-align: center;
-    color: #666;
-    font-size: 0.8rem;
-    padding: 1rem;
-    background: white;
-    border-top: 1px solid #e5e5e5;
-  }
-
-  @media (max-width: 768px) {
-    .footer {
-      padding: 0.75rem;
-    }
-  }
-</style>
