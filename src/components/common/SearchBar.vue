@@ -1,16 +1,21 @@
 <template>
-  <div class="search-bar">
+  <div
+    class="bg-bg-card border-gradient-brand rounded-search p-3 px-6 flex items-center gap-4 shadow-search"
+  >
     <input
       :value="modelValue"
       type="text"
       :placeholder="placeholder"
-      class="search-input"
+      class="flex-1 border-none outline-none text-base text-text-primary placeholder-text-muted bg-transparent"
       @input="handleInput"
       @keypress.enter="handleSearch"
     />
-    <div class="search-actions">
-      <button class="upload-btn" @click="triggerFileUpload">
-        <span>Upload</span>
+    <div class="flex items-center gap-2">
+      <button
+        class="flex items-center gap-1 bg-transparent border border-brand-orange text-brand-orange px-4 py-2 rounded-xl text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card"
+        @click="triggerFileUpload"
+      >
+        <span class="md:hidden">Upload</span>
         <svg
           width="16"
           height="16"
@@ -27,7 +32,9 @@
           />
         </svg>
       </button>
-      <button class="voice-btn">
+      <button
+        class="bg-transparent border-none p-2 text-text-secondary rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+      >
         <svg
           width="16"
           height="16"
@@ -47,7 +54,10 @@
           />
         </svg>
       </button>
-      <button class="submit-btn" @click="handleSearch">
+      <button
+        class="bg-brand-orange text-bg-card border-none p-2 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+        @click="handleSearch"
+      >
         <svg
           width="16"
           height="16"
@@ -119,82 +129,3 @@
     }
   }
 </script>
-
-<style scoped>
-  .search-bar {
-    background: white;
-    border: 2px solid;
-    border-image: linear-gradient(135deg, #4285f4, #ff6b35) 1;
-    border-radius: 24px;
-    padding: 0.75rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  }
-
-  .search-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    font-size: 1rem;
-    color: #333;
-  }
-
-  .search-input::placeholder {
-    color: #999;
-  }
-
-  .search-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .upload-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    background: none;
-    border: 1px solid #ff6b35;
-    color: #ff6b35;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    transition: all 0.2s;
-  }
-
-  .upload-btn:hover {
-    background: #ff6b35;
-    color: white;
-  }
-
-  .voice-btn,
-  .submit-btn {
-    background: none;
-    border: none;
-    padding: 0.5rem;
-    color: #666;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-  }
-
-  .submit-btn {
-    background: #ff6b35;
-    color: white;
-  }
-
-  .voice-btn:hover,
-  .submit-btn:hover {
-    transform: scale(1.1);
-  }
-
-  @media (max-width: 768px) {
-    .upload-btn span {
-      display: none;
-    }
-  }
-</style>

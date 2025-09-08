@@ -1,29 +1,37 @@
 <template>
-  <div class="filter-tags">
+  <div class="flex flex-wrap gap-2 mt-4">
     <span
       v-for="filter in filters"
       :key="filter.id"
-      class="filter-tag"
-      :class="{ 'has-dropdown': filter.hasDropdown }"
+      class="bg-bg-secondary px-3 py-1 rounded-tag text-sm flex items-center gap-1"
+      :class="{ 'cursor-pointer': filter.hasDropdown }"
     >
       {{ filter.text }}
       <button
         v-if="filter.removable"
-        class="remove-tag"
+        class="bg-transparent border-none text-text-muted cursor-pointer text-base p-0 ml-1 hover:text-brand-orange transition-colors"
         @click="handleRemoveFilter(filter.id)"
       >
         ×
       </button>
       <span
         v-if="filter.hasDropdown"
-        class="dropdown"
+        class="cursor-pointer font-medium hover:text-brand-orange transition-colors"
         @click="handleDropdownClick(filter.id)"
       >
         {{ filter.dropdownText }} ▼
       </span>
     </span>
-    <button class="edit-btn" @click="handleEdit">edit ✏️</button>
-    <button class="create-criteria-btn" @click="handleCreateMore">
+    <button
+      class="bg-transparent border border-gray-300 px-3 py-1 rounded-tag text-sm cursor-pointer transition-all duration-200 hover:border-text-muted hover:bg-bg-secondary"
+      @click="handleEdit"
+    >
+      edit ✏️
+    </button>
+    <button
+      class="text-brand-orange border-brand-orange bg-transparent border px-3 py-1 rounded-tag text-sm cursor-pointer transition-all duration-200 hover:bg-brand-orange hover:text-bg-card"
+      @click="handleCreateMore"
+    >
       🔍 Create more criteria
     </button>
   </div>
@@ -68,88 +76,3 @@
     emit('createMore')
   }
 </script>
-
-<style scoped>
-  .filter-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1rem;
-  }
-
-  .filter-tag {
-    background: #f8f9fa;
-    padding: 0.25rem 0.75rem;
-    border-radius: 16px;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .filter-tag.has-dropdown {
-    cursor: pointer;
-  }
-
-  .dropdown {
-    cursor: pointer;
-    font-weight: 500;
-  }
-
-  .dropdown:hover {
-    color: #ff6b35;
-  }
-
-  .remove-tag {
-    background: none;
-    border: none;
-    color: #999;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 0;
-    margin-left: 0.25rem;
-  }
-
-  .remove-tag:hover {
-    color: #ff6b35;
-  }
-
-  .edit-btn,
-  .create-criteria-btn {
-    background: none;
-    border: 1px solid #ddd;
-    padding: 0.25rem 0.75rem;
-    border-radius: 16px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-  .edit-btn:hover {
-    border-color: #999;
-    background: #f8f9fa;
-  }
-
-  .create-criteria-btn {
-    color: #ff6b35;
-    border-color: #ff6b35;
-  }
-
-  .create-criteria-btn:hover {
-    background: #ff6b35;
-    color: white;
-  }
-
-  @media (max-width: 768px) {
-    .filter-tags {
-      gap: 0.25rem;
-    }
-
-    .filter-tag,
-    .edit-btn,
-    .create-criteria-btn {
-      font-size: 0.8rem;
-      padding: 0.2rem 0.6rem;
-    }
-  }
-</style>

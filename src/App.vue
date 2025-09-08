@@ -1,14 +1,16 @@
 <template>
-  <div id="app">
+  <div id="app" class="w-full min-h-screen">
     <router-view />
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  import { onMounted } from 'vue'
+  import { useTheme } from '@/composables/useTheme'
 
-<style>
-  #app {
-    width: 100%;
-    min-height: 100vh;
-  }
-</style>
+  const { initializeTheme } = useTheme()
+
+  onMounted(() => {
+    initializeTheme()
+  })
+</script>

@@ -1,14 +1,14 @@
 <template>
-  <div class="search-results">
+  <div class="min-h-screen bg-bg-primary flex flex-col">
     <AppHeader />
 
-    <div class="main-container">
+    <div class="flex-1 flex flex-col h-[calc(100vh-120px)] md:flex-row">
       <!-- Left Panel: Search & Conversation -->
-      <div class="left-panel">
+      <div class="w-full bg-bg-card flex flex-col relative md:w-1/2 md:h-auto">
         <SearchConversation :search-query="searchQuery" />
 
         <!-- Search Input -->
-        <div class="search-input-container">
+        <div class="px-8 py-4 border-t border-border-light md:px-4">
           <SearchBar
             v-model="newQuery"
             placeholder="Johnson, who is around 26 years old, works in a software company in California"
@@ -140,48 +140,3 @@
     }
   })
 </script>
-
-<style scoped>
-  .search-results {
-    min-height: 100vh;
-    background-color: #f9f7f5;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .main-container {
-    flex: 1;
-    display: flex;
-    height: calc(100vh - 120px);
-  }
-
-  .left-panel {
-    width: 50%;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    position: relative;
-  }
-
-  .search-input-container {
-    padding: 1rem 2rem;
-    border-top: 1px solid #e5e5e5;
-  }
-
-  @media (max-width: 1024px) {
-    .main-container {
-      flex-direction: column;
-    }
-
-    .left-panel {
-      width: 100%;
-      height: 50vh;
-    }
-  }
-
-  @media (max-width: 768px) {
-    .search-input-container {
-      padding: 1rem;
-    }
-  }
-</style>
