@@ -1,5 +1,5 @@
 <template>
-  <div class="flex-1 px-8 py-8 overflow-y-auto">
+  <div class="px-8 py-8">
     <div class="flex gap-4 mb-8 items-start">
       <div
         class="w-9 h-9 border border-black rounded-full flex items-center justify-center flex-shrink-0"

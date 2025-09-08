@@ -1,17 +1,19 @@
 <template>
-  <div class="w-full bg-bg-primary flex flex-col md:w-1/2 md:h-auto">
-    <div class="px-8 py-4 bg-bg-card border-b border-border-light md:px-4">
-      <div>
+  <div class="w-full bg-bg-primary flex flex-col md:flex-1 md:h-auto">
+    <div class="px-8 py-4 bg-bg-primary md:px-4">
+      <div class="flex flex-wrap items-start gap-4">
         <span class="text-xl font-semibold text-text-primary"
           >Results ({{ results.length }})</span
         >
-        <FilterCriteria
-          :filters="filterCriteria"
-          @remove-filter="handleRemoveFilter"
-          @dropdown-click="handleDropdownClick"
-          @edit="handleEdit"
-          @create-more="handleCreateMore"
-        />
+        <div class="flex-1 min-w-96">
+          <FilterCriteria
+            :filters="filterCriteria"
+            @remove-filter="handleRemoveFilter"
+            @dropdown-click="handleDropdownClick"
+            @edit="handleEdit"
+            @create-more="handleCreateMore"
+          />
+        </div>
       </div>
     </div>
 
@@ -27,6 +29,8 @@
         Load More Results
       </button>
     </div>
+
+    <CopyrightFooter />
   </div>
 </template>
 
@@ -34,6 +38,7 @@
   import { ref } from 'vue'
   import ResultCard from './ResultCard.vue'
   import FilterCriteria from './FilterCriteria.vue'
+  import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
 
   interface SearchResult {
     id: number
