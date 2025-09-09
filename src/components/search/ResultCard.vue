@@ -22,7 +22,7 @@
       </div>
     </div>
     <div class="flex gap-4 md:gap-8 w-full md:w-auto md:min-w-72 self-end">
-      <div class="stat-item">
+      <div class="stat-item border-l border-border-lighter pl-4 md:pl-8">
         <span class="stat-number">{{ result.references }}</span>
         <span class="stat-label">References<br />across Web</span>
       </div>
