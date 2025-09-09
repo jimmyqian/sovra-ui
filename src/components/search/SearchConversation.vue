@@ -2,7 +2,7 @@
   <div class="px-8 py-8">
     <div class="flex gap-4 mb-8 items-start">
       <div
-        class="w-9 h-9 border border-black rounded-full flex items-center justify-center flex-shrink-0"
+        class="w-9 h-9 border border-black rounded-full flex items-center justify-center flex-shrink-0 ml-0.5"
       >
         <svg
           width="26"
@@ -41,9 +41,9 @@
 
       <div class="flex gap-4">
         <div
-          class="w-10 h-10 bg-gradient-brand rounded-full flex items-center justify-center flex-shrink-0"
+          class="w-10 h-10 flex items-center justify-center flex-shrink-0"
         >
-          <div class="w-6 h-6 bg-bg-card rounded-full"></div>
+          <LogoIcon :size="36" color="var(--color-logo-gray)" />
         </div>
         <div class="flex-1">
           <p class="mb-4 leading-relaxed">
@@ -92,6 +92,8 @@
 </template>
 
 <script setup lang="ts">
+  import LogoIcon from '@/components/icons/LogoIcon.vue'
+
   interface Props {
     searchQuery: string
   }

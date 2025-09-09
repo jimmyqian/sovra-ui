@@ -18,6 +18,7 @@
     --color-border-lighter: #EAEAEA;
     --color-border-hover: #f0f0f0;
     --color-score-bar: #D3C4C4;
+    --color-logo-gray: #898989;
   }
 
 
@@ -69,6 +70,17 @@
   }
   .bg-score-bar {
     background-color: var(--color-score-bar);
+  }
+
+  /* Logo Colors */
+  .text-logo-gray {
+    color: var(--color-logo-gray);
+  }
+
+  /* Logo Text Size */
+  .text-logo {
+    font-size: 3rem;
+    font-weight: 400;
   }
 
   /* Text Colors */
