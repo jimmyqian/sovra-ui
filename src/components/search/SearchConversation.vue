@@ -96,5 +96,5 @@
     searchQuery: string
   }
 
-  defineProps<Props>()
+  const props = defineProps<Props>()
 </script>

@@ -42,19 +42,7 @@
   import SearchBar from '@/components/common/SearchBar.vue'
   import SearchConversation from '@/components/search/SearchConversation.vue'
   import ResultsList from '@/components/search/ResultsList.vue'
-
-  interface SearchResult {
-    id: number
-    name: string
-    age: number
-    gender: string
-    maritalStatus: string
-    location: string
-    rating: number
-    references: number
-    companies: number
-    contacts: number
-  }
+  import type { SearchResult } from '@/types/search'
 
   const route = useRoute()
   const searchQuery = ref('')

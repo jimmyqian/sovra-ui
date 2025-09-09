@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="bg-bg-card rounded-xl p-6 mb-4 flex flex-wrap items-start gap-4 shadow-card"
-  >
+  <div class="result-card">
     <div class="flex items-start gap-4 flex-1 md:min-w-80">
       <div class="w-15 h-15 bg-border-lighter rounded-full flex-shrink-0"></div>
       <div class="flex-1 min-w-0">
@@ -29,47 +27,24 @@
       </div>
     </div>
     <div class="flex gap-4 md:gap-8 w-full md:w-auto md:min-w-72">
-      <div class="text-center">
-        <span class="block text-2xl font-semibold text-text-primary">{{
-          result.references
-        }}</span>
-        <span class="text-xs text-text-secondary leading-tight"
-          >References<br />across Web</span
-        >
+      <div class="stat-item">
+        <span class="stat-number">{{ result.references }}</span>
+        <span class="stat-label">References<br />across Web</span>
       </div>
-      <div class="text-center">
-        <span class="block text-2xl font-semibold text-text-primary">{{
-          result.companies
-        }}</span>
-        <span class="text-xs text-text-secondary leading-tight"
-          >companies<br />associated with</span
-        >
+      <div class="stat-item">
+        <span class="stat-number">{{ result.companies }}</span>
+        <span class="stat-label">companies<br />associated with</span>
       </div>
-      <div class="text-center">
-        <span class="block text-2xl font-semibold text-text-primary">{{
-          result.contacts
-        }}</span>
-        <span class="text-xs text-text-secondary leading-tight"
-          >Contacts<br />available</span
-        >
+      <div class="stat-item">
+        <span class="stat-number">{{ result.contacts }}</span>
+        <span class="stat-label">Contacts<br />available</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  interface SearchResult {
-    id: number
-    name: string
-    age: number
-    gender: string
-    maritalStatus: string
-    location: string
-    rating: number
-    references: number
-    companies: number
-    contacts: number
-  }
+  import type { SearchResult } from '@/types/search'
 
   interface Props {
     result: SearchResult
