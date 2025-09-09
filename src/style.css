@@ -15,39 +15,12 @@
     --color-bg-secondary: #f8f9fa;
     --color-bg-card: #ffffff;
     --color-border-light: #e5e5e5;
-    --color-border-lighter: #e9ecef;
+    --color-border-lighter: #EAEAEA;
     --color-border-hover: #f0f0f0;
+    --color-score-bar: #D3C4C4;
   }
 
-  [data-theme='dark'] {
-    --color-brand-orange: #ff8c5a;
-    --color-brand-orange-light: #ffb347;
-    --color-brand-blue: #5a9cff;
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #cccccc;
-    --color-text-muted: #888888;
-    --color-bg-primary: #1a1a1a;
-    --color-bg-secondary: #2d2d2d;
-    --color-bg-card: #333333;
-    --color-border-light: #444444;
-    --color-border-lighter: #555555;
-    --color-border-hover: #666666;
-  }
 
-  [data-theme='blue'] {
-    --color-brand-orange: #4285f4;
-    --color-brand-orange-light: #6ba6ff;
-    --color-brand-blue: #1c5aa8;
-    --color-text-primary: #1e3a8a;
-    --color-text-secondary: #3730a3;
-    --color-text-muted: #6366f1;
-    --color-bg-primary: #f0f8ff;
-    --color-bg-secondary: #dbeafe;
-    --color-bg-card: #ffffff;
-    --color-border-light: #bfdbfe;
-    --color-border-lighter: #dbeafe;
-    --color-border-hover: #e0e7ff;
-  }
 
   * {
     margin: 0;
@@ -93,6 +66,9 @@
   }
   .bg-border-hover {
     background-color: var(--color-border-hover);
+  }
+  .bg-score-bar {
+    background-color: var(--color-score-bar);
   }
 
   /* Text Colors */
@@ -204,7 +180,7 @@
   }
 
   .stat-item {
-    @apply text-center;
+    @apply flex items-center gap-3;
   }
 
   .stat-number {
