@@ -79,7 +79,8 @@
 
   /* Logo Text Size */
   .text-logo {
-    font-size: 2rem;
+    font-size: 3rem;
+    font-weight: 400;
   }
 
   /* Text Colors */
