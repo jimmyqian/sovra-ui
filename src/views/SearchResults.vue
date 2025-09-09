@@ -1,8 +1,6 @@
 <template>
   <div class="min-h-screen bg-bg-primary flex flex-col">
-    <AppHeader />
-
-    <div class="flex-1 flex h-[calc(100vh-120px)]">
+    <div class="flex-1 flex h-screen">
       <!-- Left Navigation Sidebar -->
       <AppSidebar />
       
@@ -10,6 +8,7 @@
       <div class="flex-1 flex flex-col md:flex-row">
         <!-- Left Panel: Search & Conversation -->
         <div class="w-full bg-bg-card flex flex-col md:w-2/5 md:max-w-lg md:h-full">
+          <AppHeader />
           <SearchConversation :search-query="searchQuery" />
 
           <!-- Search Input -->

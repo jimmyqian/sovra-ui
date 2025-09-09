@@ -27,7 +27,7 @@
           class="btn-primary flex-center"
           @click="handleSearch"
         >
-          <ArrowRightIcon />
+          <SearchButtonIcon />
         </button>
       </div>
     </div>
@@ -47,7 +47,7 @@
   import { ref, nextTick, watch } from 'vue'
   import UploadIcon from '@/components/icons/UploadIcon.vue'
   import MicrophoneIcon from '@/components/icons/MicrophoneIcon.vue'
-  import ArrowRightIcon from '@/components/icons/ArrowRightIcon.vue'
+  import SearchButtonIcon from '@/components/icons/SearchButtonIcon.vue'
 
   interface Props {
     modelValue: string
