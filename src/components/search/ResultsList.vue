@@ -39,19 +39,7 @@
   import ResultCard from './ResultCard.vue'
   import FilterCriteria from './FilterCriteria.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
-
-  interface SearchResult {
-    id: number
-    name: string
-    age: number
-    gender: string
-    maritalStatus: string
-    location: string
-    rating: number
-    references: number
-    companies: number
-    contacts: number
-  }
+  import type { SearchResult } from '@/types/search'
 
   interface Props {
     results: SearchResult[]

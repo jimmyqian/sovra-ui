@@ -9,72 +9,25 @@
       rows="3"
       class="w-full border-none outline-none text-base text-text-primary placeholder-text-muted bg-transparent resize-none p-0 overflow-hidden"
       @input="handleInput"
-      @keypress.enter="handleSearch"
+      @keypress.enter.prevent="handleSearch"
     ></textarea>
     <div class="flex items-center justify-between">
       <button
-        class="flex items-center gap-1 bg-transparent border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card"
+        class="btn-outline flex items-center gap-1"
         @click="triggerFileUpload"
       >
         <span>Upload</span>
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-        </svg>
+        <UploadIcon />
       </button>
       <div class="flex items-center gap-2">
-        <button
-          class="bg-transparent border-none text-brand-orange p-2 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-brand-orange hover:text-bg-card"
-        >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path
-              d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-          </svg>
+        <button class="btn-ghost flex-center">
+          <MicrophoneIcon />
         </button>
         <button
-          class="bg-brand-orange text-bg-card border-none p-2 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110"
+          class="btn-primary flex-center"
           @click="handleSearch"
         >
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M5 12h14M12 5l7 7-7 7"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+          <ArrowRightIcon />
         </button>
       </div>
     </div>
@@ -92,6 +45,9 @@
 
 <script setup lang="ts">
   import { ref, nextTick, watch } from 'vue'
+  import UploadIcon from '@/components/icons/UploadIcon.vue'
+  import MicrophoneIcon from '@/components/icons/MicrophoneIcon.vue'
+  import ArrowRightIcon from '@/components/icons/ArrowRightIcon.vue'
 
   interface Props {
     modelValue: string
