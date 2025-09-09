@@ -7,7 +7,7 @@
       :value="modelValue"
       :placeholder="placeholder"
       rows="3"
-      class="w-full border-none outline-none text-base text-text-primary placeholder-text-muted bg-transparent resize-none p-0 overflow-hidden"
+      class="w-full border-none outline-none text-base text-text-primary placeholder-text-muted bg-transparent resize-none p-0 overflow-hidden focus:outline-none focus:ring-0 focus:border-none"
       @input="handleInput"
       @keypress.enter.prevent="handleSearch"
     ></textarea>
