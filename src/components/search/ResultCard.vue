@@ -14,12 +14,7 @@
         </div>
         <div class="flex items-center gap-2">
           <span class="text-xs text-text-secondary">Sovra Rating</span>
-          <div class="w-25 h-1 bg-border-lighter rounded overflow-hidden">
-            <div
-              class="h-full bg-score-bar transition-all duration-300"
-              :style="{ width: (result.rating / 5) * 100 + '%' }"
-            ></div>
-          </div>
+          <ScoreBar :rating="result.rating" />
           <span class="text-sm font-semibold text-text-primary">{{
             result.rating
           }}</span>
@@ -45,6 +40,7 @@
 
 <script setup lang="ts">
   import type { SearchResult } from '@/types/search'
+  import ScoreBar from '@/components/common/ScoreBar.vue'
 
   interface Props {
     result: SearchResult
