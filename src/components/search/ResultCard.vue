@@ -16,7 +16,7 @@
           <span class="text-xs text-text-secondary">Sovra Rating</span>
           <div class="w-25 h-1 bg-border-lighter rounded overflow-hidden">
             <div
-              class="h-full bg-brand-orange transition-all duration-300"
+              class="h-full bg-score-bar transition-all duration-300"
               :style="{ width: (result.rating / 5) * 100 + '%' }"
             ></div>
           </div>
@@ -26,16 +26,16 @@
         </div>
       </div>
     </div>
-    <div class="flex gap-4 md:gap-8 w-full md:w-auto md:min-w-72">
+    <div class="flex gap-4 md:gap-8 w-full md:w-auto md:min-w-72 self-end">
       <div class="stat-item">
         <span class="stat-number">{{ result.references }}</span>
         <span class="stat-label">References<br />across Web</span>
       </div>
-      <div class="stat-item">
+      <div class="stat-item border-l border-border-lighter pl-4 md:pl-8">
         <span class="stat-number">{{ result.companies }}</span>
         <span class="stat-label">companies<br />associated with</span>
       </div>
-      <div class="stat-item">
+      <div class="stat-item border-l border-border-lighter pl-4 md:pl-8">
         <span class="stat-number">{{ result.contacts }}</span>
         <span class="stat-label">Contacts<br />available</span>
       </div>
