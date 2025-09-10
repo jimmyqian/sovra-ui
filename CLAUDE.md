@@ -72,11 +72,22 @@ Current test coverage includes **486 total tests**:
 - `css-component-patterns.test.ts` - 27 tests covering component pattern classes and accessibility
 - `css-responsive-design.test.ts` - 31 tests covering responsive breakpoints and mobile-first design
 
-**Accessibility Tests (115 tests)**
-- `keyboard-navigation.test.ts` - 34 tests covering keyboard accessibility and navigation patterns
-- `screen-reader-compatibility.test.ts` - 31 tests covering ARIA labels, semantic HTML, and screen reader support
-- `focus-management.test.ts` - 25 tests covering focus placement, restoration, trapping, and skip navigation
-- `color-contrast-validation.test.ts` - 25 tests covering WCAG AA/AAA color contrast compliance
+**Accessibility Tests (130+ tests)**
+
+*Component-Specific Accessibility Tests:*
+- `Button.accessibility.test.ts` - 24 tests covering button keyboard navigation, ARIA attributes, and color contrast
+- `SearchBar.accessibility.test.ts` - 28 tests covering form accessibility, keyboard navigation, and screen reader support  
+- `ResultCard.accessibility.test.ts` - 25 tests covering semantic structure, data presentation, and responsive accessibility
+
+*Global Accessibility Pattern Tests:*
+- `theme-contrast-validation.test.ts` - 11 tests covering comprehensive WCAG compliance across entire theme system
+- `keyboard-navigation-patterns.test.ts` - 15 tests covering cross-component keyboard navigation and focus management patterns
+
+*Legacy Global Tests (being phased out):*
+- `keyboard-navigation.test.ts` - 34 tests (migrating to component-specific + pattern tests)
+- `screen-reader-compatibility.test.ts` - 31 tests (migrating to component-specific tests)
+- `focus-management.test.ts` - 25 tests (migrating to component-specific + pattern tests)
+- `color-contrast-validation.test.ts` - 25 tests (replaced by theme-contrast-validation.test.ts)
 
 ### Utility Modules
 
@@ -133,43 +144,63 @@ The project includes comprehensive CSS testing located in `src/test/utils/css-*.
 
 ### Accessibility Testing Framework
 
-The project includes a comprehensive accessibility testing framework located in `src/test/accessibility/`:
+The project includes a comprehensive accessibility testing framework with **component-specific tests** and **shared utilities**:
 
-**Keyboard Navigation Testing** (`keyboard-navigation.test.ts`)
-- Tests tab navigation flow and focus order across components
-- Validates Enter/Space key activation for interactive elements
-- Tests escape key handling for dialogs and dropdowns
-- Verifies arrow key navigation for complex widgets (carousels, menus)
-- Tests focus trapping in modals and overlays
-- Validates skip navigation links for keyboard users
-- Includes comprehensive keyboard event simulation and focus tracking
+#### Component-Specific Accessibility Tests
 
-**Screen Reader Compatibility Testing** (`screen-reader-compatibility.test.ts`)
-- Tests ARIA labels, descriptions, and role attributes
-- Validates semantic HTML structure and heading hierarchy
-- Tests live regions for dynamic content announcements
-- Verifies form accessibility with proper labeling and error handling
-- Tests landmark navigation and page structure
-- Validates alternative text for images and media
-- Includes screen reader announcement simulation and ARIA attribute validation
+Each critical component has dedicated accessibility tests located in `src/components/*/.__tests__/*.accessibility.test.ts`:
 
-**Focus Management Testing** (`focus-management.test.ts`)
-- Tests initial focus placement on page load and navigation
-- Validates focus restoration after modal/dialog closure
-- Tests focus trapping within modal containers
-- Verifies skip navigation functionality
-- Tests roving tabindex patterns for complex widgets
-- Validates programmatic focus management
-- Includes focus tracking utilities and focus loss prevention
+**Button Component Accessibility** (`Button.accessibility.test.ts`)
+- ARIA attributes and semantic button behavior validation
+- Keyboard navigation (Tab, Enter, Space) and focus management
+- Color contrast testing for all button variants (primary, outline, ghost)
+- Screen reader compatibility and state announcements
+- Integration testing in form contexts and with various props
 
-**Color Contrast Validation Testing** (`color-contrast-validation.test.ts`)
-- Tests WCAG AA (4.5:1) and AAA (7:1) contrast ratio compliance
-- Validates brand colors against various background combinations
-- Tests text readability across different color combinations
-- Implements comprehensive color contrast ratio calculations
-- Documents known accessibility limitations in current color scheme
-- Includes color conversion utilities and accessibility reporting
-- Provides detailed contrast ratio analysis for all theme colors
+**SearchBar Component Accessibility** (`SearchBar.accessibility.test.ts`)  
+- Form accessibility with proper textarea and button labeling
+- Complex keyboard navigation through multiple interactive elements
+- File upload accessibility with proper input constraints
+- Dynamic content accessibility (auto-resizing textarea)
+- Screen reader support for multi-functional search interface
+
+**ResultCard Component Accessibility** (`ResultCard.accessibility.test.ts`)
+- Semantic HTML structure with proper heading hierarchy
+- Data presentation accessibility for statistics and personal information
+- Color contrast validation for data visualization elements
+- Responsive accessibility across different screen sizes
+- Screen reader optimization for complex data layouts
+
+#### Global Accessibility Pattern Tests
+
+Cross-component accessibility patterns in `src/test/accessibility/global/`:
+
+**Theme Color Contrast Validation** (`theme-contrast-validation.test.ts`)
+- Comprehensive WCAG AA/AAA compliance testing across entire color system
+- Brand color accessibility analysis and limitation documentation  
+- Text color hierarchy validation and contrast ratios
+- Component pattern color validation (buttons, status indicators)
+- Border and UI element contrast validation
+
+**Keyboard Navigation Patterns** (`keyboard-navigation-patterns.test.ts`)
+- Cross-component Tab navigation and focus order testing
+- Arrow key navigation patterns (grids, menus, toolbars)
+- Focus trapping patterns for modals and overlays
+- Skip navigation and landmark navigation testing
+- Roving tabindex and disclosure widget patterns
+
+#### Shared Accessibility Utilities
+
+Reusable testing utilities in `src/test/accessibility/`:
+
+**Utilities** (`utils/`)
+- `contrast-calculator.ts` - WCAG color contrast ratio calculations
+- `focus-tracker.ts` - Focus change tracking and management
+- `keyboard-simulator.ts` - Keyboard event simulation for testing
+
+**Shared Helpers** (`shared/`)
+- `accessibility-test-helpers.ts` - Common accessibility testing functions
+- `accessibility-matchers.ts` - Custom Vitest matchers for accessibility assertions
 
 ### Accessibility Issues and Considerations
 
@@ -210,10 +241,25 @@ npm run test:run src/test/utils/
 # Run only CSS/style tests
 npm run test:run src/test/utils/css-*.test.ts
 
-# Run only accessibility tests
-npm run test:run src/test/accessibility/
+# Run all accessibility tests (component-specific + global patterns)
+npm run test:run src/test/accessibility/ src/components/**/*.accessibility.test.ts
 
-# Run specific accessibility test suites
+# Run component-specific accessibility tests
+npm run test:run src/components/**/*.accessibility.test.ts
+
+# Run global accessibility pattern tests
+npm run test:run src/test/accessibility/global/
+
+# Run specific component accessibility tests
+npm run test:run src/components/ui/__tests__/Button.accessibility.test.ts
+npm run test:run src/components/common/__tests__/SearchBar.accessibility.test.ts
+npm run test:run src/components/search/__tests__/ResultCard.accessibility.test.ts
+
+# Run specific global pattern tests
+npm run test:run src/test/accessibility/global/theme-contrast-validation.test.ts
+npm run test:run src/test/accessibility/global/keyboard-navigation-patterns.test.ts
+
+# Run legacy accessibility tests (being phased out)
 npm run test:run src/test/accessibility/keyboard-navigation.test.ts
 npm run test:run src/test/accessibility/screen-reader-compatibility.test.ts
 npm run test:run src/test/accessibility/focus-management.test.ts
