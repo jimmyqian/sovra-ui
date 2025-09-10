@@ -45,7 +45,7 @@ The project includes comprehensive unit and integration tests using Vitest and V
 
 ### Test Coverage
 
-Current test coverage includes **371 total tests**:
+Current test coverage includes **486 total tests**:
 
 **Unit Tests (39 tests)**
 - `SearchBar.test.ts` - 12 tests covering input handling, events, file upload, styling
@@ -71,6 +71,12 @@ Current test coverage includes **371 total tests**:
 - `css-theme-variables.test.ts` - 19 tests covering CSS custom properties and theme configuration
 - `css-component-patterns.test.ts` - 27 tests covering component pattern classes and accessibility
 - `css-responsive-design.test.ts` - 31 tests covering responsive breakpoints and mobile-first design
+
+**Accessibility Tests (115 tests)**
+- `keyboard-navigation.test.ts` - 34 tests covering keyboard accessibility and navigation patterns
+- `screen-reader-compatibility.test.ts` - 31 tests covering ARIA labels, semantic HTML, and screen reader support
+- `focus-management.test.ts` - 25 tests covering focus placement, restoration, trapping, and skip navigation
+- `color-contrast-validation.test.ts` - 25 tests covering WCAG AA/AAA color contrast compliance
 
 ### Utility Modules
 
@@ -125,6 +131,61 @@ The project includes comprehensive CSS testing located in `src/test/utils/css-*.
 - Verifies responsive custom utilities (spacing, border radius, shadows, fonts)
 - Ensures responsive accessibility and proper class ordering/specificity
 
+### Accessibility Testing Framework
+
+The project includes a comprehensive accessibility testing framework located in `src/test/accessibility/`:
+
+**Keyboard Navigation Testing** (`keyboard-navigation.test.ts`)
+- Tests tab navigation flow and focus order across components
+- Validates Enter/Space key activation for interactive elements
+- Tests escape key handling for dialogs and dropdowns
+- Verifies arrow key navigation for complex widgets (carousels, menus)
+- Tests focus trapping in modals and overlays
+- Validates skip navigation links for keyboard users
+- Includes comprehensive keyboard event simulation and focus tracking
+
+**Screen Reader Compatibility Testing** (`screen-reader-compatibility.test.ts`)
+- Tests ARIA labels, descriptions, and role attributes
+- Validates semantic HTML structure and heading hierarchy
+- Tests live regions for dynamic content announcements
+- Verifies form accessibility with proper labeling and error handling
+- Tests landmark navigation and page structure
+- Validates alternative text for images and media
+- Includes screen reader announcement simulation and ARIA attribute validation
+
+**Focus Management Testing** (`focus-management.test.ts`)
+- Tests initial focus placement on page load and navigation
+- Validates focus restoration after modal/dialog closure
+- Tests focus trapping within modal containers
+- Verifies skip navigation functionality
+- Tests roving tabindex patterns for complex widgets
+- Validates programmatic focus management
+- Includes focus tracking utilities and focus loss prevention
+
+**Color Contrast Validation Testing** (`color-contrast-validation.test.ts`)
+- Tests WCAG AA (4.5:1) and AAA (7:1) contrast ratio compliance
+- Validates brand colors against various background combinations
+- Tests text readability across different color combinations
+- Implements comprehensive color contrast ratio calculations
+- Documents known accessibility limitations in current color scheme
+- Includes color conversion utilities and accessibility reporting
+- Provides detailed contrast ratio analysis for all theme colors
+
+### Accessibility Issues and Considerations
+
+**Known Accessibility Limitations:**
+- Brand orange (#ff6f16) and brand blue (#4285f4) colors do not meet WCAG AA contrast standards when used as text colors on white backgrounds
+- Current contrast ratios: Orange/White = 3.26:1, Blue/White = 3.13:1 (both below the required 4.5:1)
+- These colors are documented as acceptable for brand elements but should not be used for body text
+
+**Accessibility Best Practices Implemented:**
+- Comprehensive keyboard navigation support across all interactive elements
+- Proper ARIA labeling and semantic HTML structure
+- Focus management with restoration and trapping patterns
+- Skip navigation links for keyboard users
+- High contrast mode compatibility testing
+- Screen reader compatibility validation
+
 ### Running Tests
 
 ```bash
@@ -148,6 +209,15 @@ npm run test:run src/test/utils/
 
 # Run only CSS/style tests
 npm run test:run src/test/utils/css-*.test.ts
+
+# Run only accessibility tests
+npm run test:run src/test/accessibility/
+
+# Run specific accessibility test suites
+npm run test:run src/test/accessibility/keyboard-navigation.test.ts
+npm run test:run src/test/accessibility/screen-reader-compatibility.test.ts
+npm run test:run src/test/accessibility/focus-management.test.ts
+npm run test:run src/test/accessibility/color-contrast-validation.test.ts
 ```
 
 ## Custom Instructions

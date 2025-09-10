@@ -237,7 +237,9 @@ describe('CSS Utility Class Application', () => {
 
     it('applies responsive color classes correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: 'bg-bg-card md:bg-brand-orange lg:bg-brand-blue' },
+        props: {
+          customClass: 'bg-bg-card md:bg-brand-orange lg:bg-brand-blue'
+        },
         slots: { default: 'Responsive colors' }
       })
 
@@ -249,7 +251,9 @@ describe('CSS Utility Class Application', () => {
 
     it('applies hover state classes correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: 'bg-bg-card hover:bg-brand-orange hover:text-bg-card' },
+        props: {
+          customClass: 'bg-bg-card hover:bg-brand-orange hover:text-bg-card'
+        },
         slots: { default: 'Hover states' }
       })
 
@@ -263,8 +267,9 @@ describe('CSS Utility Class Application', () => {
   describe('Complex Class Combinations', () => {
     it('applies multiple utility classes together', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
-          customClass: 'bg-brand-orange text-bg-card border border-border-light rounded-tag p-15 shadow-card'
+        props: {
+          customClass:
+            'bg-brand-orange text-bg-card border border-border-light rounded-tag p-15 shadow-card'
         },
         slots: { default: 'Complex styling' }
       })
@@ -281,8 +286,9 @@ describe('CSS Utility Class Application', () => {
 
     it('handles responsive and hover combinations', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
-          customClass: 'text-sm md:text-base lg:text-lg hover:text-brand-orange focus:text-brand-blue'
+        props: {
+          customClass:
+            'text-sm md:text-base lg:text-lg hover:text-brand-orange focus:text-brand-blue'
         },
         slots: { default: 'Complex responsive' }
       })

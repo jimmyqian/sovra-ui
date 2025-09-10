@@ -13,7 +13,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive Width Classes', () => {
     it('applies mobile-first responsive width classes correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'w-full md:w-1/2 lg:w-1/3 xl:w-1/4'
         },
         slots: { default: 'Responsive width' }
@@ -28,7 +28,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive height classes correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'h-16 md:h-20 lg:h-24 xl:h-32'
         },
         slots: { default: 'Responsive height' }
@@ -45,7 +45,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive Text Classes', () => {
     it('applies responsive font sizes correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'text-sm md:text-base lg:text-lg xl:text-xl'
         },
         slots: { default: 'Responsive text' }
@@ -60,7 +60,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive custom font sizes correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'text-base md:text-logo lg:text-hero'
         },
         slots: { default: 'Custom responsive fonts' }
@@ -76,7 +76,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive Spacing Classes', () => {
     it('applies responsive padding correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'p-2 md:p-4 lg:p-6 xl:p-8'
         },
         slots: { default: 'Responsive padding' }
@@ -91,7 +91,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive custom spacing correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'p-4 md:p-15 lg:p-18 xl:p-25'
         },
         slots: { default: 'Custom responsive spacing' }
@@ -106,7 +106,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive margins correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'm-1 md:m-2 lg:m-4 xl:m-8'
         },
         slots: { default: 'Responsive margins' }
@@ -123,7 +123,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive Layout Classes', () => {
     it('applies responsive flexbox layouts correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'flex flex-col md:flex-row lg:flex-col xl:flex-row'
         },
         slots: { default: 'Responsive flex' }
@@ -139,8 +139,9 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive grid layouts correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
-          customClass: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
+        props: {
+          customClass:
+            'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
         },
         slots: { default: 'Responsive grid' }
       })
@@ -155,7 +156,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive custom layout patterns correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'flex-center-start md:flex-center'
         },
         slots: { default: 'Responsive layout patterns' }
@@ -170,7 +171,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive Display Classes', () => {
     it('applies responsive display utilities correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'block md:hidden lg:block xl:hidden'
         },
         slots: { default: 'Responsive visibility' }
@@ -185,7 +186,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive flex display correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'hidden md:flex lg:hidden xl:flex'
         },
         slots: { default: 'Responsive flex display' }
@@ -200,7 +201,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive grid display correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'hidden md:grid lg:flex xl:grid'
         },
         slots: { default: 'Responsive grid display' }
@@ -217,7 +218,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive Color Classes', () => {
     it('applies responsive brand color classes correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'bg-bg-card md:bg-brand-orange lg:bg-brand-blue'
         },
         slots: { default: 'Responsive colors' }
@@ -231,7 +232,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive text color classes correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'text-text-primary md:text-bg-card lg:text-brand-blue'
         },
         slots: { default: 'Responsive text colors' }
@@ -247,7 +248,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive Custom Utilities', () => {
     it('applies responsive custom border radius correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'rounded md:rounded-tag lg:rounded-search'
         },
         slots: { default: 'Custom responsive radius' }
@@ -261,7 +262,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive custom shadows correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'shadow md:shadow-card lg:shadow-search'
         },
         slots: { default: 'Custom responsive shadows' }
@@ -277,7 +278,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive Component Patterns', () => {
     it('applies responsive button patterns correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'btn-outline md:btn-primary lg:btn-ghost'
         },
         slots: { default: 'Responsive button patterns' }
@@ -291,7 +292,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive icon button patterns correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'icon-button-secondary md:icon-button-primary'
         },
         slots: { default: 'Responsive icon buttons' }
@@ -306,7 +307,7 @@ describe('CSS Responsive Design Classes', () => {
   describe('Responsive State Classes', () => {
     it('applies responsive hover states correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'bg-bg-card hover:bg-brand-orange md:hover:bg-brand-blue'
         },
         slots: { default: 'Responsive hover' }
@@ -320,8 +321,9 @@ describe('CSS Responsive Design Classes', () => {
 
     it('applies responsive focus states correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
-          customClass: 'focus:ring-2 focus:ring-brand-orange md:focus:ring-brand-blue'
+        props: {
+          customClass:
+            'focus:ring-2 focus:ring-brand-orange md:focus:ring-brand-blue'
         },
         slots: { default: 'Responsive focus' }
       })
@@ -334,8 +336,9 @@ describe('CSS Responsive Design Classes', () => {
 
     it('combines responsive states with patterns', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
-          customClass: 'btn-outline hover:btn-primary md:btn-primary md:hover:btn-ghost'
+        props: {
+          customClass:
+            'btn-outline hover:btn-primary md:btn-primary md:hover:btn-ghost'
         },
         slots: { default: 'Complex responsive states' }
       })
@@ -351,8 +354,9 @@ describe('CSS Responsive Design Classes', () => {
   describe('Complex Responsive Combinations', () => {
     it('applies multiple responsive utilities together', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
-          customClass: 'bg-brand-orange text-bg-card p-2 md:p-4 lg:p-6 rounded md:rounded-tag w-full md:w-1/2 lg:w-1/3'
+        props: {
+          customClass:
+            'bg-brand-orange text-bg-card p-2 md:p-4 lg:p-6 rounded md:rounded-tag w-full md:w-1/2 lg:w-1/3'
         },
         slots: { default: 'Complex responsive styling' }
       })
@@ -372,8 +376,9 @@ describe('CSS Responsive Design Classes', () => {
 
     it('handles responsive patterns with standard Tailwind classes', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
-          customClass: 'result-card w-full md:w-1/2 lg:w-1/3 flex-center md:flex-center-start'
+        props: {
+          customClass:
+            'result-card w-full md:w-1/2 lg:w-1/3 flex-center md:flex-center-start'
         },
         slots: { default: 'Responsive pattern combinations' }
       })
@@ -427,7 +432,7 @@ describe('CSS Responsive Design Classes', () => {
     it('validates responsive class ordering and specificity', () => {
       // Test proper mobile-first ordering
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl'
         },
         slots: { default: 'Proper ordering' }
@@ -435,7 +440,7 @@ describe('CSS Responsive Design Classes', () => {
 
       const element = wrapper.find('div')
       const classes = element.classes()
-      
+
       // Verify all responsive classes are present
       expect(classes).toContain('text-sm')
       expect(classes).toContain('sm:text-base')
@@ -446,7 +451,7 @@ describe('CSS Responsive Design Classes', () => {
 
     it('handles responsive class conflicts gracefully', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           // Intentionally conflicting classes to test behavior
           customClass: 'w-full w-1/2 md:w-full md:w-1/3 lg:w-1/2 lg:w-1/4'
         },
@@ -481,14 +486,16 @@ describe('CSS Responsive Design Classes', () => {
 
       const wrapper = mount(AccessibleResponsive)
       const button = wrapper.find('button')
-      
-      expect(button.attributes('aria-label')).toBe('Responsive accessible button')
+
+      expect(button.attributes('aria-label')).toBe(
+        'Responsive accessible button'
+      )
       expect(button.attributes('tabindex')).toBe('0')
       expect(button.classes()).toContain('btn-primary')
       expect(button.classes()).toContain('text-sm')
       expect(button.classes()).toContain('md:text-base')
       expect(button.classes()).toContain('lg:text-lg')
-      
+
       // Check responsive content
       expect(wrapper.find('.hidden').exists()).toBe(true)
       expect(wrapper.find('.md\\:hidden').exists()).toBe(true)
@@ -496,8 +503,9 @@ describe('CSS Responsive Design Classes', () => {
 
     it('provides appropriate focus indicators at all breakpoints', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
-          customClass: 'focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-1 md:focus:ring-offset-2 lg:focus:ring-offset-4'
+        props: {
+          customClass:
+            'focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-1 md:focus:ring-offset-2 lg:focus:ring-offset-4'
         },
         slots: { default: 'Focus indicators' }
       })
@@ -532,7 +540,7 @@ describe('CSS Responsive Design Classes', () => {
 
         const element = wrapper.find('div')
         const classes = classString.split(' ')
-        
+
         classes.forEach(cls => {
           expect(element.classes()).toContain(cls)
         })
@@ -555,7 +563,7 @@ describe('CSS Responsive Design Classes', () => {
 
         const element = wrapper.find('div')
         const classes = classString.split(' ')
-        
+
         classes.forEach(cls => {
           expect(element.classes()).toContain(cls)
         })

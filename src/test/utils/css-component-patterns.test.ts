@@ -17,7 +17,7 @@ describe('CSS Component Pattern Utilities', () => {
   describe('Button Pattern Classes', () => {
     it('applies btn-primary pattern correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'btn-primary',
           tag: 'button'
         },
@@ -31,7 +31,7 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('applies btn-outline pattern correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'btn-outline',
           tag: 'button'
         },
@@ -45,7 +45,7 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('applies btn-ghost pattern correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'btn-ghost',
           tag: 'button'
         },
@@ -59,7 +59,7 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('combines button patterns with other classes', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'btn-primary w-full text-lg',
           tag: 'button'
         },
@@ -76,7 +76,7 @@ describe('CSS Component Pattern Utilities', () => {
   describe('Icon Button Pattern Classes', () => {
     it('applies icon-button-base pattern correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'icon-button-base',
           tag: 'button'
         },
@@ -90,7 +90,7 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('applies icon-button-primary pattern correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'icon-button-primary',
           tag: 'button'
         },
@@ -104,7 +104,7 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('applies icon-button-secondary pattern correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'icon-button-secondary',
           tag: 'button'
         },
@@ -118,7 +118,7 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('combines icon button patterns with additional classes', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'icon-button-primary transform rotate-45',
           tag: 'button'
         },
@@ -176,7 +176,7 @@ describe('CSS Component Pattern Utilities', () => {
     it('applies result-card pattern correctly', () => {
       const wrapper = mount(TestComponent, {
         props: { customClass: 'result-card' },
-        slots: { 
+        slots: {
           default: 'Result content goes here'
         }
       })
@@ -213,7 +213,7 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('applies stat-number pattern correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'stat-number',
           tag: 'span'
         },
@@ -227,7 +227,7 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('applies stat-label pattern correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'stat-label',
           tag: 'span'
         },
@@ -241,16 +241,16 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('creates complete statistics display', () => {
       const StatDisplay = defineComponent({
+        props: {
+          number: { type: [String, Number], required: true },
+          label: { type: String, required: true }
+        },
         template: `
           <div class="stat-item">
             <span class="stat-number">{{ number }}</span>
             <span class="stat-label">{{ label }}</span>
           </div>
-        `,
-        props: {
-          number: { type: [String, Number], required: true },
-          label: { type: String, required: true }
-        }
+        `
       })
 
       const wrapper = mount(StatDisplay, {
@@ -321,10 +321,10 @@ describe('CSS Component Pattern Utilities', () => {
 
     it('handles pattern class inheritance and composition', () => {
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'result-card flex-center-start'
         },
-        slots: { 
+        slots: {
           default: 'Composed patterns'
         }
       })
@@ -338,7 +338,7 @@ describe('CSS Component Pattern Utilities', () => {
     it('validates pattern class combinations do not conflict', () => {
       // Test that combining layout patterns works correctly
       const wrapper = mount(TestComponent, {
-        props: { 
+        props: {
           customClass: 'flex-center result-card btn-primary',
           tag: 'button'
         },
@@ -369,7 +369,7 @@ describe('CSS Component Pattern Utilities', () => {
 
       const wrapper = mount(AccessibleButton)
       const button = wrapper.find('button')
-      
+
       expect(button.classes()).toContain('btn-primary')
       expect(button.attributes('aria-label')).toBe('Primary action button')
       expect(button.attributes('role')).toBe('button')
@@ -391,7 +391,7 @@ describe('CSS Component Pattern Utilities', () => {
 
       const wrapper = mount(AccessibleIconButton)
       const button = wrapper.find('button')
-      
+
       expect(button.classes()).toContain('icon-button-primary')
       expect(button.attributes('tabindex')).toBe('0')
       expect(button.attributes('aria-label')).toBe('Close dialog')
@@ -412,7 +412,7 @@ describe('CSS Component Pattern Utilities', () => {
       })
 
       const wrapper = mount(PerformanceTestComponent)
-      
+
       expect(wrapper.find('.result-card').exists()).toBe(true)
       expect(wrapper.find('.flex-center').exists()).toBe(true)
       expect(wrapper.find('.btn-primary').exists()).toBe(true)
@@ -442,12 +442,12 @@ describe('CSS Component Pattern Utilities', () => {
 
       const wrapper = mount(DynamicComponent)
       const button = wrapper.find('button')
-      
+
       expect(button.classes()).toContain('btn-primary')
       expect(button.text()).toBe('Primary')
 
       await button.trigger('click')
-      
+
       expect(button.classes()).toContain('btn-outline')
       expect(button.classes()).not.toContain('btn-primary')
       expect(button.text()).toBe('Outline')
@@ -458,7 +458,7 @@ describe('CSS Component Pattern Utilities', () => {
     it('validates all expected pattern classes are testable', () => {
       const allPatternClasses = [
         'btn-primary',
-        'btn-outline', 
+        'btn-outline',
         'btn-ghost',
         'icon-button-base',
         'icon-button-primary',
@@ -499,7 +499,7 @@ describe('CSS Component Pattern Utilities', () => {
 
         const element = wrapper.find('div')
         const classes = classString.split(' ')
-        
+
         classes.forEach(cls => {
           expect(element.classes()).toContain(cls)
         })
@@ -516,9 +516,9 @@ describe('CSS Component Pattern Utilities', () => {
 
       elementTests.forEach(({ tag, class: className, content }) => {
         const wrapper = mount(TestComponent, {
-          props: { 
+          props: {
             customClass: className,
-            tag 
+            tag
           },
           slots: { default: content }
         })
