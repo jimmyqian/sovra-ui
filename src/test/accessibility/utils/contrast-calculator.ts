@@ -71,7 +71,7 @@ export class ColorContrastCalculator {
         .split('')
         .map(char => char + char)
         .join('')
-      return this.hexToRgb('#' + expandedHex)
+      return this.hexToRgb(`#${expandedHex}`)
     }
 
     // Handle 6-character hex

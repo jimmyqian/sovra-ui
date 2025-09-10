@@ -4,7 +4,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
-import { mount, VueWrapper } from '@vue/test-utils'
+import type { VueWrapper } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import Button from '../Button.vue'
 import { AccessibilityTestHelper } from '@/test/accessibility/shared/accessibility-test-helpers'
 import { KeyboardSimulator } from '@/test/accessibility/utils/keyboard-simulator'

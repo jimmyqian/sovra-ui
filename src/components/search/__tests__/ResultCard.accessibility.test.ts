@@ -4,7 +4,8 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
-import { mount, VueWrapper } from '@vue/test-utils'
+import type { VueWrapper } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 import ResultCard from '../ResultCard.vue'
 import { AccessibilityTestHelper } from '@/test/accessibility/shared/accessibility-test-helpers'
 import '@/test/accessibility/shared/accessibility-matchers'

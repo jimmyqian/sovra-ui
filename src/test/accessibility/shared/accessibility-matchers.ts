@@ -3,7 +3,7 @@
  */
 
 import { expect } from 'vitest'
-import { VueWrapper } from '@vue/test-utils'
+import type { VueWrapper } from '@vue/test-utils'
 import { AccessibilityTestHelper } from './accessibility-test-helpers'
 
 /**
@@ -135,10 +135,9 @@ expect.extend({
       message: () =>
         pass
           ? `Expected component to fail WCAG ${level} contrast requirements`
-          : `Component fails WCAG ${level} contrast requirements (${requiredRatio}:1):\n` +
-            failingResults
+          : `Component fails WCAG ${level} contrast requirements (${requiredRatio}:1):\n${failingResults
               .map(r => `  • Ratio ${r.ratio.toFixed(2)}:1`)
-              .join('\n')
+              .join('\n')}`
     }
   }
 })
