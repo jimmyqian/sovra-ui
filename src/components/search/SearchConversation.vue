@@ -38,11 +38,8 @@
     </div>
 
     <div class="flex flex-col">
-
       <div class="flex gap-4">
-        <div
-          class="w-10 h-10 flex items-center justify-center flex-shrink-0"
-        >
+        <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">
           <LogoIcon :size="36" color="var(--color-logo-gray)" />
         </div>
         <div class="flex-1">
@@ -60,7 +57,8 @@
             <p
               class="text-brand-orange pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2"
             >
-              What specific software role does Johnson hold in his California job
+              What specific software role does Johnson hold in his California
+              job
             </p>
             <p
               class="text-brand-orange pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2"

@@ -1,0 +1,465 @@
+/**
+ * Unit tests for FilterCriteria component
+ * Tests filter rendering, events, conditional content, and user interactions
+ */
+
+import { describe, it, expect } from 'vitest'
+import { mount } from '@vue/test-utils'
+import FilterCriteria from '../FilterCriteria.vue'
+
+// Test data interfaces
+interface FilterItem {
+  id: string
+  text: string
+  removable?: boolean
+  hasDropdown?: boolean
+  dropdownText?: string
+}
+
+describe('FilterCriteria', () => {
+  const mockFilters: FilterItem[] = [
+    { id: '1', text: 'Filter 1', removable: true },
+    { id: '2', text: 'Filter 2', hasDropdown: true, dropdownText: 'Options' },
+    {
+      id: '3',
+      text: 'Filter 3',
+      removable: true,
+      hasDropdown: true,
+      dropdownText: 'More'
+    }
+  ]
+
+  describe('Basic Rendering', () => {
+    it('renders container with correct structure', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const container = wrapper.find('div')
+      expect(container.exists()).toBe(true)
+      expect(container.classes()).toContain('flex')
+      expect(container.classes()).toContain('flex-wrap')
+      expect(container.classes()).toContain('gap-2')
+    })
+
+    it('renders all filter items', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const filterSpans = wrapper
+        .findAll('span')
+        .filter(span => span.text().includes('Filter'))
+      expect(filterSpans).toHaveLength(mockFilters.length)
+    })
+
+    it('renders edit and create more buttons', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const buttons = wrapper
+        .findAll('button')
+        .filter(
+          btn =>
+            btn.text().includes('edit') || btn.text().includes('Create more')
+        )
+      expect(buttons).toHaveLength(2)
+    })
+
+    it('renders with empty filters array', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: [] }
+      })
+
+      expect(wrapper.exists()).toBe(true)
+      const buttons = wrapper
+        .findAll('button')
+        .filter(
+          btn =>
+            btn.text().includes('edit') || btn.text().includes('Create more')
+        )
+      expect(buttons).toHaveLength(2)
+    })
+  })
+
+  describe('Filter Items Rendering', () => {
+    it('displays filter text correctly', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      mockFilters.forEach(filter => {
+        expect(wrapper.text()).toContain(filter.text)
+      })
+    })
+
+    it('applies base filter item classes', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: [mockFilters[0]] }
+      })
+
+      const filterSpan = wrapper
+        .findAll('span')
+        .find(span => span.text().includes('Filter 1'))
+
+      const expectedClasses = [
+        'bg-bg-secondary',
+        'px-3',
+        'py-1',
+        'rounded-tag',
+        'text-sm',
+        'flex',
+        'items-center',
+        'gap-1',
+        'border',
+        'border-brand-orange-light'
+      ]
+
+      expectedClasses.forEach(className => {
+        expect(filterSpan!.classes()).toContain(className)
+      })
+    })
+
+    it('applies cursor-pointer class only when filter has dropdown', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const filterSpans = wrapper
+        .findAll('span')
+        .filter(span => span.text().includes('Filter'))
+
+      // Filter 1: no dropdown, should not have cursor-pointer
+      expect(filterSpans[0].classes()).not.toContain('cursor-pointer')
+
+      // Filter 2: has dropdown, should have cursor-pointer
+      expect(filterSpans[1].classes()).toContain('cursor-pointer')
+
+      // Filter 3: has dropdown, should have cursor-pointer
+      expect(filterSpans[2].classes()).toContain('cursor-pointer')
+    })
+  })
+
+  describe('Removable Filters', () => {
+    it('shows remove button for removable filters', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const removeButtons = wrapper
+        .findAll('button')
+        .filter(btn => btn.text().trim() === '×')
+
+      // Filters 1 and 3 are removable
+      expect(removeButtons).toHaveLength(2)
+    })
+
+    it('does not show remove button for non-removable filters', () => {
+      const nonRemovableFilters: FilterItem[] = [
+        { id: '1', text: 'Non-removable Filter' }
+      ]
+
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: nonRemovableFilters }
+      })
+
+      const removeButtons = wrapper
+        .findAll('button')
+        .filter(btn => btn.text().trim() === '×')
+      expect(removeButtons).toHaveLength(0)
+    })
+
+    it('applies correct styling to remove buttons', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: [mockFilters[0]] } // Removable filter
+      })
+
+      const removeButton = wrapper
+        .findAll('button')
+        .find(btn => btn.text().trim() === '×')
+
+      const expectedClasses = [
+        'bg-transparent',
+        'border-none',
+        'text-text-muted',
+        'cursor-pointer',
+        'text-base',
+        'p-0',
+        'ml-1',
+        'hover:text-brand-orange',
+        'transition-colors'
+      ]
+
+      expectedClasses.forEach(className => {
+        expect(removeButton!.classes()).toContain(className)
+      })
+    })
+
+    it('emits removeFilter event when remove button clicked', async () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: [mockFilters[0]] }
+      })
+
+      const removeButton = wrapper
+        .findAll('button')
+        .find(btn => btn.text().trim() === '×')
+      await removeButton!.trigger('click')
+
+      expect(wrapper.emitted('removeFilter')).toBeTruthy()
+      expect(wrapper.emitted('removeFilter')![0]).toEqual(['1'])
+    })
+  })
+
+  describe('Dropdown Filters', () => {
+    it('shows dropdown text and arrow for dropdown filters', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: [mockFilters[1]] } // Has dropdown
+      })
+
+      expect(wrapper.text()).toContain('Options ▼')
+    })
+
+    it('does not show dropdown content for non-dropdown filters', () => {
+      const nonDropdownFilters: FilterItem[] = [
+        { id: '1', text: 'No Dropdown Filter' }
+      ]
+
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: nonDropdownFilters }
+      })
+
+      expect(wrapper.text()).not.toContain('▼')
+    })
+
+    it('applies correct styling to dropdown spans', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: [mockFilters[1]] }
+      })
+
+      const dropdownSpan = wrapper
+        .findAll('span')
+        .find(span => span.text().includes('▼'))
+
+      const expectedClasses = [
+        'cursor-pointer',
+        'font-medium',
+        'hover:text-brand-orange',
+        'transition-colors'
+      ]
+
+      expectedClasses.forEach(className => {
+        expect(dropdownSpan!.classes()).toContain(className)
+      })
+    })
+
+    it('emits dropdownClick event when dropdown clicked', async () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: [mockFilters[1]] }
+      })
+
+      const dropdownSpan = wrapper
+        .findAll('span')
+        .find(span => span.text().includes('▼'))
+      await dropdownSpan!.trigger('click')
+
+      expect(wrapper.emitted('dropdownClick')).toBeTruthy()
+      expect(wrapper.emitted('dropdownClick')![0]).toEqual(['2'])
+    })
+  })
+
+  describe('Action Buttons', () => {
+    it('renders edit button with correct styling', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const editButton = wrapper
+        .findAll('button')
+        .find(btn => btn.text().includes('edit'))
+
+      const expectedClasses = [
+        'bg-transparent',
+        'border',
+        'border-gray-300',
+        'px-3',
+        'py-1',
+        'rounded-tag',
+        'text-sm',
+        'cursor-pointer',
+        'transition-all',
+        'duration-200',
+        'hover:border-text-muted',
+        'hover:bg-bg-secondary'
+      ]
+
+      expectedClasses.forEach(className => {
+        expect(editButton!.classes()).toContain(className)
+      })
+    })
+
+    it('renders create more button with correct styling', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const createButton = wrapper
+        .findAll('button')
+        .find(btn => btn.text().includes('Create more'))
+
+      const expectedClasses = [
+        'text-brand-orange',
+        'border-brand-orange',
+        'bg-transparent',
+        'border',
+        'px-3',
+        'py-1',
+        'rounded-tag',
+        'text-sm',
+        'cursor-pointer',
+        'transition-all',
+        'duration-200',
+        'hover:bg-brand-orange',
+        'hover:text-bg-card'
+      ]
+
+      expectedClasses.forEach(className => {
+        expect(createButton!.classes()).toContain(className)
+      })
+    })
+
+    it('emits edit event when edit button clicked', async () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const editButton = wrapper
+        .findAll('button')
+        .find(btn => btn.text().includes('edit'))
+      await editButton!.trigger('click')
+
+      expect(wrapper.emitted('edit')).toBeTruthy()
+      expect(wrapper.emitted('edit')![0]).toEqual([])
+    })
+
+    it('emits createMore event when create more button clicked', async () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const createButton = wrapper
+        .findAll('button')
+        .find(btn => btn.text().includes('Create more'))
+      await createButton!.trigger('click')
+
+      expect(wrapper.emitted('createMore')).toBeTruthy()
+      expect(wrapper.emitted('createMore')![0]).toEqual([])
+    })
+  })
+
+  describe('Complex Filter Scenarios', () => {
+    it('handles filter with both removable and dropdown properties', () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: [mockFilters[2]] } // Has both removable and dropdown
+      })
+
+      // Should show remove button
+      const removeButton = wrapper
+        .findAll('button')
+        .find(btn => btn.text().trim() === '×')
+      expect(removeButton).toBeTruthy()
+
+      // Should show dropdown text
+      expect(wrapper.text()).toContain('More ▼')
+
+      // Should have cursor-pointer class
+      const filterSpan = wrapper
+        .findAll('span')
+        .find(span => span.text().includes('Filter 3'))
+      expect(filterSpan!.classes()).toContain('cursor-pointer')
+    })
+
+    it('handles mixed filter types correctly', () => {
+      const mixedFilters: FilterItem[] = [
+        { id: '1', text: 'Simple Filter' },
+        { id: '2', text: 'Removable Filter', removable: true },
+        {
+          id: '3',
+          text: 'Dropdown Filter',
+          hasDropdown: true,
+          dropdownText: 'Options'
+        },
+        {
+          id: '4',
+          text: 'Complex Filter',
+          removable: true,
+          hasDropdown: true,
+          dropdownText: 'Both'
+        }
+      ]
+
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mixedFilters }
+      })
+
+      // Should render all filters
+      mixedFilters.forEach(filter => {
+        expect(wrapper.text()).toContain(filter.text)
+      })
+
+      // Should show 2 remove buttons (filters 2 and 4)
+      const removeButtons = wrapper
+        .findAll('button')
+        .filter(btn => btn.text().trim() === '×')
+      expect(removeButtons).toHaveLength(2)
+
+      // Should show 2 dropdown indicators (filters 3 and 4)
+      const dropdownCount = (wrapper.text().match(/▼/g) || []).length
+      expect(dropdownCount).toBe(2)
+    })
+  })
+
+  describe('Event Handling', () => {
+    it('handles multiple remove filter events correctly', async () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const removeButtons = wrapper
+        .findAll('button')
+        .filter(btn => btn.text().trim() === '×')
+
+      // Click first remove button (Filter 1)
+      await removeButtons[0].trigger('click')
+
+      // Click second remove button (Filter 3)
+      await removeButtons[1].trigger('click')
+
+      const removeEvents = wrapper.emitted('removeFilter')!
+      expect(removeEvents).toHaveLength(2)
+      expect(removeEvents[0]).toEqual(['1'])
+      expect(removeEvents[1]).toEqual(['3'])
+    })
+
+    it('handles multiple dropdown click events correctly', async () => {
+      const wrapper = mount(FilterCriteria, {
+        props: { filters: mockFilters }
+      })
+
+      const dropdownSpans = wrapper
+        .findAll('span')
+        .filter(span => span.text().includes('▼'))
+
+      // Click first dropdown (Filter 2)
+      await dropdownSpans[0].trigger('click')
+
+      // Click second dropdown (Filter 3)
+      await dropdownSpans[1].trigger('click')
+
+      const dropdownEvents = wrapper.emitted('dropdownClick')!
+      expect(dropdownEvents).toHaveLength(2)
+      expect(dropdownEvents[0]).toEqual(['2'])
+      expect(dropdownEvents[1]).toEqual(['3'])
+    })
+  })
+})

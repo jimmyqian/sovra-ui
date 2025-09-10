@@ -15,12 +15,12 @@
     --color-bg-secondary: #f8f9fa;
     --color-bg-card: #ffffff;
     --color-border-light: #e5e5e5;
-    --color-border-lighter: #EAEAEA;
+    --color-border-lighter: #eaeaea;
     --color-border-hover: #f0f0f0;
-    --color-score-bar: #D3C4C4;
+    --color-score-bar: #d3c4c4;
     --color-logo-gray: #898989;
-    --color-border-dashed: #E29F9F;
-    --color-bg-button: #FFF8F8;
+    --color-border-dashed: #e29f9f;
+    --color-bg-button: #fff8f8;
   }
 
   * {

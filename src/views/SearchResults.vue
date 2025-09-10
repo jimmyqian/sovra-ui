@@ -3,7 +3,7 @@
     <div class="flex-1 flex h-screen">
       <!-- Left Navigation Sidebar -->
       <AppSidebar />
-      
+
       <!-- Main Content Area -->
       <div class="flex-1 flex flex-col md:flex-row">
         <!-- Left Panel: Search & Conversation -->
@@ -29,7 +29,6 @@
         <ResultsList :results="results" @load-more="handleLoadMore" />
       </div>
     </div>
-
   </div>
 </template>
 

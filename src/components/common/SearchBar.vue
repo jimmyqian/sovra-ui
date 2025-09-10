@@ -23,10 +23,7 @@
         <button class="btn-ghost flex-center">
           <MicrophoneIcon />
         </button>
-        <button
-          class="btn-primary flex-center"
-          @click="handleSearch"
-        >
+        <button class="btn-primary flex-center" @click="handleSearch">
           <SearchButtonIcon />
         </button>
       </div>
@@ -72,7 +69,7 @@
   const adjustTextareaHeight = () => {
     if (textarea.value) {
       textarea.value.style.height = 'auto'
-      textarea.value.style.height = textarea.value.scrollHeight + 'px'
+      textarea.value.style.height = `${textarea.value.scrollHeight}px`
     }
   }
 
@@ -97,8 +94,12 @@
     }
   }
 
-  watch(() => props.modelValue, async () => {
-    await nextTick()
-    adjustTextareaHeight()
-  }, { immediate: true })
+  watch(
+    () => props.modelValue,
+    async () => {
+      await nextTick()
+      adjustTextareaHeight()
+    },
+    { immediate: true }
+  )
 </script>
