@@ -46,44 +46,44 @@
           <LogoIcon :size="36" color="var(--color-logo-gray)" />
         </div>
         <div class="flex-1">
-          <p class="mb-4 leading-relaxed">
+          <p class="mb-4 leading-relaxed text-text-secondary">
             <strong>Fantastic!</strong> 56 persons were found in the results.
             Please provide additional information about the person you're
             looking for.
           </p>
-          <p class="mb-4 leading-relaxed">
+          <p class="mb-4 leading-relaxed text-text-secondary">
             Alternatively, you can use the hints below for finding the person
             you're looking for.
           </p>
 
-          <div class="my-6 pl-4">
+          <div class="my-6">
             <p
-              class="text-brand-orange mb-2 cursor-pointer hover:text-brand-orange-light"
+              class="text-brand-orange pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2"
             >
-              What specific software role does Johnson hold in his California
+              What specific software role does Johnson hold in his California job
             </p>
             <p
-              class="text-brand-orange mb-2 cursor-pointer hover:text-brand-orange-light"
+              class="text-brand-orange pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2"
             >
               Which California tech hubs are most likely where Johnson works
             </p>
             <p
-              class="text-brand-orange mb-2 cursor-pointer hover:text-brand-orange-light"
+              class="text-brand-orange pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2 border-b"
             >
-              What skills Johnson is from his current software role
+              What skills Johnson has from his current software role
             </p>
           </div>
 
-          <p class="mb-4 leading-relaxed">
+          <p class="mb-4 leading-relaxed text-text-secondary">
             Or include further information, such as any documents you may have
             about him, web links, pictures, or videos; if so, submit them by
             using the upload option.
           </p>
 
           <button
-            class="bg-bg-secondary border border-border-light px-4 py-2 rounded-xl text-sm cursor-pointer hover:bg-border-hover transition-colors"
+            class="bg-bg-button border border-dashed border-border-dashed px-4 py-2 rounded-full text-sm cursor-pointer hover:bg-border-hover transition-colors text-brand-orange"
           >
-            construct a filter string using the details that you provided
+            create a filter using the details that you provided
           </button>
         </div>
       </div>
