@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* Sovra theme (default) */
-    --color-brand-orange: #ff6b35;
+    --color-brand-orange: #ff6f16;
     --color-brand-orange-light: #f7931e;
     --color-brand-blue: #4285f4;
     --color-text-primary: #333;
@@ -19,9 +19,9 @@
     --color-border-hover: #f0f0f0;
     --color-score-bar: #D3C4C4;
     --color-logo-gray: #898989;
+    --color-border-dashed: #E29F9F;
+    --color-bg-button: #FFF8F8;
   }
-
-
 
   * {
     margin: 0;
@@ -71,6 +71,9 @@
   .bg-score-bar {
     background-color: var(--color-score-bar);
   }
+  .bg-bg-button {
+    background-color: var(--color-bg-button);
+  }
 
   /* Logo Colors */
   .text-logo-gray {
@@ -112,6 +115,9 @@
   }
   .border-border-hover {
     border-color: var(--color-border-hover);
+  }
+  .border-border-dashed {
+    border-color: var(--color-border-dashed);
   }
 
   /* Hover States */

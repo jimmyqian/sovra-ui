@@ -23,10 +23,11 @@
 
     <div class="px-8 py-4 text-center md:px-4">
       <button
-        class="bg-brand-orange text-bg-card border-none px-8 py-3 rounded-search text-base cursor-pointer transition-colors hover:bg-brand-orange-light"
+        class="bg-bg-button text-brand-orange border border-brand-orange px-8 py-3 rounded-search text-base cursor-pointer transition-colors hover:bg-brand-orange hover:text-bg-card flex items-center gap-2 mx-auto"
         @click="handleLoadMore"
       >
         Load More Results
+        <MoreIcon />
       </button>
     </div>
 
@@ -39,6 +40,7 @@
   import ResultCard from './ResultCard.vue'
   import FilterCriteria from './FilterCriteria.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
+  import MoreIcon from '@/components/icons/MoreIcon.vue'
   import type { SearchResult } from '@/types/search'
 
   interface Props {

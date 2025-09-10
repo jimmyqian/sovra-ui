@@ -13,7 +13,7 @@
     ></textarea>
     <div class="flex items-center justify-between">
       <button
-        class="btn-outline flex items-center gap-1"
+        class="bg-bg-button border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card flex items-center gap-1"
         @click="triggerFileUpload"
       >
         <span>Upload</span>
