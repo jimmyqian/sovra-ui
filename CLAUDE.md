@@ -45,7 +45,7 @@ The project includes comprehensive unit and integration tests using Vitest and V
 
 ### Test Coverage
 
-Current test coverage includes **264 total tests**:
+Current test coverage includes **371 total tests**:
 
 **Unit Tests (39 tests)**
 - `SearchBar.test.ts` - 12 tests covering input handling, events, file upload, styling
@@ -65,6 +65,12 @@ Current test coverage includes **264 total tests**:
 - `useTheme.test.ts` - 28 tests covering theme initialization, DOM manipulation, reactivity
 - `types.test.ts` - 6 tests covering TypeScript interface validation
 - `router.test.ts` - 4 tests covering router configuration and navigation
+
+**CSS/Style Tests (107 tests)**
+- `css-utilities.test.ts` - 30 tests covering custom Tailwind class application and validation
+- `css-theme-variables.test.ts` - 19 tests covering CSS custom properties and theme configuration
+- `css-component-patterns.test.ts` - 27 tests covering component pattern classes and accessibility
+- `css-responsive-design.test.ts` - 31 tests covering responsive breakpoints and mobile-first design
 
 ### Utility Modules
 
@@ -91,6 +97,34 @@ The project includes comprehensive utility modules located in `src/utils/`:
 - Security utilities (input sanitization)
 - Complex validation workflows for user profiles and search filters
 
+### CSS Testing Framework
+
+The project includes comprehensive CSS testing located in `src/test/utils/css-*.test.ts`:
+
+**CSS Utility Class Testing** (`css-utilities.test.ts`)
+- Validates custom Tailwind class application and CSS class string handling
+- Tests brand color classes, background utilities, text color utilities, and border utilities
+- Verifies responsive class combinations and complex utility interactions
+- Ensures proper class inheritance and composition across Vue components
+
+**CSS Theme Variables Testing** (`css-theme-variables.test.ts`)
+- Validates CSS custom properties (CSS variables) configuration and values
+- Tests theme variable hierarchy, naming conventions, and color accessibility
+- Verifies CSS variable inheritance, fallback behavior, and integration with utilities
+- Ensures all brand colors, text colors, background colors, and border colors are properly defined
+
+**CSS Component Patterns Testing** (`css-component-patterns.test.ts`)
+- Tests component pattern classes like `.btn-primary`, `.result-card`, `.flex-center`
+- Validates button patterns, icon button patterns, layout patterns, and statistics patterns
+- Ensures accessibility features are maintained with pattern classes
+- Tests dynamic pattern class changes and performance considerations
+
+**CSS Responsive Design Testing** (`css-responsive-design.test.ts`)
+- Validates mobile-first responsive design with Tailwind breakpoints
+- Tests responsive width, height, text, spacing, layout, and display classes
+- Verifies responsive custom utilities (spacing, border radius, shadows, fonts)
+- Ensures responsive accessibility and proper class ordering/specificity
+
 ### Running Tests
 
 ```bash
@@ -111,6 +145,9 @@ npm run test:run src/components/
 
 # Run only utility/service tests
 npm run test:run src/test/utils/
+
+# Run only CSS/style tests
+npm run test:run src/test/utils/css-*.test.ts
 ```
 
 ## Custom Instructions
