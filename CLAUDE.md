@@ -45,7 +45,7 @@ The project includes comprehensive unit and integration tests using Vitest and V
 
 ### Test Coverage
 
-Current test coverage includes **486 total tests**:
+Current test coverage includes **560+ total tests**:
 
 **Unit Tests (39 tests)**
 - `SearchBar.test.ts` - 12 tests covering input handling, events, file upload, styling
@@ -65,6 +65,11 @@ Current test coverage includes **486 total tests**:
 - `useTheme.test.ts` - 28 tests covering theme initialization, DOM manipulation, reactivity
 - `types.test.ts` - 6 tests covering TypeScript interface validation
 - `router.test.ts` - 4 tests covering router configuration and navigation
+
+**Store Tests (75+ tests)**
+- `search.test.ts` - 25 tests covering search functionality, pagination, history management, and error handling
+- `ui.test.ts` - 25 tests covering theme, notifications, sidebar, view modes, and loading states
+- `filters.test.ts` - 25 tests covering filter management, validation, application, and state tracking
 
 **CSS/Style Tests (107 tests)**
 - `css-utilities.test.ts` - 30 tests covering custom Tailwind class application and validation
@@ -113,6 +118,45 @@ The project includes comprehensive utility modules located in `src/utils/`:
 - Form validation with detailed error reporting
 - Security utilities (input sanitization)
 - Complex validation workflows for user profiles and search filters
+
+### State Management with Pinia
+
+The project uses Pinia for centralized state management with a modular store architecture located in `src/stores/`:
+
+**Search Store** (`search.ts`)
+- Query management (current query, search history)
+- Search results state (results array, pagination, loading states)
+- Search actions (performSearch, loadMoreResults, addToHistory)
+- Error handling and result clearing
+- History management with 50-item limit and recent searches
+
+**UI Store** (`ui.ts`)
+- Theme management (light/dark mode toggle)
+- Sidebar state (open/closed)
+- Notification system with auto-removal timers
+- View mode management (grid/list views)
+- Global loading states
+- Helper methods for different notification types (success, error, warning, info)
+
+**Filters Store** (`filters.ts`)
+- Age range filtering with validation
+- Location and company multi-selection
+- Minimum rating filtering
+- Sorting configuration (field and order)
+- Active filter tracking and counting
+- Filter application and result filtering
+- Filter summary generation and reset functionality
+
+**Store Testing** (`src/stores/__tests__/`)
+- `search.test.ts` - 20+ tests covering search functionality, pagination, history management, and error handling
+- `ui.test.ts` - 25+ tests covering theme, notifications, sidebar, view modes, and loading states
+- `filters.test.ts` - 30+ tests covering filter management, validation, application, and state tracking
+
+**Pinia Configuration**
+- Configured in `src/main.ts` with `createPinia()`
+- Uses Composition API approach with `defineStore`
+- TypeScript integration with proper type definitions
+- Reactive state with computed getters and async actions
 
 ### CSS Testing Framework
 
@@ -237,6 +281,9 @@ npm run test:run src/components/
 
 # Run only utility/service tests
 npm run test:run src/test/utils/
+
+# Run only store tests
+npm run test:run src/stores/__tests__/
 
 # Run only CSS/style tests
 npm run test:run src/test/utils/css-*.test.ts
