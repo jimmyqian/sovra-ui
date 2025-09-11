@@ -38,22 +38,22 @@ export const useSearchStore = defineStore('search', () => {
   const hasResults = computed(() => results.value.length > 0)
   const hasSearched = computed(() => currentQuery.value.length > 0)
   const recentSearches = computed(() => searchHistory.value.slice(-5).reverse())
-  
+
   // Get totalResults for display, avoiding 0 during loading states
   const displayTotalResults = computed(() => {
     const currentTotalResults = pagination.value.totalResults
     const loading = isLoading.value
-    
+
     // If we have valid results, show them
     if (currentTotalResults > 0) {
       return currentTotalResults
     }
-    
+
     // If loading and we have a previous valid count, show that instead of 0
     if (loading && lastTotalResults.value > 0) {
       return lastTotalResults.value
     }
-    
+
     // Otherwise show the current value (which could be 0 for no results)
     return currentTotalResults
   })

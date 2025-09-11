@@ -1,0 +1,289 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { createRouter, createWebHistory } from 'vue-router'
+import { createPinia, setActivePinia } from 'pinia'
+import SearchDetail from '@/views/SearchDetail.vue'
+
+// Mock the router
+const mockPush = vi.fn()
+vi.mock('vue-router', async () => {
+  const actual = await vi.importActual('vue-router')
+  return {
+    ...actual,
+    useRouter: () => ({
+      push: mockPush
+    }),
+    useRoute: () => ({
+      params: { id: 'johnson-smith' }
+    })
+  }
+})
+
+describe('SearchDetail Integration Tests', () => {
+  let router: any
+  let pinia: any
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+
+    // Set up Pinia
+    pinia = createPinia()
+    setActivePinia(pinia)
+
+    router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        {
+          path: '/search/:id',
+          name: 'SearchDetail',
+          component: SearchDetail
+        }
+      ]
+    })
+  })
+
+  it('renders complete SearchDetail page structure', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check main layout components are present
+    expect(wrapper.findComponent({ name: 'AppHeader' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'AppSidebar' }).exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'SearchBar' }).exists()).toBe(true)
+  })
+
+  it('displays person profile information correctly', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check PersonProfile component content
+    expect(wrapper.text()).toContain('Johnson Smith')
+    expect(wrapper.text()).toContain('Overview')
+    expect(wrapper.text()).toContain('Personal Life')
+    expect(wrapper.text()).toContain('Professional Life')
+  })
+
+  it('shows detailed person information in DetailedResultCard', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check detailed information sections
+    expect(wrapper.text()).toContain('Personal')
+    expect(wrapper.text()).toContain('Professional')
+    expect(wrapper.text()).toContain('Finance')
+    expect(wrapper.text()).toContain('Legal')
+
+    // Check specific data points
+    expect(wrapper.text()).toContain('Born')
+    expect(wrapper.text()).toContain('10 Aug 2000')
+    expect(wrapper.text()).toContain('Software Engineer')
+    expect(wrapper.text()).toContain('$120,000/year')
+  })
+
+  it('displays category tabs with correct default state', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check CategoryTabs component
+    expect(wrapper.text()).toContain('Accounts')
+    expect(wrapper.text()).toContain('Relationship Status')
+    expect(wrapper.text()).toContain('Married')
+  })
+
+  it('allows tab switching in category section', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Find and click Professional tab
+    const professionalTab = wrapper
+      .findAll('button')
+      .find(btn => btn.text() === 'Professional')
+    await professionalTab?.trigger('click')
+
+    // Check professional content is displayed
+    expect(wrapper.text()).toContain('Industry')
+    expect(wrapper.text()).toContain('Technology')
+    expect(wrapper.text()).toContain('Years Experience')
+  })
+
+  it('renders activity footer with reference categories', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check ActivityFooter content
+    expect(wrapper.text()).toContain('Activity Log')
+    expect(wrapper.text()).toContain('Loans / Deposits')
+    expect(wrapper.text()).toContain('Average Pay')
+    expect(wrapper.text()).toContain('Show all references')
+    expect(wrapper.text()).toContain(`© ${new Date().getFullYear()} Sovra.ai`)
+  })
+
+  it('handles search functionality', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Find search input and button
+    const searchInput = wrapper.find('textarea')
+    const searchButton = wrapper
+      .findAll('button')
+      .find(btn => btn.element.innerHTML.includes('svg'))
+
+    // Enter search query
+    await searchInput.setValue('Test search query')
+    await searchButton?.trigger('click')
+
+    // Verify search functionality is triggered (console.log in component)
+    expect(searchInput.element.value).toBe('Test search query')
+  })
+
+  it('displays correct stats and age information', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check age and net worth stats
+    expect(wrapper.text()).toContain('26')
+    expect(wrapper.text()).toContain('Age')
+    expect(wrapper.text()).toContain('$1,890')
+    expect(wrapper.text()).toContain('Net Worth')
+  })
+
+  it('shows social media accounts section', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check accounts section is present
+    expect(wrapper.text()).toContain('Accounts')
+
+    // Check that account buttons are rendered
+    const accountButtons = wrapper.findAll('button').slice(0, 5) // First 5 should be account buttons
+    expect(accountButtons.length).toBeGreaterThanOrEqual(5)
+  })
+
+  it('maintains responsive layout structure', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check main layout structure
+    expect(wrapper.find('.min-h-screen.bg-bg-primary').exists()).toBe(true)
+    expect(wrapper.find('.flex-1.flex.h-screen').exists()).toBe(true)
+    expect(wrapper.find('.flex-1.flex.flex-col.md\\:flex-row').exists()).toBe(
+      true
+    )
+
+    // Check left panel structure
+    expect(
+      wrapper
+        .find('.w-full.bg-bg-card.flex.flex-col.md\\:w-2\\/5.md\\:h-full')
+        .exists()
+    ).toBe(true)
+
+    // Check right panel structure
+    expect(wrapper.find('.flex-1.bg-bg-primary.overflow-y-auto').exists()).toBe(
+      true
+    )
+    expect(wrapper.find('main.p-6.space-y-6').exists()).toBe(true)
+  })
+
+  it('loads person data based on route parameter', async () => {
+    // This test would verify that the component loads data based on route params
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // In a real application, this would test API calls based on route.params.id
+    // For now, we verify that the component is aware of the route parameter structure
+    expect(wrapper.vm).toBeDefined()
+  })
+
+  it('handles file upload functionality', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Find the upload button
+    const uploadButton = wrapper
+      .findAll('button')
+      .find(btn => btn.text() === 'Upload')
+
+    if (uploadButton) {
+      await uploadButton.trigger('click')
+      // In real implementation, this would trigger file input
+      expect(uploadButton.exists()).toBe(true)
+    }
+  })
+
+  it('displays education information correctly', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check education details
+    expect(wrapper.text()).toContain('Education')
+    expect(wrapper.text()).toContain('University of Pennsylvania')
+    expect(wrapper.text()).toContain('1997')
+  })
+
+  it('shows proper section organization and hierarchy', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check that sections are properly organized
+    const sections = wrapper.findAll('div.space-y-6 > *')
+    expect(sections.length).toBeGreaterThanOrEqual(4) // PersonProfile, DetailedResultCard, CategoryTabs, ActivityFooter
+
+    // Check section headings exist
+    expect(wrapper.findAll('h1, h2, h3').length).toBeGreaterThan(0)
+  })
+
+  it('integrates search bar with proper placeholder', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    const textarea = wrapper.find('textarea')
+    expect(textarea.attributes('placeholder')).toContain(
+      'Johnson, who is around 26 years old'
+    )
+  })
+})

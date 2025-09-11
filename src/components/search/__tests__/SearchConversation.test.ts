@@ -107,35 +107,35 @@ describe('SearchConversation', () => {
       const pinia = createPinia()
       setActivePinia(pinia)
       const searchStore = useSearchStore()
-      
+
       // Set up initial state with results
       searchStore.setQuery(mockSearchQuery)
       searchStore.updatePagination({ totalResults: 42 })
-      
+
       const wrapper = mount(SearchConversation, {
         global: {
           plugins: [pinia],
           components: { LogoIcon }
         }
       })
-      
+
       // Should show initial results
       expect(wrapper.text()).toContain('42 persons were found in the results')
-      
+
       // Simulate loading state (like what happens during new search)
       searchStore.setLoading(true)
       searchStore.updatePagination({ totalResults: 0 }) // This happens during resetPagination
       await wrapper.vm.$nextTick()
-      
+
       // Should still show previous results, not 0
       expect(wrapper.text()).toContain('42 persons were found in the results')
       expect(wrapper.text()).not.toContain('0 persons were found')
-      
+
       // Complete the search with new results
       searchStore.setLoading(false)
       searchStore.updatePagination({ totalResults: 65 })
       await wrapper.vm.$nextTick()
-      
+
       // Should now show new results
       expect(wrapper.text()).toContain('65 persons were found in the results')
       expect(wrapper.text()).not.toContain('42 persons were found')
@@ -145,39 +145,39 @@ describe('SearchConversation', () => {
       const pinia = createPinia()
       setActivePinia(pinia)
       const searchStore = useSearchStore()
-      
+
       const wrapper = mount(SearchConversation, {
         global: {
           plugins: [pinia],
           components: { LogoIcon }
         }
       })
-      
+
       // Initial state should show 0
       expect(wrapper.text()).toContain('0 persons were found in the results')
-      
+
       // Set first valid result
       searchStore.updatePagination({ totalResults: 33 })
       await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('33 persons were found in the results')
-      
+
       // Simulate multiple searches in sequence
       searchStore.setLoading(true)
       searchStore.updatePagination({ totalResults: 0 }) // Reset during loading
       await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('33 persons were found in the results') // Should preserve
-      
+
       // Complete with new result
       searchStore.setLoading(false)
       searchStore.updatePagination({ totalResults: 78 })
       await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('78 persons were found in the results')
-      
+
       // Test boundary values
       searchStore.updatePagination({ totalResults: 30 }) // Minimum
       await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('30 persons were found in the results')
-      
+
       searchStore.updatePagination({ totalResults: 80 }) // Maximum
       await wrapper.vm.$nextTick()
       expect(wrapper.text()).toContain('80 persons were found in the results')
@@ -187,47 +187,51 @@ describe('SearchConversation', () => {
       const pinia = createPinia()
       setActivePinia(pinia)
       const searchStore = useSearchStore()
-      
+
       const wrapper = mount(SearchConversation, {
         global: {
           plugins: [pinia],
           components: { LogoIcon }
         }
       })
-      
+
       // Simulate complete search cycles with loading states
       const testCycles = [
         { query: 'first search', expectedRange: [30, 80] },
         { query: 'second search', expectedRange: [30, 80] },
         { query: 'third search', expectedRange: [30, 80] }
       ]
-      
+
       let previousResult = 0
-      
+
       for (const cycle of testCycles) {
         // Start search (loading state)
         searchStore.setQuery(cycle.query)
         searchStore.setLoading(true)
         searchStore.updatePagination({ totalResults: 0 })
         await wrapper.vm.$nextTick()
-        
+
         // During loading, should show previous result (if any)
         if (previousResult > 0) {
-          expect(wrapper.text()).toContain(`${previousResult} persons were found`)
-          expect(wrapper.text()).not.toContain('Fantastic! 0 persons were found')
+          expect(wrapper.text()).toContain(
+            `${previousResult} persons were found`
+          )
+          expect(wrapper.text()).not.toContain(
+            'Fantastic! 0 persons were found'
+          )
         }
-        
+
         // Complete search
         const newResult = Math.floor(Math.random() * 51) + 30 // 30-80
         searchStore.setLoading(false)
         searchStore.updatePagination({ totalResults: newResult })
         await wrapper.vm.$nextTick()
-        
+
         // Should show new result
         expect(wrapper.text()).toContain(`${newResult} persons were found`)
         expect(newResult).toBeGreaterThanOrEqual(cycle.expectedRange[0])
         expect(newResult).toBeLessThanOrEqual(cycle.expectedRange[1])
-        
+
         previousResult = newResult
       }
     })

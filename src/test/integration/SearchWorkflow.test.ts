@@ -174,7 +174,7 @@ describe('Search Workflow Integration', () => {
 
   it('displays dynamic totalResults without loading flickers', async () => {
     vi.useFakeTimers()
-    
+
     const router = createMockRouter()
     const pinia = createPinia()
     setActivePinia(pinia)
@@ -182,7 +182,7 @@ describe('Search Workflow Integration', () => {
 
     // Perform initial search to set up baseline
     const firstSearchPromise = store.performSearch('initial query')
-    
+
     // Fast-forward timers to complete the mock API call
     await vi.runAllTimersAsync()
     await firstSearchPromise
@@ -204,12 +204,12 @@ describe('Search Workflow Integration', () => {
 
     // Perform a second search (this will cause loading state)
     const secondSearchPromise = store.performSearch('second query')
-    
+
     // During loading, should still show initial results
     expect(store.isLoading).toBe(true)
     expect(wrapper.text()).toContain(`${initialResults} persons were found`)
     expect(wrapper.text()).not.toContain('Fantastic! 0 persons were found')
-    
+
     // Complete the second search
     await vi.runAllTimersAsync()
     await secondSearchPromise
@@ -220,7 +220,7 @@ describe('Search Workflow Integration', () => {
     expect(newResults).toBeLessThanOrEqual(80)
     expect(wrapper.text()).toContain(`${newResults} persons were found`)
     expect(store.isLoading).toBe(false)
-    
+
     vi.useRealTimers()
   })
 

@@ -348,7 +348,7 @@ describe('Search Store', () => {
 
       // Start second search - this will reset totalResults to 0 but displayTotalResults should preserve the value
       store.performSearch('test search 2')
-      
+
       // During loading, displayTotalResults should still show the previous valid value
       expect(store.isLoading).toBe(true)
       expect(store.pagination.totalResults).toBe(0) // This gets reset
@@ -356,7 +356,7 @@ describe('Search Store', () => {
 
       // Complete the second search
       await vi.runAllTimersAsync()
-      
+
       // Now displayTotalResults should show the new value
       const secondResults = store.displayTotalResults
       expect(secondResults).toBeGreaterThanOrEqual(30)
@@ -390,7 +390,7 @@ describe('Search Store', () => {
       // Test 5: But if we're loading, should preserve the last valid value
       store.updatePagination({ totalResults: 67 }) // Set a valid value first
       expect(store.displayTotalResults).toBe(67)
-      
+
       // Now simulate loading with reset
       store.setLoading(true)
       store.updatePagination({ totalResults: 0 })
@@ -398,8 +398,8 @@ describe('Search Store', () => {
 
       // Test 6: Multiple updatePagination calls should preserve the highest/latest valid value
       store.updatePagination({ totalResults: 55 }) // This should update lastTotalResults
-      store.updatePagination({ totalResults: 0 })  // This shouldn't
-      expect(store.displayTotalResults).toBe(55)   // Should show 55
+      store.updatePagination({ totalResults: 0 }) // This shouldn't
+      expect(store.displayTotalResults).toBe(55) // Should show 55
     })
 
     it('should handle search errors', async () => {
