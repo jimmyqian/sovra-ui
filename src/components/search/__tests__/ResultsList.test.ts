@@ -102,7 +102,7 @@ describe('ResultsList', () => {
 
     it('renders all main sections', () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
+        props: { results: mockResults, hasMore: true },
         global: {
           components: {
             ResultCard,
@@ -373,7 +373,7 @@ describe('ResultsList', () => {
   describe('Load More Button', () => {
     it('renders load more button with correct styling', () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
+        props: { results: mockResults, hasMore: true },
         global: {
           components: {
             ResultCard,
@@ -411,7 +411,7 @@ describe('ResultsList', () => {
 
     it('contains correct button text and icon', () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
+        props: { results: mockResults, hasMore: true },
         global: {
           components: {
             ResultCard,
@@ -431,7 +431,7 @@ describe('ResultsList', () => {
 
     it('emits loadMore event when clicked', async () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
+        props: { results: mockResults, hasMore: true },
         global: {
           components: {
             ResultCard,
@@ -538,7 +538,7 @@ describe('ResultsList', () => {
   describe('Component Integration', () => {
     it('integrates all child components correctly', () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
+        props: { results: mockResults, hasMore: true },
         global: {
           components: {
             ResultCard,

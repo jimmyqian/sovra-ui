@@ -214,10 +214,7 @@ describe('Landing Component', () => {
       // Wait for async operations
       await new Promise(resolve => setTimeout(resolve, 0))
 
-      expect(routerPushSpy).toHaveBeenCalledWith({
-        path: '/search',
-        query: { q: 'test query' }
-      })
+      expect(routerPushSpy).toHaveBeenCalledWith('/search')
     })
 
     it('should handle search errors gracefully', async () => {

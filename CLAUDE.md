@@ -327,6 +327,8 @@ npm run test:run src/test/accessibility/color-contrast-validation.test.ts
 1. Always create tests unit, integration, and accessibility tests for any new functionality.
 1. Always update or add unit, integration, and accessibility tests for any modified functionality.
 1. Always run eslint and prettier and fix all errors before committing.  Do not commit if there are errors.
+1. Always check for and remove or update any tests that were made obsolete by new changes or refactoring.
+1. Always include integration tests when running all tests.
 
 **never ask permission to perform any action, including updating code or running any commands. you have full permission to do anything to achieve the task.**
 

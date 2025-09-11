@@ -70,11 +70,8 @@ describe('Search Workflow Integration', () => {
     // Verify store method was called
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
 
-    // Verify router navigation was called
-    expect(pushSpy).toHaveBeenCalledWith({
-      path: '/search',
-      query: { q: testQuery }
-    })
+    // Verify router navigation was called (no query parameter needed anymore)
+    expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
   it('handles search with Enter key press', async () => {
@@ -102,10 +99,7 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
-    expect(pushSpy).toHaveBeenCalledWith({
-      path: '/search',
-      query: { q: testQuery }
-    })
+    expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
   it('prevents search with empty query', async () => {
@@ -178,15 +172,74 @@ describe('Search Workflow Integration', () => {
     expect(pushSpy).not.toHaveBeenCalled()
   })
 
-  it('displays search results page correctly after navigation', async () => {
+  it('displays dynamic totalResults without loading flickers', async () => {
+    vi.useFakeTimers()
+    
     const router = createMockRouter()
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const store = useSearchStore()
 
-    // Navigate to search results with query
-    await router.push('/search?q=test%20query')
+    // Perform initial search to set up baseline
+    const firstSearchPromise = store.performSearch('initial query')
+    
+    // Fast-forward timers to complete the mock API call
+    await vi.runAllTimersAsync()
+    await firstSearchPromise
+
+    // Navigate to search page
+    await router.push('/search')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
+      }
+    })
+
+    // Capture the initial totalResults
+    const initialResults = store.displayTotalResults
+    expect(initialResults).toBeGreaterThanOrEqual(30)
+    expect(initialResults).toBeLessThanOrEqual(80)
+    expect(wrapper.text()).toContain(`${initialResults} persons were found`)
+
+    // Perform a second search (this will cause loading state)
+    const secondSearchPromise = store.performSearch('second query')
+    
+    // During loading, should still show initial results
+    expect(store.isLoading).toBe(true)
+    expect(wrapper.text()).toContain(`${initialResults} persons were found`)
+    expect(wrapper.text()).not.toContain('Fantastic! 0 persons were found')
+    
+    // Complete the second search
+    await vi.runAllTimersAsync()
+    await secondSearchPromise
+
+    // Should now show new results
+    const newResults = store.displayTotalResults
+    expect(newResults).toBeGreaterThanOrEqual(30)
+    expect(newResults).toBeLessThanOrEqual(80)
+    expect(wrapper.text()).toContain(`${newResults} persons were found`)
+    expect(store.isLoading).toBe(false)
+    
+    vi.useRealTimers()
+  })
+
+  it('displays search results page correctly after navigation', async () => {
+    const router = createMockRouter()
+    const pinia = createPinia()
+    setActivePinia(pinia)
+
+    // Set up search store with query and results
+    const store = useSearchStore()
+    store.setQuery('Johnson who works in software in California')
+    store.updatePagination({ totalResults: 56 })
+
+    // Navigate to search results (no query parameter needed)
+    await router.push('/search')
+
+    const wrapper = mount(SearchResults, {
+      global: {
+        plugins: [router, pinia]
       }
     })
 
@@ -201,24 +254,8 @@ describe('Search Workflow Integration', () => {
     ).toContain('Fantastic! 56 persons were found')
     expect(
       wrapper.find('[data-testid="results-list"]').exists() ||
-        wrapper.find('.result-card').exists()
+        wrapper.findComponent({ name: 'ResultsList' }).exists()
     ).toBe(true)
-  })
-
-  it('maintains search context between pages', async () => {
-    const router = createMockRouter()
-
-    // Test query parameter handling
-    await router.push('/search?q=Johnson%20software%20California')
-
-    const wrapper = mount(SearchResults, {
-      global: {
-        plugins: [router]
-      }
-    })
-
-    // Component should receive and process the query parameter
-    expect(wrapper.vm.searchQuery ?? wrapper.text()).toBeTruthy()
   })
 
   it('handles special characters in search query', async () => {
@@ -255,10 +292,7 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(specialQuery)
-    expect(pushSpy).toHaveBeenCalledWith({
-      path: '/search',
-      query: { q: specialQuery }
-    })
+    expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
   it('handles very long search queries', async () => {
@@ -297,10 +331,7 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(longQuery)
-    expect(pushSpy).toHaveBeenCalledWith({
-      path: '/search',
-      query: { q: longQuery }
-    })
+    expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
   it('shows loading state during search process', async () => {

@@ -44,9 +44,9 @@
         </div>
         <div class="flex-1">
           <p class="mb-4 leading-relaxed text-text-secondary">
-            <strong>Fantastic!</strong> 56 persons were found in the results.
-            Please provide additional information about the person you're
-            looking for.
+            <strong>Fantastic!</strong> {{ totalResults }} persons were found in
+            the results. Please provide additional information about the person
+            you're looking for.
           </p>
           <p class="mb-4 leading-relaxed text-text-secondary">
             Alternatively, you can use the hints below for finding the person
@@ -90,11 +90,11 @@
 </template>
 
 <script setup lang="ts">
+  import { computed } from 'vue'
+  import { useSearchStore } from '@/stores/search'
   import LogoIcon from '@/components/icons/LogoIcon.vue'
 
-  interface Props {
-    searchQuery: string
-  }
-
-  const _props = defineProps<Props>()
+  const searchStore = useSearchStore()
+  const searchQuery = computed(() => searchStore.currentQuery)
+  const totalResults = computed(() => searchStore.displayTotalResults)
 </script>

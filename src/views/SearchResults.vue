@@ -9,7 +9,7 @@
         <!-- Left Panel: Search & Conversation -->
         <div class="w-full bg-bg-card flex flex-col md:w-2/5 md:h-full">
           <AppHeader />
-          <SearchConversation :search-query="searchQuery" />
+          <SearchConversation />
 
           <!-- Search Input -->
           <div class="px-8 py-4 md:px-4">
@@ -26,107 +26,51 @@
         </div>
 
         <!-- Right Panel: Results -->
-        <ResultsList :results="results" @load-more="handleLoadMore" />
+        <ResultsList
+          :results="results"
+          :is-loading="isLoading"
+          :has-more="hasMore"
+          :error="error"
+          @load-more="handleLoadMore"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { ref, computed } from 'vue'
+  import { useSearchStore } from '@/stores/search'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import AppSidebar from '@/components/navigation/AppSidebar.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
   import SearchConversation from '@/components/search/SearchConversation.vue'
   import ResultsList from '@/components/search/ResultsList.vue'
-  import type { SearchResult } from '@/types/search'
 
-  const route = useRoute()
-  const searchQuery = ref('')
+  const searchStore = useSearchStore()
+
   const newQuery = ref(
     'Johnson, who is around 26 years old, works in a software company in California'
   )
 
-  const results = ref<SearchResult[]>([
-    {
-      id: 1,
-      name: 'Johnson Smith',
-      age: 26,
-      gender: 'Male',
-      maritalStatus: 'Married',
-      location: 'California',
-      rating: 3.2,
-      references: 26,
-      companies: 10,
-      contacts: 7
-    },
-    {
-      id: 2,
-      name: 'Johnson Smith',
-      age: 26,
-      gender: 'Male',
-      maritalStatus: 'Married',
-      location: 'California',
-      rating: 3.2,
-      references: 26,
-      companies: 10,
-      contacts: 7
-    },
-    {
-      id: 3,
-      name: 'Johnson Smith',
-      age: 26,
-      gender: 'Male',
-      maritalStatus: 'Married',
-      location: 'California',
-      rating: 3.2,
-      references: 26,
-      companies: 10,
-      contacts: 7
-    },
-    {
-      id: 4,
-      name: 'Johnson Smith',
-      age: 26,
-      gender: 'Male',
-      maritalStatus: 'Married',
-      location: 'California',
-      rating: 3.2,
-      references: 26,
-      companies: 10,
-      contacts: 7
-    },
-    {
-      id: 5,
-      name: 'Johnson Smith',
-      age: 26,
-      gender: 'Male',
-      maritalStatus: 'Married',
-      location: 'California',
-      rating: 3.2,
-      references: 26,
-      companies: 10,
-      contacts: 7
-    }
-  ])
+  // Use search store data instead of local state
+  const results = computed(() => searchStore.results)
+  const isLoading = computed(() => searchStore.isLoading)
+  const hasMore = computed(() => searchStore.pagination.hasMore)
+  const error = computed(() => searchStore.error)
 
-  const handleSearch = () => {
-    console.log('Searching for:', newQuery.value)
+  const handleSearch = async () => {
+    if (newQuery.value.trim()) {
+      await searchStore.performSearch(newQuery.value)
+    }
   }
 
   const handleFileUpload = (files: FileList) => {
     console.log('Files uploaded:', files)
+    // TODO: Implement file upload functionality
   }
 
-  const handleLoadMore = () => {
-    console.log('Loading more results...')
+  const handleLoadMore = async () => {
+    await searchStore.loadMoreResults()
   }
-
-  onMounted(() => {
-    const query = route.query.q as string
-    if (query) {
-      searchQuery.value = query
-    }
-  })
 </script>

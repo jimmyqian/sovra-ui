@@ -308,6 +308,100 @@ describe('Search Store', () => {
       expect(store.results).toHaveLength(0)
     })
 
+    it('should generate random totalResults between 30-80 on search', async () => {
+      const store = useSearchStore()
+      const results: number[] = []
+
+      // Perform multiple searches to test randomness
+      for (let i = 0; i < 10; i++) {
+        const searchPromise = store.performSearch(`test search ${i}`)
+        await vi.runAllTimersAsync()
+        await searchPromise
+        results.push(store.pagination.totalResults)
+      }
+
+      // Check that all results are in the correct range
+      results.forEach(totalResults => {
+        expect(totalResults).toBeGreaterThanOrEqual(30)
+        expect(totalResults).toBeLessThanOrEqual(80)
+      })
+
+      // Check that we got some variety (not all the same number)
+      const uniqueResults = new Set(results)
+      expect(uniqueResults.size).toBeGreaterThan(1)
+    })
+
+    it('should provide displayTotalResults that preserves values during loading', async () => {
+      const store = useSearchStore()
+
+      // Initial state - should show 0
+      expect(store.displayTotalResults).toBe(0)
+
+      // Perform first search
+      const firstSearchPromise = store.performSearch('test search 1')
+      await vi.runAllTimersAsync()
+      await firstSearchPromise
+
+      const firstResults = store.displayTotalResults
+      expect(firstResults).toBeGreaterThanOrEqual(30)
+      expect(firstResults).toBeLessThanOrEqual(80)
+
+      // Start second search - this will reset totalResults to 0 but displayTotalResults should preserve the value
+      store.performSearch('test search 2')
+      
+      // During loading, displayTotalResults should still show the previous valid value
+      expect(store.isLoading).toBe(true)
+      expect(store.pagination.totalResults).toBe(0) // This gets reset
+      expect(store.displayTotalResults).toBe(firstResults) // But this preserves the previous value
+
+      // Complete the second search
+      await vi.runAllTimersAsync()
+      
+      // Now displayTotalResults should show the new value
+      const secondResults = store.displayTotalResults
+      expect(secondResults).toBeGreaterThanOrEqual(30)
+      expect(secondResults).toBeLessThanOrEqual(80)
+      expect(store.isLoading).toBe(false)
+    })
+
+    it('should handle displayTotalResults edge cases', async () => {
+      const store = useSearchStore()
+
+      // Test 1: displayTotalResults should show 0 when no previous results and not loading
+      expect(store.displayTotalResults).toBe(0)
+      expect(store.isLoading).toBe(false)
+
+      // Test 2: displayTotalResults should show 0 when no previous results but is loading
+      store.setLoading(true)
+      expect(store.displayTotalResults).toBe(0) // No previous results to preserve
+
+      // Test 3: After search with results, displayTotalResults should match totalResults
+      store.setLoading(false)
+      store.updatePagination({ totalResults: 45 })
+      expect(store.displayTotalResults).toBe(45)
+
+      // Test 4: updatePagination with 0 totalResults should not update lastTotalResults
+      const previousDisplay = store.displayTotalResults
+      store.updatePagination({ totalResults: 0 })
+      expect(store.pagination.totalResults).toBe(0)
+      // In non-loading state, should show the current value (0)
+      expect(store.displayTotalResults).toBe(0)
+
+      // Test 5: But if we're loading, should preserve the last valid value
+      store.updatePagination({ totalResults: 67 }) // Set a valid value first
+      expect(store.displayTotalResults).toBe(67)
+      
+      // Now simulate loading with reset
+      store.setLoading(true)
+      store.updatePagination({ totalResults: 0 })
+      expect(store.displayTotalResults).toBe(67) // Should preserve 67, not show 0
+
+      // Test 6: Multiple updatePagination calls should preserve the highest/latest valid value
+      store.updatePagination({ totalResults: 55 }) // This should update lastTotalResults
+      store.updatePagination({ totalResults: 0 })  // This shouldn't
+      expect(store.displayTotalResults).toBe(55)   // Should show 55
+    })
+
     it('should handle search errors', async () => {
       const store = useSearchStore()
       const query = 'error test'

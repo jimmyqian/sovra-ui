@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
+import { createPinia, setActivePinia } from 'pinia'
 import Landing from '@/views/Landing.vue'
 import SearchResults from '@/views/SearchResults.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
@@ -56,12 +57,14 @@ describe('Header Navigation Integration', () => {
   })
 
   it('integrates header properly in search results page', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     await router.push('/search?q=test')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -101,12 +104,14 @@ describe('Header Navigation Integration', () => {
   })
 
   it('integrates sidebar properly in search results page', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     await router.push('/search')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -121,12 +126,14 @@ describe('Header Navigation Integration', () => {
   })
 
   it('handles logo click interactions', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     await router.push('/search')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -139,13 +146,15 @@ describe('Header Navigation Integration', () => {
   })
 
   it('maintains header consistency across pages', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
 
     // Test header on search results page
     await router.push('/search')
     const searchWrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -194,10 +203,12 @@ describe('Header Navigation Integration', () => {
   })
 
   it('integrates navigation state management', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -255,10 +266,12 @@ describe('Header Navigation Integration', () => {
   })
 
   it('ensures proper component hierarchy in navigation', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 

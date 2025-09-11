@@ -80,10 +80,7 @@
     try {
       await searchStore.performSearch(searchQuery.value)
 
-      await router.push({
-        path: '/search',
-        query: { q: searchQuery.value }
-      })
+      await router.push('/search')
     } catch (error) {
       console.error('Search failed:', error)
     }
