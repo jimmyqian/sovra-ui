@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
+import { createPinia, setActivePinia } from 'pinia'
 import SearchResults from '@/views/SearchResults.vue'
 import type { SearchResult } from '@/types/search'
 
@@ -54,12 +55,14 @@ const _mockSearchResults: SearchResult[] = [
 
 describe('Search Results Display Integration', () => {
   it('displays search results with correct layout structure', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     await router.push('/search?q=software%20engineer')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -76,15 +79,23 @@ describe('Search Results Display Integration', () => {
     expect(resultsComponent.exists()).toBe(true)
   })
 
-  it('displays individual result cards with complete information', () => {
+  it('displays individual result cards with complete information', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
-    // Check that results are displayed (using default mock data)
+    // Trigger a search to populate results
+    await wrapper.vm.handleSearch()
+
+    // Wait for the search to complete
+    await new Promise(resolve => setTimeout(resolve, 600))
+
+    // Check that results are displayed (using store data)
     const resultsComponent = wrapper.findComponent({ name: 'ResultsList' })
     expect(resultsComponent.exists()).toBe(true)
 
@@ -95,17 +106,14 @@ describe('Search Results Display Integration', () => {
   })
 
   it('handles empty search results gracefully', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     await router.push('/search?q=nonexistent%20person')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
-      },
-      data() {
-        return {
-          results: []
-        }
+        plugins: [router, pinia]
       }
     })
 
@@ -115,10 +123,12 @@ describe('Search Results Display Integration', () => {
   })
 
   it('displays search conversation panel with correct content', () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -128,16 +138,16 @@ describe('Search Results Display Integration', () => {
     })
     expect(conversationComponent.exists()).toBe(true)
 
-    // Check that search query is passed to conversation
-    const conversationProps = conversationComponent.props()
-    expect(conversationProps).toHaveProperty('searchQuery')
+    // SearchConversation now reads directly from search store (no props needed)
   })
 
   it('maintains responsive design on different screen sizes', () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -152,10 +162,12 @@ describe('Search Results Display Integration', () => {
   })
 
   it('handles load more functionality integration', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -169,10 +181,12 @@ describe('Search Results Display Integration', () => {
   })
 
   it('integrates search bar functionality within results page', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -193,34 +207,50 @@ describe('Search Results Display Integration', () => {
   })
 
   it('displays correct query parameter in search context', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const testQuery = 'software developer california'
-    await router.push(`/search?q=${encodeURIComponent(testQuery)}`)
+
+    // Simulate performing a search (like Landing page would do)
+    const { useSearchStore } = await import('@/stores/search')
+    const searchStore = useSearchStore()
+    await searchStore.performSearch(testQuery)
+
+    await router.push('/search')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
-    // Component should process query parameter
-    expect(wrapper.vm.searchQuery).toBe(testQuery)
+    // Search store should contain the query
+    expect(searchStore.currentQuery).toBe(testQuery)
   })
 
   it('handles complex search scenarios with multiple filters', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const complexQuery =
       'John age:25-35 location:California experience:5+ years'
-    await router.push(`/search?q=${encodeURIComponent(complexQuery)}`)
+
+    // Simulate performing a search (like Landing page would do)
+    const { useSearchStore } = await import('@/stores/search')
+    const searchStore = useSearchStore()
+    await searchStore.performSearch(complexQuery)
+
+    await router.push('/search')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
-    // Verify complex query is handled
-    expect(wrapper.vm.searchQuery).toBe(complexQuery)
+    // Verify complex query is handled in store
+    expect(searchStore.currentQuery).toBe(complexQuery)
 
     // Results should still be displayed
     const resultsComponent = wrapper.findComponent({ name: 'ResultsList' })
@@ -228,10 +258,12 @@ describe('Search Results Display Integration', () => {
   })
 
   it('maintains proper component communication flow', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -246,10 +278,12 @@ describe('Search Results Display Integration', () => {
   })
 
   it('handles search results pagination and infinite scroll', () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -262,13 +296,21 @@ describe('Search Results Display Integration', () => {
     expect(wrapper.vm.handleLoadMore).toBeTypeOf('function')
   })
 
-  it('displays search statistics and metadata', () => {
+  it('displays search statistics and metadata', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
+
+    // Trigger a search to populate results
+    await wrapper.vm.handleSearch()
+
+    // Wait for the search to complete
+    await new Promise(resolve => setTimeout(resolve, 600))
 
     // Verify results contain statistical information
     const results = wrapper.vm.results
@@ -284,29 +326,43 @@ describe('Search Results Display Integration', () => {
   })
 
   it('handles error states in search results display', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
-    await router.push('/search?q=')
+
+    // Simulate an empty search (no search performed)
+    await router.push('/search')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
-    // Should handle empty query gracefully
-    expect(wrapper.vm.searchQuery).toBe('')
+    // Store should have empty query when no search performed
+    const { useSearchStore } = await import('@/stores/search')
+    const searchStore = useSearchStore()
+    expect(searchStore.currentQuery).toBe('')
 
     // Components should still render
     expect(wrapper.findComponent({ name: 'ResultsList' }).exists()).toBe(true)
   })
 
-  it('verifies search results data integrity', () => {
+  it('verifies search results data integrity', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
     const router = createMockRouter()
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
+
+    // Trigger a search to populate results
+    await wrapper.vm.handleSearch()
+
+    // Wait for the search to complete
+    await new Promise(resolve => setTimeout(resolve, 600))
 
     const results = wrapper.vm.results
 

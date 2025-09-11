@@ -125,7 +125,8 @@ export default [
         parser: typescriptParser,
         ecmaVersion: 2020,
         sourceType: 'module',
-        extraFileExtensions: ['.vue']
+        extraFileExtensions: ['.vue'],
+        project: './tsconfig.json'
       }
     },
     plugins: {
@@ -134,11 +135,19 @@ export default [
       prettier
     },
     rules: {
-      // Disable TypeScript rules that require type information
-      '@typescript-eslint/prefer-optional-chain': 'off',
-      '@typescript-eslint/prefer-nullish-coalescing': 'off',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'off',
-      '@typescript-eslint/consistent-type-imports': 'off',
+      // TypeScript rules enabled for Vue files
+      '@typescript-eslint/prefer-optional-chain': 'error',
+      '@typescript-eslint/prefer-nullish-coalescing': 'error',
+      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ],
 
       // Vue 3 specific rules
       'vue/multi-word-component-names': 'warn',

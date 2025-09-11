@@ -5,7 +5,10 @@ import { defineComponent } from 'vue'
 // Test component for validating class applications
 const TestComponent = defineComponent({
   props: {
-    customClass: String
+    customClass: {
+      type: String,
+      default: ''
+    }
   },
   template: '<div :class="customClass"><slot /></div>'
 })
@@ -353,7 +356,10 @@ describe('CSS Utility Class Application', () => {
     it('applies classes to different HTML elements', () => {
       const ButtonComponent = defineComponent({
         props: {
-          customClass: String
+          customClass: {
+            type: String,
+            default: ''
+          }
         },
         template: '<button :class="customClass"><slot /></button>'
       })

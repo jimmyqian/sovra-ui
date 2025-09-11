@@ -45,7 +45,7 @@ The project includes comprehensive unit and integration tests using Vitest and V
 
 ### Test Coverage
 
-Current test coverage includes **486 total tests**:
+Current test coverage includes **560+ total tests**:
 
 **Unit Tests (39 tests)**
 - `SearchBar.test.ts` - 12 tests covering input handling, events, file upload, styling
@@ -65,6 +65,11 @@ Current test coverage includes **486 total tests**:
 - `useTheme.test.ts` - 28 tests covering theme initialization, DOM manipulation, reactivity
 - `types.test.ts` - 6 tests covering TypeScript interface validation
 - `router.test.ts` - 4 tests covering router configuration and navigation
+
+**Store Tests (75+ tests)**
+- `search.test.ts` - 25 tests covering search functionality, pagination, history management, and error handling
+- `ui.test.ts` - 25 tests covering theme, notifications, sidebar, view modes, and loading states
+- `filters.test.ts` - 25 tests covering filter management, validation, application, and state tracking
 
 **CSS/Style Tests (107 tests)**
 - `css-utilities.test.ts` - 30 tests covering custom Tailwind class application and validation
@@ -113,6 +118,45 @@ The project includes comprehensive utility modules located in `src/utils/`:
 - Form validation with detailed error reporting
 - Security utilities (input sanitization)
 - Complex validation workflows for user profiles and search filters
+
+### State Management with Pinia
+
+The project uses Pinia for centralized state management with a modular store architecture located in `src/stores/`:
+
+**Search Store** (`search.ts`)
+- Query management (current query, search history)
+- Search results state (results array, pagination, loading states)
+- Search actions (performSearch, loadMoreResults, addToHistory)
+- Error handling and result clearing
+- History management with 50-item limit and recent searches
+
+**UI Store** (`ui.ts`)
+- Theme management (light/dark mode toggle)
+- Sidebar state (open/closed)
+- Notification system with auto-removal timers
+- View mode management (grid/list views)
+- Global loading states
+- Helper methods for different notification types (success, error, warning, info)
+
+**Filters Store** (`filters.ts`)
+- Age range filtering with validation
+- Location and company multi-selection
+- Minimum rating filtering
+- Sorting configuration (field and order)
+- Active filter tracking and counting
+- Filter application and result filtering
+- Filter summary generation and reset functionality
+
+**Store Testing** (`src/stores/__tests__/`)
+- `search.test.ts` - 20+ tests covering search functionality, pagination, history management, and error handling
+- `ui.test.ts` - 25+ tests covering theme, notifications, sidebar, view modes, and loading states
+- `filters.test.ts` - 30+ tests covering filter management, validation, application, and state tracking
+
+**Pinia Configuration**
+- Configured in `src/main.ts` with `createPinia()`
+- Uses Composition API approach with `defineStore`
+- TypeScript integration with proper type definitions
+- Reactive state with computed getters and async actions
 
 ### CSS Testing Framework
 
@@ -238,6 +282,9 @@ npm run test:run src/components/
 # Run only utility/service tests
 npm run test:run src/test/utils/
 
+# Run only store tests
+npm run test:run src/stores/__tests__/
+
 # Run only CSS/style tests
 npm run test:run src/test/utils/css-*.test.ts
 
@@ -273,13 +320,15 @@ npm run test:run src/test/accessibility/color-contrast-validation.test.ts
 1. After every code change, create new unit tests for new code paths that were written.
 1. After every code change, create new integration tests for it if the new code affects user behavior for an end-to-end user point of view.
 1. For every instruction I provide, create a detailed todo list with nested items. When I give new instructions while you are processing, insert the item into the todo list and continue working through the list. Always show the todo list after I give a new instruction. Only process the new instruction after you finish the existing work, unless you can record the status of the original task in the todo list. This is so you do not forget to continue certain items.
-1. Always apply vue and typescript best practices for the code. Run all linting and cleaning commands on the code.
-1. After every code change, run all unit and integration and other tests and iterate until they are fixed.
+1. Always apply vue, typescript, pinia, and accessibility best practices for the code. Run all linting and cleaning commands on the code.
+1. After every code change, run all unit and integration and other tests, and run lint, and iterate until all errors are fixed.
 1. Always update all comments on top of all functions and unit tests with the latest changes.
 1. Always update all docs in all places to handle new changes.
-1. Always create tests unit, integration, and accessibility tests for any new code.
+1. Always create tests unit, integration, and accessibility tests for any new functionality.
 1. Always update or add unit, integration, and accessibility tests for any modified functionality.
-1. Always run eslint and prettier before committing.  Do not commit if there are errors.
+1. Always run eslint and prettier and fix all errors before committing.  Do not commit if there are errors.
+1. Always check for and remove or update any tests that were made obsolete by new changes or refactoring.
+1. Always include integration tests when running all tests.
 
 **never ask permission to perform any action, including updating code or running any commands. you have full permission to do anything to achieve the task.**
 

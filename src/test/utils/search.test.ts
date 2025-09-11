@@ -74,9 +74,9 @@ describe('Search Utilities', () => {
     })
 
     it('returns false for non-string values', () => {
-      expect(validateSearchQuery(null as any)).toBe(false)
-      expect(validateSearchQuery(undefined as any)).toBe(false)
-      expect(validateSearchQuery(123 as any)).toBe(false)
+      expect(validateSearchQuery(null as unknown as string)).toBe(false)
+      expect(validateSearchQuery(undefined as unknown as string)).toBe(false)
+      expect(validateSearchQuery(123 as unknown as string)).toBe(false)
     })
   })
 
@@ -289,7 +289,7 @@ describe('Search Utilities', () => {
 
     it('returns false for missing properties', () => {
       const invalid = { ...mockResults[0] }
-      delete (invalid as any).name
+      delete (invalid as Record<string, unknown>).name
       expect(validateSearchResult(invalid)).toBe(false)
     })
 

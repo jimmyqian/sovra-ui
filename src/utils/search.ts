@@ -106,9 +106,7 @@ export const groupResultsByLocation = (
   return results.reduce(
     (groups, result) => {
       const location = result.location
-      if (!groups[location]) {
-        groups[location] = []
-      }
+      groups[location] ??= []
       groups[location].push(result)
       return groups
     },
@@ -148,13 +146,15 @@ export const isFilterRemovable = (filter: FilterItem): boolean => {
  * Gets the display text for a filter item
  */
 export const getFilterDisplayText = (filter: FilterItem): string => {
-  return filter.dropdownText || filter.text
+  return filter.dropdownText ?? filter.text
 }
 
 /**
  * Validates search result data structure
  */
-export const validateSearchResult = (result: any): result is SearchResult => {
+export const validateSearchResult = (
+  result: unknown
+): result is SearchResult => {
   return (
     typeof result === 'object' &&
     result !== null &&
@@ -174,7 +174,7 @@ export const validateSearchResult = (result: any): result is SearchResult => {
 /**
  * Sanitizes search results array by removing invalid entries
  */
-export const sanitizeSearchResults = (results: any[]): SearchResult[] => {
+export const sanitizeSearchResults = (results: unknown[]): SearchResult[] => {
   return results.filter(validateSearchResult)
 }
 

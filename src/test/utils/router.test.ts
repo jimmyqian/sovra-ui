@@ -83,7 +83,7 @@ describe('Router Configuration', () => {
     expect(resolved.matched[0].components?.default).toBe(SearchResults)
   })
 
-  it('handles search path with query parameters', async () => {
+  it('handles path with query parameters', async () => {
     const router = createTestRouter()
 
     const resolved = router.resolve('/search?q=john%20doe')

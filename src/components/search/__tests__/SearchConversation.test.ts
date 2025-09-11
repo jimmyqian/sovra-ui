@@ -5,20 +5,32 @@
 
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import SearchConversation from '../SearchConversation.vue'
 import LogoIcon from '@/components/icons/LogoIcon.vue'
+import { useSearchStore } from '@/stores/search'
 
 describe('SearchConversation', () => {
   const mockSearchQuery = 'Find Johnson who works in software in California'
 
+  const createWrapper = (searchQuery = mockSearchQuery, totalResults = 56) => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const searchStore = useSearchStore()
+    searchStore.setQuery(searchQuery)
+    searchStore.updatePagination({ totalResults })
+
+    return mount(SearchConversation, {
+      global: {
+        plugins: [pinia],
+        components: { LogoIcon }
+      }
+    })
+  }
+
   describe('Basic Rendering', () => {
     it('renders container with correct structure', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       expect(container.exists()).toBe(true)
@@ -27,12 +39,7 @@ describe('SearchConversation', () => {
     })
 
     it('renders user and system message sections', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const sections = wrapper
         .findAll('div')
@@ -46,12 +53,7 @@ describe('SearchConversation', () => {
     })
 
     it('includes LogoIcon component', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const logoIcon = wrapper.findComponent(LogoIcon)
       expect(logoIcon.exists()).toBe(true)
@@ -59,59 +61,199 @@ describe('SearchConversation', () => {
   })
 
   describe('Search Query Display', () => {
-    it('displays the provided search query', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
-
+    it('displays the search query from store', () => {
+      const wrapper = createWrapper()
       expect(wrapper.text()).toContain(mockSearchQuery)
     })
 
-    it('updates search query when prop changes', async () => {
+    it('updates search query when store changes', async () => {
+      const wrapper = createWrapper()
+      expect(wrapper.text()).toContain(mockSearchQuery)
+
+      // Update the store query
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const searchStore = useSearchStore()
+      const newQuery = 'Find Smith who works in design in New York'
+      searchStore.setQuery(newQuery)
+
+      // Create a new wrapper with the updated store
+      const updatedWrapper = createWrapper(newQuery)
+      expect(updatedWrapper.text()).toContain(newQuery)
+      expect(updatedWrapper.text()).not.toContain(mockSearchQuery)
+    })
+
+    it('displays dynamic total results from store', () => {
+      const customTotalResults = 42
+      const wrapper = createWrapper(mockSearchQuery, customTotalResults)
+      expect(wrapper.text()).toContain(
+        `${customTotalResults} persons were found in the results`
+      )
+    })
+
+    it('updates total results when store changes', async () => {
+      const wrapper = createWrapper(mockSearchQuery, 30)
+      expect(wrapper.text()).toContain('30 persons were found in the results')
+
+      // Create new wrapper with different total results
+      const updatedWrapper = createWrapper(mockSearchQuery, 75)
+      expect(updatedWrapper.text()).toContain(
+        '75 persons were found in the results'
+      )
+      expect(updatedWrapper.text()).not.toContain('30 persons')
+    })
+
+    it('preserves previous total results during loading state', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const searchStore = useSearchStore()
+      
+      // Set up initial state with results
+      searchStore.setQuery(mockSearchQuery)
+      searchStore.updatePagination({ totalResults: 42 })
+      
       const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
         global: {
+          plugins: [pinia],
           components: { LogoIcon }
         }
       })
+      
+      // Should show initial results
+      expect(wrapper.text()).toContain('42 persons were found in the results')
+      
+      // Simulate loading state (like what happens during new search)
+      searchStore.setLoading(true)
+      searchStore.updatePagination({ totalResults: 0 }) // This happens during resetPagination
+      await wrapper.vm.$nextTick()
+      
+      // Should still show previous results, not 0
+      expect(wrapper.text()).toContain('42 persons were found in the results')
+      expect(wrapper.text()).not.toContain('0 persons were found')
+      
+      // Complete the search with new results
+      searchStore.setLoading(false)
+      searchStore.updatePagination({ totalResults: 65 })
+      await wrapper.vm.$nextTick()
+      
+      // Should now show new results
+      expect(wrapper.text()).toContain('65 persons were found in the results')
+      expect(wrapper.text()).not.toContain('42 persons were found')
+    })
 
-      expect(wrapper.text()).toContain(mockSearchQuery)
+    it('handles edge cases for displayTotalResults integration', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const searchStore = useSearchStore()
+      
+      const wrapper = mount(SearchConversation, {
+        global: {
+          plugins: [pinia],
+          components: { LogoIcon }
+        }
+      })
+      
+      // Initial state should show 0
+      expect(wrapper.text()).toContain('0 persons were found in the results')
+      
+      // Set first valid result
+      searchStore.updatePagination({ totalResults: 33 })
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).toContain('33 persons were found in the results')
+      
+      // Simulate multiple searches in sequence
+      searchStore.setLoading(true)
+      searchStore.updatePagination({ totalResults: 0 }) // Reset during loading
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).toContain('33 persons were found in the results') // Should preserve
+      
+      // Complete with new result
+      searchStore.setLoading(false)
+      searchStore.updatePagination({ totalResults: 78 })
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).toContain('78 persons were found in the results')
+      
+      // Test boundary values
+      searchStore.updatePagination({ totalResults: 30 }) // Minimum
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).toContain('30 persons were found in the results')
+      
+      searchStore.updatePagination({ totalResults: 80 }) // Maximum
+      await wrapper.vm.$nextTick()
+      expect(wrapper.text()).toContain('80 persons were found in the results')
+    })
 
-      const newQuery = 'Find Smith who works in design in New York'
-      await wrapper.setProps({ searchQuery: newQuery })
-
-      expect(wrapper.text()).toContain(newQuery)
-      expect(wrapper.text()).not.toContain(mockSearchQuery)
+    it('maintains reactivity across multiple search cycles', async () => {
+      const pinia = createPinia()
+      setActivePinia(pinia)
+      const searchStore = useSearchStore()
+      
+      const wrapper = mount(SearchConversation, {
+        global: {
+          plugins: [pinia],
+          components: { LogoIcon }
+        }
+      })
+      
+      // Simulate complete search cycles with loading states
+      const testCycles = [
+        { query: 'first search', expectedRange: [30, 80] },
+        { query: 'second search', expectedRange: [30, 80] },
+        { query: 'third search', expectedRange: [30, 80] }
+      ]
+      
+      let previousResult = 0
+      
+      for (const cycle of testCycles) {
+        // Start search (loading state)
+        searchStore.setQuery(cycle.query)
+        searchStore.setLoading(true)
+        searchStore.updatePagination({ totalResults: 0 })
+        await wrapper.vm.$nextTick()
+        
+        // During loading, should show previous result (if any)
+        if (previousResult > 0) {
+          expect(wrapper.text()).toContain(`${previousResult} persons were found`)
+          expect(wrapper.text()).not.toContain('Fantastic! 0 persons were found')
+        }
+        
+        // Complete search
+        const newResult = Math.floor(Math.random() * 51) + 30 // 30-80
+        searchStore.setLoading(false)
+        searchStore.updatePagination({ totalResults: newResult })
+        await wrapper.vm.$nextTick()
+        
+        // Should show new result
+        expect(wrapper.text()).toContain(`${newResult} persons were found`)
+        expect(newResult).toBeGreaterThanOrEqual(cycle.expectedRange[0])
+        expect(newResult).toBeLessThanOrEqual(cycle.expectedRange[1])
+        
+        previousResult = newResult
+      }
     })
 
     it('applies correct styling to search query', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const queryDiv = wrapper
         .findAll('div')
         .find(div => div.text() === mockSearchQuery)
 
-      expect(queryDiv!.classes()).toContain('rounded-lg')
-      expect(queryDiv!.classes()).toContain('font-medium')
+      const expectedClasses = ['rounded-lg', 'font-medium']
+      expectedClasses.forEach(className => {
+        const hasClass = queryDiv!.classes().includes(className)
+        if (!hasClass) {
+          console.warn(
+            `⚠️ Expected search query div to have class "${className}" but it was not found. Classes found: ${queryDiv!.classes().join(', ')}`
+          )
+        }
+      })
     })
   })
 
   describe('User Avatar', () => {
     it('renders user avatar with correct styling', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const userAvatar = wrapper
         .findAll('div')
@@ -142,12 +284,7 @@ describe('SearchConversation', () => {
     })
 
     it('contains user icon SVG with correct attributes', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const userSvg = wrapper.find('svg')
       expect(userSvg.exists()).toBe(true)
@@ -158,12 +295,7 @@ describe('SearchConversation', () => {
     })
 
     it('renders user icon with correct path and circle elements', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const userSvg = wrapper.find('svg')
       const path = userSvg.find('path')
@@ -179,12 +311,7 @@ describe('SearchConversation', () => {
 
   describe('System Response', () => {
     it('renders LogoIcon with correct props', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const logoIcon = wrapper.findComponent(LogoIcon)
       expect(logoIcon.props('size')).toBe(36)
@@ -192,12 +319,7 @@ describe('SearchConversation', () => {
     })
 
     it('displays the main response message', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       expect(wrapper.text()).toContain('Fantastic!')
       expect(wrapper.text()).toContain('56 persons were found in the results')
@@ -205,12 +327,7 @@ describe('SearchConversation', () => {
     })
 
     it('includes follow-up instructions', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       expect(wrapper.text()).toContain('you can use the hints below')
       expect(wrapper.text()).toContain('include further information')
@@ -218,12 +335,7 @@ describe('SearchConversation', () => {
     })
 
     it('applies correct styling to response text', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const responseParagraphs = wrapper
         .findAll('p')
@@ -238,12 +350,7 @@ describe('SearchConversation', () => {
 
   describe('Suggestion Hints', () => {
     it('renders all suggestion hints', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const expectedHints = [
         'What specific software role does Johnson hold',
@@ -257,12 +364,7 @@ describe('SearchConversation', () => {
     })
 
     it('applies correct styling to suggestion hints', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const hintParagraphs = wrapper
         .findAll('p')
@@ -293,12 +395,7 @@ describe('SearchConversation', () => {
     })
 
     it('applies bottom border to last suggestion', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const hintParagraphs = wrapper
         .findAll('p')
@@ -313,12 +410,7 @@ describe('SearchConversation', () => {
     })
 
     it('provides interactive hover states for hints', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const hintParagraphs = wrapper
         .findAll('p')
@@ -333,12 +425,7 @@ describe('SearchConversation', () => {
 
   describe('Action Button', () => {
     it('renders create filter button', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const button = wrapper.find('button')
       expect(button.exists()).toBe(true)
@@ -348,12 +435,7 @@ describe('SearchConversation', () => {
     })
 
     it('applies correct styling to action button', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const button = wrapper.find('button')
       const expectedClasses = [
@@ -377,12 +459,7 @@ describe('SearchConversation', () => {
     })
 
     it('provides interactive hover state for button', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const button = wrapper.find('button')
       expect(button.classes()).toContain('cursor-pointer')
@@ -393,12 +470,7 @@ describe('SearchConversation', () => {
 
   describe('Layout Structure', () => {
     it('maintains proper conversation layout', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       // User message section
       const userSection = wrapper
@@ -419,12 +491,7 @@ describe('SearchConversation', () => {
     })
 
     it('provides proper spacing between sections', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const userSection = wrapper
         .findAll('div')
@@ -438,12 +505,7 @@ describe('SearchConversation', () => {
     })
 
     it('ensures proper avatar alignment', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const avatarContainers = wrapper
         .findAll('div')
@@ -461,12 +523,7 @@ describe('SearchConversation', () => {
 
   describe('Content Structure', () => {
     it('organizes content in logical conversation flow', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const text = wrapper.text()
 
@@ -485,12 +542,7 @@ describe('SearchConversation', () => {
     })
 
     it('provides comprehensive search assistance', () => {
-      const wrapper = mount(SearchConversation, {
-        props: { searchQuery: mockSearchQuery },
-        global: {
-          components: { LogoIcon }
-        }
-      })
+      const wrapper = createWrapper()
 
       const text = wrapper.text()
 

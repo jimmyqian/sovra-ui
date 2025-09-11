@@ -1,8 +1,10 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
+import { createPinia, setActivePinia } from 'pinia'
 import Landing from '@/views/Landing.vue'
 import SearchResults from '@/views/SearchResults.vue'
+import { useSearchStore } from '@/stores/search'
 
 // Mock router for integration testing
 const createMockRouter = () => {
@@ -17,16 +19,26 @@ const createMockRouter = () => {
 }
 
 describe('Search Workflow Integration', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
   it('completes full search workflow from landing to results', async () => {
     const router = createMockRouter()
+    const pinia = createPinia()
     const pushSpy = vi.spyOn(router, 'push')
 
-    // Mount landing page with router
+    // Mount landing page with router and Pinia
     const wrapper = mount(Landing, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
+
+    // Get store instance
+    const store = useSearchStore()
+    const performSearchSpy = vi.spyOn(store, 'performSearch')
+    performSearchSpy.mockResolvedValue()
 
     // Find search input and search button
     const searchInput = wrapper.find('textarea')
@@ -52,22 +64,30 @@ describe('Search Workflow Integration', () => {
       await searchButton.trigger('click')
     }
 
-    // Verify router navigation was called
-    expect(pushSpy).toHaveBeenCalledWith({
-      path: '/search',
-      query: { q: testQuery }
-    })
+    // Wait for async operations
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    // Verify store method was called
+    expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
+
+    // Verify router navigation was called (no query parameter needed anymore)
+    expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
   it('handles search with Enter key press', async () => {
     const router = createMockRouter()
+    const pinia = createPinia()
     const pushSpy = vi.spyOn(router, 'push')
 
     const wrapper = mount(Landing, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
+
+    const store = useSearchStore()
+    const performSearchSpy = vi.spyOn(store, 'performSearch')
+    performSearchSpy.mockResolvedValue()
 
     const searchInput = wrapper.find('textarea')
     const testQuery = 'Jane Smith marketing New York'
@@ -75,21 +95,26 @@ describe('Search Workflow Integration', () => {
     await searchInput.setValue(testQuery)
     await searchInput.trigger('keypress.enter')
 
-    expect(pushSpy).toHaveBeenCalledWith({
-      path: '/search',
-      query: { q: testQuery }
-    })
+    // Wait for async operations
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
+    expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
   it('prevents search with empty query', async () => {
     const router = createMockRouter()
+    const pinia = createPinia()
     const pushSpy = vi.spyOn(router, 'push')
 
     const wrapper = mount(Landing, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
+
+    const store = useSearchStore()
+    const performSearchSpy = vi.spyOn(store, 'performSearch')
 
     const searchButton = wrapper
       .findAll('button')
@@ -103,19 +128,27 @@ describe('Search Workflow Integration', () => {
       await searchButton.trigger('click')
     }
 
-    // Should not navigate with empty query
+    // Wait for async operations
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    // Should not call store method or navigate with empty query
+    expect(performSearchSpy).not.toHaveBeenCalled()
     expect(pushSpy).not.toHaveBeenCalled()
   })
 
   it('prevents search with whitespace-only query', async () => {
     const router = createMockRouter()
+    const pinia = createPinia()
     const pushSpy = vi.spyOn(router, 'push')
 
     const wrapper = mount(Landing, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
+
+    const store = useSearchStore()
+    const performSearchSpy = vi.spyOn(store, 'performSearch')
 
     const searchInput = wrapper.find('textarea')
     const searchButton = wrapper
@@ -131,19 +164,82 @@ describe('Search Workflow Integration', () => {
       await searchButton.trigger('click')
     }
 
-    // Should not navigate with whitespace-only query
+    // Wait for async operations
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    // Should not call store method or navigate with whitespace-only query
+    expect(performSearchSpy).not.toHaveBeenCalled()
     expect(pushSpy).not.toHaveBeenCalled()
+  })
+
+  it('displays dynamic totalResults without loading flickers', async () => {
+    vi.useFakeTimers()
+    
+    const router = createMockRouter()
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const store = useSearchStore()
+
+    // Perform initial search to set up baseline
+    const firstSearchPromise = store.performSearch('initial query')
+    
+    // Fast-forward timers to complete the mock API call
+    await vi.runAllTimersAsync()
+    await firstSearchPromise
+
+    // Navigate to search page
+    await router.push('/search')
+
+    const wrapper = mount(SearchResults, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Capture the initial totalResults
+    const initialResults = store.displayTotalResults
+    expect(initialResults).toBeGreaterThanOrEqual(30)
+    expect(initialResults).toBeLessThanOrEqual(80)
+    expect(wrapper.text()).toContain(`${initialResults} persons were found`)
+
+    // Perform a second search (this will cause loading state)
+    const secondSearchPromise = store.performSearch('second query')
+    
+    // During loading, should still show initial results
+    expect(store.isLoading).toBe(true)
+    expect(wrapper.text()).toContain(`${initialResults} persons were found`)
+    expect(wrapper.text()).not.toContain('Fantastic! 0 persons were found')
+    
+    // Complete the second search
+    await vi.runAllTimersAsync()
+    await secondSearchPromise
+
+    // Should now show new results
+    const newResults = store.displayTotalResults
+    expect(newResults).toBeGreaterThanOrEqual(30)
+    expect(newResults).toBeLessThanOrEqual(80)
+    expect(wrapper.text()).toContain(`${newResults} persons were found`)
+    expect(store.isLoading).toBe(false)
+    
+    vi.useRealTimers()
   })
 
   it('displays search results page correctly after navigation', async () => {
     const router = createMockRouter()
+    const pinia = createPinia()
+    setActivePinia(pinia)
 
-    // Navigate to search results with query
-    await router.push('/search?q=test%20query')
+    // Set up search store with query and results
+    const store = useSearchStore()
+    store.setQuery('Johnson who works in software in California')
+    store.updatePagination({ totalResults: 56 })
+
+    // Navigate to search results (no query parameter needed)
+    await router.push('/search')
 
     const wrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -158,35 +254,24 @@ describe('Search Workflow Integration', () => {
     ).toContain('Fantastic! 56 persons were found')
     expect(
       wrapper.find('[data-testid="results-list"]').exists() ||
-        wrapper.find('.result-card').exists()
+        wrapper.findComponent({ name: 'ResultsList' }).exists()
     ).toBe(true)
-  })
-
-  it('maintains search context between pages', async () => {
-    const router = createMockRouter()
-
-    // Test query parameter handling
-    await router.push('/search?q=Johnson%20software%20California')
-
-    const wrapper = mount(SearchResults, {
-      global: {
-        plugins: [router]
-      }
-    })
-
-    // Component should receive and process the query parameter
-    expect(wrapper.vm.searchQuery ?? wrapper.text()).toBeTruthy()
   })
 
   it('handles special characters in search query', async () => {
     const router = createMockRouter()
+    const pinia = createPinia()
     const pushSpy = vi.spyOn(router, 'push')
 
     const wrapper = mount(Landing, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
+
+    const store = useSearchStore()
+    const performSearchSpy = vi.spyOn(store, 'performSearch')
+    performSearchSpy.mockResolvedValue()
 
     const searchInput = wrapper.find('textarea')
     const searchButton = wrapper
@@ -203,21 +288,27 @@ describe('Search Workflow Integration', () => {
       await searchButton.trigger('click')
     }
 
-    expect(pushSpy).toHaveBeenCalledWith({
-      path: '/search',
-      query: { q: specialQuery }
-    })
+    // Wait for async operations
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(performSearchSpy).toHaveBeenCalledWith(specialQuery)
+    expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
   it('handles very long search queries', async () => {
     const router = createMockRouter()
+    const pinia = createPinia()
     const pushSpy = vi.spyOn(router, 'push')
 
     const wrapper = mount(Landing, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
+
+    const store = useSearchStore()
+    const performSearchSpy = vi.spyOn(store, 'performSearch')
+    performSearchSpy.mockResolvedValue()
 
     const searchInput = wrapper.find('textarea')
     const searchButton = wrapper
@@ -236,10 +327,60 @@ describe('Search Workflow Integration', () => {
       await searchButton.trigger('click')
     }
 
-    expect(pushSpy).toHaveBeenCalledWith({
-      path: '/search',
-      query: { q: longQuery }
+    // Wait for async operations
+    await new Promise(resolve => setTimeout(resolve, 0))
+
+    expect(performSearchSpy).toHaveBeenCalledWith(longQuery)
+    expect(pushSpy).toHaveBeenCalledWith('/search')
+  })
+
+  it('shows loading state during search process', async () => {
+    const router = createMockRouter()
+    const pinia = createPinia()
+
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
     })
+
+    const store = useSearchStore()
+
+    // Initially should not be loading
+    expect(wrapper.find('.animate-spin').exists()).toBe(false)
+
+    // Set loading state
+    store.setLoading(true)
+    await wrapper.vm.$nextTick()
+
+    // Should show loading spinner
+    expect(wrapper.find('.animate-spin').exists()).toBe(true)
+    expect(wrapper.find('.border-brand-orange').exists()).toBe(true)
+  })
+
+  it('shows error state when search fails', async () => {
+    const router = createMockRouter()
+    const pinia = createPinia()
+
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    const store = useSearchStore()
+
+    // Initially should not show error
+    expect(wrapper.find('.text-red-600').exists()).toBe(false)
+
+    // Set error state
+    store.setError('Search failed')
+    await wrapper.vm.$nextTick()
+
+    // Should show error message
+    const errorElement = wrapper.find('.text-red-600')
+    expect(errorElement.exists()).toBe(true)
+    expect(errorElement.text()).toBe('Search failed')
   })
 
   it('updates search input height as user types', async () => {
