@@ -2,6 +2,8 @@
  * Shared accessibility testing helpers and utilities
  */
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import type { VueWrapper } from '@vue/test-utils'
 import type { ContrastResult } from '../utils/contrast-calculator'
 import { ColorContrastCalculator } from '../utils/contrast-calculator'
@@ -37,7 +39,7 @@ export class AccessibilityTestHelper {
 
     // Check role
     const actualRole =
-      element.getAttribute('role') || element.tagName.toLowerCase()
+      element.getAttribute('role') ?? element.tagName.toLowerCase()
     const hasRequiredRole = expectedRole ? actualRole === expectedRole : true
 
     if (expectedRole && !hasRequiredRole) {
@@ -99,14 +101,14 @@ export class AccessibilityTestHelper {
     // For form elements, check associated label
     if (element.id) {
       const label = document.querySelector(`label[for="${element.id}"]`)
-      if (label && label.textContent) {
+      if (label?.textContent) {
         return label.textContent.trim()
       }
     }
 
     // Check if wrapped in label
     const parentLabel = element.closest('label')
-    if (parentLabel && parentLabel.textContent) {
+    if (parentLabel?.textContent) {
       return parentLabel.textContent.trim()
     }
 

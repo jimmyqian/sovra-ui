@@ -124,7 +124,7 @@ export const useSearchStore = defineStore('search', () => {
             (pagination.value.currentPage - 1) * pagination.value.pageSize +
             i +
             1,
-          name: `Result ${i + 1} for "${query}"`,
+          name: `Johnson Smith ${i + 1}"`,
           age: Math.floor(Math.random() * 50) + 20,
           location: 'Mock Location',
           rating: Math.random() * 5,

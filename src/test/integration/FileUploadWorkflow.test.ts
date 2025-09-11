@@ -1,6 +1,7 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
+import { createPinia, setActivePinia } from 'pinia'
 import Landing from '@/views/Landing.vue'
 import SearchResults from '@/views/SearchResults.vue'
 
@@ -25,11 +26,17 @@ const createMockFile = (
 }
 
 describe('File Upload Workflow Integration', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+  })
+
   it('handles PDF file upload on landing page', async () => {
     const router = createMockRouter()
+    const pinia = createPinia()
     const wrapper = mount(Landing, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -71,7 +78,13 @@ describe('File Upload Workflow Integration', () => {
   })
 
   it('handles multiple file upload', async () => {
-    const wrapper = mount(Landing)
+    const router = createMockRouter()
+    const pinia = createPinia()
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
     const fileInput = wrapper.find('input[type="file"]')
 
     // Create multiple mock files
@@ -97,7 +110,13 @@ describe('File Upload Workflow Integration', () => {
   })
 
   it('validates file input accepts correct file types', () => {
-    const wrapper = mount(Landing)
+    const router = createMockRouter()
+    const pinia = createPinia()
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
     const fileInput = wrapper.find('input[type="file"]')
 
     // Check accepted file types
@@ -136,7 +155,13 @@ describe('File Upload Workflow Integration', () => {
   })
 
   it('handles large file upload', async () => {
-    const wrapper = mount(Landing)
+    const router = createMockRouter()
+    const pinia = createPinia()
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
     const fileInput = wrapper.find('input[type="file"]')
 
     // Create a large mock file (simulated)
@@ -158,7 +183,13 @@ describe('File Upload Workflow Integration', () => {
   })
 
   it('handles unsupported file types gracefully', async () => {
-    const wrapper = mount(Landing)
+    const router = createMockRouter()
+    const pinia = createPinia()
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
     const fileInput = wrapper.find('input[type="file"]')
 
     // Try to upload unsupported file type
@@ -180,7 +211,13 @@ describe('File Upload Workflow Integration', () => {
   })
 
   it('handles file upload error scenarios', async () => {
-    const wrapper = mount(Landing)
+    const router = createMockRouter()
+    const pinia = createPinia()
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
     const fileInput = wrapper.find('input[type="file"]')
 
     // Mock FileList with null file
@@ -203,9 +240,10 @@ describe('File Upload Workflow Integration', () => {
     const router = createMockRouter()
 
     // Start on landing page
+    const pinia = createPinia()
     const landingWrapper = mount(Landing, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -241,7 +279,13 @@ describe('File Upload Workflow Integration', () => {
   })
 
   it('handles concurrent file uploads', async () => {
-    const wrapper = mount(Landing)
+    const router = createMockRouter()
+    const pinia = createPinia()
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
 
     // Test with fresh file input for each upload
     const fileInput1 = wrapper.find('input[type="file"]')
@@ -277,7 +321,13 @@ describe('File Upload Workflow Integration', () => {
   })
 
   it('validates file upload button accessibility', () => {
-    const wrapper = mount(Landing)
+    const router = createMockRouter()
+    const pinia = createPinia()
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
     const uploadButton = wrapper.find('button')
 
     // Upload button should be properly styled and accessible

@@ -4,7 +4,10 @@ import { defineComponent } from 'vue'
 
 const TestComponent = defineComponent({
   props: {
-    customClass: String,
+    customClass: {
+      type: String,
+      default: ''
+    },
     tag: {
       type: String,
       default: 'div'

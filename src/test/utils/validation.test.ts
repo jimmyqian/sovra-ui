@@ -140,8 +140,8 @@ describe('Validation Utilities', () => {
     })
 
     it('rejects non-numbers', () => {
-      expect(isPositiveNumber('5' as any)).toBe(false)
-      expect(isPositiveNumber(null as any)).toBe(false)
+      expect(isPositiveNumber('5' as unknown as number)).toBe(false)
+      expect(isPositiveNumber(null as unknown as number)).toBe(false)
     })
   })
 
@@ -278,7 +278,7 @@ describe('Validation Utilities', () => {
 
     it('validates profile without phone', () => {
       const profileWithoutPhone = { ...validProfile }
-      delete (profileWithoutPhone as any).phone
+      delete (profileWithoutPhone as Record<string, unknown>).phone
       const result = validateUserProfile(profileWithoutPhone)
       expect(result.isValid).toBe(true)
     })

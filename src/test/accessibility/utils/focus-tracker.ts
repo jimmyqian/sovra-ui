@@ -2,6 +2,8 @@
  * Focus tracking utilities for accessibility testing
  */
 
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 export interface FocusEvent {
   element: HTMLElement | null
   timestamp: number
@@ -103,8 +105,8 @@ export class FocusTracker {
     const focusableElements = this.getFocusableElements(container)
 
     return focusableElements.sort((a, b) => {
-      const aTabIndex = parseInt(a.getAttribute('tabindex') || '0')
-      const bTabIndex = parseInt(b.getAttribute('tabindex') || '0')
+      const aTabIndex = parseInt(a.getAttribute('tabindex') ?? '0')
+      const bTabIndex = parseInt(b.getAttribute('tabindex') ?? '0')
 
       // Elements with tabindex > 0 come first, in order
       if (aTabIndex > 0 && bTabIndex > 0) {

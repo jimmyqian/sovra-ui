@@ -189,4 +189,118 @@ describe('SearchBar', () => {
       'Enter your search query...'
     )
   })
+
+  describe('Disabled State', () => {
+    it('should disable textarea when disabled prop is true', () => {
+      const wrapper = mount(SearchBar, {
+        props: {
+          ...defaultProps,
+          disabled: true
+        }
+      })
+
+      const textarea = wrapper.find('textarea')
+      expect(textarea.element.disabled).toBe(true)
+      expect(textarea.classes()).toContain('opacity-50')
+      expect(textarea.classes()).toContain('cursor-not-allowed')
+    })
+
+    it('should disable all buttons when disabled prop is true', () => {
+      const wrapper = mount(SearchBar, {
+        props: {
+          ...defaultProps,
+          disabled: true
+        }
+      })
+
+      const buttons = wrapper.findAll('button')
+      buttons.forEach(button => {
+        expect(button.element.disabled).toBe(true)
+        expect(button.classes()).toContain('opacity-50')
+        expect(button.classes()).toContain('cursor-not-allowed')
+      })
+    })
+
+    it('should not emit search event when disabled', async () => {
+      const wrapper = mount(SearchBar, {
+        props: {
+          ...defaultProps,
+          disabled: true
+        }
+      })
+
+      const searchButton = wrapper.findAll('button')[2]
+      await searchButton.trigger('click')
+
+      expect(wrapper.emitted('search')).toBeFalsy()
+    })
+
+    it('should not emit update:modelValue when disabled', async () => {
+      const wrapper = mount(SearchBar, {
+        props: {
+          ...defaultProps,
+          disabled: true
+        }
+      })
+
+      const textarea = wrapper.find('textarea')
+      await textarea.setValue('new value')
+
+      expect(wrapper.emitted('update:modelValue')).toBeFalsy()
+    })
+
+    it('should not trigger file upload when disabled', async () => {
+      const wrapper = mount(SearchBar, {
+        props: {
+          ...defaultProps,
+          disabled: true
+        }
+      })
+
+      const uploadButton = wrapper.findAll('button')[0]
+      await uploadButton.trigger('click')
+
+      // File input should not be clicked (no way to directly test click() call)
+      // But we can verify the button has disabled attributes
+      expect(uploadButton.element.disabled).toBe(true)
+    })
+
+    it('should not handle enter key when disabled', async () => {
+      const wrapper = mount(SearchBar, {
+        props: {
+          ...defaultProps,
+          disabled: true
+        }
+      })
+
+      const textarea = wrapper.find('textarea')
+      await textarea.trigger('keypress.enter')
+
+      expect(wrapper.emitted('search')).toBeFalsy()
+    })
+
+    it('should enable all functionality when disabled is false', async () => {
+      const wrapper = mount(SearchBar, {
+        props: {
+          ...defaultProps,
+          disabled: false
+        }
+      })
+
+      const textarea = wrapper.find('textarea')
+      const searchButton = wrapper.findAll('button')[2]
+
+      // Should emit modelValue update
+      await textarea.setValue('test')
+      expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+
+      // Should emit search event
+      await searchButton.trigger('click')
+      expect(wrapper.emitted('search')).toBeTruthy()
+
+      // Should handle enter key
+      await textarea.trigger('keypress.enter')
+      expect(wrapper.emitted('search')).toHaveLength(2) // One from button click, one from enter
+    })
+  })
 })

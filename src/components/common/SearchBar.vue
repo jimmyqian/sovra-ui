@@ -6,24 +6,37 @@
       ref="textarea"
       :value="modelValue"
       :placeholder="placeholder"
+      :disabled="disabled"
       rows="3"
       class="w-full border-none outline-none text-base text-text-primary placeholder-text-muted bg-transparent resize-none p-0 overflow-hidden focus:outline-none focus:ring-0 focus:border-none"
+      :class="{ 'opacity-50 cursor-not-allowed': disabled }"
       @input="handleInput"
       @keypress.enter.prevent="handleSearch"
     ></textarea>
     <div class="flex items-center justify-between">
       <button
         class="bg-bg-button border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card flex items-center gap-1"
+        :class="{ 'opacity-50 cursor-not-allowed': disabled }"
+        :disabled="disabled"
         @click="triggerFileUpload"
       >
         <span>Upload</span>
         <UploadIcon />
       </button>
       <div class="flex items-center gap-2">
-        <button class="btn-ghost flex-center">
+        <button
+          class="btn-ghost flex-center"
+          :class="{ 'opacity-50 cursor-not-allowed': disabled }"
+          :disabled="disabled"
+        >
           <MicrophoneIcon />
         </button>
-        <button class="btn-primary flex-center" @click="handleSearch">
+        <button
+          class="btn-primary flex-center"
+          :class="{ 'opacity-50 cursor-not-allowed': disabled }"
+          :disabled="disabled"
+          @click="handleSearch"
+        >
           <SearchButtonIcon />
         </button>
       </div>
@@ -49,6 +62,7 @@
   interface Props {
     modelValue: string
     placeholder?: string
+    disabled?: boolean
   }
 
   interface Emits {
@@ -74,17 +88,23 @@
   }
 
   const handleInput = (event: Event) => {
-    const target = event.target as HTMLTextAreaElement
-    emit('update:modelValue', target.value)
-    adjustTextareaHeight()
+    if (!props.disabled) {
+      const target = event.target as HTMLTextAreaElement
+      emit('update:modelValue', target.value)
+      adjustTextareaHeight()
+    }
   }
 
   const handleSearch = () => {
-    emit('search')
+    if (!props.disabled) {
+      emit('search')
+    }
   }
 
   const triggerFileUpload = () => {
-    fileInput.value?.click()
+    if (!props.disabled) {
+      fileInput.value?.click()
+    }
   }
 
   const handleFileUpload = (event: Event) => {

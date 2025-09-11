@@ -3,6 +3,8 @@
  * Tests form accessibility, keyboard navigation, ARIA attributes, and screen reader compatibility
  */
 
+/* eslint-disable no-console */
+
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import type { VueWrapper } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
@@ -13,7 +15,7 @@ import { createFocusTracker } from '@/test/accessibility/utils/focus-tracker'
 import '@/test/accessibility/shared/accessibility-matchers'
 
 describe('SearchBar Accessibility', () => {
-  let wrapper: VueWrapper<any>
+  let wrapper: VueWrapper<InstanceType<typeof SearchBar>>
 
   beforeEach(() => {
     document.body.innerHTML = '<div id="test-container"></div>'
@@ -56,8 +58,8 @@ describe('SearchBar Accessibility', () => {
       // The aria-label should be passed to the container or textarea
       const textarea = wrapper.find('textarea').element
       const hasAccessibleName =
-        container.getAttribute('aria-label') ||
-        textarea.getAttribute('aria-label') ||
+        container.getAttribute('aria-label') ??
+        textarea.getAttribute('aria-label') ??
         textarea.getAttribute('placeholder')
 
       expect(hasAccessibleName).toBeTruthy()
@@ -192,7 +194,7 @@ describe('SearchBar Accessibility', () => {
       })
 
       const textarea = wrapper.find('textarea').element
-      const initialHeight = textarea.style.height || 'auto'
+      const _initialHeight = textarea.style.height || 'auto'
 
       // Update with longer text
       wrapper.setProps({

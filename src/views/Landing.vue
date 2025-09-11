@@ -32,9 +32,25 @@
           <SearchBar
             v-model="searchQuery"
             placeholder="enter keyword of the person you want to know or explain the person you are looking for....."
+            :disabled="searchStore.isLoading"
             @search="handleSearch"
             @file-upload="handleFileUpload"
           />
+
+          <!-- Loading Spinner -->
+          <div v-if="searchStore.isLoading" class="flex justify-center mt-4">
+            <div
+              class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-orange"
+            ></div>
+          </div>
+
+          <!-- Error Message -->
+          <div
+            v-if="searchStore.error"
+            class="mt-4 text-center text-red-600 text-sm"
+          >
+            {{ searchStore.error }}
+          </div>
         </div>
       </div>
     </div>
@@ -47,19 +63,29 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useSearchStore } from '@/stores/search'
   import Logo from '@/components/common/Logo.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
 
   const router = useRouter()
+  const searchStore = useSearchStore()
   const searchQuery = ref('')
 
-  const handleSearch = () => {
-    if (searchQuery.value.trim()) {
-      router.push({
+  const handleSearch = async () => {
+    if (!searchQuery.value.trim()) {
+      return
+    }
+
+    try {
+      await searchStore.performSearch(searchQuery.value)
+
+      await router.push({
         path: '/search',
         query: { q: searchQuery.value }
       })
+    } catch (error) {
+      console.error('Search failed:', error)
     }
   }
 
