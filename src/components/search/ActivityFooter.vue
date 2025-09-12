@@ -78,7 +78,7 @@
 
   const emit = defineEmits<Emits>()
 
-  const handleCategoryToggle = (categoryId: string) => {
+  const _handleCategoryToggle = (categoryId: string) => {
     const category = referenceCategories.value.find(
       cat => cat.id === categoryId
     )
@@ -87,7 +87,7 @@
     }
   }
 
-  const handleShowReferences = () => {
+  const _handleShowReferences = () => {
     emit('showReferences')
   }
 </script>

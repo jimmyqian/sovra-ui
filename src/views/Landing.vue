@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="min-h-screen bg-bg-primary flex flex-col">
     <div

@@ -7,7 +7,7 @@
 import type { VueWrapper } from '@vue/test-utils'
 import type { ContrastResult } from '../utils/contrast-calculator'
 import { ColorContrastCalculator } from '../utils/contrast-calculator'
-import { FocusTracker, createFocusTracker } from '../utils/focus-tracker'
+import { createFocusTracker } from '../utils/focus-tracker'
 import { KeyboardSimulator } from '../utils/keyboard-simulator'
 
 /**

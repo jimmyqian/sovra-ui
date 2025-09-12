@@ -196,7 +196,7 @@ describe('Global Keyboard Navigation Patterns', () => {
 
       const modal = document.getElementById('modal')!
       const closeBtn = document.getElementById('close-btn')!
-      const saveBtn = document.getElementById('save-btn')!
+      const _saveBtn = document.getElementById('save-btn')!
 
       // Show modal
       modal.style.display = 'block'

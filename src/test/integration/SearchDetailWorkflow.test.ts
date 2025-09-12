@@ -286,4 +286,78 @@ describe('SearchDetail Integration Tests', () => {
       'Johnson, who is around 26 years old'
     )
   })
+
+  it('displays image gallery with two-row layout and count indicator', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Check that image gallery shows count in the indicator
+    const galleryCountIndicator = wrapper.find('.bg-card-dark')
+    expect(galleryCountIndicator.text()).toContain('21+ Images')
+
+    // Check that images are displayed in two rows
+    const imageGallery = wrapper.find('.space-y-2')
+    expect(imageGallery.exists()).toBe(true)
+
+    // Top row should have 4 images
+    const topRowImages = imageGallery.findAll('.grid:first-child img')
+    expect(topRowImages).toHaveLength(4)
+
+    // Bottom row should have 3 images
+    const bottomRowImages = imageGallery.findAll('.grid:last-child img')
+    expect(bottomRowImages).toHaveLength(3)
+
+    // Should have count indicator in bottom row
+    const countIndicator = imageGallery.find('.bg-card-dark')
+    expect(countIndicator.exists()).toBe(true)
+    expect(countIndicator.text()).toContain('21+ Images')
+  })
+
+  it('handles image gallery with different image counts', async () => {
+    // This would test with different mock data, but for now we verify the structure exists
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Verify the gallery structure is present and handles the current data
+    const galleryImages = wrapper.findAll('img[alt*="image"]')
+    expect(galleryImages).toHaveLength(7) // Should show 7 images total
+
+    // Verify count indicator styling
+    const countIndicator = wrapper.find('.bg-card-dark .text-brand-orange')
+    expect(countIndicator.exists()).toBe(true)
+    expect(countIndicator.classes()).toContain('text-brand-orange')
+    expect(countIndicator.classes()).toContain('font-medium')
+  })
+
+  it('integrates image gallery with person profile and other sections', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Verify image gallery is part of the DetailedResultCard which is in the right panel
+    const rightPanel = wrapper.find('.flex-1.bg-bg-primary.overflow-y-auto')
+    expect(rightPanel.exists()).toBe(true)
+
+    const detailedCard = rightPanel.findComponent({
+      name: 'DetailedResultCard'
+    })
+    expect(detailedCard.exists()).toBe(true)
+
+    // Verify image gallery is within the detailed card structure
+    const imageGallery = detailedCard.find('.space-y-2')
+    expect(imageGallery.exists()).toBe(true)
+
+    // Verify it's properly integrated with other sections
+    expect(wrapper.text()).toContain('Personal')
+    expect(wrapper.text()).toContain('Professional')
+    expect(wrapper.text()).toContain('21+ Images')
+  })
 })

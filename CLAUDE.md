@@ -329,6 +329,7 @@ npm run test:run src/test/accessibility/color-contrast-validation.test.ts
 1. Always run eslint and prettier and fix all errors before committing.  Do not commit if there are errors.
 1. Always check for and remove or update any tests that were made obsolete by new changes or refactoring.
 1. Always include integration tests when running all tests.
+1. Never make changes directly to the main branch.  Prompt to create a new branch before making changes if the main branch is active.
 
 **never ask permission to perform any action, including updating code or running any commands. you have full permission to do anything to achieve the task.**
 

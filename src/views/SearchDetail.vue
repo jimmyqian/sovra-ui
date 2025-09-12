@@ -99,6 +99,7 @@
       '/api/placeholder/150/150',
       '/api/placeholder/150/150',
       '/api/placeholder/150/150',
+      '/api/placeholder/150/150',
       '/api/placeholder/150/150'
     ],
     imageCount: 21,

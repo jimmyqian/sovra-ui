@@ -1,75 +1,108 @@
 <template>
   <div class="bg-bg-card border border-border-light rounded-lg overflow-hidden">
     <div class="p-6 space-y-6">
-      <!-- Top Section: Stats Grid -->
-      <div class="grid grid-cols-4 gap-4">
-        <!-- Height/Weight -->
-        <div class="bg-gray-50 p-4 rounded-lg text-center">
-          <div class="text-lg font-semibold text-text-primary">
-            {{ person.personal.height.split(' ')[0] }}
+      <!-- Image Gallery and Stats Section -->
+      <div class="flex flex-wrap gap-6">
+        <!-- Image Gallery -->
+        <div class="flex-1" style="min-width: 300px">
+          <div class="space-y-2">
+            <!-- Top row - 4 images -->
+            <div class="grid grid-cols-4 gap-2">
+              <div
+                v-for="(image, index) in person.images?.slice(0, 4) || []"
+                :key="index"
+                class="bg-gray-200 overflow-hidden"
+                style="aspect-ratio: 1.85 / 1"
+                :class="[
+                  index === 0 ? 'rounded-tl-xl' : '',
+                  index === 3 ? 'rounded-tr-xl' : ''
+                ]"
+              >
+                <img
+                  :src="image"
+                  :alt="`${person.name} image ${index + 1}`"
+                  class="w-full h-full object-cover object-center"
+                />
+              </div>
+            </div>
+            <!-- Bottom row - 3 images -->
+            <div class="grid grid-cols-4 gap-2">
+              <div
+                v-for="(image, index) in person.images?.slice(4, 7) || []"
+                :key="index + 4"
+                class="bg-gray-200 overflow-hidden"
+                style="aspect-ratio: 1.85 / 1"
+                :class="[index === 0 ? 'rounded-bl-xl' : '']"
+              >
+                <img
+                  :src="image"
+                  :alt="`${person.name} image ${index + 5}`"
+                  class="w-full h-full object-cover object-center"
+                />
+              </div>
+              <!-- Image count indicator -->
+              <div
+                class="bg-card-dark rounded-br-xl overflow-hidden flex items-center justify-center"
+                style="aspect-ratio: 1.85 / 1"
+              >
+                <span class="text-brand-orange font-medium text-sm"
+                  >{{ person.imageCount ?? 21 }}+ Images</span
+                >
+              </div>
+            </div>
           </div>
-          <div class="text-sm text-text-secondary uppercase">CMS</div>
-          <div class="text-lg font-semibold text-text-primary mt-1">
-            {{ person.personal.weight.split(' ')[0] }}
-          </div>
-          <div class="text-sm text-text-secondary uppercase">KG</div>
         </div>
 
-        <!-- Age -->
-        <div class="bg-gray-50 p-4 rounded-lg text-center">
-          <div class="text-sm text-text-secondary mb-1">Age</div>
-          <div class="text-2xl font-semibold text-text-primary">
-            {{ person.stats.age }}
-          </div>
-          <div class="text-sm text-text-secondary">Years</div>
-          <div class="text-xs text-text-secondary mt-1">
-            {{ person.personal.birthDate }}
-          </div>
-        </div>
+        <!-- Stats Grid -->
+        <div class="flex-1" style="min-width: 350px">
+          <div class="grid grid-cols-4 gap-4">
+            <!-- Height/Weight -->
+            <div class="bg-gray-50 p-2.5 rounded-lg text-center">
+              <div class="text-base font-semibold text-text-primary">
+                {{ person.personal.height.split(' ')[0] }}
+              </div>
+              <div class="text-xs text-text-secondary uppercase">CMS</div>
+              <div class="text-base font-semibold text-text-primary mt-0.5">
+                {{ person.personal.weight.split(' ')[0] }}
+              </div>
+              <div class="text-xs text-text-secondary uppercase">KG</div>
+            </div>
 
-        <!-- Net Worth -->
-        <div class="bg-gray-50 p-4 rounded-lg text-center">
-          <div class="text-sm text-text-secondary mb-1">Net Worth</div>
-          <div class="text-lg font-semibold text-text-primary">
-            {{ person.stats.netWorth.split(' ')[0] }}
-          </div>
-          <div class="text-xs text-text-secondary">
-            {{ person.stats.netWorth.split(' ').slice(1).join(' ') }}
-          </div>
-          <div class="text-xs text-brand-orange">Reference</div>
-        </div>
+            <!-- Age -->
+            <div class="bg-gray-50 p-2.5 rounded-lg text-center">
+              <div class="text-xs text-text-secondary mb-0.5">Age</div>
+              <div class="text-xl font-semibold text-text-primary">
+                {{ person.stats.age }}
+              </div>
+              <div class="text-xs text-text-secondary">Years</div>
+              <div class="text-xs text-text-secondary mt-0.5">
+                {{ person.personal.birthDate }}
+              </div>
+            </div>
 
-        <!-- Spouse -->
-        <div class="bg-gray-50 p-4 rounded-lg text-center">
-          <div class="text-sm text-text-secondary mb-2">Spouse</div>
-          <div class="w-12 h-12 bg-gray-300 rounded-full mx-auto mb-2"></div>
-          <div class="text-sm font-semibold text-text-primary">
-            {{ person.personal.spouse.split(' ')[0] }}
-          </div>
-          <div class="text-xs text-text-secondary">
-            {{ person.personal.spouse.split(' ').slice(1).join(' ') }}
-          </div>
-        </div>
-      </div>
+            <!-- Net Worth -->
+            <div class="bg-gray-50 p-2.5 rounded-lg text-center">
+              <div class="text-xs text-text-secondary mb-0.5">Net Worth</div>
+              <div class="text-base font-semibold text-text-primary">
+                {{ person.stats.netWorth.split(' ')[0] }}
+              </div>
+              <div class="text-xs text-text-secondary">
+                {{ person.stats.netWorth.split(' ').slice(1).join(' ') }}
+              </div>
+              <div class="text-xs text-brand-orange">Reference</div>
+            </div>
 
-      <!-- Image Gallery -->
-      <div>
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-sm font-medium text-brand-orange"
-            >{{ person.imageCount ?? 21 }}+ Images</span
-          >
-        </div>
-        <div class="grid grid-cols-6 gap-2">
-          <div
-            v-for="(image, index) in person.images?.slice(0, 6) || []"
-            :key="index"
-            class="aspect-square bg-gray-200 rounded overflow-hidden"
-          >
-            <img
-              :src="image"
-              :alt="`${person.name} image ${index + 1}`"
-              class="w-full h-full object-cover"
-            />
+            <!-- Spouse -->
+            <div class="bg-gray-50 p-2.5 rounded-lg text-center">
+              <div class="text-xs text-text-secondary mb-1">Spouse</div>
+              <div class="w-8 h-8 bg-gray-300 rounded-full mx-auto mb-1"></div>
+              <div class="text-xs font-semibold text-text-primary">
+                {{ person.personal.spouse.split(' ')[0] }}
+              </div>
+              <div class="text-xs text-text-secondary">
+                {{ person.personal.spouse.split(' ').slice(1).join(' ') }}
+              </div>
+            </div>
           </div>
         </div>
       </div>
