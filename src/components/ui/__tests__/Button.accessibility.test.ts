@@ -9,7 +9,7 @@ import { mount } from '@vue/test-utils'
 import Button from '../Button.vue'
 import { AccessibilityTestHelper } from '@/test/accessibility/shared/accessibility-test-helpers'
 import { KeyboardSimulator } from '@/test/accessibility/utils/keyboard-simulator'
-import { createFocusTracker } from '@/test/accessibility/utils/focus-tracker'
+// import { createFocusTracker } from '@/test/accessibility/utils/focus-tracker'
 import '@/test/accessibility/shared/accessibility-matchers'
 
 describe('Button Accessibility', () => {
@@ -322,7 +322,7 @@ describe('Button Accessibility', () => {
         // Minimum touch target size (44px) should be considered for small buttons
         if (size === 'sm') {
           // Small buttons should still be reasonably sized for accessibility
-          const styles = window.getComputedStyle(buttonElement)
+          // const styles = window.getComputedStyle(buttonElement)
           // This is a guideline check - actual implementation may vary
           expect(buttonElement.className).toContain('px-3 py-1.5')
         }

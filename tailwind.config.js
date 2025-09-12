@@ -18,7 +18,8 @@ module.exports = {
         bg: {
           primary: 'var(--color-bg-primary)',
           secondary: 'var(--color-bg-secondary)',
-          card: 'var(--color-bg-card)'
+          card: 'var(--color-bg-card)',
+          'card-dark': 'var(--color-bg-card-dark)'
         },
         border: {
           light: 'var(--color-border-light)',

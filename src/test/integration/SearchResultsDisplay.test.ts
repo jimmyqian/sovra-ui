@@ -219,7 +219,7 @@ describe('Search Results Display Integration', () => {
 
     await router.push('/search')
 
-    const wrapper = mount(SearchResults, {
+    const _wrapper = mount(SearchResults, {
       global: {
         plugins: [router, pinia]
       }

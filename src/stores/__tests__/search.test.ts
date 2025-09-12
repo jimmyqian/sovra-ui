@@ -381,7 +381,6 @@ describe('Search Store', () => {
       expect(store.displayTotalResults).toBe(45)
 
       // Test 4: updatePagination with 0 totalResults should not update lastTotalResults
-      const previousDisplay = store.displayTotalResults
       store.updatePagination({ totalResults: 0 })
       expect(store.pagination.totalResults).toBe(0)
       // In non-loading state, should show the current value (0)

@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-v-html -->
 <template>
   <div class="bg-bg-card p-6 rounded-lg border border-border-light">
     <!-- Name and Tags Section -->

@@ -14,6 +14,7 @@
     --color-bg-primary: #fdf7f4;
     --color-bg-secondary: #f8f9fa;
     --color-bg-card: #ffffff;
+    --color-bg-card-dark: #FFEDE2;
     --color-border-light: #e5e5e5;
     --color-border-lighter: #eaeaea;
     --color-border-hover: #f0f0f0;
@@ -52,6 +53,9 @@
   }
   .bg-bg-card {
     background-color: var(--color-bg-card);
+  }
+  .bg-card-dark {
+    background-color: var(--color-bg-card-dark);
   }
   .bg-brand-orange {
     background-color: var(--color-brand-orange);
