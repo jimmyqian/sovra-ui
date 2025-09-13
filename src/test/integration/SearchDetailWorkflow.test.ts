@@ -69,6 +69,75 @@ describe('SearchDetail Integration Tests', () => {
     expect(wrapper.text()).toContain('Professional Life')
   })
 
+  it('handles tag button active states and interactions', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Find the PersonProfile component and its tag buttons
+    const personProfile = wrapper.findComponent({ name: 'PersonProfile' })
+    expect(personProfile.exists()).toBe(true)
+
+    // Find tag buttons
+    const tagButtons = personProfile.findAllComponents({ name: 'Button' })
+    expect(tagButtons.length).toBeGreaterThan(0)
+
+    // Find Overview and Personal Life buttons
+    const overviewButton = tagButtons.find(btn => btn.text() === 'Overview')
+    const personalLifeButton = tagButtons.find(
+      btn => btn.text() === 'Personal Life'
+    )
+
+    expect(overviewButton?.exists()).toBe(true)
+    expect(personalLifeButton?.exists()).toBe(true)
+
+    // Initially Overview should be active (since it's the default)
+    expect(overviewButton?.props('active')).toBe(true)
+    expect(personalLifeButton?.props('active')).toBe(false)
+
+    // Click Personal Life button
+    await personalLifeButton?.trigger('click')
+
+    // Check that Personal Life is now active and Overview is not
+    expect(personalLifeButton?.props('active')).toBe(true)
+    expect(overviewButton?.props('active')).toBe(false)
+
+    // Verify tagClick event was emitted
+    expect(personProfile.emitted('tagClick')).toBeTruthy()
+    expect(personProfile.emitted('tagClick')![0]).toEqual(['Personal Life'])
+  })
+
+  it('applies correct styling to active tag buttons', async () => {
+    const wrapper = mount(SearchDetail, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
+    // Find PersonProfile component
+    const personProfile = wrapper.findComponent({ name: 'PersonProfile' })
+    const tagButtons = personProfile.findAllComponents({ name: 'Button' })
+
+    // Check that all tag buttons have outline variant
+    tagButtons.forEach(button => {
+      expect(button.props('variant')).toBe('outline')
+      expect(button.props('size')).toBe('sm')
+    })
+
+    // Find Overview button (should be active by default)
+    const overviewButton = tagButtons.find(btn => btn.text() === 'Overview')
+    expect(overviewButton?.props('active')).toBe(true)
+
+    // Test clicking different tags
+    const healthButton = tagButtons.find(btn => btn.text() === 'Health')
+    if (healthButton) {
+      await healthButton.trigger('click')
+      expect(healthButton.props('active')).toBe(true)
+    }
+  })
+
   it('shows detailed person information in DetailedResultCard', async () => {
     const wrapper = mount(SearchDetail, {
       global: {
