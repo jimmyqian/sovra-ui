@@ -17,6 +17,7 @@
           :key="tag"
           variant="outline"
           size="sm"
+          :active="activeTag === tag"
           @click="handleTagClick(tag)"
         >
           {{ tag }}
@@ -95,8 +96,10 @@
   const emit = defineEmits<Emits>()
 
   const isExpanded = ref(false)
+  const activeTag = ref('Overview')
 
   const handleTagClick = (tag: string) => {
+    activeTag.value = tag
     emit('tagClick', tag)
   }
 

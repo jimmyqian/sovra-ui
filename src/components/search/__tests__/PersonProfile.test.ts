@@ -9,7 +9,7 @@ vi.mock('@/components/ui/Button.vue', () => ({
     name: 'Button',
     template:
       '<button class="mock-button" @click="$emit(\'click\')"><slot /></button>',
-    props: ['variant', 'size'],
+    props: ['variant', 'size', 'active'],
     emits: ['click']
   }
 }))
@@ -137,7 +137,7 @@ describe('PersonProfile', () => {
     })
   })
 
-  it('emits tagClick event when button is clicked', async () => {
+  it('sets Overview as active tag by default', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
@@ -145,11 +145,69 @@ describe('PersonProfile', () => {
       }
     })
 
-    const firstTagButton = wrapper.findAllComponents(Button)[0]
-    await firstTagButton.trigger('click')
+    const tagButtons = wrapper.findAllComponents(Button)
+    const overviewButton = tagButtons.find(
+      button => button.text() === 'Overview'
+    )
 
+    expect(overviewButton?.props('active')).toBe(true)
+
+    // Other buttons should not be active
+    const otherButtons = tagButtons.filter(
+      button => button.text() !== 'Overview'
+    )
+    otherButtons.forEach(button => {
+      expect(button.props('active')).toBe(false)
+    })
+  })
+
+  it('updates active state when tag is clicked', async () => {
+    const wrapper = mount(PersonProfile, {
+      props: { person: mockPerson },
+      global: {
+        components: { Button }
+      }
+    })
+
+    const tagButtons = wrapper.findAllComponents(Button)
+    const personalLifeButton = tagButtons.find(
+      button => button.text() === 'Personal Life'
+    )
+
+    // Initially Overview should be active
+    const overviewButton = tagButtons.find(
+      button => button.text() === 'Overview'
+    )
+    expect(overviewButton?.props('active')).toBe(true)
+    expect(personalLifeButton?.props('active')).toBe(false)
+
+    // Click Personal Life button
+    await personalLifeButton?.trigger('click')
+
+    // Check that active state has changed
+    expect(overviewButton?.props('active')).toBe(false)
+    expect(personalLifeButton?.props('active')).toBe(true)
+  })
+
+  it('emits tagClick event and updates active state when button is clicked', async () => {
+    const wrapper = mount(PersonProfile, {
+      props: { person: mockPerson },
+      global: {
+        components: { Button }
+      }
+    })
+
+    const tagButtons = wrapper.findAllComponents(Button)
+    const financeButton = tagButtons.find(button => button.text() === 'Finance')
+
+    await financeButton?.trigger('click')
+
+    // Check event emission
     expect(wrapper.emitted('tagClick')).toBeTruthy()
-    expect(wrapper.emitted('tagClick')![0]).toEqual(['Overview'])
+    expect(wrapper.emitted('tagClick')![0]).toEqual(['Finance'])
+
+    // Check active state change
+    expect(financeButton?.props('active')).toBe(true)
   })
 
   it('displays user icon with green status indicator', () => {

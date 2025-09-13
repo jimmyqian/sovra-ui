@@ -184,6 +184,38 @@ describe('Button', () => {
         expect(wrapper.classes()).toContain('w-full')
       })
     })
+
+    describe('active prop', () => {
+      it('is not active by default', () => {
+        const wrapper = mount(Button, {
+          props: { variant: 'outline' },
+          slots: { default: 'Button' }
+        })
+
+        expect(wrapper.classes()).toContain('btn-outline')
+        expect(wrapper.classes()).not.toContain('btn-outline-active')
+      })
+
+      it('applies active outline variant when active is true', () => {
+        const wrapper = mount(Button, {
+          props: { variant: 'outline', active: true },
+          slots: { default: 'Active Button' }
+        })
+
+        expect(wrapper.classes()).toContain('btn-outline-active')
+        expect(wrapper.classes()).not.toContain('btn-outline')
+      })
+
+      it('does not affect non-outline variants', () => {
+        const wrapper = mount(Button, {
+          props: { variant: 'primary', active: true },
+          slots: { default: 'Primary Active' }
+        })
+
+        expect(wrapper.classes()).toContain('btn-primary')
+        expect(wrapper.classes()).not.toContain('btn-outline-active')
+      })
+    })
   })
 
   describe('Events', () => {
@@ -265,6 +297,25 @@ describe('Button', () => {
       expect(wrapper.classes()).toContain('py-3')
       expect(wrapper.classes()).toContain('text-base')
       expect(wrapper.classes()).toContain('w-full')
+    })
+
+    it('combines active state with other props correctly', () => {
+      const wrapper = mount(Button, {
+        props: {
+          variant: 'outline',
+          size: 'sm',
+          active: true,
+          fullWidth: true
+        },
+        slots: { default: 'Active Small Outline Full Width' }
+      })
+
+      expect(wrapper.classes()).toContain('btn-outline-active')
+      expect(wrapper.classes()).toContain('px-3')
+      expect(wrapper.classes()).toContain('py-1.5')
+      expect(wrapper.classes()).toContain('text-xs')
+      expect(wrapper.classes()).toContain('w-full')
+      expect(wrapper.classes()).not.toContain('btn-outline')
     })
   })
 

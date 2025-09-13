@@ -190,7 +190,11 @@
   }
 
   .btn-outline {
-    @apply bg-transparent border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card;
+    @apply bg-transparent border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card focus:outline-none focus:ring-0 focus:ring-offset-0;
+  }
+
+  .btn-outline-active {
+    @apply bg-bg-card-dark border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card focus:outline-none focus:ring-0 focus:ring-offset-0;
   }
 
   .btn-ghost {
