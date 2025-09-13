@@ -96,7 +96,10 @@ export class FocusTracker {
 
     const elements = Array.from(container.querySelectorAll(focusableSelectors))
 
-    return elements.filter(el => this.isElementFocusable(el))
+    return elements.filter(
+      (el): el is HTMLElement =>
+        el instanceof HTMLElement && this.isElementFocusable(el)
+    )
   }
 
   /**
@@ -225,7 +228,8 @@ export class FocusTracker {
         // JSDOM environment
         window.navigator.userAgent.includes('jsdom') ||
         // Node.js environment
-        (typeof process !== 'undefined' && process.env.NODE_ENV === 'test'))
+        (typeof (globalThis as any).process !== 'undefined' &&
+          (globalThis as any).process?.env?.NODE_ENV === 'test'))
     )
   }
 }

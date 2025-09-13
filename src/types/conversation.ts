@@ -40,8 +40,10 @@ export interface SearchRefinementItem extends BaseConversationItem {
   inputType: 'age-range' | 'text' | 'select' | 'checkbox'
   placeholder?: string
   options?: string[]
-  value?: string | { min: string; max: string } | string[]
-  onChange?: (value: string | { min: string; max: string } | string[]) => void
+  value?: string | { min: string; max: string } | string[] | boolean
+  onChange?: (
+    value: string | { min: string; max: string } | string[] | boolean
+  ) => void
 }
 
 export interface ActionButtonItem extends BaseConversationItem {

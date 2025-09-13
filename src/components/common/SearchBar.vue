@@ -15,7 +15,7 @@
     ></textarea>
     <div class="flex items-center justify-between">
       <button
-        class="bg-bg-button border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card flex items-center gap-1"
+        class="bg-bg-button border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
         :class="{ 'opacity-50 cursor-not-allowed': disabled }"
         :disabled="disabled"
         @click="triggerFileUpload"

@@ -384,7 +384,13 @@ describe('Search Workflow Integration', () => {
   })
 
   it('updates search input height as user types', async () => {
-    const wrapper = mount(Landing)
+    const router = createMockRouter()
+    const pinia = createPinia()
+    const wrapper = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
     const searchInput = wrapper.find('textarea')
 
     // Mock scrollHeight property

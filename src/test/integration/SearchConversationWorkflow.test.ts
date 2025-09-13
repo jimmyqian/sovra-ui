@@ -6,23 +6,39 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia, type Pinia } from 'pinia'
+import { createRouter, createWebHistory, type Router } from 'vue-router'
 import SearchResults from '@/views/SearchResults.vue'
 import { useSearchStore } from '@/stores/search'
 
 describe('Search Conversation Integration Tests', () => {
   let searchStore: ReturnType<typeof useSearchStore>
   let pinia: Pinia
+  let router: Router
 
-  beforeEach(() => {
+  beforeEach(async () => {
     pinia = createPinia()
     setActivePinia(pinia)
     searchStore = useSearchStore()
+
+    // Set up router
+    router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', component: { template: '<div>Home</div>' } },
+        {
+          path: '/search-detail/:id',
+          name: 'SearchDetail',
+          component: { template: '<div>Detail</div>' }
+        }
+      ]
+    })
+    await router.push('/')
   })
 
   const createSearchResultsWrapper = () => {
     return mount(SearchResults, {
       global: {
-        plugins: [pinia]
+        plugins: [pinia, router]
       }
     })
   }

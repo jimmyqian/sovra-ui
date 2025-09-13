@@ -305,7 +305,11 @@ describe('File Upload Workflow Integration', () => {
 
     // Simulate a second upload scenario by checking that the file upload system
     // can handle different file types
-    const wrapper2 = mount(Landing)
+    const wrapper2 = mount(Landing, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
     const fileInput2 = wrapper2.find('input[type="file"]')
     const mockFiles2 = {
       length: 1,

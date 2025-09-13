@@ -44,7 +44,10 @@
   })
 
   const acceptedTypesDisplay = computed(() => {
-    return props.item.acceptedTypes?.join(', ') ?? 'All file types accepted'
+    if (!props.item.acceptedTypes || props.item.acceptedTypes.length === 0) {
+      return 'All file types accepted'
+    }
+    return props.item.acceptedTypes.join(', ')
   })
 
   const triggerFileInput = () => {

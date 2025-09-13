@@ -251,9 +251,10 @@ describe('FilterCriteria', () => {
         .findAll('span')
         .find(
           span =>
-            span.text().includes('▼') &&
-            span.classes().includes('cursor-pointer')
+            span.text().includes('▼') && span.classes().includes('font-medium')
         )
+
+      expect(dropdownSpan).toBeTruthy()
 
       const expectedClasses = [
         'cursor-pointer',
@@ -263,12 +264,7 @@ describe('FilterCriteria', () => {
       ]
 
       expectedClasses.forEach(className => {
-        const hasClass = dropdownSpan!.classes().includes(className)
-        if (!hasClass) {
-          console.warn(
-            `⚠️ Expected dropdown span to have class "${className}" but it was not found. Classes found: ${dropdownSpan!.classes().join(', ')}`
-          )
-        }
+        expect(dropdownSpan!.classes()).toContain(className)
       })
     })
 
@@ -283,21 +279,12 @@ describe('FilterCriteria', () => {
         .findAll('span')
         .find(
           span =>
-            span.text().includes('▼') &&
-            span.classes().includes('cursor-pointer')
+            span.text().includes('▼') && span.classes().includes('font-medium')
         )
       await dropdownSpan!.trigger('click')
 
-      const dropdownClickEvents = wrapper.emitted('dropdownClick')
-      if (!dropdownClickEvents) {
-        console.warn(
-          `⚠️ Expected dropdownClick event to be emitted but it was not found`
-        )
-      } else if (dropdownClickEvents[0]?.[0] !== '2') {
-        console.warn(
-          `⚠️ Expected first dropdownClick event to have filter id "2" but got "${dropdownClickEvents[0]?.[0]}"`
-        )
-      }
+      expect(wrapper.emitted('dropdownClick')).toBeTruthy()
+      expect(wrapper.emitted('dropdownClick')![0]).toEqual(['2'])
     })
   })
 
@@ -485,8 +472,7 @@ describe('FilterCriteria', () => {
         .findAll('span')
         .filter(
           span =>
-            span.text().includes('▼') &&
-            span.classes().includes('cursor-pointer')
+            span.text().includes('▼') && span.classes().includes('font-medium')
         )
 
       // Click first dropdown (Filter 2)
@@ -495,22 +481,10 @@ describe('FilterCriteria', () => {
       // Click second dropdown (Filter 3)
       await dropdownSpans[1]!.trigger('click')
 
-      const dropdownEvents = wrapper.emitted('dropdownClick')
-      if (!dropdownEvents || dropdownEvents.length !== 2) {
-        console.warn(
-          `⚠️ Expected 2 dropdownClick events but got ${dropdownEvents?.length ?? 0}`
-        )
-      }
-      if (dropdownEvents?.[0]?.[0] !== '2') {
-        console.warn(
-          `⚠️ Expected first dropdown event to have filter id "2" but got "${dropdownEvents?.[0]?.[0]}"`
-        )
-      }
-      if (dropdownEvents?.[1]?.[0] !== '3') {
-        console.warn(
-          `⚠️ Expected second dropdown event to have filter id "3" but got "${dropdownEvents?.[1]?.[0]}"`
-        )
-      }
+      const dropdownEvents = wrapper.emitted('dropdownClick')!
+      expect(dropdownEvents).toHaveLength(2)
+      expect(dropdownEvents[0]).toEqual(['2'])
+      expect(dropdownEvents[1]).toEqual(['3'])
     })
   })
 })
