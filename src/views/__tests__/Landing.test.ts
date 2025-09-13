@@ -8,6 +8,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import Landing from '../Landing.vue'
 import { useSearchStore } from '@/stores/search'
+import { useLightboxStore } from '@/stores/lightbox'
 
 // Mock components to avoid dependency issues
 vi.mock('@/components/common/Logo.vue', () => ({
@@ -195,13 +196,20 @@ describe('Landing Component', () => {
       expect(performSearchSpy).not.toHaveBeenCalled()
     })
 
-    it('should navigate to search page after successful search', async () => {
+    it('should navigate to search page after successful search without lightbox', async () => {
       const wrapper = createWrapper()
-      const store = useSearchStore()
+      const searchStore = useSearchStore()
+      const lightboxStore = useLightboxStore()
 
-      // Mock successful search
-      const performSearchSpy = vi.spyOn(store, 'performSearch')
+      // Mock successful search and no lightbox trigger
+      const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
       performSearchSpy.mockResolvedValue()
+
+      const handleSearchActionSpy = vi.spyOn(
+        lightboxStore,
+        'handleSearchAction'
+      )
+      handleSearchActionSpy.mockReturnValue(false) // Not first search, no lightbox
 
       // Mock router push
       const routerPushSpy = vi.spyOn(router, 'push')
@@ -215,7 +223,40 @@ describe('Landing Component', () => {
       // Wait for async operations
       await new Promise(resolve => setTimeout(resolve, 0))
 
+      expect(handleSearchActionSpy).toHaveBeenCalled()
       expect(routerPushSpy).toHaveBeenCalledWith('/search')
+    })
+
+    it('should delay navigation when lightbox is triggered on first search', async () => {
+      const wrapper = createWrapper()
+      const searchStore = useSearchStore()
+      const lightboxStore = useLightboxStore()
+
+      // Mock successful search with lightbox trigger
+      const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
+      performSearchSpy.mockResolvedValue()
+
+      const handleSearchActionSpy = vi.spyOn(
+        lightboxStore,
+        'handleSearchAction'
+      )
+      handleSearchActionSpy.mockReturnValue(true) // First search, trigger lightbox
+
+      // Mock router push
+      const routerPushSpy = vi.spyOn(router, 'push')
+      routerPushSpy.mockResolvedValue(undefined)
+
+      // Set search query and perform search via v-model
+      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
+      await searchBar.vm.$emit('update:modelValue', 'test query')
+      await searchBar.vm.$emit('search')
+
+      // Wait for immediate operations
+      await new Promise(resolve => setTimeout(resolve, 0))
+
+      expect(handleSearchActionSpy).toHaveBeenCalled()
+      // Should not navigate immediately when lightbox is triggered
+      expect(routerPushSpy).not.toHaveBeenCalled()
     })
 
     it('should handle search errors gracefully', async () => {

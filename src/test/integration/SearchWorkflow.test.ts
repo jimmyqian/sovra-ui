@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import Landing from '@/views/Landing.vue'
 import SearchResults from '@/views/SearchResults.vue'
 import { useSearchStore } from '@/stores/search'
+import { useLightboxStore } from '@/stores/lightbox'
 
 // Mock router for integration testing
 const createMockRouter = () => {
@@ -35,10 +36,16 @@ describe('Search Workflow Integration', () => {
       }
     })
 
-    // Get store instance
-    const store = useSearchStore()
-    const performSearchSpy = vi.spyOn(store, 'performSearch')
+    // Get store instances
+    const searchStore = useSearchStore()
+    const lightboxStore = useLightboxStore()
+
+    const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
     performSearchSpy.mockResolvedValue()
+
+    // Mock lightbox to not trigger (not first search)
+    const handleSearchActionSpy = vi.spyOn(lightboxStore, 'handleSearchAction')
+    handleSearchActionSpy.mockReturnValue(false)
 
     // Find search input and search button
     const searchInput = wrapper.find('textarea')
@@ -69,6 +76,7 @@ describe('Search Workflow Integration', () => {
 
     // Verify store method was called
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
+    expect(handleSearchActionSpy).toHaveBeenCalled()
 
     // Verify router navigation was called (no query parameter needed anymore)
     expect(pushSpy).toHaveBeenCalledWith('/search')
@@ -85,9 +93,15 @@ describe('Search Workflow Integration', () => {
       }
     })
 
-    const store = useSearchStore()
-    const performSearchSpy = vi.spyOn(store, 'performSearch')
+    const searchStore = useSearchStore()
+    const lightboxStore = useLightboxStore()
+
+    const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
     performSearchSpy.mockResolvedValue()
+
+    // Mock lightbox to not trigger (not first search)
+    const handleSearchActionSpy = vi.spyOn(lightboxStore, 'handleSearchAction')
+    handleSearchActionSpy.mockReturnValue(false)
 
     const searchInput = wrapper.find('textarea')
     const testQuery = 'Jane Smith marketing New York'
@@ -99,6 +113,7 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
+    expect(handleSearchActionSpy).toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
@@ -269,9 +284,15 @@ describe('Search Workflow Integration', () => {
       }
     })
 
-    const store = useSearchStore()
-    const performSearchSpy = vi.spyOn(store, 'performSearch')
+    const searchStore = useSearchStore()
+    const lightboxStore = useLightboxStore()
+
+    const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
     performSearchSpy.mockResolvedValue()
+
+    // Mock lightbox to not trigger (not first search)
+    const handleSearchActionSpy = vi.spyOn(lightboxStore, 'handleSearchAction')
+    handleSearchActionSpy.mockReturnValue(false)
 
     const searchInput = wrapper.find('textarea')
     const searchButton = wrapper
@@ -292,6 +313,7 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(specialQuery)
+    expect(handleSearchActionSpy).toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
@@ -306,9 +328,15 @@ describe('Search Workflow Integration', () => {
       }
     })
 
-    const store = useSearchStore()
-    const performSearchSpy = vi.spyOn(store, 'performSearch')
+    const searchStore = useSearchStore()
+    const lightboxStore = useLightboxStore()
+
+    const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
     performSearchSpy.mockResolvedValue()
+
+    // Mock lightbox to not trigger (not first search)
+    const handleSearchActionSpy = vi.spyOn(lightboxStore, 'handleSearchAction')
+    handleSearchActionSpy.mockReturnValue(false)
 
     const searchInput = wrapper.find('textarea')
     const searchButton = wrapper
@@ -331,6 +359,7 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(longQuery)
+    expect(handleSearchActionSpy).toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 

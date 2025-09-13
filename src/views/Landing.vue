@@ -58,6 +58,15 @@
 
     <!-- Page Footer -->
     <CopyrightFooter />
+
+    <!-- Video Lightbox -->
+    <VideoLightbox
+      :is-visible="lightboxStore.isVisible"
+      :video-url="lightboxStore.videoUrl"
+      autoplay
+      video-title="Sovra Introduction Video"
+      @close="lightboxStore.hideLightbox"
+    />
   </div>
 </template>
 
@@ -65,12 +74,15 @@
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
+  import { useLightboxStore } from '@/stores/lightbox'
   import Logo from '@/components/common/Logo.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
+  import VideoLightbox from '@/components/common/VideoLightbox.vue'
 
   const router = useRouter()
   const searchStore = useSearchStore()
+  const lightboxStore = useLightboxStore()
   const searchQuery = ref('')
 
   const handleSearch = async () => {
@@ -78,10 +90,23 @@
       return
     }
 
+    // Check if this should trigger the lightbox (first search)
+    const lightboxTriggered = lightboxStore.handleSearchAction()
+
     try {
       await searchStore.performSearch(searchQuery.value)
 
-      await router.push('/search')
+      // Only navigate if lightbox wasn't triggered or after a delay
+      if (lightboxTriggered) {
+        // Wait a bit before navigating to let the lightbox show
+        setTimeout(async () => {
+          if (!lightboxStore.isVisible) {
+            await router.push('/search')
+          }
+        }, 1000)
+      } else {
+        await router.push('/search')
+      }
     } catch {
       // TODO: Implement proper error handling/logging
       // console.error('Search failed:', error)
@@ -92,4 +117,5 @@
     // TODO: Implement file upload handling
     // console.log('Files uploaded:', files)
   }
+
 </script>
