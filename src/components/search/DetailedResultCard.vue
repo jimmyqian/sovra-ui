@@ -89,7 +89,11 @@
               <div class="text-xs text-text-secondary">
                 {{ person.stats.netWorth.split(' ').slice(1).join(' ') }}
               </div>
-              <div class="text-xs text-brand-orange">Reference</div>
+              <button
+                class="text-xs text-brand-orange hover:underline cursor-pointer"
+              >
+                Reference
+              </button>
             </div>
 
             <!-- Spouse -->
@@ -109,8 +113,9 @@
 
       <!-- Accounts Section -->
       <div>
-        <h3 class="text-sm font-medium text-text-primary mb-3">Accounts</h3>
-        <div class="flex gap-3">
+        <div class="flex flex-wrap items-center gap-3">
+          <h3 class="text-lg font-bold text-text-primary">Accounts</h3>
+          <div class="w-4"></div>
           <!-- Instagram -->
           <div
             class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center"
@@ -153,16 +158,8 @@
               />
             </svg>
           </div>
-          <!-- Additional placeholder accounts -->
-          <div class="w-10 h-10 bg-gray-300 rounded-lg"></div>
-          <div class="w-10 h-10 bg-gray-300 rounded-lg"></div>
-          <div class="w-10 h-10 bg-gray-300 rounded-lg"></div>
-          <div class="w-10 h-10 bg-gray-300 rounded-lg"></div>
-          <div class="w-10 h-10 bg-gray-300 rounded-lg"></div>
-          <div class="w-10 h-10 bg-gray-300 rounded-lg"></div>
-        </div>
-        <div class="mt-3">
-          <button class="text-sm text-brand-orange hover:underline">
+          <!-- Login Button -->
+          <button class="text-sm text-brand-orange hover:underline ml-3">
             Login for more details →
           </button>
         </div>

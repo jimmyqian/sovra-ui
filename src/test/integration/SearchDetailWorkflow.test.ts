@@ -236,7 +236,7 @@ describe('SearchDetail Integration Tests', () => {
     // Check age and net worth stats
     expect(wrapper.text()).toContain('26')
     expect(wrapper.text()).toContain('Age')
-    expect(wrapper.text()).toContain('$1,890')
+    expect(wrapper.text()).toContain('$1.890')
     expect(wrapper.text()).toContain('Net Worth')
   })
 

@@ -27,7 +27,7 @@ describe('DetailedResultCard Accessibility', () => {
     imageCount: 21,
     stats: {
       age: '26',
-      netWorth: '$1,890 M USD (2022)'
+      netWorth: '$1.890 M USD (2022)'
     },
     personal: {
       birthDate: '10 Aug 2000',
@@ -181,10 +181,11 @@ describe('DetailedResultCard Accessibility', () => {
       // All section headings should be h3 elements
       headings.forEach(heading => {
         expect(heading.element.tagName).toBe('H3')
-        // Some headings use font-semibold, others use font-medium
+        // Some headings use font-semibold, font-medium, or font-bold
         expect(
           heading.classes().includes('font-semibold') ||
-            heading.classes().includes('font-medium')
+            heading.classes().includes('font-medium') ||
+            heading.classes().includes('font-bold')
         ).toBe(true)
       })
     })
@@ -196,7 +197,8 @@ describe('DetailedResultCard Accessibility', () => {
         // Consistent typography for screen readers and visual users
         expect(
           heading.classes().includes('font-semibold') ||
-            heading.classes().includes('font-medium')
+            heading.classes().includes('font-medium') ||
+            heading.classes().includes('font-bold')
         ).toBe(true)
         expect(heading.classes()).toContain('text-text-primary')
       })
@@ -270,9 +272,11 @@ describe('DetailedResultCard Accessibility', () => {
       )
       expect(knowMoreLink.exists()).toBe(true)
 
-      const loginButton = wrapper.find('button')
-      expect(loginButton.exists()).toBe(true)
-      expect(loginButton.text()).toContain('Login for more details')
+      const loginButton = wrapper
+        .findAll('button')
+        .find(btn => btn.text().includes('Login for more details'))
+      expect(loginButton?.exists()).toBe(true)
+      expect(loginButton?.text()).toContain('Login for more details')
     })
 
     it('should provide appropriate focus indicators', () => {

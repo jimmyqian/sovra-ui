@@ -105,7 +105,7 @@
     imageCount: 21,
     stats: {
       age: '26',
-      netWorth: '$1,890 M USD (2022)'
+      netWorth: '$1.890 M USD (2022)'
     },
     personal: {
       birthDate: '10 Aug 2000',

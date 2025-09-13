@@ -18,7 +18,7 @@ describe('DetailedResultCard', () => {
     imageCount: 21,
     stats: {
       age: '26',
-      netWorth: '$1,890 M USD (2022)'
+      netWorth: '$1.890 M USD (2022)'
     },
     personal: {
       birthDate: '10 Aug 2000',
@@ -152,7 +152,7 @@ describe('DetailedResultCard', () => {
 
     expect(wrapper.text()).toContain('26')
     expect(wrapper.text()).toContain('Age')
-    expect(wrapper.text()).toContain('$1,890')
+    expect(wrapper.text()).toContain('$1.890')
     expect(wrapper.text()).toContain('Net Worth')
   })
 
