@@ -23,7 +23,7 @@ describe('SearchDetail Integration Tests', () => {
   let router: Router
   let pinia: Pinia
 
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
 
     // Set up Pinia
@@ -34,12 +34,20 @@ describe('SearchDetail Integration Tests', () => {
       history: createWebHistory(),
       routes: [
         {
+          path: '/',
+          name: 'Home',
+          component: { template: '<div>Home</div>' }
+        },
+        {
           path: '/search/:id',
           name: 'SearchDetail',
           component: SearchDetail
         }
       ]
     })
+
+    // Set initial route to avoid warnings
+    await router.push('/search/johnson-smith')
   })
 
   it('renders complete SearchDetail page structure', async () => {

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createRouter, createWebHistory } from 'vue-router'
 import ResultCard from '../ResultCard.vue'
 import type { SearchResult } from '@/types/search'
 
@@ -17,10 +18,25 @@ describe('ResultCard', () => {
     contacts: 10
   }
 
+  const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+      { path: '/', component: { template: '<div>Home</div>' } },
+      {
+        path: '/search-detail/:id',
+        name: 'SearchDetail',
+        component: { template: '<div>Detail</div>' }
+      }
+    ]
+  })
+
   it('renders correctly with result data', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -36,6 +52,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -56,6 +75,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -67,6 +89,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -78,6 +103,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -90,6 +118,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -105,6 +136,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -123,6 +157,9 @@ describe('ResultCard', () => {
           ...mockResult,
           age: 25
         }
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -136,6 +173,9 @@ describe('ResultCard', () => {
           ...mockResult,
           maritalStatus: 'Married'
         }
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -149,6 +189,9 @@ describe('ResultCard', () => {
           ...mockResult,
           rating: 3.7
         }
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -159,6 +202,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -176,6 +222,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 
@@ -191,6 +240,9 @@ describe('ResultCard', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
+      },
+      global: {
+        plugins: [router]
       }
     })
 

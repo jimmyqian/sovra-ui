@@ -135,7 +135,7 @@
             inputType: 'age-range',
             value: { min: '', max: '' },
             onChange: (
-              value: string | { min: string; max: string } | string[]
+              value: string | { min: string; max: string } | string[] | boolean
             ) => {
               if (
                 typeof value === 'object' &&
