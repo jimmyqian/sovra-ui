@@ -41,9 +41,10 @@
     const baseClasses =
       'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
 
-    const focusClasses = props.variant === 'outline' 
-      ? 'focus:outline-none focus:ring-0 focus:ring-offset-0'
-      : 'focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2'
+    const focusClasses =
+      props.variant === 'outline'
+        ? 'focus:outline-none focus:ring-0 focus:ring-offset-0'
+        : 'focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2'
 
     const variantClasses = {
       primary: 'btn-primary',
