@@ -10,7 +10,7 @@ import DetailedResultCard from '../DetailedResultCard.vue'
 import '@/test/accessibility/shared/accessibility-matchers'
 
 describe('DetailedResultCard Accessibility', () => {
-  let wrapper: VueWrapper<typeof DetailedResultCard>
+  let wrapper: VueWrapper<InstanceType<typeof DetailedResultCard>>
 
   const mockPerson = {
     name: 'Johnson Smith',
@@ -89,10 +89,13 @@ describe('DetailedResultCard Accessibility', () => {
 
       images.forEach((img, index) => {
         const altText = img.attributes('alt')
-        expect(altText).toContain('Johnson Smith')
-        expect(altText).toContain(`image ${index + 1}`)
         expect(altText).toBeDefined()
-        expect(altText.length).toBeGreaterThan(0)
+        expect(altText).toBeTruthy()
+        if (altText) {
+          expect(altText).toContain('Johnson Smith')
+          expect(altText).toContain(`image ${index + 1}`)
+          expect(altText.length).toBeGreaterThan(0)
+        }
       })
     })
 
@@ -308,20 +311,26 @@ describe('DetailedResultCard Accessibility', () => {
       const flexItems = flexContainer.findAll('.flex-1')
       expect(flexItems).toHaveLength(2)
       const statsContainer = flexItems[1]
-      expect(statsContainer.exists()).toBe(true)
+      expect(statsContainer).toBeTruthy()
+      if (statsContainer) {
+        expect(statsContainer.exists()).toBe(true)
 
-      // Inner stats grid should have proper classes
-      const statsGrid = statsContainer.find('.grid.grid-cols-4')
-      expect(statsGrid.exists()).toBe(true)
+        // Inner stats grid should have proper classes
+        const statsGrid = statsContainer.find('.grid.grid-cols-4')
+        expect(statsGrid.exists()).toBe(true)
+      }
 
       const infoGrid = wrapper.find('.grid.grid-cols-3.gap-6')
       expect(infoGrid.exists()).toBe(true)
 
       // Image gallery grid should be properly responsive
       const imageGallery = flexItems[0]
-      expect(imageGallery.exists()).toBe(true)
-      const imageGrids = imageGallery.findAll('.grid.grid-cols-4.gap-2')
-      expect(imageGrids).toHaveLength(2) // Top and bottom rows
+      expect(imageGallery).toBeTruthy()
+      if (imageGallery) {
+        expect(imageGallery.exists()).toBe(true)
+        const imageGrids = imageGallery.findAll('.grid.grid-cols-4.gap-2')
+        expect(imageGrids).toHaveLength(2) // Top and bottom rows
+      }
     })
 
     it('should maintain proper spacing and layout for accessibility', () => {

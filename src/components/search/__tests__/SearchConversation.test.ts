@@ -9,20 +9,88 @@ import { createPinia, setActivePinia } from 'pinia'
 import SearchConversation from '../SearchConversation.vue'
 import LogoIcon from '@/components/icons/LogoIcon.vue'
 import { useSearchStore } from '@/stores/search'
+import type { ConversationMessage } from '@/types/conversation'
 
 describe('SearchConversation', () => {
   const mockSearchQuery = 'Find Johnson who works in software in California'
 
-  const createWrapper = (searchQuery = mockSearchQuery, totalResults = 56) => {
-    const pinia = createPinia()
-    setActivePinia(pinia)
-    const searchStore = useSearchStore()
-    searchStore.setQuery(searchQuery)
-    searchStore.updatePagination({ totalResults })
+  const createWrapper = (userQuery = mockSearchQuery, resultCount = 56) => {
+    const defaultMessages: ConversationMessage[] = [
+      {
+        id: 'system-response-1',
+        sender: 'system',
+        timestamp: new Date(),
+        items: [
+          {
+            id: 'results-summary',
+            type: 'results-summary',
+            resultCount
+          },
+          {
+            id: 'text-1',
+            type: 'text',
+            content:
+              "Please provide additional information about the person you're looking for, you can use the hints below",
+            emphasis: 'secondary'
+          },
+          {
+            id: 'text-2',
+            type: 'text',
+            content:
+              'you can include further information such as documents you may have',
+            emphasis: 'secondary'
+          },
+          {
+            id: 'hints-group-1',
+            type: 'hints-group',
+            hints: [
+              {
+                text: 'What specific software role does Johnson hold in his California job'
+              },
+              {
+                text: 'Which California tech hubs are most likely where Johnson works'
+              },
+              { text: 'What skills Johnson has from his current software role' }
+            ]
+          },
+          {
+            id: 'action-button-1',
+            type: 'action-button',
+            text: 'create a filter using the details that you provided',
+            variant: 'dashed'
+          },
+          {
+            id: 'file-upload-1',
+            type: 'file-upload',
+            label: 'Upload documents (optional)',
+            acceptedTypes: ['.pdf', '.doc', '.docx']
+          }
+        ]
+      }
+    ]
 
     return mount(SearchConversation, {
+      props: {
+        userQuery,
+        messages: defaultMessages
+      },
       global: {
-        plugins: [pinia],
+        components: { LogoIcon }
+      }
+    })
+  }
+
+  // @ts-ignore - keeping for future use
+  const _createWrapperWithMessages = (
+    userQuery = mockSearchQuery,
+    messages: ConversationMessage[]
+  ) => {
+    return mount(SearchConversation, {
+      props: {
+        userQuery,
+        messages
+      },
+      global: {
         components: { LogoIcon }
       }
     })
@@ -103,136 +171,74 @@ describe('SearchConversation', () => {
       expect(updatedWrapper.text()).not.toContain('30 persons')
     })
 
-    it('preserves previous total results during loading state', async () => {
-      const pinia = createPinia()
-      setActivePinia(pinia)
-      const searchStore = useSearchStore()
-
-      // Set up initial state with results
-      searchStore.setQuery(mockSearchQuery)
-      searchStore.updatePagination({ totalResults: 42 })
-
-      const wrapper = mount(SearchConversation, {
-        global: {
-          plugins: [pinia],
-          components: { LogoIcon }
-        }
-      })
-
-      // Should show initial results
+    it('displays correct result count from props', () => {
+      const wrapper = createWrapper(mockSearchQuery, 42)
       expect(wrapper.text()).toContain('42 persons were found in the results')
 
-      // Simulate loading state (like what happens during new search)
-      searchStore.setLoading(true)
-      searchStore.updatePagination({ totalResults: 0 }) // This happens during resetPagination
-      await wrapper.vm.$nextTick()
-
-      // Should still show previous results, not 0
-      expect(wrapper.text()).toContain('42 persons were found in the results')
-      expect(wrapper.text()).not.toContain('0 persons were found')
-
-      // Complete the search with new results
-      searchStore.setLoading(false)
-      searchStore.updatePagination({ totalResults: 65 })
-      await wrapper.vm.$nextTick()
-
-      // Should now show new results
-      expect(wrapper.text()).toContain('65 persons were found in the results')
-      expect(wrapper.text()).not.toContain('42 persons were found')
+      // Create new wrapper with different count to test props-based rendering
+      const updatedWrapper = createWrapper(mockSearchQuery, 65)
+      expect(updatedWrapper.text()).toContain(
+        '65 persons were found in the results'
+      )
+      expect(updatedWrapper.text()).not.toContain('42 persons were found')
     })
 
-    it('handles edge cases for displayTotalResults integration', async () => {
-      const pinia = createPinia()
-      setActivePinia(pinia)
-      const searchStore = useSearchStore()
-
-      const wrapper = mount(SearchConversation, {
-        global: {
-          plugins: [pinia],
-          components: { LogoIcon }
-        }
-      })
-
-      // Initial state should show 0
-      expect(wrapper.text()).toContain('0 persons were found in the results')
-
-      // Set first valid result
-      searchStore.updatePagination({ totalResults: 33 })
-      await wrapper.vm.$nextTick()
-      expect(wrapper.text()).toContain('33 persons were found in the results')
-
-      // Simulate multiple searches in sequence
-      searchStore.setLoading(true)
-      searchStore.updatePagination({ totalResults: 0 }) // Reset during loading
-      await wrapper.vm.$nextTick()
-      expect(wrapper.text()).toContain('33 persons were found in the results') // Should preserve
-
-      // Complete with new result
-      searchStore.setLoading(false)
-      searchStore.updatePagination({ totalResults: 78 })
-      await wrapper.vm.$nextTick()
-      expect(wrapper.text()).toContain('78 persons were found in the results')
+    it('handles edge cases for result count display', () => {
+      // Test zero results
+      const zeroWrapper = createWrapper(mockSearchQuery, 0)
+      expect(zeroWrapper.text()).toContain(
+        '0 persons were found in the results'
+      )
 
       // Test boundary values
-      searchStore.updatePagination({ totalResults: 30 }) // Minimum
-      await wrapper.vm.$nextTick()
-      expect(wrapper.text()).toContain('30 persons were found in the results')
+      const minWrapper = createWrapper(mockSearchQuery, 30)
+      expect(minWrapper.text()).toContain(
+        '30 persons were found in the results'
+      )
 
-      searchStore.updatePagination({ totalResults: 80 }) // Maximum
-      await wrapper.vm.$nextTick()
-      expect(wrapper.text()).toContain('80 persons were found in the results')
+      const maxWrapper = createWrapper(mockSearchQuery, 80)
+      expect(maxWrapper.text()).toContain(
+        '80 persons were found in the results'
+      )
+
+      // Test large numbers
+      const largeWrapper = createWrapper(mockSearchQuery, 999)
+      expect(largeWrapper.text()).toContain(
+        '999 persons were found in the results'
+      )
     })
 
-    it('maintains reactivity across multiple search cycles', async () => {
-      const pinia = createPinia()
-      setActivePinia(pinia)
-      const searchStore = useSearchStore()
-
-      const wrapper = mount(SearchConversation, {
-        global: {
-          plugins: [pinia],
-          components: { LogoIcon }
-        }
-      })
-
-      // Simulate complete search cycles with loading states
+    it('renders consistent content across different result counts', () => {
       const testCycles = [
-        { query: 'first search', expectedRange: [30, 80] },
-        { query: 'second search', expectedRange: [30, 80] },
-        { query: 'third search', expectedRange: [30, 80] }
+        { query: 'first search', resultCount: 35 },
+        { query: 'second search', resultCount: 52 },
+        { query: 'third search', resultCount: 78 }
       ]
 
-      let previousResult = 0
-
       for (const cycle of testCycles) {
-        // Start search (loading state)
-        searchStore.setQuery(cycle.query)
-        searchStore.setLoading(true)
-        searchStore.updatePagination({ totalResults: 0 })
-        await wrapper.vm.$nextTick()
+        const wrapper = createWrapper(cycle.query, cycle.resultCount)
 
-        // During loading, should show previous result (if any)
-        if (previousResult > 0) {
-          expect(wrapper.text()).toContain(
-            `${previousResult} persons were found`
+        // Should show correct result count
+        expect(wrapper.text()).toContain(
+          `${cycle.resultCount} persons were found`
+        )
+
+        // Should show the query
+        expect(wrapper.text()).toContain(cycle.query)
+
+        // Should have consistent structure
+        expect(wrapper.find('button').exists()).toBe(true)
+        expect(wrapper.findComponent(LogoIcon).exists()).toBe(true)
+
+        // Should have all hints
+        const hints = wrapper
+          .findAll('div')
+          .filter(
+            div =>
+              div.classes().includes('text-brand-orange') &&
+              div.classes().includes('cursor-pointer')
           )
-          expect(wrapper.text()).not.toContain(
-            'Fantastic! 0 persons were found'
-          )
-        }
-
-        // Complete search
-        const newResult = Math.floor(Math.random() * 51) + 30 // 30-80
-        searchStore.setLoading(false)
-        searchStore.updatePagination({ totalResults: newResult })
-        await wrapper.vm.$nextTick()
-
-        // Should show new result
-        expect(wrapper.text()).toContain(`${newResult} persons were found`)
-        expect(newResult).toBeGreaterThanOrEqual(cycle.expectedRange[0])
-        expect(newResult).toBeLessThanOrEqual(cycle.expectedRange[1])
-
-        previousResult = newResult
+        expect(hints.length).toBe(3)
       }
     })
 
@@ -241,16 +247,16 @@ describe('SearchConversation', () => {
 
       const queryDiv = wrapper
         .findAll('div')
-        .find(div => div.text() === mockSearchQuery)
+        .find(
+          div =>
+            div.classes().includes('rounded-lg') &&
+            div.classes().includes('font-medium') &&
+            div.text() === mockSearchQuery
+        )
 
       const expectedClasses = ['rounded-lg', 'font-medium']
       expectedClasses.forEach(className => {
-        const hasClass = queryDiv!.classes().includes(className)
-        if (!hasClass) {
-          console.warn(
-            `⚠️ Expected search query div to have class "${className}" but it was not found. Classes found: ${queryDiv!.classes().join(', ')}`
-          )
-        }
+        expect(queryDiv!.classes()).toContain(className)
       })
     })
   })
@@ -370,17 +376,17 @@ describe('SearchConversation', () => {
     it('applies correct styling to suggestion hints', () => {
       const wrapper = createWrapper()
 
-      const hintParagraphs = wrapper
-        .findAll('p')
+      const hintElements = wrapper
+        .findAll('div')
         .filter(
-          p =>
-            p.classes().includes('text-brand-orange') &&
-            p.classes().includes('cursor-pointer')
+          div =>
+            div.classes().includes('text-brand-orange') &&
+            div.classes().includes('cursor-pointer')
         )
 
-      expect(hintParagraphs).toHaveLength(3)
+      expect(hintElements).toHaveLength(3)
 
-      hintParagraphs.forEach(hint => {
+      hintElements.forEach(hint => {
         const expectedClasses = [
           'text-brand-orange',
           'pb-2',
@@ -401,26 +407,27 @@ describe('SearchConversation', () => {
     it('applies bottom border to last suggestion', () => {
       const wrapper = createWrapper()
 
-      const hintParagraphs = wrapper
-        .findAll('p')
+      const hintElements = wrapper
+        .findAll('div')
         .filter(
-          p =>
-            p.classes().includes('text-brand-orange') &&
-            p.classes().includes('cursor-pointer')
+          div =>
+            div.classes().includes('text-brand-orange') &&
+            div.classes().includes('cursor-pointer')
         )
 
-      const lastHint = hintParagraphs[hintParagraphs.length - 1]
-      expect(lastHint.classes()).toContain('border-b')
+      const lastHint = hintElements[hintElements.length - 1]
+      expect(lastHint).toBeTruthy()
+      expect(lastHint!.classes()).toContain('border-b')
     })
 
     it('provides interactive hover states for hints', () => {
       const wrapper = createWrapper()
 
-      const hintParagraphs = wrapper
-        .findAll('p')
-        .filter(p => p.classes().includes('text-brand-orange'))
+      const hintElements = wrapper
+        .findAll('div')
+        .filter(div => div.classes().includes('text-brand-orange'))
 
-      hintParagraphs.forEach(hint => {
+      hintElements.forEach(hint => {
         expect(hint.classes()).toContain('cursor-pointer')
         expect(hint.classes()).toContain('hover:text-brand-orange-light')
       })
@@ -563,7 +570,7 @@ describe('SearchConversation', () => {
 
       // Mentions alternative options
       expect(text).toContain('documents')
-      expect(text).toContain('upload option')
+      expect(text).toContain('Upload documents')
     })
   })
 })

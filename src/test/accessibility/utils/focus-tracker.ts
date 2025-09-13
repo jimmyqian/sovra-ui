@@ -2,9 +2,7 @@
  * Focus tracking utilities for accessibility testing
  */
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
-export interface FocusEvent {
+export interface TrackedFocusEvent {
   element: HTMLElement | null
   timestamp: number
   type: 'focus' | 'blur'
@@ -14,7 +12,7 @@ export interface FocusEvent {
  * Utility class for tracking focus changes during tests
  */
 export class FocusTracker {
-  private focusHistory: FocusEvent[] = []
+  private focusHistory: TrackedFocusEvent[] = []
   private originalFocus: HTMLElement | null = null
   private isTracking = false
 
@@ -46,7 +44,7 @@ export class FocusTracker {
   /**
    * Get the focus history
    */
-  getFocusHistory(): FocusEvent[] {
+  getFocusHistory(): TrackedFocusEvent[] {
     return [...this.focusHistory]
   }
 
@@ -90,12 +88,15 @@ export class FocusTracker {
       'select:not([disabled])',
       'a[href]',
       '[tabindex]:not([tabindex="-1"]):not([disabled])',
-      '[contenteditable="true"]'
+      '[contenteditable="true"]',
+      '[role="button"]:not([disabled])',
+      '[role="menuitem"]',
+      '[role="gridcell"]'
     ].join(', ')
 
-    return Array.from(container.querySelectorAll(focusableSelectors)).filter(
-      el => this.isElementVisible(el as HTMLElement)
-    ) as HTMLElement[]
+    const elements = Array.from(container.querySelectorAll(focusableSelectors))
+
+    return elements.filter(el => this.isElementFocusable(el))
   }
 
   /**
@@ -150,20 +151,48 @@ export class FocusTracker {
     return null
   }
 
-  private handleFocusIn = (event: FocusEvent): void => {
-    this.focusHistory.push({
-      element: event.target as HTMLElement,
-      timestamp: Date.now(),
-      type: 'focus'
-    })
+  private handleFocusIn = (event: Event): void => {
+    if (event.target) {
+      this.focusHistory.push({
+        element: event.target as HTMLElement,
+        timestamp: Date.now(),
+        type: 'focus'
+      })
+    }
   }
 
-  private handleFocusOut = (event: FocusEvent): void => {
-    this.focusHistory.push({
-      element: event.target as HTMLElement,
-      timestamp: Date.now(),
-      type: 'blur'
-    })
+  private handleFocusOut = (event: Event): void => {
+    if (event.target) {
+      this.focusHistory.push({
+        element: event.target as HTMLElement,
+        timestamp: Date.now(),
+        type: 'blur'
+      })
+    }
+  }
+
+  /**
+   * Check if an element is focusable in the current environment
+   */
+  private isElementFocusable(element: HTMLElement): boolean {
+    // Skip elements that are explicitly hidden or disabled
+    if (
+      element.hasAttribute('hidden') ||
+      element.getAttribute('aria-hidden') === 'true' ||
+      element.hasAttribute('disabled') ||
+      element.getAttribute('aria-disabled') === 'true'
+    ) {
+      return false
+    }
+
+    // In test environment (JSDOM), layout properties may not work correctly
+    // So we use a simplified check
+    if (this.isTestEnvironment()) {
+      return this.isElementVisibleInTest(element)
+    }
+
+    // In real browser environment, use full visibility check
+    return this.isElementVisible(element)
   }
 
   private isElementVisible(element: HTMLElement): boolean {
@@ -174,6 +203,29 @@ export class FocusTracker {
       style.opacity !== '0' &&
       element.offsetWidth > 0 &&
       element.offsetHeight > 0
+    )
+  }
+
+  private isElementVisibleInTest(element: HTMLElement): boolean {
+    // In test environment, check only basic visibility indicators
+    const style = window.getComputedStyle(element)
+    return (
+      style.display !== 'none' &&
+      style.visibility !== 'hidden' &&
+      !element.hasAttribute('hidden')
+    )
+  }
+
+  private isTestEnvironment(): boolean {
+    // Check for common test environment indicators
+    return (
+      typeof window !== 'undefined' &&
+      // Vitest environment
+      ('vi' in window ||
+        // JSDOM environment
+        window.navigator.userAgent.includes('jsdom') ||
+        // Node.js environment
+        (typeof process !== 'undefined' && process.env.NODE_ENV === 'test'))
     )
   }
 }

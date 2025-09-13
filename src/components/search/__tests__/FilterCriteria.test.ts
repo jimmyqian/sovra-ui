@@ -3,9 +3,6 @@
  * Tests filter rendering, events, conditional content, and user interactions
  */
 
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import FilterCriteria from '../FilterCriteria.vue'
@@ -98,8 +95,10 @@ describe('FilterCriteria', () => {
     })
 
     it('applies base filter item classes', () => {
+      expect(mockFilters.length).toBeGreaterThan(0)
+      const firstFilter = mockFilters[0]!
       const wrapper = mount(FilterCriteria, {
-        props: { filters: [mockFilters[0]] }
+        props: { filters: [firstFilter] }
       })
 
       const filterSpan = wrapper
@@ -134,13 +133,13 @@ describe('FilterCriteria', () => {
         .filter(span => span.text().includes('Filter'))
 
       // Filter 1: no dropdown, should not have cursor-pointer
-      expect(filterSpans[0].classes()).not.toContain('cursor-pointer')
+      expect(filterSpans[0]!.classes()).not.toContain('cursor-pointer')
 
       // Filter 2: has dropdown, should have cursor-pointer
-      expect(filterSpans[1].classes()).toContain('cursor-pointer')
+      expect(filterSpans[1]!.classes()).toContain('cursor-pointer')
 
       // Filter 3: has dropdown, should have cursor-pointer
-      expect(filterSpans[2].classes()).toContain('cursor-pointer')
+      expect(filterSpans[2]!.classes()).toContain('cursor-pointer')
     })
   })
 
@@ -174,8 +173,10 @@ describe('FilterCriteria', () => {
     })
 
     it('applies correct styling to remove buttons', () => {
+      expect(mockFilters.length).toBeGreaterThan(0)
+      const firstFilter = mockFilters[0]!
       const wrapper = mount(FilterCriteria, {
-        props: { filters: [mockFilters[0]] } // Removable filter
+        props: { filters: [firstFilter] } // Removable filter
       })
 
       const removeButton = wrapper
@@ -200,8 +201,10 @@ describe('FilterCriteria', () => {
     })
 
     it('emits removeFilter event when remove button clicked', async () => {
+      expect(mockFilters.length).toBeGreaterThan(0)
+      const firstFilter = mockFilters[0]!
       const wrapper = mount(FilterCriteria, {
-        props: { filters: [mockFilters[0]] }
+        props: { filters: [firstFilter] }
       })
 
       const removeButton = wrapper
@@ -216,8 +219,10 @@ describe('FilterCriteria', () => {
 
   describe('Dropdown Filters', () => {
     it('shows dropdown text and arrow for dropdown filters', () => {
+      expect(mockFilters.length).toBeGreaterThan(1)
+      const secondFilter = mockFilters[1]!
       const wrapper = mount(FilterCriteria, {
-        props: { filters: [mockFilters[1]] } // Has dropdown
+        props: { filters: [secondFilter] } // Has dropdown
       })
 
       expect(wrapper.text()).toContain('Options ▼')
@@ -236,8 +241,10 @@ describe('FilterCriteria', () => {
     })
 
     it('applies correct styling to dropdown spans', () => {
+      expect(mockFilters.length).toBeGreaterThan(1)
+      const secondFilter = mockFilters[1]!
       const wrapper = mount(FilterCriteria, {
-        props: { filters: [mockFilters[1]] }
+        props: { filters: [secondFilter] }
       })
 
       const dropdownSpan = wrapper
@@ -266,8 +273,10 @@ describe('FilterCriteria', () => {
     })
 
     it('emits dropdownClick event when dropdown clicked', async () => {
+      expect(mockFilters.length).toBeGreaterThan(1)
+      const secondFilter = mockFilters[1]!
       const wrapper = mount(FilterCriteria, {
-        props: { filters: [mockFilters[1]] }
+        props: { filters: [secondFilter] }
       })
 
       const dropdownSpan = wrapper
@@ -383,8 +392,10 @@ describe('FilterCriteria', () => {
 
   describe('Complex Filter Scenarios', () => {
     it('handles filter with both removable and dropdown properties', () => {
+      expect(mockFilters.length).toBeGreaterThan(2)
+      const thirdFilter = mockFilters[2]!
       const wrapper = mount(FilterCriteria, {
-        props: { filters: [mockFilters[2]] } // Has both removable and dropdown
+        props: { filters: [thirdFilter] } // Has both removable and dropdown
       })
 
       // Should show remove button
@@ -454,10 +465,10 @@ describe('FilterCriteria', () => {
         .filter(btn => btn.text().trim() === '×')
 
       // Click first remove button (Filter 1)
-      await removeButtons[0].trigger('click')
+      await removeButtons[0]!.trigger('click')
 
       // Click second remove button (Filter 3)
-      await removeButtons[1].trigger('click')
+      await removeButtons[1]!.trigger('click')
 
       const removeEvents = wrapper.emitted('removeFilter')!
       expect(removeEvents).toHaveLength(2)
@@ -479,10 +490,10 @@ describe('FilterCriteria', () => {
         )
 
       // Click first dropdown (Filter 2)
-      await dropdownSpans[0].trigger('click')
+      await dropdownSpans[0]!.trigger('click')
 
       // Click second dropdown (Filter 3)
-      await dropdownSpans[1].trigger('click')
+      await dropdownSpans[1]!.trigger('click')
 
       const dropdownEvents = wrapper.emitted('dropdownClick')
       if (!dropdownEvents || dropdownEvents.length !== 2) {

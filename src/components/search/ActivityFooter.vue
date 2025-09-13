@@ -76,18 +76,11 @@
     (e: 'showReferences'): void
   }
 
-  const emit = defineEmits<Emits>()
+  defineEmits<Emits>()
 
-  const _handleCategoryToggle = (categoryId: string) => {
-    const category = referenceCategories.value.find(
-      cat => cat.id === categoryId
-    )
-    if (category) {
-      emit('categoryToggle', categoryId, category.active)
-    }
-  }
-
-  const _handleShowReferences = () => {
-    emit('showReferences')
-  }
+  // Event handlers can be added here when needed
+  // Example: const emit = defineEmits<Emits>()
+  // Example: const handleCategoryToggle = (categoryId: string) => {
+  //   emit('categoryToggle', categoryId, true)
+  // }
 </script>

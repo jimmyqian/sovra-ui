@@ -9,7 +9,10 @@
         <!-- Left Panel: Search & Conversation -->
         <div class="w-full bg-bg-card flex flex-col md:w-2/5 md:h-full">
           <AppHeader />
-          <SearchConversation />
+          <SearchConversation
+            :messages="conversationMessages"
+            :user-query="currentQuery"
+          />
 
           <!-- Search Input -->
           <div class="px-8 py-4 md:px-4">
@@ -46,6 +49,7 @@
   import SearchBar from '@/components/common/SearchBar.vue'
   import SearchConversation from '@/components/search/SearchConversation.vue'
   import ResultsList from '@/components/search/ResultsList.vue'
+  import type { ConversationMessage } from '@/types/conversation'
 
   const searchStore = useSearchStore()
 
@@ -65,12 +69,125 @@
     }
   }
 
-  const handleFileUpload = (files: FileList) => {
-    console.log('Files uploaded:', files)
+  const handleFileUpload = (_files: FileList) => {
+    // TODO: Implement file upload functionality
+    // console.log('Files uploaded:', files)
     // TODO: Implement file upload functionality
   }
 
   const handleLoadMore = async () => {
     await searchStore.loadMoreResults()
+  }
+
+  // Generate conversation data based on search state
+  const currentQuery = computed(() => searchStore.currentQuery)
+
+  const conversationMessages = computed<ConversationMessage[]>(() => {
+    const totalResults = searchStore.displayTotalResults
+
+    return [
+      {
+        id: 'system-response-1',
+        sender: 'system',
+        timestamp: new Date(),
+        items: [
+          {
+            id: 'results-summary',
+            type: 'results-summary',
+            resultCount: totalResults
+          },
+          {
+            id: 'text-1',
+            type: 'text',
+            content:
+              "Alternatively, you can use the hints below for finding the person you're looking for.",
+            emphasis: 'secondary'
+          },
+          {
+            id: 'hints-group-1',
+            type: 'hints-group',
+            hints: [
+              {
+                text: 'What specific software role does Johnson hold in his California job',
+                onClick: () => handleHintClick('software role')
+              },
+              {
+                text: 'Which California tech hubs are most likely where Johnson works',
+                onClick: () => handleHintClick('California tech hubs')
+              },
+              {
+                text: 'What skills Johnson has from his current software role',
+                onClick: () => handleHintClick('software skills')
+              }
+            ]
+          },
+          {
+            id: 'text-2',
+            type: 'text',
+            content:
+              'Or include further information, such as any documents you may have about him, web links, pictures, or videos; if so, submit them by using the upload option.',
+            emphasis: 'secondary'
+          },
+          {
+            id: 'refinement-age',
+            type: 'refinement',
+            label: 'Only show results with ages from:',
+            inputType: 'age-range',
+            value: { min: '', max: '' },
+            onChange: (
+              value: string | { min: string; max: string } | string[]
+            ) => {
+              if (
+                typeof value === 'object' &&
+                value !== null &&
+                !Array.isArray(value)
+              ) {
+                handleAgeRangeChange(value)
+              }
+            }
+          },
+          {
+            id: 'action-button-1',
+            type: 'action-button',
+            text: 'create a filter using the details that you provided',
+            variant: 'dashed',
+            onClick: () => handleCreateFilter()
+          },
+          {
+            id: 'file-upload-1',
+            type: 'file-upload',
+            label: 'Upload additional documents',
+            acceptedTypes: [
+              '.pdf',
+              '.doc',
+              '.docx',
+              '.jpg',
+              '.jpeg',
+              '.png',
+              '.gif'
+            ],
+            onUpload: (files: FileList) => handleFileUpload(files)
+          }
+        ]
+      }
+    ]
+  })
+
+  const handleHintClick = (_hintType: string) => {
+    // TODO: Implement hint click functionality
+    // console.log('Hint clicked:', hintType)
+    // TODO: Implement hint click functionality
+  }
+
+  const handleAgeRangeChange = (_ageRange: { min: string; max: string }) => {
+    // TODO: Implement age range filtering
+    // console.log('Age range changed:', ageRange)
+    // TODO: Implement age range filtering
+  }
+
+  const handleCreateFilter = () => {
+    // TODO: Implement filter creation
+    // console.log('Create filter clicked')
+    // TODO: Implement filter creation
   }
 </script>

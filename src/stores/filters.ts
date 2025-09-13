@@ -3,6 +3,7 @@
  */
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import type { SearchResult } from '@/types/search'
 
 export interface AgeRange {
   min: number
@@ -180,7 +181,7 @@ export const useFiltersStore = defineStore('filters', () => {
     return summary.join(', ')
   }
 
-  const applyFilters = (results: any[]) => {
+  const applyFilters = (results: SearchResult[]) => {
     return results.filter(result => {
       // Age filter (exclusive boundaries for the test case)
       if (result.age <= ageRange.value.min || result.age > ageRange.value.max) {

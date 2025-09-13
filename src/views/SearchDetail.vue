@@ -9,7 +9,10 @@
         <!-- Left Panel: Search & Conversation -->
         <div class="w-full bg-bg-card flex flex-col md:w-2/5 md:h-full">
           <AppHeader />
-          <SearchConversation />
+          <SearchConversation
+            :messages="conversationMessages"
+            :user-query="searchQuery"
+          />
 
           <!-- Search Input -->
           <div class="px-8 py-4 md:px-4">
@@ -62,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue'
+  import { ref, onMounted, computed } from 'vue'
   import { useRoute } from 'vue-router'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import AppSidebar from '@/components/navigation/AppSidebar.vue'
@@ -72,6 +75,7 @@
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
   import CategoryTabs from '@/components/search/CategoryTabs.vue'
   import ActivityFooter from '@/components/search/ActivityFooter.vue'
+  import type { ConversationMessage } from '@/types/conversation'
 
   const route = useRoute()
   const searchQuery = ref('')
@@ -176,35 +180,92 @@
   })
 
   const handleSearch = () => {
-    console.log('Search initiated:', searchQuery.value)
+    // TODO: Implement search functionality
+    // console.log('Search initiated:', searchQuery.value)
     // Implement search functionality
   }
 
-  const handleFileUpload = (files: FileList) => {
-    console.log('Files uploaded:', files)
+  const handleFileUpload = (_files: FileList) => {
+    // TODO: Implement file upload functionality
+    // console.log('Files uploaded:', files)
     // Implement file upload functionality
   }
 
-  const handleCategoryToggle = (categoryId: string, active: boolean) => {
-    console.log('Category toggled:', categoryId, active)
+  const handleCategoryToggle = (_categoryId: string, _active: boolean) => {
+    // TODO: Implement category toggle functionality
+    // console.log('Category toggled:', categoryId, active)
     // Implement category toggle functionality
   }
 
   const handleShowReferences = () => {
-    console.log('Show references clicked')
+    // TODO: Implement show references functionality
+    // console.log('Show references clicked')
     // Implement show references functionality
   }
 
-  const handleTagClick = (tag: string) => {
-    console.log('Tag clicked:', tag)
+  const handleTagClick = (_tag: string) => {
+    // TODO: Implement tag navigation functionality
+    // console.log('Tag clicked:', tag)
     // Implement tag navigation functionality - could scroll to section or change view
+  }
+
+  // Generate conversation data for the detail page
+  const conversationMessages = computed<ConversationMessage[]>(() => {
+    return [
+      {
+        id: 'detail-response-1',
+        sender: 'system',
+        timestamp: new Date(),
+        items: [
+          {
+            id: 'detail-summary',
+            type: 'results-summary',
+            resultCount: 1,
+            template: 'Perfect match! Found detailed profile for Johnson Smith.'
+          },
+          {
+            id: 'detail-text-1',
+            type: 'text',
+            content:
+              "This appears to be the person you're looking for. Review the detailed information and use the actions below to explore related profiles.",
+            emphasis: 'secondary'
+          },
+          {
+            id: 'detail-action-1',
+            type: 'action-button',
+            text: 'Find similar profiles',
+            variant: 'primary',
+            onClick: () => handleSimilarProfiles()
+          },
+          {
+            id: 'detail-action-2',
+            type: 'action-button',
+            text: 'Refine search criteria',
+            variant: 'secondary',
+            onClick: () => handleRefineSearch()
+          }
+        ]
+      }
+    ]
+  })
+
+  const handleSimilarProfiles = () => {
+    // TODO: Implement similar profiles functionality
+    // console.log('Find similar profiles clicked')
+    // TODO: Implement similar profiles functionality
+  }
+
+  const handleRefineSearch = () => {
+    // TODO: Implement search refinement
+    // console.log('Refine search clicked')
+    // TODO: Implement search refinement
   }
 
   onMounted(() => {
     // Load person data based on route params
     const personId = route.params.id as string
     if (personId) {
-      console.log('Loading person data for ID:', personId)
+      // TODO: Load person data for production
       // In real app: loadPersonData(personId)
     }
   })

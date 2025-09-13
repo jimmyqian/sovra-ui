@@ -53,8 +53,11 @@ describe('SearchBar', () => {
     // Find search button (should be the last button with search icon)
     const buttons = wrapper.findAll('button')
     const searchButton = buttons[buttons.length - 1] // Search button is last
+    expect(searchButton).toBeTruthy()
 
-    await searchButton.trigger('click')
+    if (searchButton) {
+      await searchButton.trigger('click')
+    }
 
     expect(wrapper.emitted('search')).toBeTruthy()
     expect(wrapper.emitted('search')?.[0]).toEqual([])
@@ -78,7 +81,7 @@ describe('SearchBar', () => {
 
     // Mock file input click
     const fileInput = wrapper.find('input[type="file"]')
-    const clickSpy = vi.spyOn(fileInput.element, 'click')
+    const clickSpy = vi.spyOn(fileInput.element as HTMLInputElement, 'click')
 
     // Find upload button (first button)
     const uploadButton = wrapper.find('button')
@@ -98,7 +101,7 @@ describe('SearchBar', () => {
     const mockFiles = {
       length: 1,
       0: new File(['test'], 'test.pdf', { type: 'application/pdf' })
-    } as FileList
+    } as unknown as FileList
 
     // Set files and trigger change
     Object.defineProperty(fileInput.element, 'files', {
@@ -123,7 +126,7 @@ describe('SearchBar', () => {
     expect(fileInput.attributes('accept')).toBe(
       '.pdf,.doc,.docx,.jpg,.jpeg,.png,.gif'
     )
-    expect(fileInput.element.style.display).toBe('none')
+    expect((fileInput.element as HTMLInputElement).style.display).toBe('none')
   })
 
   it('renders upload button with correct styling', () => {
@@ -154,8 +157,14 @@ describe('SearchBar', () => {
     const micButton = buttons[1]
     const searchButton = buttons[2]
 
-    expect(micButton.classes()).toContain('btn-ghost')
-    expect(searchButton.classes()).toContain('btn-primary')
+    expect(micButton).toBeTruthy()
+    expect(searchButton).toBeTruthy()
+    if (micButton) {
+      expect(micButton.classes()).toContain('btn-ghost')
+    }
+    if (searchButton) {
+      expect(searchButton.classes()).toContain('btn-primary')
+    }
   })
 
   it('adjusts textarea height on input', async () => {
@@ -230,7 +239,10 @@ describe('SearchBar', () => {
       })
 
       const searchButton = wrapper.findAll('button')[2]
-      await searchButton.trigger('click')
+      expect(searchButton).toBeTruthy()
+      if (searchButton) {
+        await searchButton.trigger('click')
+      }
 
       expect(wrapper.emitted('search')).toBeFalsy()
     })
@@ -258,11 +270,14 @@ describe('SearchBar', () => {
       })
 
       const uploadButton = wrapper.findAll('button')[0]
-      await uploadButton.trigger('click')
+      expect(uploadButton).toBeTruthy()
+      if (uploadButton) {
+        await uploadButton.trigger('click')
 
-      // File input should not be clicked (no way to directly test click() call)
-      // But we can verify the button has disabled attributes
-      expect(uploadButton.element.disabled).toBe(true)
+        // File input should not be clicked (no way to directly test click() call)
+        // But we can verify the button has disabled attributes
+        expect(uploadButton.element.disabled).toBe(true)
+      }
     })
 
     it('should not handle enter key when disabled', async () => {
@@ -289,13 +304,16 @@ describe('SearchBar', () => {
 
       const textarea = wrapper.find('textarea')
       const searchButton = wrapper.findAll('button')[2]
+      expect(searchButton).toBeTruthy()
 
       // Should emit modelValue update
       await textarea.setValue('test')
       expect(wrapper.emitted('update:modelValue')).toBeTruthy()
 
       // Should emit search event
-      await searchButton.trigger('click')
+      if (searchButton) {
+        await searchButton.trigger('click')
+      }
       expect(wrapper.emitted('search')).toBeTruthy()
 
       // Should handle enter key

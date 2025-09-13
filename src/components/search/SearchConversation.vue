@@ -1,6 +1,7 @@
 <template>
   <div class="px-8 py-8">
-    <div class="flex gap-4 mb-8 items-start">
+    <!-- User Message -->
+    <div v-if="userQuery" class="flex gap-4 mb-8 items-start">
       <div
         class="w-9 h-9 border border-black rounded-full flex items-center justify-center flex-shrink-0 ml-0.5"
       >
@@ -32,57 +33,39 @@
 
       <div class="flex-1">
         <div class="rounded-lg font-medium">
-          {{ searchQuery }}
+          {{ userQuery }}
         </div>
       </div>
     </div>
 
-    <div class="flex flex-col">
+    <!-- System Messages -->
+    <div v-for="message in messages" :key="message.id" class="flex flex-col">
       <div class="flex gap-4">
         <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">
           <LogoIcon :size="36" color="var(--color-logo-gray)" />
         </div>
         <div class="flex-1">
-          <p class="mb-4 leading-relaxed text-text-secondary">
-            <strong>Fantastic!</strong> {{ totalResults }} persons were found in
-            the results. Please provide additional information about the person
-            you're looking for.
-          </p>
-          <p class="mb-4 leading-relaxed text-text-secondary">
-            Alternatively, you can use the hints below for finding the person
-            you're looking for.
-          </p>
-
-          <div class="my-6">
-            <p
-              class="text-brand-orange pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2"
-            >
-              What specific software role does Johnson hold in his California
-              job
-            </p>
-            <p
-              class="text-brand-orange pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2"
-            >
-              Which California tech hubs are most likely where Johnson works
-            </p>
-            <p
-              class="text-brand-orange pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2 border-b"
-            >
-              What skills Johnson has from his current software role
-            </p>
-          </div>
-
-          <p class="mb-4 leading-relaxed text-text-secondary">
-            Or include further information, such as any documents you may have
-            about him, web links, pictures, or videos; if so, submit them by
-            using the upload option.
-          </p>
-
-          <button
-            class="bg-bg-button border border-dashed border-border-dashed px-4 py-2 rounded-full text-sm cursor-pointer hover:bg-border-hover transition-colors text-brand-orange"
-          >
-            create a filter using the details that you provided
-          </button>
+          <!-- Render conversation items dynamically -->
+          <template v-for="item in message.items" :key="item.id">
+            <TextParagraph v-if="item.type === 'text'" :item="item" />
+            <SearchHintsGroup
+              v-else-if="item.type === 'hints-group'"
+              :item="item"
+            />
+            <ResultsSummary
+              v-else-if="item.type === 'results-summary'"
+              :item="item"
+            />
+            <SearchRefinement
+              v-else-if="item.type === 'refinement'"
+              :item="item"
+            />
+            <ActionButton
+              v-else-if="item.type === 'action-button'"
+              :item="item"
+            />
+            <FileUpload v-else-if="item.type === 'file-upload'" :item="item" />
+          </template>
         </div>
       </div>
     </div>
@@ -90,11 +73,18 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
-  import { useSearchStore } from '@/stores/search'
   import LogoIcon from '@/components/icons/LogoIcon.vue'
+  import TextParagraph from './conversation/TextParagraph.vue'
+  import SearchHintsGroup from './conversation/SearchHintsGroup.vue'
+  import ResultsSummary from './conversation/ResultsSummary.vue'
+  import SearchRefinement from './conversation/SearchRefinement.vue'
+  import ActionButton from './conversation/ActionButton.vue'
+  import FileUpload from './conversation/FileUpload.vue'
+  import type { SearchConversationProps } from '@/types/conversation'
 
-  const searchStore = useSearchStore()
-  const searchQuery = computed(() => searchStore.currentQuery)
-  const totalResults = computed(() => searchStore.displayTotalResults)
+  interface Props extends SearchConversationProps {
+    // Additional props can be added here
+  }
+
+  defineProps<Props>()
 </script>

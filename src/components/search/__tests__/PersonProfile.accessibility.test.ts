@@ -318,7 +318,8 @@ describe('PersonProfile Accessibility', () => {
     expect(tagButtons).toHaveLength(5)
 
     // Test keyboard interaction on first button
-    const firstButton = tagButtons[0]
+    const firstButton = tagButtons[0]!
+    expect(firstButton).toBeTruthy()
 
     // Should be focusable
     expect(firstButton.element.getAttribute('tabindex')).toBe('0')

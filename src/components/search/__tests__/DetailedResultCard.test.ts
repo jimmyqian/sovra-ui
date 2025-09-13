@@ -103,7 +103,8 @@ describe('DetailedResultCard', () => {
     // Image gallery should be first child with flex-1 and min-width
     const flexItems = galleryAndStatsContainer.findAll('.flex-1')
     expect(flexItems).toHaveLength(2)
-    const imageGallery = flexItems[0]
+    const imageGallery = flexItems[0]!
+    expect(imageGallery).toBeTruthy()
     expect(imageGallery.attributes('style')).toContain('min-width: 300px')
 
     // Top row should have 4 images (grid-cols-4)
@@ -306,7 +307,8 @@ describe('DetailedResultCard', () => {
     // Stats grid container should be the second child with flex-1 for responsive behavior
     const flexItems = container.findAll('.flex-1')
     expect(flexItems).toHaveLength(2)
-    const statsContainer = flexItems[1]
+    const statsContainer = flexItems[1]!
+    expect(statsContainer).toBeTruthy()
     expect(statsContainer.exists()).toBe(true)
 
     // Inner grid should contain the actual stats grid
@@ -343,7 +345,8 @@ describe('DetailedResultCard', () => {
     // Stats container should use flex layout with proper min-width
     const flexItems = wrapper.findAll('.flex-1')
     expect(flexItems).toHaveLength(2)
-    const statsContainer = flexItems[1]
+    const statsContainer = flexItems[1]!
+    expect(statsContainer).toBeTruthy()
     expect(statsContainer.exists()).toBe(true)
     expect(statsContainer.attributes('style')).toContain('min-width: 350px')
 
@@ -379,11 +382,12 @@ describe('DetailedResultCard', () => {
     expect(flexItems).toHaveLength(2)
 
     // Image gallery should have 300px minimum width
-    const imageGallery = flexItems[0]
+    const imageGallery = flexItems[0]!
+    expect(imageGallery).toBeTruthy()
     expect(imageGallery.attributes('style')).toContain('min-width: 300px')
 
     // Stats container should have 350px minimum width
-    const statsContainer = flexItems[1]
+    const statsContainer = flexItems[1]!
     expect(statsContainer.attributes('style')).toContain('min-width: 350px')
     expect(statsContainer.classes()).toContain('flex-1')
 
@@ -405,7 +409,8 @@ describe('DetailedResultCard', () => {
     // Stats container should be a standard flex-1 container
     const flexItems = wrapper.findAll('.flex-1')
     expect(flexItems).toHaveLength(2)
-    const statsContainer = flexItems[1]
+    const statsContainer = flexItems[1]!
+    expect(statsContainer).toBeTruthy()
     expect(statsContainer.exists()).toBe(true)
 
     // Inner grid should be a standard grid without height restrictions

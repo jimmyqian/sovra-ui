@@ -218,7 +218,7 @@ export class KeyboardSimulator {
     const sequence: HTMLElement[] = []
 
     // Start with first element
-    elements[0].focus()
+    elements[0]!.focus()
     sequence.push(document.activeElement as HTMLElement)
 
     // Tab through remaining elements

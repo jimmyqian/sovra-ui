@@ -83,7 +83,7 @@
     (e: 'load-more'): void
   }
 
-  const _props = withDefaults(defineProps<Props>(), {
+  withDefaults(defineProps<Props>(), {
     error: null
   })
   const emit = defineEmits<Emits>()
@@ -107,19 +107,19 @@
   }
 
   const handleRemoveFilter = (filterId: string) => {
-    console.log('Remove filter:', filterId)
+    // TODO: Implement filter removal
     filterCriteria.value = filterCriteria.value.filter(f => f.id !== filterId)
   }
 
-  const handleDropdownClick = (filterId: string) => {
-    console.log('Dropdown clicked:', filterId)
+  const handleDropdownClick = (_filterId: string) => {
+    // TODO: Implement dropdown action
   }
 
   const handleEdit = () => {
-    console.log('Edit filters')
+    // TODO: Implement filter editing
   }
 
   const handleCreateMore = () => {
-    console.log('Create more criteria')
+    // TODO: Implement criteria creation
   }
 </script>

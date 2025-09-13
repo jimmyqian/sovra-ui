@@ -3,7 +3,7 @@
  * Tests cross-component keyboard navigation and focus management patterns
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { KeyboardSimulator } from '../utils/keyboard-simulator'
 import { createFocusTracker } from '../utils/focus-tracker'
 
@@ -42,17 +42,11 @@ describe('Global Keyboard Navigation Patterns', () => {
       )
 
       // Should exclude disabled button
-      if (focusableElements.length !== 6) {
-        console.warn(
-          `⚠️ Expected 6 focusable elements, found ${focusableElements.length}`
-        )
-      } else {
-        expect(focusableElements.length).toBe(6) // btn1, input1, textarea1, select1, link1, btn3
-      }
+      expect(focusableElements.length).toBe(6) // btn1, input1, textarea1, select1, link1, btn3
 
       // Test tab sequence
       if (focusableElements.length > 0) {
-        focusableElements[0].focus()
+        focusableElements[0]!.focus()
         expect(document.activeElement).toBe(focusableElements[0])
       }
 
@@ -67,11 +61,7 @@ describe('Global Keyboard Navigation Patterns', () => {
 
       focusTracker.stopTracking()
       const history = focusTracker.getFocusHistory()
-      if (history.length === 0) {
-        console.warn('⚠️ No focus history found')
-      } else {
-        expect(history.length).toBeGreaterThanOrEqual(1)
-      }
+      expect(history.length).toBeGreaterThanOrEqual(1)
     })
 
     it('should test Shift+Tab reverse navigation', async () => {
@@ -86,11 +76,14 @@ describe('Global Keyboard Navigation Patterns', () => {
       const buttons = Array.from(document.querySelectorAll('button'))
 
       // Start from last button
-      buttons[2].focus()
+      buttons[2]!.focus()
       expect(document.activeElement).toBe(buttons[2])
 
       // Shift+Tab should go backwards
-      await KeyboardSimulator.simulateTab(buttons[2], true)
+      expect(buttons[2]).toBeTruthy()
+      if (buttons[2]) {
+        await KeyboardSimulator.simulateTab(buttons[2], true)
+      }
       // In a real browser, focus would move to second button
     })
 
@@ -196,7 +189,7 @@ describe('Global Keyboard Navigation Patterns', () => {
 
       const modal = document.getElementById('modal')!
       const closeBtn = document.getElementById('close-btn')!
-      const _saveBtn = document.getElementById('save-btn')!
+      // const _saveBtn = document.getElementById('save-btn')!
 
       // Show modal
       modal.style.display = 'block'
@@ -204,13 +197,7 @@ describe('Global Keyboard Navigation Patterns', () => {
       const focusTracker = createFocusTracker()
       const focusableInModal = focusTracker.getFocusableElements(modal)
 
-      if (focusableInModal.length !== 3) {
-        console.warn(
-          `⚠️ Expected 3 focusable elements in modal, found ${focusableInModal.length}`
-        )
-      } else {
-        expect(focusableInModal.length).toBe(3) // close-btn, modal-input, save-btn
-      }
+      expect(focusableInModal.length).toBe(3) // close-btn, modal-input, save-btn
 
       // Focus should start on first element
       closeBtn.focus()
@@ -302,10 +289,12 @@ describe('Global Keyboard Navigation Patterns', () => {
       expect(tabbableButtons.length).toBe(1)
 
       // First button should be tabbable
-      expect(buttons[0].getAttribute('tabindex')).toBe('0')
+      if (buttons.length > 0) {
+        expect(buttons[0]!.getAttribute('tabindex')).toBe('0')
+      }
 
       // Test arrow navigation would change tabindex values
-      buttons[0].focus()
+      ;(buttons[0] as HTMLElement).focus()
       await KeyboardSimulator.simulateArrowKey(
         buttons[0] as HTMLElement,
         'right'
@@ -338,13 +327,7 @@ describe('Global Keyboard Navigation Patterns', () => {
         document.getElementById('dynamic-container')!
       )
 
-      if (focusableElements.length !== 2) {
-        console.warn(
-          `⚠️ Expected 2 focusable elements after dynamic content, found ${focusableElements.length}`
-        )
-      } else {
-        expect(focusableElements.length).toBe(2) // add-btn + new button
-      }
+      expect(focusableElements.length).toBe(2) // add-btn + new button
     })
 
     it('should test keyboard navigation with overlapping interactive elements', async () => {
@@ -362,23 +345,11 @@ describe('Global Keyboard Navigation Patterns', () => {
       const focusableElements = focusTracker.getFocusableElements(document.body)
 
       // Should include all focusable elements
-      if (focusableElements.length !== 3) {
-        console.warn(
-          `⚠️ Expected 3 focusable overlapping elements, found ${focusableElements.length}`
-        )
-      } else {
-        expect(focusableElements.length).toBe(3) // clickable-div, nested-btn, nested-link
-      }
+      expect(focusableElements.length).toBe(3) // clickable-div, nested-btn, nested-link
 
       // Test tab order
       const tabOrder = focusTracker.getTabOrder(document.body)
-      if (tabOrder.length !== 3) {
-        console.warn(
-          `⚠️ Expected 3 elements in tab order, found ${tabOrder.length}`
-        )
-      } else {
-        expect(tabOrder.length).toBe(3)
-      }
+      expect(tabOrder.length).toBe(3)
     })
 
     it('should test keyboard navigation in complex layouts', async () => {
@@ -415,13 +386,7 @@ describe('Global Keyboard Navigation Patterns', () => {
       const allFocusable = focusTracker.getFocusableElements(document.body)
 
       // Should find all focusable elements including those in hidden sidebar
-      if (allFocusable.length < 5) {
-        console.warn(
-          `⚠️ Expected at least 5 focusable elements in complex layout, found ${allFocusable.length}`
-        )
-      } else {
-        expect(allFocusable.length).toBeGreaterThanOrEqual(5)
-      }
+      expect(allFocusable.length).toBeGreaterThanOrEqual(5)
 
       // Test that programmatically focusable elements are included
       const mainHeading = document.getElementById('main-heading')!

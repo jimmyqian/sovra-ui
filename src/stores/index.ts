@@ -10,5 +10,5 @@ export { useFiltersStore } from './filters'
 
 // Export types
 export type { SearchState } from './search'
-export type { UIState, Theme, ViewMode, Notification } from './ui'
-export type { SearchFilters, FilterRange } from './filters'
+export type { Theme, ViewMode, Notification } from './ui'
+export type { AgeRange } from './filters'

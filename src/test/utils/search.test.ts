@@ -152,9 +152,9 @@ describe('Search Utilities', () => {
   describe('sortResultsByRating', () => {
     it('sorts results by rating in descending order', () => {
       const sorted = sortResultsByRating(mockResults)
-      expect(sorted[0].rating).toBe(4.5)
-      expect(sorted[1].rating).toBe(4.2)
-      expect(sorted[2].rating).toBe(3.8)
+      expect(sorted[0]!.rating).toBe(4.5)
+      expect(sorted[1]!.rating).toBe(4.2)
+      expect(sorted[2]!.rating).toBe(3.8)
     })
 
     it('does not mutate original array', () => {
@@ -167,25 +167,25 @@ describe('Search Utilities', () => {
   describe('sortResultsByName', () => {
     it('sorts results alphabetically by name', () => {
       const sorted = sortResultsByName(mockResults)
-      expect(sorted[0].name).toBe('Alice Johnson')
-      expect(sorted[1].name).toBe('Jane Smith')
-      expect(sorted[2].name).toBe('John Doe')
+      expect(sorted[0]!.name).toBe('Alice Johnson')
+      expect(sorted[1]!.name).toBe('Jane Smith')
+      expect(sorted[2]!.name).toBe('John Doe')
     })
   })
 
   describe('sortResultsByAge', () => {
     it('sorts results by age ascending by default', () => {
       const sorted = sortResultsByAge(mockResults)
-      expect(sorted[0].age).toBe(25)
-      expect(sorted[1].age).toBe(30)
-      expect(sorted[2].age).toBe(35)
+      expect(sorted[0]!.age).toBe(25)
+      expect(sorted[1]!.age).toBe(30)
+      expect(sorted[2]!.age).toBe(35)
     })
 
     it('sorts results by age descending when specified', () => {
       const sorted = sortResultsByAge(mockResults, false)
-      expect(sorted[0].age).toBe(35)
-      expect(sorted[1].age).toBe(30)
-      expect(sorted[2].age).toBe(25)
+      expect(sorted[0]!.age).toBe(35)
+      expect(sorted[1]!.age).toBe(30)
+      expect(sorted[2]!.age).toBe(25)
     })
   })
 
@@ -200,10 +200,11 @@ describe('Search Utilities', () => {
     })
 
     it('rounds to 2 decimal places', () => {
+      expect(mockResults.length).toBeGreaterThan(2)
       const results = [
-        { ...mockResults[0], rating: 3.333 },
-        { ...mockResults[1], rating: 3.333 },
-        { ...mockResults[2], rating: 3.333 }
+        { ...mockResults[0]!, rating: 3.333 },
+        { ...mockResults[1]!, rating: 3.333 },
+        { ...mockResults[2]!, rating: 3.333 }
       ]
       expect(calculateAverageRating(results)).toBe(3.33)
     })
@@ -343,12 +344,13 @@ describe('Search Utilities', () => {
     })
 
     it('limits top locations to 3', () => {
+      expect(mockResults.length).toBeGreaterThan(2)
       const manyLocations = [
-        { ...mockResults[0], location: 'Location A' },
-        { ...mockResults[1], location: 'Location B' },
-        { ...mockResults[2], location: 'Location C' },
-        { ...mockResults[0], location: 'Location D' },
-        { ...mockResults[1], location: 'Location E' }
+        { ...mockResults[0]!, location: 'Location A' },
+        { ...mockResults[1]!, location: 'Location B' },
+        { ...mockResults[2]!, location: 'Location C' },
+        { ...mockResults[0]!, location: 'Location D' },
+        { ...mockResults[1]!, location: 'Location E' }
       ]
       const summary = generateResultsSummary(manyLocations)
       expect(summary.topLocations).toHaveLength(3)

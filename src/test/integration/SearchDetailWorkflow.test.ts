@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { createRouter, createWebHistory } from 'vue-router'
-import { createPinia, setActivePinia } from 'pinia'
+import { createRouter, createWebHistory, type Router } from 'vue-router'
+import { createPinia, setActivePinia, type Pinia } from 'pinia'
 import SearchDetail from '@/views/SearchDetail.vue'
 
 // Mock the router
@@ -20,8 +20,8 @@ vi.mock('vue-router', async () => {
 })
 
 describe('SearchDetail Integration Tests', () => {
-  let router: any
-  let pinia: any
+  let router: Router
+  let pinia: Pinia
 
   beforeEach(() => {
     vi.clearAllMocks()
