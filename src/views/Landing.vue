@@ -82,12 +82,14 @@
       await searchStore.performSearch(searchQuery.value)
 
       await router.push('/search')
-    } catch (error) {
-      console.error('Search failed:', error)
+    } catch {
+      // TODO: Implement proper error handling/logging
+      // console.error('Search failed:', error)
     }
   }
 
-  const handleFileUpload = (files: FileList) => {
-    console.log('Files uploaded:', files)
+  const handleFileUpload = (_files: FileList) => {
+    // TODO: Implement file upload handling
+    // console.log('Files uploaded:', files)
   }
 </script>

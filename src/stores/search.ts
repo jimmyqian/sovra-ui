@@ -151,7 +151,7 @@ export const useSearchStore = defineStore('search', () => {
           name: `Johnson Smith ${i + 1}`,
           age: Math.floor(Math.random() * 50) + 20,
           gender: i % 2 === 0 ? 'Male' : 'Female',
-          maritalStatus: ['Single', 'Married', 'Divorced'][i % 3],
+          maritalStatus: ['Single', 'Married', 'Divorced'][i % 3] ?? 'Single',
           location: 'Mock Location',
           rating: Math.round(Math.random() * 5 * 10) / 10,
           references: Math.floor(Math.random() * 100),

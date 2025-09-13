@@ -2,8 +2,6 @@
  * Shared accessibility testing helpers and utilities
  */
 
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-
 import type { VueWrapper } from '@vue/test-utils'
 import type { ContrastResult } from '../utils/contrast-calculator'
 import { ColorContrastCalculator } from '../utils/contrast-calculator'
@@ -117,6 +115,14 @@ export class AccessibilityTestHelper {
       return element.textContent.trim()
     }
 
+    // For headings, use text content
+    if (
+      ['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName) &&
+      element.textContent
+    ) {
+      return element.textContent.trim()
+    }
+
     // For images, use alt text
     if (element.tagName === 'IMG') {
       return (element as HTMLImageElement).alt
@@ -158,7 +164,9 @@ export class AccessibilityTestHelper {
   /**
    * Test keyboard navigation for a component
    */
-  static async testKeyboardNavigation(wrapper: VueWrapper<any>): Promise<{
+  static async testKeyboardNavigation<T = any>(
+    wrapper: VueWrapper<T>
+  ): Promise<{
     canFocusWithTab: boolean
     canActivateWithEnter: boolean
     canActivateWithSpace: boolean
@@ -175,14 +183,14 @@ export class AccessibilityTestHelper {
     // Test tab navigation
     let canFocusWithTab = false
     if (focusableElements.length > 0) {
-      await KeyboardSimulator.simulateTab(focusableElements[0])
+      await KeyboardSimulator.simulateTab(focusableElements[0]!)
       canFocusWithTab = focusTracker.getCurrentFocus() !== null
     }
 
     // Test Enter activation
     let canActivateWithEnter = false
     if (focusableElements.length > 0) {
-      const firstFocusable = focusableElements[0]
+      const firstFocusable = focusableElements[0]!
       const result =
         await KeyboardSimulator.testKeyboardActivation(firstFocusable)
       canActivateWithEnter = result.respondsToEnter
@@ -191,7 +199,7 @@ export class AccessibilityTestHelper {
     // Test Space activation
     let canActivateWithSpace = false
     if (focusableElements.length > 0) {
-      const firstFocusable = focusableElements[0]
+      const firstFocusable = focusableElements[0]!
       const result =
         await KeyboardSimulator.testKeyboardActivation(firstFocusable)
       canActivateWithSpace = result.respondsToSpace
@@ -210,7 +218,9 @@ export class AccessibilityTestHelper {
   /**
    * Test color contrast for component
    */
-  static testColorContrast(wrapper: VueWrapper<any>): {
+  static testColorContrast<T = any>(
+    wrapper: VueWrapper<T>
+  ): {
     results: ContrastResult[]
     passes: boolean
     issues: string[]
@@ -246,7 +256,9 @@ export class AccessibilityTestHelper {
   /**
    * Test semantic HTML structure
    */
-  static testSemanticStructure(wrapper: VueWrapper<any>): {
+  static testSemanticStructure<T = any>(
+    wrapper: VueWrapper<T>
+  ): {
     hasProperHeadingHierarchy: boolean
     hasSemanticElements: boolean
     hasLandmarks: boolean
@@ -296,9 +308,9 @@ export class AccessibilityTestHelper {
     const rgbMatch = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
     if (!rgbMatch) return null
 
-    const r = parseInt(rgbMatch[1])
-    const g = parseInt(rgbMatch[2])
-    const b = parseInt(rgbMatch[3])
+    const r = parseInt(rgbMatch[1]!)
+    const g = parseInt(rgbMatch[2]!)
+    const b = parseInt(rgbMatch[3]!)
 
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`
   }

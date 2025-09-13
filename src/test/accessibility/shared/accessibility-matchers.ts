@@ -11,12 +11,12 @@ import { AccessibilityTestHelper } from './accessibility-test-helpers'
  */
 declare module 'vitest' {
   interface Assertion<T = any> {
-    toBeAccessible(): T
-    toHaveAccessibleName(expectedName?: string): T
-    toHaveProperKeyboardNavigation(): T
-    toMeetContrastRequirements(level?: 'AA' | 'AAA'): T
-    toHaveValidAriaAttributes(): T
-    toHaveSemanticStructure(): T
+    toBeAccessible(): Assertion<T>
+    toHaveAccessibleName(expectedName?: string): Assertion<T>
+    toHaveProperKeyboardNavigation(): Assertion<T>
+    toMeetContrastRequirements(level?: 'AA' | 'AAA'): Assertion<T>
+    toHaveValidAriaAttributes(): Assertion<T>
+    toHaveSemanticStructure(): Assertion<T>
   }
 }
 
@@ -24,7 +24,7 @@ declare module 'vitest' {
  * Check if component is accessible (comprehensive test)
  */
 expect.extend({
-  toBeAccessible(wrapper: VueWrapper<any>) {
+  toBeAccessible<T = any>(wrapper: VueWrapper<T>) {
     const element = wrapper.element as HTMLElement
     const issues: string[] = []
 
@@ -83,7 +83,7 @@ expect.extend({
  * Check if component supports proper keyboard navigation
  */
 expect.extend({
-  async toHaveProperKeyboardNavigation(wrapper: VueWrapper<any>) {
+  async toHaveProperKeyboardNavigation<T = any>(wrapper: VueWrapper<T>) {
     const result = await AccessibilityTestHelper.testKeyboardNavigation(wrapper)
 
     const pass =
@@ -115,8 +115,8 @@ expect.extend({
  * Check if component meets color contrast requirements
  */
 expect.extend({
-  toMeetContrastRequirements(
-    wrapper: VueWrapper<any>,
+  toMeetContrastRequirements<T = any>(
+    wrapper: VueWrapper<T>,
     level: 'AA' | 'AAA' = 'AA'
   ) {
     const result = AccessibilityTestHelper.testColorContrast(wrapper)
@@ -167,7 +167,7 @@ expect.extend({
  * Check if component has proper semantic structure
  */
 expect.extend({
-  toHaveSemanticStructure(wrapper: VueWrapper<any>) {
+  toHaveSemanticStructure<T = any>(wrapper: VueWrapper<T>) {
     const result = AccessibilityTestHelper.testSemanticStructure(wrapper)
     const pass =
       result.hasProperHeadingHierarchy &&

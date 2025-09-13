@@ -348,25 +348,37 @@ describe('Filters Store', () => {
         id: 1,
         name: 'John Doe',
         age: 30,
+        gender: 'Male',
+        maritalStatus: 'Single',
         location: 'New York',
         rating: 4.5,
-        companies: 3
+        references: 5,
+        companies: 3,
+        contacts: 12
       },
       {
         id: 2,
         name: 'Jane Smith',
         age: 25,
+        gender: 'Female',
+        maritalStatus: 'Married',
         location: 'Los Angeles',
         rating: 3.8,
-        companies: 2
+        references: 3,
+        companies: 2,
+        contacts: 8
       },
       {
         id: 3,
         name: 'Bob Johnson',
         age: 35,
+        gender: 'Male',
+        maritalStatus: 'Married',
         location: 'New York',
         rating: 4.8,
-        companies: 5
+        references: 7,
+        companies: 5,
+        contacts: 15
       }
     ]
 

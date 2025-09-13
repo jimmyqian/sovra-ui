@@ -155,19 +155,22 @@ export const getFilterDisplayText = (filter: FilterItem): string => {
 export const validateSearchResult = (
   result: unknown
 ): result is SearchResult => {
+  if (typeof result !== 'object' || result === null) {
+    return false
+  }
+
+  const obj = result as Record<string, unknown>
   return (
-    typeof result === 'object' &&
-    result !== null &&
-    typeof result.id === 'number' &&
-    typeof result.name === 'string' &&
-    typeof result.age === 'number' &&
-    typeof result.gender === 'string' &&
-    typeof result.maritalStatus === 'string' &&
-    typeof result.location === 'string' &&
-    typeof result.rating === 'number' &&
-    typeof result.references === 'number' &&
-    typeof result.companies === 'number' &&
-    typeof result.contacts === 'number'
+    typeof obj.id === 'number' &&
+    typeof obj.name === 'string' &&
+    typeof obj.age === 'number' &&
+    typeof obj.gender === 'string' &&
+    typeof obj.maritalStatus === 'string' &&
+    typeof obj.location === 'string' &&
+    typeof obj.rating === 'number' &&
+    typeof obj.references === 'number' &&
+    typeof obj.companies === 'number' &&
+    typeof obj.contacts === 'number'
   )
 }
 
@@ -204,7 +207,10 @@ export const generateResultsSummary = (
 
   const locationCounts = groupResultsByLocation(results)
   const topLocations = Object.keys(locationCounts)
-    .sort((a, b) => locationCounts[b].length - locationCounts[a].length)
+    .sort(
+      (a, b) =>
+        (locationCounts[b]?.length ?? 0) - (locationCounts[a]?.length ?? 0)
+    )
     .slice(0, 3)
 
   return {

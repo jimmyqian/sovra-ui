@@ -2,7 +2,7 @@
  * Unit tests for the UI store
  * Tests theme management, sidebar state, notifications, and view modes
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useUIStore } from '../ui'
 

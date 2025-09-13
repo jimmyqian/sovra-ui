@@ -26,7 +26,7 @@ export const useTheme = () => {
       ?.getAttribute('content') as Theme
 
     // Check for theme in window object (set by server)
-    const windowTheme = (window as any).APP_THEME as Theme
+    const windowTheme = (window as { APP_THEME?: string }).APP_THEME as Theme
 
     // Use server-provided theme or default to 'sovra'
     const serverTheme = metaTheme || windowTheme || 'sovra'

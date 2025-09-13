@@ -146,6 +146,8 @@ export const formatEmailForDisplay = (
   if (email.length <= maxLength) return email
 
   const [username, domain] = email.split('@')
+  if (!domain) return email // Return as-is if no @ symbol
+
   const truncatedDomain =
     domain.length > 15 ? `${domain.slice(0, 12)}...` : domain
 

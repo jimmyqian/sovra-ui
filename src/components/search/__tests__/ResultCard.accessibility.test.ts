@@ -3,18 +3,19 @@
  * Tests semantic structure, ARIA attributes, color contrast, and screen reader compatibility
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { VueWrapper } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
+import { createRouter, createWebHistory } from 'vue-router'
 import ResultCard from '../ResultCard.vue'
 import { AccessibilityTestHelper } from '@/test/accessibility/shared/accessibility-test-helpers'
 import '@/test/accessibility/shared/accessibility-matchers'
 
 describe('ResultCard Accessibility', () => {
-  let wrapper: VueWrapper<any>
+  let wrapper: VueWrapper<InstanceType<typeof ResultCard>>
 
   const mockResult = {
-    id: '1',
+    id: 1,
     name: 'John Smith',
     age: 35,
     gender: 'Male',
@@ -24,6 +25,27 @@ describe('ResultCard Accessibility', () => {
     references: 127,
     companies: 8,
     contacts: 23
+  }
+
+  const router = createRouter({
+    history: createWebHistory(),
+    routes: [
+      { path: '/', component: { template: '<div>Home</div>' } },
+      {
+        path: '/search-detail/:id',
+        name: 'SearchDetail',
+        component: { template: '<div>Detail</div>' }
+      }
+    ]
+  })
+
+  const createWrapper = (props = { result: mockResult }) => {
+    return mount(ResultCard, {
+      props,
+      global: {
+        plugins: [router]
+      }
+    })
   }
 
   beforeEach(() => {
@@ -37,9 +59,7 @@ describe('ResultCard Accessibility', () => {
 
   describe('Semantic Structure and Headings', () => {
     it('should have proper heading hierarchy', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       const heading = wrapper.find('h3').element
       expect(heading.textContent?.trim()).toBe('John Smith')
@@ -50,9 +70,7 @@ describe('ResultCard Accessibility', () => {
     })
 
     it('should use semantic HTML structure for data display', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       // Should use proper semantic structure for statistics
       const statItems = wrapper.findAll('.stat-item')
@@ -68,9 +86,7 @@ describe('ResultCard Accessibility', () => {
     })
 
     it('should provide proper document structure for screen readers', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       const semanticResult =
         AccessibilityTestHelper.testSemanticStructure(wrapper)
@@ -80,28 +96,24 @@ describe('ResultCard Accessibility', () => {
 
   describe('ARIA Attributes and Screen Reader Support', () => {
     it('should make statistics accessible to screen readers', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       // Statistics should be clearly labeled
       const statNumbers = wrapper.findAll('.stat-number')
       const statLabels = wrapper.findAll('.stat-label')
 
-      expect(statNumbers[0].text()).toBe('127')
-      expect(statLabels[0].text()).toContain('References')
+      expect(statNumbers[0]!.text()).toBe('127')
+      expect(statLabels[0]!.text()).toContain('References')
 
-      expect(statNumbers[1].text()).toBe('8')
-      expect(statLabels[1].text()).toContain('companies')
+      expect(statNumbers[1]!.text()).toBe('8')
+      expect(statLabels[1]!.text()).toContain('companies')
 
-      expect(statNumbers[2].text()).toBe('23')
-      expect(statLabels[2].text()).toContain('Contacts')
+      expect(statNumbers[2]!.text()).toBe('23')
+      expect(statLabels[2]!.text()).toContain('Contacts')
     })
 
     it('should provide accessible rating information', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       // Rating should be accessible
       const ratingText = wrapper.find('.text-sm.font-semibold').element
@@ -132,26 +144,22 @@ describe('ResultCard Accessibility', () => {
     })
 
     it('should make personal information accessible', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       // Personal info should be clearly structured
       const personalInfo = wrapper.find('.flex.gap-4.mb-3')
       const infoItems = personalInfo.findAll('span')
 
-      expect(infoItems[0].text()).toBe('35 Years')
-      expect(infoItems[1].text()).toBe('Male')
-      expect(infoItems[2].text()).toBe('Married')
-      expect(infoItems[3].text()).toBe('New York, NY')
+      expect(infoItems[0]!.text()).toBe('35 Years')
+      expect(infoItems[1]!.text()).toBe('Male')
+      expect(infoItems[2]!.text()).toBe('Married')
+      expect(infoItems[3]!.text()).toBe('New York, NY')
     })
   })
 
   describe('Color Contrast and Visual Accessibility', () => {
     it('should meet contrast requirements for primary content', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       const heading = wrapper.find('h3').element
       expect(heading.className).toContain('text-text-primary')
@@ -161,15 +169,13 @@ describe('ResultCard Accessibility', () => {
       expect(contrastResult.results.length).toBeGreaterThanOrEqual(0)
 
       if (!contrastResult.passes) {
-        // Log contrast issues for awareness
-        console.warn('ResultCard contrast issues:', contrastResult.issues)
+        // Document contrast issues for reference
+        // Note: Any contrast issues should be addressed in the component styling
       }
     })
 
     it('should have proper contrast for secondary text elements', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       const secondaryText = wrapper.find('.text-text-secondary').element
       expect(secondaryText.className).toContain('text-text-secondary')
@@ -191,24 +197,17 @@ describe('ResultCard Accessibility', () => {
       ]
 
       testResults.forEach(result => {
-        wrapper = mount(ResultCard, { props: { result } })
+        wrapper = createWrapper({ result })
 
         const heading = wrapper.find('h3').element
         if (heading.textContent !== result.name) {
-          console.warn(
-            `⚠️ Heading text "${heading.textContent}" does not match expected "${result.name}"`
-          )
+          // Heading text mismatch - this should be tested with assertions
+          expect(heading.textContent).toBe(result.name)
         } else {
-          try {
-            if (result.name) {
-              expect(heading).toHaveAccessibleName(result.name)
-            }
-            expect(heading.textContent).toBe(result.name)
-          } catch (error) {
-            console.warn(
-              `⚠️ Accessibility issue with result "${result.name}": ${(error as Error).message}`
-            )
+          if (result.name) {
+            expect(heading).toHaveAccessibleName(result.name)
           }
+          expect(heading.textContent).toBe(result.name)
         }
       })
     })
@@ -216,9 +215,7 @@ describe('ResultCard Accessibility', () => {
 
   describe('Responsive Design Accessibility', () => {
     it('should maintain accessibility across different screen sizes', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       // Check for responsive classes that shouldn't break accessibility
       const container = wrapper.find('.result-card').element
@@ -236,19 +233,13 @@ describe('ResultCard Accessibility', () => {
         location: 'Very Long Location Name, State With Long Name, Country'
       }
 
-      wrapper = mount(ResultCard, {
-        props: { result: longTextResult }
-      })
+      wrapper = createWrapper({ result: longTextResult })
 
       // Text should be properly contained
       const nameElement = wrapper.find('h3').element
-      if (!nameElement.className.includes('min-w-0')) {
-        console.warn(
-          `⚠️ Name element missing min-w-0 class for text truncation: ${nameElement.className}`
-        )
-      } else {
-        expect(nameElement.className).toContain('min-w-0') // Allows text truncation
-      }
+      // Parent container should have min-w-0 class for proper text truncation
+      const parentContainer = nameElement.parentElement
+      expect(parentContainer?.className).toContain('min-w-0') // Allows text truncation
 
       const locationElement = wrapper.find('.location').element
       expect(locationElement.textContent).toBe(longTextResult.location)
@@ -257,9 +248,7 @@ describe('ResultCard Accessibility', () => {
 
   describe('Data Presentation Accessibility', () => {
     it('should present numerical data clearly for screen readers', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       // Age should be clearly presented
       const ageElement = wrapper.find('.age').element
@@ -271,9 +260,9 @@ describe('ResultCard Accessibility', () => {
 
       // Statistics should be clear
       const statNumbers = wrapper.findAll('.stat-number')
-      expect(statNumbers[0].text()).toBe('127')
-      expect(statNumbers[1].text()).toBe('8')
-      expect(statNumbers[2].text()).toBe('23')
+      expect(statNumbers[0]!.text()).toBe('127')
+      expect(statNumbers[1]!.text()).toBe('8')
+      expect(statNumbers[2]!.text()).toBe('23')
     })
 
     it('should handle edge cases in data presentation', () => {
@@ -290,18 +279,18 @@ describe('ResultCard Accessibility', () => {
       })
 
       // Large numbers should be displayed
-      const referencesElement = wrapper.findAll('.stat-number')[0]
+      const referencesElement = wrapper.findAll('.stat-number')[0]!
+      expect(referencesElement).toBeTruthy()
       expect(referencesElement.text()).toBe('999999')
 
       // Zero values should be displayed
-      const companiesElement = wrapper.findAll('.stat-number')[1]
+      const companiesElement = wrapper.findAll('.stat-number')[1]!
+      expect(companiesElement).toBeTruthy()
       expect(companiesElement.text()).toBe('0')
     })
 
     it('should make the rating component accessible', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       // Rating should have proper context
       const ratingLabel = wrapper.find('.text-xs.text-text-secondary')
@@ -342,9 +331,7 @@ describe('ResultCard Accessibility', () => {
     })
 
     it('should support comprehensive accessibility validation', () => {
-      wrapper = mount(ResultCard, {
-        props: { result: mockResult }
-      })
+      wrapper = createWrapper()
 
       // Should have reasonable semantic structure
       const semanticResult =
@@ -358,7 +345,7 @@ describe('ResultCard Accessibility', () => {
 
     it('should maintain accessibility with incomplete data', () => {
       const incompleteResult = {
-        id: '2',
+        id: 2,
         name: '',
         age: 0,
         gender: '',

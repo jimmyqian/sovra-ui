@@ -35,9 +35,14 @@ describe('ScoreBar', () => {
       })
 
       // Progress bar
-      const progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.classes()).toContain('h-full')
-      expect(progressBar.classes()).toContain('bg-score-bar')
+      const allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      const progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.classes()).toContain('h-full')
+        expect(progressBar.classes()).toContain('bg-score-bar')
+      }
 
       // Divider lines
       const dividers = wrapper.findAll('div').slice(2)
@@ -94,17 +99,22 @@ describe('ScoreBar', () => {
         props: { rating: 3 }
       })
 
-      const progressBar = wrapper.findAll('div')[1]
-      const expectedClasses = [
-        'h-full',
-        'bg-score-bar',
-        'transition-all',
-        'duration-300'
-      ]
+      const allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      const progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        const expectedClasses = [
+          'h-full',
+          'bg-score-bar',
+          'transition-all',
+          'duration-300'
+        ]
 
-      expectedClasses.forEach(className => {
-        expect(progressBar.classes()).toContain(className)
-      })
+        expectedClasses.forEach(className => {
+          expect(progressBar.classes()).toContain(className)
+        })
+      }
     })
 
     it('calculates correct width for different ratings', () => {
@@ -122,8 +132,13 @@ describe('ScoreBar', () => {
           props: { rating }
         })
 
-        const progressBar = wrapper.findAll('div')[1]
-        expect(progressBar.element.style.width).toBe(expectedWidth)
+        const allDivs = wrapper.findAll('div')
+        expect(allDivs.length).toBeGreaterThan(1)
+        const progressBar = allDivs[1]
+        expect(progressBar).toBeTruthy()
+        if (progressBar) {
+          expect(progressBar.element.style.width).toBe(expectedWidth)
+        }
       })
     })
 
@@ -147,9 +162,14 @@ describe('ScoreBar', () => {
         props: { rating: 3 }
       })
 
-      const progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.classes()).toContain('transition-all')
-      expect(progressBar.classes()).toContain('duration-300')
+      const allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      const progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.classes()).toContain('transition-all')
+        expect(progressBar.classes()).toContain('duration-300')
+      }
     })
   })
 
@@ -223,8 +243,13 @@ describe('ScoreBar', () => {
         props: { rating: 0 }
       })
 
-      const progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.element.style.width).toBe('0%')
+      const allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      const progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.element.style.width).toBe('0%')
+      }
     })
 
     it('shows full progress for maximum rating', () => {
@@ -232,8 +257,13 @@ describe('ScoreBar', () => {
         props: { rating: 5 }
       })
 
-      const progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.element.style.width).toBe('100%')
+      const allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      const progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.element.style.width).toBe('100%')
+      }
     })
 
     it('shows partial progress for mid-range ratings', () => {
@@ -241,8 +271,13 @@ describe('ScoreBar', () => {
         props: { rating: 2.5 }
       })
 
-      const progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.element.style.width).toBe('50%')
+      const allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      const progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.element.style.width).toBe('50%')
+      }
     })
 
     it('handles decimal ratings correctly', () => {
@@ -257,8 +292,13 @@ describe('ScoreBar', () => {
           props: { rating }
         })
 
-        const progressBar = wrapper.findAll('div')[1]
-        expect(progressBar.element.style.width).toBe(expectedWidth)
+        const allDivs = wrapper.findAll('div')
+        expect(allDivs.length).toBeGreaterThan(1)
+        const progressBar = allDivs[1]
+        expect(progressBar).toBeTruthy()
+        if (progressBar) {
+          expect(progressBar.element.style.width).toBe(expectedWidth)
+        }
       })
     })
   })
@@ -269,13 +309,23 @@ describe('ScoreBar', () => {
         props: { rating: 2 }
       })
 
-      let progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.element.style.width).toBe('40%')
+      let allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      let progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.element.style.width).toBe('40%')
+      }
 
       await wrapper.setProps({ rating: 4 })
 
-      progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.element.style.width).toBe('80%')
+      allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.element.style.width).toBe('80%')
+      }
     })
 
     it('maintains smooth transitions on rating changes', async () => {
@@ -283,15 +333,20 @@ describe('ScoreBar', () => {
         props: { rating: 1 }
       })
 
-      const progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.classes()).toContain('transition-all')
-      expect(progressBar.classes()).toContain('duration-300')
+      const allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      const progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.classes()).toContain('transition-all')
+        expect(progressBar.classes()).toContain('duration-300')
 
-      await wrapper.setProps({ rating: 5 })
+        await wrapper.setProps({ rating: 5 })
 
-      // Transition classes should remain after prop change
-      expect(progressBar.classes()).toContain('transition-all')
-      expect(progressBar.classes()).toContain('duration-300')
+        // Transition classes should remain after prop change
+        expect(progressBar.classes()).toContain('transition-all')
+        expect(progressBar.classes()).toContain('duration-300')
+      }
     })
   })
 
@@ -306,8 +361,13 @@ describe('ScoreBar', () => {
       expect(container.classes()).toContain('bg-border-lighter')
 
       // Progress bar provides score visualization
-      const progressBar = wrapper.findAll('div')[1]
-      expect(progressBar.classes()).toContain('bg-score-bar')
+      const allDivs = wrapper.findAll('div')
+      expect(allDivs.length).toBeGreaterThan(1)
+      const progressBar = allDivs[1]
+      expect(progressBar).toBeTruthy()
+      if (progressBar) {
+        expect(progressBar.classes()).toContain('bg-score-bar')
+      }
 
       // Dividers provide segment separation
       const dividers = wrapper.findAll('div').slice(2)

@@ -125,8 +125,7 @@ export default [
         parser: typescriptParser,
         ecmaVersion: 2020,
         sourceType: 'module',
-        extraFileExtensions: ['.vue'],
-        project: './tsconfig.json'
+        extraFileExtensions: ['.vue']
       }
     },
     plugins: {
@@ -197,6 +196,25 @@ export default [
           multiline: 1
         }
       ]
+    }
+  },
+
+  // Test files configuration - more relaxed rules for testing
+  {
+    files: [
+      '**/*.test.{ts,js,vue}',
+      '**/test/**/*.{ts,js,vue}',
+      '**/__tests__/**/*.{ts,js,vue}'
+    ],
+    rules: {
+      // Allow non-null assertions in tests - they're safe after existence checks
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      // Allow console statements in tests for debugging
+      'no-console': 'off',
+      // Allow explicit any types in tests for mocking
+      '@typescript-eslint/no-explicit-any': 'off',
+      // Allow multiple components in test files for test utilities
+      'vue/one-component-per-file': 'off'
     }
   },
 

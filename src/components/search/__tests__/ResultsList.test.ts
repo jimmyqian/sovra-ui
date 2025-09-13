@@ -47,34 +47,28 @@ vi.mock('@/components/icons/MoreIcon.vue', () => ({
 describe('ResultsList', () => {
   const mockResults: SearchResult[] = [
     {
-      id: '1',
-      title: 'John Doe',
-      description: 'Software Engineer',
-      score: 0.95,
-      details: {
-        location: 'California',
-        experience: '5 years',
-        skills: ['JavaScript', 'Vue.js']
-      },
-      metadata: {
-        lastUpdated: '2024-01-01',
-        source: 'LinkedIn'
-      }
+      id: 1,
+      name: 'John Doe',
+      age: 28,
+      gender: 'Male',
+      maritalStatus: 'Single',
+      location: 'California',
+      rating: 4.5,
+      references: 10,
+      companies: 3,
+      contacts: 25
     },
     {
-      id: '2',
-      title: 'Jane Smith',
-      description: 'Product Manager',
-      score: 0.87,
-      details: {
-        location: 'New York',
-        experience: '3 years',
-        skills: ['Product Management', 'Agile']
-      },
-      metadata: {
-        lastUpdated: '2024-01-02',
-        source: 'Indeed'
-      }
+      id: 2,
+      name: 'Jane Smith',
+      age: 32,
+      gender: 'Female',
+      maritalStatus: 'Married',
+      location: 'New York',
+      rating: 4.2,
+      references: 8,
+      companies: 2,
+      contacts: 18
     }
   ]
 
@@ -179,22 +173,19 @@ describe('ResultsList', () => {
 
       expect(wrapper.text()).toContain('Results (2)')
 
-      const newResults = [
+      const newResults: SearchResult[] = [
         ...mockResults,
         {
-          id: '3',
-          title: 'Bob Johnson',
-          description: 'Designer',
-          score: 0.75,
-          details: {
-            location: 'Texas',
-            experience: '2 years',
-            skills: ['Design', 'Figma']
-          },
-          metadata: {
-            lastUpdated: '2024-01-03',
-            source: 'Dribbble'
-          }
+          id: 3,
+          name: 'Bob Johnson',
+          age: 25,
+          gender: 'Male',
+          maritalStatus: 'Single',
+          location: 'Texas',
+          rating: 4.0,
+          references: 5,
+          companies: 1,
+          contacts: 12
         }
       ]
 
@@ -262,16 +253,11 @@ describe('ResultsList', () => {
 
       // Filter should be removed from internal state
       const updatedFiltersCount = filterCriteria.props('filters').length
-      if (updatedFiltersCount !== initialFiltersCount) {
-        console.warn(
-          `⚠️ Expected filters count to be ${initialFiltersCount} after removal but got ${updatedFiltersCount}`
-        )
-      }
+      // Verify filter removal behavior
+      expect(updatedFiltersCount).toBeLessThanOrEqual(initialFiltersCount)
     })
 
     it('handles other FilterCriteria events', async () => {
-      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {})
-
       const wrapper = mount(ResultsList, {
         props: { results: mockResults },
         global: {
@@ -286,15 +272,13 @@ describe('ResultsList', () => {
 
       const filterCriteria = wrapper.findComponent(FilterCriteria)
 
+      // Test that events are handled gracefully (no console logging in production)
       await filterCriteria.vm.$emit('dropdownClick', '2')
       await filterCriteria.vm.$emit('edit')
       await filterCriteria.vm.$emit('createMore')
 
-      expect(consoleSpy).toHaveBeenCalledWith('Dropdown clicked:', '2')
-      expect(consoleSpy).toHaveBeenCalledWith('Edit filters')
-      expect(consoleSpy).toHaveBeenCalledWith('Create more criteria')
-
-      consoleSpy.mockRestore()
+      // Verify component remains functional
+      expect(filterCriteria.exists()).toBe(true)
     })
   })
 
@@ -321,8 +305,10 @@ describe('ResultsList', () => {
     })
 
     it('updates result cards when results prop changes', async () => {
+      expect(mockResults.length).toBeGreaterThan(0)
+      const firstResult = mockResults[0]!
       const wrapper = mount(ResultsList, {
-        props: { results: [mockResults[0]] },
+        props: { results: [firstResult] },
         global: {
           components: {
             ResultCard,
@@ -352,21 +338,19 @@ describe('ResultsList', () => {
         }
       })
 
-      const resultsContainer = wrapper.findAll('div')[2] // Results container
-      const expectedClasses = ['flex-1', 'px-8', 'py-4']
+      // Find the results container by its specific classes
+      const resultsContainer = wrapper.find('.flex-1.px-8.py-4.overflow-y-auto')
+      expect(resultsContainer.exists()).toBe(true)
+      const expectedClasses = [
+        'flex-1',
+        'px-8',
+        'py-4',
+        'overflow-y-auto',
+        'md:px-4'
+      ]
       expectedClasses.forEach(className => {
-        const hasClass = resultsContainer.classes().includes(className)
-        if (!hasClass) {
-          console.warn(
-            `⚠️ Expected results container to have class "${className}" but it was not found. Classes found: ${resultsContainer.classes().join(', ')}`
-          )
-        }
+        expect(resultsContainer.classes()).toContain(className)
       })
-      if (!resultsContainer.classes().includes('overflow-y-auto')) {
-        console.warn(
-          `⚠️ Expected results container to have class "overflow-y-auto" but it was not found. Classes found: ${resultsContainer.classes().join(', ')}`
-        )
-      }
     })
   })
 
@@ -451,7 +435,7 @@ describe('ResultsList', () => {
 
     it('applies correct container styling for load more section', () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
+        props: { results: mockResults, hasMore: true },
         global: {
           components: {
             ResultCard,
@@ -462,15 +446,12 @@ describe('ResultsList', () => {
         }
       })
 
-      const loadMoreContainer = wrapper.findAll('div')[3] // Load more container
-      const expectedClasses = ['px-8', 'py-4', 'text-center']
+      // Find the load more container by its specific classes
+      const loadMoreContainer = wrapper.find('.px-8.py-4.text-center')
+      expect(loadMoreContainer.exists()).toBe(true)
+      const expectedClasses = ['px-8', 'py-4', 'text-center', 'md:px-4']
       expectedClasses.forEach(className => {
-        const hasClass = loadMoreContainer.classes().includes(className)
-        if (!hasClass) {
-          console.warn(
-            `⚠️ Expected load more container to have class "${className}" but it was not found. Classes found: ${loadMoreContainer.classes().join(', ')}`
-          )
-        }
+        expect(loadMoreContainer.classes()).toContain(className)
       })
     })
   })
@@ -478,7 +459,7 @@ describe('ResultsList', () => {
   describe('Layout and Responsive Design', () => {
     it('applies responsive classes correctly', () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
+        props: { results: mockResults, hasMore: true },
         global: {
           components: {
             ResultCard,
@@ -493,22 +474,18 @@ describe('ResultsList', () => {
       expect(mainContainer.classes()).toContain('md:flex-1')
       expect(mainContainer.classes()).toContain('md:h-auto')
 
-      const headerContainer = wrapper.findAll('div')[1]
+      // Find containers by their specific class combinations
+      const headerContainer = wrapper.find('.px-8.py-4.bg-bg-primary')
+      expect(headerContainer.exists()).toBe(true)
       expect(headerContainer.classes()).toContain('md:px-4')
 
-      const resultsContainer = wrapper.findAll('div')[2]
-      if (!resultsContainer.classes().includes('md:px-4')) {
-        console.warn(
-          `⚠️ Expected results container to have responsive class "md:px-4" but it was not found. Classes found: ${resultsContainer.classes().join(', ')}`
-        )
-      }
+      const resultsContainer = wrapper.find('.flex-1.px-8.py-4.overflow-y-auto')
+      expect(resultsContainer.exists()).toBe(true)
+      expect(resultsContainer.classes()).toContain('md:px-4')
 
-      const loadMoreContainer = wrapper.findAll('div')[3]
-      if (!loadMoreContainer.classes().includes('md:px-4')) {
-        console.warn(
-          `⚠️ Expected load more container to have responsive class "md:px-4" but it was not found. Classes found: ${loadMoreContainer.classes().join(', ')}`
-        )
-      }
+      const loadMoreContainer = wrapper.find('.px-8.py-4.text-center')
+      expect(loadMoreContainer.exists()).toBe(true)
+      expect(loadMoreContainer.classes()).toContain('md:px-4')
     })
 
     it('provides flexible layout for filter criteria', () => {
@@ -570,7 +547,8 @@ describe('ResultsList', () => {
 
       // FilterCriteria should be in header section
       const headerSection = wrapper.findAll('div')[1]
-      expect(headerSection.findComponent(FilterCriteria).exists()).toBe(true)
+      expect(headerSection).toBeTruthy()
+      expect(headerSection!.findComponent(FilterCriteria).exists()).toBe(true)
 
       // CopyrightFooter should be at the bottom
       const footerComponent = wrapper.findComponent(CopyrightFooter)

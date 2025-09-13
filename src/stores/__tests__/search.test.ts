@@ -2,7 +2,7 @@
  * Unit tests for the search store
  * Tests search functionality, state management, and actions
  */
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useSearchStore } from '../search'
 import type { SearchResult } from '@/types/search'
@@ -178,8 +178,9 @@ describe('Search Store', () => {
 
     it('should append results', () => {
       const store = useSearchStore()
-      const initialResults = [mockResults[0]]
-      const newResults = [mockResults[1]]
+      expect(mockResults.length).toBeGreaterThan(1)
+      const initialResults = [mockResults[0]!]
+      const newResults = [mockResults[1]!]
 
       store.setResults(initialResults)
       store.appendResults(newResults)
@@ -406,11 +407,17 @@ describe('Search Store', () => {
       const query = 'error test'
 
       // Mock a failed API call by overriding the promise
-      vi.spyOn(global, 'setTimeout').mockImplementation(callback => {
+      vi.spyOn(globalThis, 'setTimeout').mockImplementation(((
+        callback: () => void
+      ) => {
         // Simulate an error during the API call
-        callback()
+        try {
+          callback()
+        } catch {
+          // Expected error
+        }
         throw new Error('API Error')
-      })
+      }) as any)
 
       try {
         await store.performSearch(query)

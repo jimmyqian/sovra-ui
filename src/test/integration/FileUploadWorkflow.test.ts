@@ -48,7 +48,7 @@ describe('File Upload Workflow Integration', () => {
     expect(fileInput.exists()).toBe(true)
 
     // Mock file input click
-    const clickSpy = vi.spyOn(fileInput.element, 'click')
+    const clickSpy = vi.spyOn(fileInput.element as HTMLInputElement, 'click')
 
     // Click upload button
     await uploadButton.trigger('click')
@@ -60,7 +60,7 @@ describe('File Upload Workflow Integration', () => {
     const mockFiles = {
       length: 1,
       0: createMockFile('resume.pdf', 'application/pdf')
-    } as FileList
+    } as unknown as FileList
 
     Object.defineProperty(fileInput.element, 'files', {
       value: mockFiles,
@@ -96,7 +96,7 @@ describe('File Upload Workflow Integration', () => {
         'document.docx',
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
       )
-    } as FileList
+    } as unknown as FileList
 
     Object.defineProperty(fileInput.element, 'files', {
       value: mockFiles,
@@ -106,7 +106,7 @@ describe('File Upload Workflow Integration', () => {
     await fileInput.trigger('change')
 
     // Verify multiple files are accepted
-    expect(fileInput.element.files?.length).toBe(3)
+    expect((fileInput?.element as HTMLInputElement).files?.length).toBe(3)
   })
 
   it('validates file input accepts correct file types', () => {
@@ -127,7 +127,7 @@ describe('File Upload Workflow Integration', () => {
     expect(fileInput.attributes('multiple')).toBe('')
 
     // Check hidden styling
-    expect(fileInput.element.style.display).toBe('none')
+    expect((fileInput?.element as HTMLInputElement).style.display).toBe('none')
   })
 
   it('handles file upload on search results page', async () => {
@@ -144,12 +144,13 @@ describe('File Upload Workflow Integration', () => {
     const searchBars = wrapper.findAllComponents({ name: 'SearchBar' })
     expect(searchBars.length).toBeGreaterThan(0)
 
-    const searchBar = searchBars[0]
+    const searchBar = searchBars[0]!
+    expect(searchBar).toBeTruthy()
     const uploadButton = searchBar.find('button')
     const fileInput = searchBar.find('input[type="file"]')
 
     // Test upload functionality in search results context
-    const clickSpy = vi.spyOn(fileInput.element, 'click')
+    const clickSpy = vi.spyOn(fileInput.element as HTMLInputElement, 'click')
     await uploadButton.trigger('click')
     expect(clickSpy).toHaveBeenCalled()
   })
@@ -169,7 +170,7 @@ describe('File Upload Workflow Integration', () => {
     const mockFiles = {
       length: 1,
       0: createMockFile('large-document.pdf', 'application/pdf', largeContent)
-    } as FileList
+    } as unknown as FileList
 
     Object.defineProperty(fileInput.element, 'files', {
       value: mockFiles,
@@ -179,7 +180,9 @@ describe('File Upload Workflow Integration', () => {
     await fileInput.trigger('change')
 
     // Verify large file is handled
-    expect(fileInput.element.files?.[0].size).toBe(largeContent.length)
+    expect((fileInput?.element as HTMLInputElement).files?.[0]!.size).toBe(
+      largeContent.length
+    )
   })
 
   it('handles unsupported file types gracefully', async () => {
@@ -196,7 +199,7 @@ describe('File Upload Workflow Integration', () => {
     const mockFiles = {
       length: 1,
       0: createMockFile('script.exe', 'application/exe')
-    } as FileList
+    } as unknown as FileList
 
     Object.defineProperty(fileInput.element, 'files', {
       value: mockFiles,
@@ -207,7 +210,7 @@ describe('File Upload Workflow Integration', () => {
 
     // File would be handled by browser's accept attribute validation
     // The component should still process the event
-    expect(fileInput.element.files?.length).toBe(1)
+    expect((fileInput?.element as HTMLInputElement).files?.length).toBe(1)
   })
 
   it('handles file upload error scenarios', async () => {
@@ -223,7 +226,7 @@ describe('File Upload Workflow Integration', () => {
     // Mock FileList with null file
     const mockFiles = {
       length: 0
-    } as FileList
+    } as unknown as FileList
 
     Object.defineProperty(fileInput.element, 'files', {
       value: mockFiles,
@@ -233,7 +236,7 @@ describe('File Upload Workflow Integration', () => {
     await fileInput.trigger('change')
 
     // Should handle empty file list gracefully
-    expect(fileInput.element.files?.length).toBe(0)
+    expect((fileInput?.element as HTMLInputElement).files?.length).toBe(0)
   })
 
   it('maintains upload state across page navigation', async () => {
@@ -252,7 +255,7 @@ describe('File Upload Workflow Integration', () => {
     const mockFiles = {
       length: 1,
       0: createMockFile('resume.pdf', 'application/pdf')
-    } as FileList
+    } as unknown as FileList
 
     Object.defineProperty(fileInput.element, 'files', {
       value: mockFiles,
@@ -266,7 +269,7 @@ describe('File Upload Workflow Integration', () => {
 
     const resultsWrapper = mount(SearchResults, {
       global: {
-        plugins: [router]
+        plugins: [router, pinia]
       }
     })
 
@@ -292,7 +295,7 @@ describe('File Upload Workflow Integration', () => {
     const mockFiles1 = {
       length: 1,
       0: createMockFile('file1.pdf', 'application/pdf')
-    } as FileList
+    } as unknown as FileList
 
     Object.defineProperty(fileInput1.element, 'files', {
       value: mockFiles1,
@@ -307,7 +310,7 @@ describe('File Upload Workflow Integration', () => {
     const mockFiles2 = {
       length: 1,
       0: createMockFile('file2.jpg', 'image/jpeg')
-    } as FileList
+    } as unknown as FileList
 
     Object.defineProperty(fileInput2.element, 'files', {
       value: mockFiles2,
@@ -316,8 +319,12 @@ describe('File Upload Workflow Integration', () => {
     await fileInput2.trigger('change')
 
     // Both uploads should be handled independently
-    expect(fileInput1.element.files?.[0].name).toBe('file1.pdf')
-    expect(fileInput2.element.files?.[0].name).toBe('file2.jpg')
+    expect((fileInput1.element as HTMLInputElement).files?.[0]?.name).toBe(
+      'file1.pdf'
+    )
+    expect((fileInput2.element as HTMLInputElement).files?.[0]?.name).toBe(
+      'file2.jpg'
+    )
   })
 
   it('validates file upload button accessibility', () => {

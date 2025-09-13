@@ -91,7 +91,8 @@ describe('Header Navigation Integration', () => {
     expect(navItems.length).toBe(5) // Should have 5 navigation items
 
     // Verify first item (search) is active
-    const searchItem = navItems[0]
+    const searchItem = navItems[0]!
+    expect(searchItem).toBeTruthy()
     expect(searchItem.classes()).toContain('bg-brand-orange')
     expect(searchItem.classes()).toContain('text-bg-card')
 
@@ -229,25 +230,25 @@ describe('Header Navigation Integration', () => {
     const navItems = wrapper.findAll('.w-10.h-10')
 
     // Verify search icon (first item)
-    const searchIcon = navItems[0].find('svg circle')
+    const searchIcon = navItems[0]!.find('svg circle')
     expect(searchIcon.exists()).toBe(true)
 
     // Verify menu icon (second item)
-    const menuIcon = navItems[1].find('svg path')
+    const menuIcon = navItems[1]!.find('svg path')
     expect(menuIcon.exists()).toBe(true)
     expect(menuIcon.attributes('d')).toContain('M4 12h16')
 
     // Verify edit icon (third item)
-    const editIcon = navItems[2].find('svg path')
+    const editIcon = navItems[2]!.find('svg path')
     expect(editIcon.exists()).toBe(true)
     expect(editIcon.attributes('d')).toContain('M12 20h9')
 
     // Verify settings icon (fourth item)
-    const settingsIcon = navItems[3].find('svg circle')
+    const settingsIcon = navItems[3]!.find('svg circle')
     expect(settingsIcon.exists()).toBe(true)
 
     // Verify profile icon (fifth item)
-    const profileIcon = navItems[4].find('svg circle')
+    const profileIcon = navItems[4]!.find('svg circle')
     expect(profileIcon.exists()).toBe(true)
   })
 

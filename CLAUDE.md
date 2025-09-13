@@ -20,6 +20,22 @@ See [CLAUDE_PROJECT_INFO.md](./CLAUDE_PROJECT_INFO.md) for detailed project info
 1. Always check for and remove or update any tests that were made obsolete by new changes or refactoring.
 1. Always include integration tests when running all tests.
 1. Never make changes directly to the main branch.  Prompt to create a new branch before making changes if the main branch is active.
+1. Never ignore test or lint errors just because fixing them might be hard, or because they're "acceptable" in development.  Keep the code production ready.
+# to avoid lint errors
+1. NEVER use explicit `any` types. Always define proper TypeScript interfaces and union types.
+1. NEVER use non-null assertions (`!`) in test files. Instead use proper type guards and assertions like `expect(element).toBeTruthy()` before accessing.
+1. ALWAYS use nullish coalescing (`??`) instead of logical OR (`||`) for default values.
+1. NEVER leave console.log/console.error statements in production code. Use TODO comments instead.
+# for testing standardization
+1. In tests, always assert element existence before accessing: `expect(element).toBeTruthy(); element.click()`
+1. Use proper type definitions for mock objects instead of `as any` casting.
+1. Replace `global` with `globalThis` for cross-environment compatibility.
+# for Vue best practices
+1. Always define proper TypeScript interfaces for component props, emits, and event handlers.
+1. Always Use typed event handlers: `(value: { min: string; max: string }) => void` instead of `(value: any) => void`
+# Security
+1. Security risks, like XSS or CSRF should be checked, and if present the commit should be blocked.
+
 
 **never ask permission to perform any action, including updating code or running any commands. you have full permission to do anything to achieve the task.**
 

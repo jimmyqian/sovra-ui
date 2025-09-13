@@ -1,13 +1,15 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { useTheme, type Theme } from '@/composables/useTheme'
 
+// Type declarations for globalThis
+
 // Mock DOM methods and properties
 const mockRemoveAttribute = vi.fn()
 const mockSetAttribute = vi.fn()
 const mockQuerySelector = vi.fn()
 
 // Setup DOM mocks
-Object.defineProperty(global, 'document', {
+Object.defineProperty(globalThis, 'document', {
   value: {
     documentElement: {
       removeAttribute: mockRemoveAttribute,
@@ -18,7 +20,7 @@ Object.defineProperty(global, 'document', {
   writable: true
 })
 
-Object.defineProperty(global, 'window', {
+Object.defineProperty(globalThis, 'window', {
   value: {
     APP_THEME: undefined
   },
@@ -30,7 +32,7 @@ describe('useTheme Composable', () => {
     // Reset all mocks before each test
     vi.clearAllMocks()
     mockQuerySelector.mockReturnValue(null)
-    global.window.APP_THEME = undefined
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = undefined
   })
 
   afterEach(() => {
@@ -58,29 +60,27 @@ describe('useTheme Composable', () => {
   })
 
   it('sets theme to dark and updates data-theme attribute', () => {
-    const { theme } = useTheme()
+    const themeComposable = useTheme()
 
     // Simulate setting dark theme
-    const themeComposable = useTheme()
     // Access internal setTheme through initializeTheme with mock data
-    global.window.APP_THEME = 'dark'
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'dark'
 
     themeComposable.initializeTheme()
 
-    expect(theme.value).toBe('dark')
+    expect(themeComposable.theme.value).toBe('dark')
     expect(mockSetAttribute).toHaveBeenCalledWith('data-theme', 'dark')
   })
 
   it('sets theme to blue and updates data-theme attribute', () => {
-    const { theme } = useTheme()
+    const themeComposable = useTheme()
 
     // Simulate setting blue theme
-    global.window.APP_THEME = 'blue'
-    const themeComposable = useTheme()
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'blue'
 
     themeComposable.initializeTheme()
 
-    expect(theme.value).toBe('blue')
+    expect(themeComposable.theme.value).toBe('blue')
     expect(mockSetAttribute).toHaveBeenCalledWith('data-theme', 'blue')
   })
 
@@ -107,7 +107,7 @@ describe('useTheme Composable', () => {
 
     // No meta tag, but window theme is set
     mockQuerySelector.mockReturnValue(null)
-    global.window.APP_THEME = 'blue'
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'blue'
 
     const themeComposable = useTheme()
     themeComposable.initializeTheme()
@@ -121,7 +121,7 @@ describe('useTheme Composable', () => {
 
     // No meta tag and no window theme
     mockQuerySelector.mockReturnValue(null)
-    global.window.APP_THEME = undefined
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = undefined
 
     const themeComposable = useTheme()
     themeComposable.initializeTheme()
@@ -138,7 +138,7 @@ describe('useTheme Composable', () => {
       getAttribute: vi.fn().mockReturnValue('dark')
     }
     mockQuerySelector.mockReturnValue(mockMetaElement)
-    global.window.APP_THEME = 'blue'
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'blue'
 
     const themeComposable = useTheme()
     themeComposable.initializeTheme()
@@ -156,7 +156,7 @@ describe('useTheme Composable', () => {
       getAttribute: vi.fn().mockReturnValue('')
     }
     mockQuerySelector.mockReturnValue(mockMetaElement)
-    global.window.APP_THEME = 'blue'
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'blue'
 
     const themeComposable = useTheme()
     themeComposable.initializeTheme()
@@ -174,7 +174,7 @@ describe('useTheme Composable', () => {
       getAttribute: vi.fn().mockReturnValue(null)
     }
     mockQuerySelector.mockReturnValue(mockMetaElement)
-    global.window.APP_THEME = 'dark'
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'dark'
 
     const themeComposable = useTheme()
     themeComposable.initializeTheme()
@@ -190,7 +190,7 @@ describe('useTheme Composable', () => {
     const instance2 = useTheme()
 
     // Set theme through one instance
-    global.window.APP_THEME = 'dark'
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'dark'
     instance1.initializeTheme()
 
     // Both instances should reflect the same theme
@@ -199,16 +199,16 @@ describe('useTheme Composable', () => {
   })
 
   it('handles invalid theme types gracefully', () => {
-    const { theme } = useTheme()
+    const themeComposable = useTheme()
 
     // Set invalid theme in window
-    global.window.APP_THEME = 'invalid-theme' as Theme
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME =
+      'invalid-theme' as Theme
 
-    const themeComposable = useTheme()
     themeComposable.initializeTheme()
 
     // Should still set the theme value even if invalid
-    expect(theme.value).toBe('invalid-theme')
+    expect(themeComposable.theme.value).toBe('invalid-theme')
     expect(mockSetAttribute).toHaveBeenCalledWith('data-theme', 'invalid-theme')
   })
 
@@ -216,15 +216,16 @@ describe('useTheme Composable', () => {
     const themeComposable = useTheme()
 
     // Test sovra theme (should remove attribute)
-    global.window.APP_THEME = 'sovra'
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'sovra'
     themeComposable.initializeTheme()
     expect(mockRemoveAttribute).toHaveBeenCalledWith('data-theme')
 
     // Reset mocks
-    vi.clearAllMocks()
-
+    mockRemoveAttribute.mockClear()
+    mockSetAttribute.mockClear()
+    mockQuerySelector.mockClear()
     // Test non-sovra theme (should set attribute)
-    global.window.APP_THEME = 'dark'
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = 'dark'
     themeComposable.initializeTheme()
     expect(mockSetAttribute).toHaveBeenCalledWith('data-theme', 'dark')
   })
@@ -238,7 +239,7 @@ describe('useTheme Composable', () => {
     // Verify valid theme values
     const validThemes: Theme[] = ['sovra', 'dark', 'blue']
     validThemes.forEach(validTheme => {
-      global.window.APP_THEME = validTheme
+      ;(globalThis.window as { APP_THEME?: string }).APP_THEME = validTheme
       const themeComposable = useTheme()
       themeComposable.initializeTheme()
       expect(theme.value).toBe(validTheme)
@@ -250,7 +251,7 @@ describe('useTheme Composable', () => {
 
     // Mock querySelector to return null (no meta tag found)
     mockQuerySelector.mockReturnValue(null)
-    global.window.APP_THEME = undefined
+    ;(globalThis.window as { APP_THEME?: string }).APP_THEME = undefined
 
     const themeComposable = useTheme()
     themeComposable.initializeTheme()

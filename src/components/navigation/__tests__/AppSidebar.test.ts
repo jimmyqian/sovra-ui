@@ -99,10 +99,13 @@ describe('AppSidebar', () => {
             div.classes().includes('w-10') && div.classes().includes('h-10')
         )
       const firstIcon = iconContainers[0]
+      expect(firstIcon).toBeTruthy()
 
-      expect(firstIcon.classes()).toContain('bg-brand-orange')
-      expect(firstIcon.classes()).toContain('text-bg-card')
-      expect(firstIcon.classes()).not.toContain('hover:bg-border-hover')
+      if (firstIcon) {
+        expect(firstIcon.classes()).toContain('bg-brand-orange')
+        expect(firstIcon.classes()).toContain('text-bg-card')
+        expect(firstIcon.classes()).not.toContain('hover:bg-border-hover')
+      }
     })
 
     it('renders inactive navigation icons with hover states', () => {
@@ -118,10 +121,13 @@ describe('AppSidebar', () => {
       // Check icons 2-5 (inactive icons)
       for (let i = 1; i < iconContainers.length; i++) {
         const icon = iconContainers[i]
-        expect(icon.classes()).toContain('hover:bg-border-hover')
-        expect(icon.classes()).toContain('text-text-secondary')
-        expect(icon.classes()).toContain('hover:text-text-primary')
-        expect(icon.classes()).not.toContain('bg-brand-orange')
+        expect(icon).toBeTruthy()
+        if (icon) {
+          expect(icon.classes()).toContain('hover:bg-border-hover')
+          expect(icon.classes()).toContain('text-text-secondary')
+          expect(icon.classes()).toContain('hover:text-text-primary')
+          expect(icon.classes()).not.toContain('bg-brand-orange')
+        }
       }
     })
 
@@ -160,11 +166,14 @@ describe('AppSidebar', () => {
 
       const svgs = wrapper.findAll('svg')
       const searchIcon = svgs[0]
+      expect(searchIcon).toBeTruthy()
 
-      expect(searchIcon.attributes('width')).toBe('20')
-      expect(searchIcon.attributes('height')).toBe('20')
-      expect(searchIcon.attributes('viewBox')).toBe('0 0 24 24')
-      expect(searchIcon.attributes('fill')).toBe('none')
+      if (searchIcon) {
+        expect(searchIcon.attributes('width')).toBe('20')
+        expect(searchIcon.attributes('height')).toBe('20')
+        expect(searchIcon.attributes('viewBox')).toBe('0 0 24 24')
+        expect(searchIcon.attributes('fill')).toBe('none')
+      }
     })
 
     it('renders menu icon SVG with correct paths', () => {
@@ -172,11 +181,14 @@ describe('AppSidebar', () => {
 
       const svgs = wrapper.findAll('svg')
       const menuIcon = svgs[1]
-      const path = menuIcon.find('path')
+      expect(menuIcon).toBeTruthy()
+      if (menuIcon) {
+        const path = menuIcon.find('path')
 
-      expect(path.attributes('d')).toBe('M4 12h16M4 6h16M4 18h16')
-      expect(path.attributes('stroke')).toBe('currentColor')
-      expect(path.attributes('stroke-width')).toBe('2')
+        expect(path.attributes('d')).toBe('M4 12h16M4 6h16M4 18h16')
+        expect(path.attributes('stroke')).toBe('currentColor')
+        expect(path.attributes('stroke-width')).toBe('2')
+      }
     })
 
     it('renders all SVG icons with consistent dimensions', () => {
@@ -197,11 +209,14 @@ describe('AppSidebar', () => {
 
       const svgs = wrapper.findAll('svg')
       const editIcon = svgs[2]
-      const path = editIcon.find('path')
+      expect(editIcon).toBeTruthy()
+      if (editIcon) {
+        const path = editIcon.find('path')
 
-      expect(path.attributes('d')).toBe(
-        'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'
-      )
+        expect(path.attributes('d')).toBe(
+          'M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z'
+        )
+      }
     })
 
     it('renders settings icon SVG with circle and paths', () => {
@@ -209,14 +224,17 @@ describe('AppSidebar', () => {
 
       const svgs = wrapper.findAll('svg')
       const settingsIcon = svgs[3]
-      const circle = settingsIcon.find('circle')
-      const path = settingsIcon.find('path')
+      expect(settingsIcon).toBeTruthy()
+      if (settingsIcon) {
+        const circle = settingsIcon.find('circle')
+        const path = settingsIcon.find('path')
 
-      expect(circle.exists()).toBe(true)
-      expect(path.exists()).toBe(true)
-      expect(circle.attributes('cx')).toBe('12')
-      expect(circle.attributes('cy')).toBe('12')
-      expect(circle.attributes('r')).toBe('3')
+        expect(circle.exists()).toBe(true)
+        expect(path.exists()).toBe(true)
+        expect(circle.attributes('cx')).toBe('12')
+        expect(circle.attributes('cy')).toBe('12')
+        expect(circle.attributes('r')).toBe('3')
+      }
     })
 
     it('renders user icon SVG with path and circle', () => {
@@ -224,14 +242,17 @@ describe('AppSidebar', () => {
 
       const svgs = wrapper.findAll('svg')
       const userIcon = svgs[4]
-      const path = userIcon.find('path')
-      const circle = userIcon.find('circle')
+      expect(userIcon).toBeTruthy()
+      if (userIcon) {
+        const path = userIcon.find('path')
+        const circle = userIcon.find('circle')
 
-      expect(path.exists()).toBe(true)
-      expect(circle.exists()).toBe(true)
-      expect(circle.attributes('cx')).toBe('12')
-      expect(circle.attributes('cy')).toBe('7')
-      expect(circle.attributes('r')).toBe('4')
+        expect(path.exists()).toBe(true)
+        expect(circle.exists()).toBe(true)
+        expect(circle.attributes('cx')).toBe('12')
+        expect(circle.attributes('cy')).toBe('7')
+        expect(circle.attributes('r')).toBe('4')
+      }
     })
   })
 
@@ -280,14 +301,20 @@ describe('AppSidebar', () => {
 
       const activeIcon = iconContainers[0]
       const inactiveIcon = iconContainers[1]
+      expect(activeIcon).toBeTruthy()
+      expect(inactiveIcon).toBeTruthy()
 
       // Active icon styling
-      expect(activeIcon.classes()).toContain('bg-brand-orange')
-      expect(activeIcon.classes()).toContain('text-bg-card')
+      if (activeIcon) {
+        expect(activeIcon.classes()).toContain('bg-brand-orange')
+        expect(activeIcon.classes()).toContain('text-bg-card')
+      }
 
       // Inactive icon styling
-      expect(inactiveIcon.classes()).toContain('text-text-secondary')
-      expect(inactiveIcon.classes()).not.toContain('bg-brand-orange')
+      if (inactiveIcon) {
+        expect(inactiveIcon.classes()).toContain('text-text-secondary')
+        expect(inactiveIcon.classes()).not.toContain('bg-brand-orange')
+      }
     })
 
     it('provides visual feedback through hover states', () => {
@@ -303,8 +330,11 @@ describe('AppSidebar', () => {
       // Skip first icon (active) and check others for hover states
       for (let i = 1; i < iconContainers.length; i++) {
         const icon = iconContainers[i]
-        expect(icon.classes()).toContain('hover:bg-border-hover')
-        expect(icon.classes()).toContain('hover:text-text-primary')
+        expect(icon).toBeTruthy()
+        if (icon) {
+          expect(icon.classes()).toContain('hover:bg-border-hover')
+          expect(icon.classes()).toContain('hover:text-text-primary')
+        }
       }
     })
   })

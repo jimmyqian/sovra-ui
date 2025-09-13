@@ -41,15 +41,15 @@ describe('ResultCard', () => {
 
     // Check references stat
     const statNumbers = wrapper.findAll('.stat-number')
-    expect(statNumbers[0].text()).toBe('25')
-    expect(statNumbers[1].text()).toBe('5')
-    expect(statNumbers[2].text()).toBe('10')
+    expect(statNumbers[0]!.text()).toBe('25')
+    expect(statNumbers[1]!.text()).toBe('5')
+    expect(statNumbers[2]!.text()).toBe('10')
 
     // Check stat labels
     const statLabels = wrapper.findAll('.stat-label')
-    expect(statLabels[0].text()).toContain('References')
-    expect(statLabels[1].text()).toContain('companies')
-    expect(statLabels[2].text()).toContain('Contacts')
+    expect(statLabels[0]!.text()).toContain('References')
+    expect(statLabels[1]!.text()).toContain('companies')
+    expect(statLabels[2]!.text()).toContain('Contacts')
   })
 
   it('renders avatar placeholder', () => {

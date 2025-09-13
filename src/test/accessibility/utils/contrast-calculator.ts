@@ -77,7 +77,7 @@ export class ColorContrastCalculator {
     // Handle 6-character hex
     if (cleanHex.length === 6) {
       const result = /^([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(cleanHex)
-      return result
+      return result?.[1] && result[2] && result[3]
         ? {
             r: parseInt(result[1], 16),
             g: parseInt(result[2], 16),
