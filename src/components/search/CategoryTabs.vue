@@ -1,5 +1,5 @@
 <template>
-  <div class="bg-bg-card border border-border-light rounded-lg p-6">
+  <div class="p-6">
     <!-- Social Media Accounts -->
     <div class="mb-6">
       <h3 class="font-semibold text-text-primary mb-4">Accounts</h3>

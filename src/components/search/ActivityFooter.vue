@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Activity Log -->
-    <div class="bg-bg-card border border-border-light rounded-lg p-6">
+    <div class="p-6">
       <h3 class="font-semibold text-text-primary mb-4">Activity Log</h3>
       <div class="text-sm text-text-secondary">
         Recent activity and data updates will appear here...
@@ -17,7 +17,7 @@
         :class="
           category.active
             ? 'bg-brand-orange text-white border-brand-orange'
-            : 'bg-bg-card text-text-secondary border-border-light hover:border-brand-orange hover:text-brand-orange'
+            : 'text-text-secondary border-border-light hover:border-brand-orange hover:text-brand-orange'
         "
         @click="toggleCategory(category.id)"
       >

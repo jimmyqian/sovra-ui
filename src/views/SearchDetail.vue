@@ -30,7 +30,7 @@
 
         <!-- Right Panel: Person Details -->
         <div class="flex-1 bg-bg-primary overflow-y-auto">
-          <main class="p-6 space-y-6">
+          <main class="p-6 space-y-1">
             <!-- Person Profile Section -->
             <PersonProfile
               :person="{
@@ -96,15 +96,15 @@
 
   const detailedPerson = ref({
     name: 'Johnson Smith',
-    profileImage: '/api/placeholder/300/400',
+    profileImage: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i3.png',
     images: [
-      '/api/placeholder/150/150',
-      '/api/placeholder/150/150',
-      '/api/placeholder/150/150',
-      '/api/placeholder/150/150',
-      '/api/placeholder/150/150',
-      '/api/placeholder/150/150',
-      '/api/placeholder/150/150'
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i1.png',
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i2.png',
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i3.png',
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i4.png',
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i5.png',
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i6.png',
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i7.png'
     ],
     imageCount: 21,
     stats: {
