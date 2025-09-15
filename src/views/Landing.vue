@@ -57,16 +57,8 @@
     </div>
 
     <!-- Page Footer -->
-    <CopyrightFooter />
+    <CopyrightFooter @piClick="handlePiClick" />
 
-    <!-- Video Lightbox -->
-    <VideoLightbox
-      :is-visible="lightboxStore.isVisible"
-      :video-url="lightboxStore.videoUrl"
-      autoplay
-      video-title="Sovra Introduction Video"
-      @close="lightboxStore.hideLightbox"
-    />
   </div>
 </template>
 
@@ -78,7 +70,6 @@
   import Logo from '@/components/common/Logo.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
-  import VideoLightbox from '@/components/common/VideoLightbox.vue'
 
   const router = useRouter()
   const searchStore = useSearchStore()
@@ -90,23 +81,9 @@
       return
     }
 
-    // Check if this should trigger the lightbox (first search)
-    const lightboxTriggered = lightboxStore.handleSearchAction()
-
     try {
       await searchStore.performSearch(searchQuery.value)
-
-      // Only navigate if lightbox wasn't triggered or after a delay
-      if (lightboxTriggered) {
-        // Wait a bit before navigating to let the lightbox show
-        setTimeout(async () => {
-          if (!lightboxStore.isVisible) {
-            await router.push('/search')
-          }
-        }, 1000)
-      } else {
-        await router.push('/search')
-      }
+      await router.push('/search')
     } catch {
       // TODO: Implement proper error handling/logging
       // console.error('Search failed:', error)
@@ -116,6 +93,11 @@
   const handleFileUpload = (_files: FileList) => {
     // TODO: Implement file upload handling
     // console.log('Files uploaded:', files)
+  }
+
+  function handlePiClick() {
+    // This function is kept for event binding compatibility but not used
+    // The pi symbol now directly triggers lightbox from the footer component
   }
 
 </script>
