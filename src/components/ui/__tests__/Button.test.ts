@@ -49,7 +49,7 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('btn-primary')
+        expect(wrapper.classes()).toContain('bg-brand-orange')
       })
 
       it('applies outline variant classes', () => {
@@ -58,8 +58,8 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('btn-outline')
-        expect(wrapper.classes()).not.toContain('btn-primary')
+        expect(wrapper.classes()).toContain('bg-transparent')
+        expect(wrapper.classes()).not.toContain('bg-brand-orange')
       })
 
       it('applies ghost variant classes', () => {
@@ -68,8 +68,8 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('btn-ghost')
-        expect(wrapper.classes()).not.toContain('btn-primary')
+        expect(wrapper.classes()).toContain('bg-transparent')
+        expect(wrapper.classes()).not.toContain('bg-brand-orange')
       })
     })
 
@@ -101,7 +101,7 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('px-6')
+        expect(wrapper.classes()).toContain('px-8')
         expect(wrapper.classes()).toContain('py-3')
         expect(wrapper.classes()).toContain('text-base')
       })
@@ -192,8 +192,8 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('btn-outline')
-        expect(wrapper.classes()).not.toContain('btn-outline-active')
+        expect(wrapper.classes()).toContain('bg-transparent')
+        expect(wrapper.classes()).not.toContain('bg-transparent-active')
       })
 
       it('applies active outline variant when active is true', () => {
@@ -202,8 +202,8 @@ describe('Button', () => {
           slots: { default: 'Active Button' }
         })
 
-        expect(wrapper.classes()).toContain('btn-outline-active')
-        expect(wrapper.classes()).not.toContain('btn-outline')
+        expect(wrapper.classes()).toContain('bg-transparent-active')
+        expect(wrapper.classes()).not.toContain('bg-transparent')
       })
 
       it('does not affect non-outline variants', () => {
@@ -212,8 +212,8 @@ describe('Button', () => {
           slots: { default: 'Primary Active' }
         })
 
-        expect(wrapper.classes()).toContain('btn-primary')
-        expect(wrapper.classes()).not.toContain('btn-outline-active')
+        expect(wrapper.classes()).toContain('bg-brand-orange')
+        expect(wrapper.classes()).not.toContain('bg-transparent-active')
       })
     })
   })
@@ -265,9 +265,12 @@ describe('Button', () => {
         'inline-flex',
         'items-center',
         'justify-center',
-        'rounded-full',
+        'gap-2',
+        'rounded-search',
         'font-medium',
+        'cursor-pointer',
         'transition-all',
+        'transition-colors',
         'duration-200',
         'focus:outline-none',
         'focus:ring-2',
@@ -292,8 +295,8 @@ describe('Button', () => {
         slots: { default: 'Large Outline Full Width' }
       })
 
-      expect(wrapper.classes()).toContain('btn-outline')
-      expect(wrapper.classes()).toContain('px-6')
+      expect(wrapper.classes()).toContain('bg-transparent')
+      expect(wrapper.classes()).toContain('px-8')
       expect(wrapper.classes()).toContain('py-3')
       expect(wrapper.classes()).toContain('text-base')
       expect(wrapper.classes()).toContain('w-full')
@@ -310,12 +313,12 @@ describe('Button', () => {
         slots: { default: 'Active Small Outline Full Width' }
       })
 
-      expect(wrapper.classes()).toContain('btn-outline-active')
+      expect(wrapper.classes()).toContain('bg-transparent-active')
       expect(wrapper.classes()).toContain('px-3')
       expect(wrapper.classes()).toContain('py-1.5')
       expect(wrapper.classes()).toContain('text-xs')
       expect(wrapper.classes()).toContain('w-full')
-      expect(wrapper.classes()).not.toContain('btn-outline')
+      expect(wrapper.classes()).not.toContain('bg-transparent')
     })
   })
 

@@ -14,31 +14,29 @@
       @keypress.enter.prevent="handleSearch"
     ></textarea>
     <div class="flex items-center justify-between">
-      <button
-        class="bg-bg-button border border-brand-orange text-brand-orange px-4 py-2 rounded-full text-sm transition-all duration-200 hover:bg-brand-orange hover:text-bg-card flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2"
-        :class="{ 'opacity-50 cursor-not-allowed': disabled }"
+      <Button
+        variant="outline"
+        size="sm"
         :disabled="disabled"
         @click="triggerFileUpload"
       >
         <span>Upload</span>
         <UploadIcon />
-      </button>
+      </Button>
       <div class="flex items-center gap-2">
-        <button
-          class="btn-ghost flex-center"
-          :class="{ 'opacity-50 cursor-not-allowed': disabled }"
-          :disabled="disabled"
-        >
+        <Button variant="ghost" size="sm" :disabled="disabled">
           <MicrophoneIcon />
-        </button>
-        <button
-          class="btn-primary flex-center"
-          :class="{ 'opacity-50 cursor-not-allowed': disabled }"
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
           :disabled="disabled"
+          aria-label="Search"
+          data-testid="search-button"
           @click="handleSearch"
         >
           <SearchButtonIcon />
-        </button>
+        </Button>
       </div>
     </div>
 
@@ -55,9 +53,11 @@
 
 <script setup lang="ts">
   import { ref, nextTick, watch } from 'vue'
+  import Button from '@/components/ui/Button.vue'
   import UploadIcon from '@/components/icons/UploadIcon.vue'
   import MicrophoneIcon from '@/components/icons/MicrophoneIcon.vue'
   import SearchButtonIcon from '@/components/icons/SearchButtonIcon.vue'
+  import { validateFiles } from '@/utils/fileValidation'
 
   interface Props {
     modelValue: string
@@ -68,7 +68,8 @@
   interface Emits {
     (e: 'update:modelValue', value: string): void
     (e: 'search'): void
-    (e: 'fileUpload', files: FileList): void
+    (e: 'fileUpload', files: File[]): void
+    (e: 'fileError', error: string): void
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -109,9 +110,27 @@
 
   const handleFileUpload = (event: Event) => {
     const target = event.target as HTMLInputElement
-    if (target.files && target.files.length > 0) {
-      emit('fileUpload', target.files)
+
+    if (!target.files || target.files.length === 0) {
+      return
     }
+
+    // Validate files for security
+    const validation = validateFiles(target.files)
+
+    if (!validation.isValid) {
+      emit('fileError', validation.error ?? 'Invalid file selected')
+      // Clear the input to prevent resubmission
+      target.value = ''
+      return
+    }
+
+    if (validation.validFiles) {
+      emit('fileUpload', validation.validFiles)
+    }
+
+    // Clear the input for security (prevents file path disclosure)
+    target.value = ''
   }
 
   watch(

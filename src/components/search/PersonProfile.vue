@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div class="p-6">
+  <div class="bg-bg-card rounded-lg border border-border-light p-6">
     <!-- Name and Tags Section -->
     <div class="flex items-center flex-wrap gap-3 mb-6">
       <!-- Green Status Indicator -->
@@ -44,7 +44,9 @@
       <div class="flex-1">
         <div class="text-text-secondary leading-relaxed mb-4">
           <span
-            v-html="formatDescription(person.description, person.name)"
+            v-html="
+              sanitizeHtml(formatDescription(person.description, person.name))
+            "
           ></span>
           <button
             class="ml-1 text-brand-orange hover:underline cursor-pointer"
@@ -81,6 +83,7 @@
 <script setup lang="ts">
   import { ref } from 'vue'
   import Button from '@/components/ui/Button.vue'
+  import { sanitizeHtml, safeHighlight } from '@/utils/sanitize'
 
   interface Person {
     name: string
@@ -113,10 +116,7 @@
   }
 
   const formatDescription = (description: string, name: string) => {
-    // Make the person's name bold in the description
-    return description.replace(
-      new RegExp(name, 'g'),
-      `<strong>${name}</strong>`
-    )
+    // Safely highlight the person's name in the description
+    return safeHighlight(description, name)
   }
 </script>

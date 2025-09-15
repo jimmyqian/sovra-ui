@@ -5,6 +5,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import CopyrightFooter from '../CopyrightFooter.vue'
 
 describe('CopyrightFooter', () => {
@@ -12,6 +13,7 @@ describe('CopyrightFooter', () => {
 
   beforeEach(() => {
     originalDateNow = Date.now
+    setActivePinia(createPinia())
   })
 
   afterEach(() => {
@@ -125,7 +127,8 @@ describe('CopyrightFooter', () => {
       const currentYear = new Date().getFullYear()
       const expectedText = `©${currentYear} sovra.ai`
 
-      expect(wrapper.text()).toBe(expectedText)
+      // Check that copyright text is included (ignoring the π button)
+      expect(wrapper.find('span').text()).toBe(expectedText)
     })
 
     it('does not include extra whitespace or formatting', () => {
@@ -260,9 +263,10 @@ describe('CopyrightFooter', () => {
     it('contains minimal DOM structure', () => {
       const wrapper = mount(CopyrightFooter)
 
-      // Should have exactly one footer with one span
-      expect(wrapper.element.children.length).toBe(1)
+      // Should have footer with span and button (π symbol)
+      expect(wrapper.element.children.length).toBe(2)
       expect(wrapper.find('span').exists()).toBe(true)
+      expect(wrapper.find('button').exists()).toBe(true)
     })
 
     it('renders consistently without external dependencies', () => {

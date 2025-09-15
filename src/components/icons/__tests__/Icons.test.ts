@@ -59,7 +59,7 @@ describe('Icon Components', () => {
       const paths = wrapper.findAll('path')
 
       paths.forEach(path => {
-        expect(path.attributes('fill')).toBe('#FF6F15')
+        expect(path.attributes('fill')).toBe('var(--color-brand-orange)')
       })
     })
 
@@ -428,7 +428,7 @@ describe('Icon Components', () => {
     })
 
     it('should use correct default colors', () => {
-      expect(mount(LogoIcon).props('color')).toBe('#FF6F15')
+      expect(mount(LogoIcon).props('color')).toBe('var(--color-brand-orange)')
       expect(mount(MoreIcon).props('color')).toBe('currentColor')
     })
   })

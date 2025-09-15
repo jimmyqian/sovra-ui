@@ -112,7 +112,12 @@ describe('SearchBar', () => {
     await fileInput.trigger('change')
 
     expect(wrapper.emitted('fileUpload')).toBeTruthy()
-    expect(wrapper.emitted('fileUpload')?.[0]).toEqual([mockFiles])
+    // Should emit a File array instead of FileList
+    const emittedFiles = wrapper.emitted('fileUpload')?.[0]?.[0] as File[]
+    expect(emittedFiles).toBeInstanceOf(Array)
+    expect(emittedFiles).toHaveLength(1)
+    expect(emittedFiles[0]).toBeInstanceOf(File)
+    expect(emittedFiles[0].name).toBe('test.pdf')
   })
 
   it('has correct file input attributes', () => {
@@ -136,8 +141,8 @@ describe('SearchBar', () => {
 
     const uploadButton = wrapper.find('button')
 
-    // Check for bg-bg-button class and other styling
-    expect(uploadButton.classes()).toContain('bg-bg-button')
+    // Check for button component styling
+    expect(uploadButton.classes()).toContain('bg-transparent')
     expect(uploadButton.classes()).toContain('border-brand-orange')
     expect(uploadButton.classes()).toContain('text-brand-orange')
     expect(uploadButton.text()).toContain('Upload')
@@ -160,10 +165,10 @@ describe('SearchBar', () => {
     expect(micButton).toBeTruthy()
     expect(searchButton).toBeTruthy()
     if (micButton) {
-      expect(micButton.classes()).toContain('btn-ghost')
+      expect(micButton.classes()).toContain('bg-transparent')
     }
     if (searchButton) {
-      expect(searchButton.classes()).toContain('btn-primary')
+      expect(searchButton.classes()).toContain('bg-brand-orange')
     }
   })
 
@@ -225,8 +230,9 @@ describe('SearchBar', () => {
       const buttons = wrapper.findAll('button')
       buttons.forEach(button => {
         expect(button.element.disabled).toBe(true)
-        expect(button.classes()).toContain('opacity-50')
-        expect(button.classes()).toContain('cursor-not-allowed')
+        // Check for Tailwind conditional classes instead of resolved styles
+        expect(button.classes()).toContain('disabled:opacity-50')
+        expect(button.classes()).toContain('disabled:cursor-not-allowed')
       })
     })
 

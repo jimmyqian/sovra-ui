@@ -82,7 +82,7 @@ describe('Landing Page Integration', () => {
 
       wrapper = createWrapper()
       const searchInput = wrapper.find('textarea')
-      const searchButton = wrapper.find('button[class*="btn-primary"]')
+      const searchButton = wrapper.find('[data-testid="search-button"]')
 
       // Enter search query
       await searchInput.setValue('test query')
@@ -103,7 +103,7 @@ describe('Landing Page Integration', () => {
 
       wrapper = createWrapper()
       const searchInput = wrapper.find('textarea')
-      const searchButton = wrapper.find('button[class*="btn-primary"]')
+      const searchButton = wrapper.find('[data-testid="search-button"]')
 
       // Enter search query
       await searchInput.setValue('test query')
@@ -137,7 +137,7 @@ describe('Landing Page Integration', () => {
 
     it('does not search with empty query', async () => {
       wrapper = createWrapper()
-      const searchButton = wrapper.find('button[class*="btn-primary"]')
+      const searchButton = wrapper.find('[data-testid="search-button"]')
 
       await searchButton.trigger('click')
       await flushPromises()
@@ -151,7 +151,7 @@ describe('Landing Page Integration', () => {
     it('does not search with whitespace-only query', async () => {
       wrapper = createWrapper()
       const searchInput = wrapper.find('textarea')
-      const searchButton = wrapper.find('button[class*="btn-primary"]')
+      const searchButton = wrapper.find('[data-testid="search-button"]')
 
       await searchInput.setValue('   ')
       await searchButton.trigger('click')
@@ -173,7 +173,7 @@ describe('Landing Page Integration', () => {
 
       wrapper = createWrapper()
       const searchInput = wrapper.find('textarea')
-      const searchButton = wrapper.find('button[class*="btn-primary"]')
+      const searchButton = wrapper.find('[data-testid="search-button"]')
 
       await searchInput.setValue('test query')
       await searchButton.trigger('click')
@@ -195,7 +195,7 @@ describe('Landing Page Integration', () => {
 
       wrapper = createWrapper()
       const searchInput = wrapper.find('textarea')
-      const searchButton = wrapper.find('button[class*="btn-primary"]')
+      const searchButton = wrapper.find('[data-testid="search-button"]')
 
       await searchInput.setValue('test query')
       await searchButton.trigger('click')
@@ -216,7 +216,7 @@ describe('Landing Page Integration', () => {
 
       wrapper = createWrapper()
       const searchInput = wrapper.find('textarea')
-      const searchButton = wrapper.find('button[class*="btn-primary"]')
+      const searchButton = wrapper.find('[data-testid="search-button"]')
 
       // Verify elements are disabled
       expect(searchInput.attributes('disabled')).toBeDefined()
@@ -231,7 +231,7 @@ describe('Landing Page Integration', () => {
 
       wrapper = createWrapper()
       const searchInput = wrapper.find('textarea')
-      const searchButton = wrapper.find('button[class*="btn-primary"]')
+      const searchButton = wrapper.find('[data-testid="search-button"]')
 
       // Verify elements are not disabled
       expect(searchInput.attributes('disabled')).toBeUndefined()

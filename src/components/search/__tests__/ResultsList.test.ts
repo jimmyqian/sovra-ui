@@ -370,7 +370,7 @@ describe('ResultsList', () => {
 
       const loadMoreButton = wrapper.find('button')
       const expectedClasses = [
-        'bg-bg-button',
+        'bg-transparent',
         'text-brand-orange',
         'border',
         'border-brand-orange',
@@ -382,7 +382,7 @@ describe('ResultsList', () => {
         'transition-colors',
         'hover:bg-brand-orange',
         'hover:text-bg-card',
-        'flex',
+        'inline-flex',
         'items-center',
         'gap-2',
         'mx-auto'

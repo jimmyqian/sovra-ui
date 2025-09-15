@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6">
+  <div class="bg-bg-card border rounded-lg p-6">
     <!-- Social Media Accounts -->
     <div class="mb-6">
       <h3 class="font-semibold text-text-primary mb-4">Accounts</h3>
@@ -103,9 +103,7 @@
         <div class="space-y-3 text-sm">
           <div class="flex justify-between">
             <span class="text-text-secondary">Background Check</span>
-            <span class="text-text-primary text-green-600">{{
-              legalData.backgroundCheck
-            }}</span>
+            <span class="text-green-600">{{ legalData.backgroundCheck }}</span>
           </div>
           <div class="flex justify-between">
             <span class="text-text-secondary">Court Records</span>

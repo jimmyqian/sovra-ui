@@ -49,14 +49,16 @@
     </div>
 
     <div v-if="hasMore" class="px-8 py-4 text-center md:px-4">
-      <button
-        class="bg-bg-button text-brand-orange border border-brand-orange px-8 py-3 rounded-search text-base cursor-pointer transition-colors hover:bg-brand-orange hover:text-bg-card flex items-center gap-2 mx-auto disabled:opacity-50 disabled:cursor-not-allowed"
+      <Button
+        variant="outline"
+        size="lg"
         :disabled="isLoading"
+        class="mx-auto"
         @click="handleLoadMore"
       >
         {{ isLoading ? 'Loading...' : 'Load More Results' }}
         <MoreIcon v-if="!isLoading" />
-      </button>
+      </Button>
     </div>
 
     <CopyrightFooter />
@@ -65,6 +67,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import Button from '@/components/ui/Button.vue'
   import ResultCard from './ResultCard.vue'
   import FilterCriteria from './FilterCriteria.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'

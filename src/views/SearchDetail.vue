@@ -30,7 +30,7 @@
 
         <!-- Right Panel: Person Details -->
         <div class="flex-1 bg-bg-primary overflow-y-auto">
-          <main class="p-6 space-y-1">
+          <main class="p-6 space-y-6">
             <!-- Person Profile Section -->
             <PersonProfile
               :person="{
@@ -96,7 +96,8 @@
 
   const detailedPerson = ref({
     name: 'Johnson Smith',
-    profileImage: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i3.png',
+    profileImage:
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i3.png',
     images: [
       'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i1.png',
       'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i2.png',

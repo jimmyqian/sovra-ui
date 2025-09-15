@@ -280,7 +280,7 @@ describe('SearchConversation', () => {
         'h-9',
         'border',
         'border-black',
-        'rounded-full',
+        'rounded-search',
         'flex',
         'items-center',
         'justify-center',
@@ -450,13 +450,13 @@ describe('SearchConversation', () => {
 
       const button = wrapper.find('button')
       const expectedClasses = [
-        'bg-bg-button',
+        'bg-transparent',
         'border',
         'border-dashed',
         'border-border-dashed',
         'px-4',
         'py-2',
-        'rounded-full',
+        'rounded-search',
         'text-sm',
         'cursor-pointer',
         'hover:bg-border-hover',

@@ -342,7 +342,7 @@ describe('File Upload Workflow Integration', () => {
     const uploadButton = wrapper.find('button')
 
     // Upload button should be properly styled and accessible
-    expect(uploadButton.classes()).toContain('bg-bg-button')
+    expect(uploadButton.classes()).toContain('bg-transparent')
     expect(uploadButton.classes()).toContain('border-brand-orange')
     expect(uploadButton.classes()).toContain('text-brand-orange')
     expect(uploadButton.text()).toContain('Upload')

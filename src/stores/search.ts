@@ -3,6 +3,7 @@
  */
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
+import { escapeHtml } from '@/utils/sanitize'
 import type { SearchResult } from '@/types/search'
 
 export interface SearchState {
@@ -113,8 +114,26 @@ export const useSearchStore = defineStore('search', () => {
   }
 
   const performSearch = async (query: string, loadMore = false) => {
-    if (!query.trim()) {
+    // Sanitize and validate input
+    const sanitizedQuery = escapeHtml(query.trim())
+
+    if (!sanitizedQuery) {
       clearResults()
+      return
+    }
+
+    // Security: Limit query length to prevent DoS attacks
+    if (sanitizedQuery.length > 500) {
+      setError('Search query too long. Please use fewer than 500 characters.')
+      return
+    }
+
+    // Security: Basic validation to prevent injection patterns
+    if (
+      sanitizedQuery.includes('<script') ||
+      sanitizedQuery.includes('javascript:')
+    ) {
+      setError('Invalid search query detected.')
       return
     }
 
@@ -123,10 +142,10 @@ export const useSearchStore = defineStore('search', () => {
 
     try {
       if (!loadMore) {
-        setQuery(query)
+        setQuery(sanitizedQuery)
         resetPagination()
         clearResults()
-        addToHistory(query)
+        addToHistory(sanitizedQuery)
       }
 
       // Simulate API call - replace with actual search service

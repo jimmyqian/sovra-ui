@@ -181,7 +181,7 @@ describe('Search Conversation Integration Tests', () => {
 
       // Should have user avatar when query is present
       const userAvatar = wrapper.find(
-        '.w-9.h-9.border.border-black.rounded-full'
+        '.w-9.h-9.border.border-black.rounded-search'
       )
       expect(userAvatar.exists()).toBe(true)
     })

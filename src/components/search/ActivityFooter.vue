@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <!-- Activity Log -->
-    <div class="p-6">
+    <div class="bg-bg-card border rounded-lg p-6">
       <h3 class="font-semibold text-text-primary mb-4">Activity Log</h3>
       <div class="text-sm text-text-secondary">
         Recent activity and data updates will appear here...
@@ -17,7 +17,7 @@
         :class="
           category.active
             ? 'bg-brand-orange text-white border-brand-orange'
-            : 'text-text-secondary border-border-light hover:border-brand-orange hover:text-brand-orange'
+            : 'bg-bg-card text-text-secondary border-border-light hover:border-brand-orange hover:text-brand-orange'
         "
         @click="toggleCategory(category.id)"
       >
@@ -29,6 +29,7 @@
     <div class="text-center">
       <button
         class="px-6 py-2 rounded-full border border-brand-orange text-brand-orange text-sm transition-colors hover:bg-brand-orange hover:text-white"
+        @click="handleShowReferences"
       >
         Show all references
       </button>
@@ -62,25 +63,24 @@
 
   const currentYear = computed(() => new Date().getFullYear())
 
+  interface Emits {
+    (e: 'categoryToggle', categoryId: string, active: boolean): void
+    (e: 'showReferences'): void
+  }
+
+  const emit = defineEmits<Emits>()
+
   const toggleCategory = (categoryId: string) => {
     const category = referenceCategories.value.find(
       cat => cat.id === categoryId
     )
     if (category) {
       category.active = !category.active
+      emit('categoryToggle', categoryId, category.active)
     }
   }
 
-  interface Emits {
-    (e: 'categoryToggle', categoryId: string, active: boolean): void
-    (e: 'showReferences'): void
+  const handleShowReferences = () => {
+    emit('showReferences')
   }
-
-  defineEmits<Emits>()
-
-  // Event handlers can be added here when needed
-  // Example: const emit = defineEmits<Emits>()
-  // Example: const handleCategoryToggle = (categoryId: string) => {
-  //   emit('categoryToggle', categoryId, true)
-  // }
 </script>
