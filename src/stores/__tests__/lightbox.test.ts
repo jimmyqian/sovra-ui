@@ -70,30 +70,34 @@ describe('useLightboxStore', () => {
   })
 
   describe('Random Video Selection', () => {
-    it('selects first video when random returns 0', () => {
+    it('selects first available video when random returns 0 (excluding current)', () => {
       const store = useLightboxStore()
       mockMath.random.mockReturnValue(0)
 
       const selectedVideo = store.selectRandomVideo()
 
-      expect(selectedVideo).toBe('https://youtu.be/3MH54ewvcWo')
+      // Should select first video from filtered list (current video is excluded)
+      // Current video is 'https://youtu.be/3MH54ewvcWo', so first available is second video
+      expect(selectedVideo).toBe('https://www.youtube.com/watch?v=cNAdtkSjSps')
     })
 
     it('selects second video when random returns 0.17', () => {
       const store = useLightboxStore()
-      mockMath.random.mockReturnValue(0.17) // 0.17 * 6 = 1.02, floor = 1 (second video)
+      mockMath.random.mockReturnValue(0.17) // 0.17 * 5 = 0.85, floor = 0 (first available video excluding current)
 
       const selectedVideo = store.selectRandomVideo()
 
+      // Current video is 'https://youtu.be/3MH54ewvcWo', so first available is second video
       expect(selectedVideo).toBe('https://www.youtube.com/watch?v=cNAdtkSjSps')
     })
 
     it('selects last video when random returns close to 1', () => {
       const store = useLightboxStore()
-      mockMath.random.mockReturnValue(0.99) // 0.99 * 6 = 5.94, floor = 5 (last video)
+      mockMath.random.mockReturnValue(0.99) // 0.99 * 5 = 4.95, floor = 4 (last available video excluding current)
 
       const selectedVideo = store.selectRandomVideo()
 
+      // Current video is 'https://youtu.be/3MH54ewvcWo', so last available is last video
       expect(selectedVideo).toBe(
         'https://youtu.be/QbC6dLG_dQY?list=RDQbC6dLG_dQY'
       )
@@ -102,9 +106,9 @@ describe('useLightboxStore', () => {
     it('selects different videos for different random values', () => {
       const store = useLightboxStore()
 
-      // Test all 6 videos by mocking specific random values
-      const expectedVideos = [
-        'https://youtu.be/3MH54ewvcWo',
+      // Test selecting from available videos (excluding current video)
+      // Current video is 'https://youtu.be/3MH54ewvcWo', so available videos are the other 5
+      const availableVideos = [
         'https://www.youtube.com/watch?v=cNAdtkSjSps',
         'https://www.youtube.com/watch?v=km5YVF5x_CU',
         'https://www.youtube.com/watch?v=zInV4hJFq_w',
@@ -112,9 +116,9 @@ describe('useLightboxStore', () => {
         'https://youtu.be/QbC6dLG_dQY?list=RDQbC6dLG_dQY'
       ]
 
-      expectedVideos.forEach((expectedVideo, index) => {
-        // Mock random to select specific index
-        mockMath.random.mockReturnValue(index / 6) // 0/6=0, 1/6=0.167, etc.
+      availableVideos.forEach((expectedVideo, index) => {
+        // Mock random to select specific index from available videos (5 total)
+        mockMath.random.mockReturnValue(index / 5) // 0/5=0, 1/5=0.2, etc.
 
         const selectedVideo = store.selectRandomVideo()
         expect(selectedVideo).toBe(expectedVideo)
@@ -125,7 +129,7 @@ describe('useLightboxStore', () => {
   describe('Search Action Handling', () => {
     it('triggers lightbox on first search (odd search count) with random video', () => {
       const store = useLightboxStore()
-      mockMath.random.mockReturnValue(0.5) // Should select middle video
+      mockMath.random.mockReturnValue(0.5) // Should select middle video from available videos
 
       expect(store.searchCount).toBe(0)
       expect(store.isVisible).toBe(false)
@@ -135,7 +139,8 @@ describe('useLightboxStore', () => {
       expect(wasTriggered).toBe(true)
       expect(store.isVisible).toBe(true)
       expect(store.searchCount).toBe(1)
-      // Should have set a random video (3rd video for 0.5 * 6 = 3.0, floor = 3)
+      // Should have set a random video (0.5 * 5 = 2.5, floor = 2, which is 3rd available video)
+      // Current video is excluded, so 3rd available is 'https://www.youtube.com/watch?v=zInV4hJFq_w'
       expect(store.videoUrl).toBe('https://www.youtube.com/watch?v=zInV4hJFq_w')
     })
 
@@ -201,8 +206,12 @@ describe('useLightboxStore', () => {
 
       // Should be different videos
       expect(firstVideo).not.toBe(secondVideo)
-      expect(firstVideo).toBe('https://youtu.be/3MH54ewvcWo') // 0.1 * 6 = 0.6, floor = 0
-      expect(secondVideo).toBe('https://youtu.be/QFgcqB8-AxE') // 0.8 * 6 = 4.8, floor = 4
+      // First: 0.1 * 5 = 0.5, floor = 0 (first available excluding default)
+      expect(firstVideo).toBe('https://www.youtube.com/watch?v=cNAdtkSjSps')
+      // Second: 0.8 * 4 = 3.2, floor = 3 (4th available excluding firstVideo)
+      expect(secondVideo).toBe(
+        'https://youtu.be/QbC6dLG_dQY?list=RDQbC6dLG_dQY'
+      )
     })
 
     it('follows every-other-search pattern correctly over multiple searches', () => {
