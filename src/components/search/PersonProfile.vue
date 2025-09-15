@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-v-html -->
 <template>
-  <div class="bg-bg-card p-6 rounded-lg border border-border-light">
+  <div class="p-6">
     <!-- Name and Tags Section -->
     <div class="flex items-center flex-wrap gap-3 mb-6">
       <!-- Green Status Indicator -->
@@ -69,6 +69,11 @@
           </button>
         </div>
       </div>
+    </div>
+
+    <!-- Bottom Separator Border -->
+    <div class="flex justify-center">
+      <div class="w-full border-t border-dashed border-border-dashed"></div>
     </div>
   </div>
 </template>

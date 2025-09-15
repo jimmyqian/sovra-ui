@@ -30,7 +30,7 @@
 
         <!-- Right Panel: Person Details -->
         <div class="flex-1 bg-bg-primary overflow-y-auto">
-          <main class="p-6 space-y-6">
+          <main class="p-6 space-y-1">
             <!-- Person Profile Section -->
             <PersonProfile
               :person="{

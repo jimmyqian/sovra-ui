@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-bg-card border border-border-light rounded-lg overflow-hidden">
-    <div class="p-6 space-y-6">
+  <div class="overflow-hidden">
+    <div class="pt-1 px-6 pb-6 space-y-6">
       <!-- Image Gallery and Stats Section -->
       <div class="flex flex-wrap gap-6">
         <!-- Image Gallery -->
