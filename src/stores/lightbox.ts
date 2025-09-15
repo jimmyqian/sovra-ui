@@ -79,7 +79,10 @@ export const useLightboxStore = defineStore('lightbox', () => {
     searchCount.value++
 
     // Only trigger lightbox on localhost and on odd search counts (1st, 3rd, 5th, etc.)
-    if (searchCount.value % 2 === 1 && window.location.hostname === 'localhost') {
+    if (
+      searchCount.value % 2 === 1 &&
+      window.location.hostname === 'localhost'
+    ) {
       // Always select a fresh random video each time
       const randomVideoUrl = selectRandomVideo()
       videoUrl.value = randomVideoUrl

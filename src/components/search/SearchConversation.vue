@@ -3,7 +3,7 @@
     <!-- User Message -->
     <div v-if="userQuery" class="flex gap-4 mb-8 items-start">
       <div
-        class="w-9 h-9 border border-black rounded-full flex items-center justify-center flex-shrink-0 ml-0.5"
+        class="w-9 h-9 border border-black rounded-search flex items-center justify-center flex-shrink-0 ml-0.5"
       >
         <svg
           width="26"

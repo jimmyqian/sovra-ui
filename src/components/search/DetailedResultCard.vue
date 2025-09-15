@@ -1,6 +1,6 @@
 <template>
-  <div class="overflow-hidden">
-    <div class="pt-1 px-6 pb-6 space-y-6">
+  <div class="bg-bg-card border rounded-lg overflow-hidden">
+    <div class="p-6 space-y-6">
       <!-- Image Gallery and Stats Section -->
       <div class="flex flex-wrap gap-6">
         <!-- Image Gallery -->
@@ -99,7 +99,11 @@
             <!-- Spouse -->
             <div class="bg-gray-50 p-2.5 rounded-lg text-center">
               <div class="text-xs text-text-secondary mb-1">Spouse</div>
-              <div class="w-8 h-8 bg-gray-300 rounded-full mx-auto mb-1"></div>
+              <img
+                src="https://randomuser.me/api/portraits/women/44.jpg"
+                alt="Spouse"
+                class="w-8 h-8 rounded-full mx-auto mb-1 object-cover"
+              />
               <div class="text-xs font-semibold text-text-primary">
                 {{ person.personal.spouse.split(' ')[0] }}
               </div>

@@ -41,7 +41,7 @@ describe('ActionButton', () => {
       const button = wrapper.find('button')
       expect(button.classes()).toContain('px-4')
       expect(button.classes()).toContain('py-2')
-      expect(button.classes()).toContain('rounded-full')
+      expect(button.classes()).toContain('rounded-search')
       expect(button.classes()).toContain('text-sm')
       expect(button.classes()).toContain('cursor-pointer')
       expect(button.classes()).toContain('transition-colors')
@@ -88,7 +88,7 @@ describe('ActionButton', () => {
       })
 
       const button = wrapper.find('button')
-      expect(button.classes()).toContain('bg-bg-button')
+      expect(button.classes()).toContain('bg-transparent')
       expect(button.classes()).toContain('border')
       expect(button.classes()).toContain('border-dashed')
       expect(button.classes()).toContain('border-border-dashed')
@@ -107,7 +107,7 @@ describe('ActionButton', () => {
       })
 
       const button = wrapper.find('button')
-      expect(button.classes()).toContain('bg-bg-button')
+      expect(button.classes()).toContain('bg-transparent')
       expect(button.classes()).toContain('border-dashed')
       expect(button.classes()).toContain('text-brand-orange')
     })
@@ -129,7 +129,7 @@ describe('ActionButton', () => {
       expect(button.classes()).toContain('w-full')
       // Should also retain base classes
       expect(button.classes()).toContain('px-4')
-      expect(button.classes()).toContain('rounded-full')
+      expect(button.classes()).toContain('rounded-search')
     })
 
     it('works without custom className', () => {
@@ -140,7 +140,7 @@ describe('ActionButton', () => {
       const button = wrapper.find('button')
       expect(button.classes()).toContain('px-4')
       expect(button.classes()).toContain('py-2')
-      expect(button.classes()).toContain('rounded-full')
+      expect(button.classes()).toContain('rounded-search')
     })
   })
 
@@ -275,7 +275,7 @@ describe('ActionButton', () => {
       const button = wrapper.find('button')
       // Should have base classes
       expect(button.classes()).toContain('px-4')
-      expect(button.classes()).toContain('rounded-full')
+      expect(button.classes()).toContain('rounded-search')
       // Should have primary variant classes
       expect(button.classes()).toContain('bg-brand-orange')
       expect(button.classes()).toContain('text-bg-card')
@@ -296,7 +296,7 @@ describe('ActionButton', () => {
       const button = wrapper.find('button')
       // Should still have base and variant classes
       expect(button.classes()).toContain('px-4')
-      expect(button.classes()).toContain('bg-bg-button')
+      expect(button.classes()).toContain('bg-transparent')
       // Should not have empty string in class list
       expect(button.classes()).not.toContain('')
     })

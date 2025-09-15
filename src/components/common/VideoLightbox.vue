@@ -31,7 +31,6 @@
         </svg>
       </button>
 
-
       <!-- Video Container -->
       <div class="relative w-full" :style="{ paddingBottom: '56.25%' }">
         <iframe

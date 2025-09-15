@@ -1,18 +1,17 @@
 <template>
   <p :class="computedClasses">
     <template v-if="item.emphasis === 'strong'">
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <strong v-html="item.content"></strong>
+      <strong v-html="sanitizeHtml(item.content)"></strong>
     </template>
     <template v-else>
-      <!-- eslint-disable-next-line vue/no-v-html -->
-      <span v-html="item.content"></span>
+      <span v-html="sanitizeHtml(item.content)"></span>
     </template>
   </p>
 </template>
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import { sanitizeHtml } from '@/utils/sanitize'
   import type { TextParagraphItem } from '@/types/conversation'
 
   interface Props {

@@ -29,6 +29,6 @@
 
   withDefaults(defineProps<Props>(), {
     size: 24,
-    color: '#FF6F15'
+    color: 'var(--color-brand-orange)'
   })
 </script>

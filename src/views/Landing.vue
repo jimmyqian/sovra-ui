@@ -36,6 +36,7 @@
             :disabled="searchStore.isLoading"
             @search="handleSearch"
             @file-upload="handleFileUpload"
+            @file-error="handleFileError"
           />
 
           <!-- Loading Spinner -->
@@ -57,8 +58,7 @@
     </div>
 
     <!-- Page Footer -->
-    <CopyrightFooter @piClick="handlePiClick" />
-
+    <CopyrightFooter @pi-click="handlePiClick" />
   </div>
 </template>
 
@@ -82,22 +82,34 @@
     }
 
     try {
+      // Check if lightbox should be triggered
+      const shouldShowLightbox = lightboxStore.handleSearchAction()
+
       await searchStore.performSearch(searchQuery.value)
-      await router.push('/search')
+
+      // Only navigate if lightbox wasn't triggered
+      if (!shouldShowLightbox) {
+        await router.push('/search')
+      }
     } catch {
       // TODO: Implement proper error handling/logging
       // console.error('Search failed:', error)
     }
   }
 
-  const handleFileUpload = (_files: FileList) => {
+  const handleFileUpload = (_files: File[]) => {
     // TODO: Implement file upload handling
     // console.log('Files uploaded:', files)
+  }
+
+  const handleFileError = (error: string) => {
+    // TODO: Implement proper error handling UI
+    // TODO: Implement proper error handling UI instead of console.error
+    // For now, you could show a toast notification or set an error state
   }
 
   function handlePiClick() {
     // This function is kept for event binding compatibility but not used
     // The pi symbol now directly triggers lightbox from the footer component
   }
-
 </script>

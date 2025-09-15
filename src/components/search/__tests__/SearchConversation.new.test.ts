@@ -122,7 +122,7 @@ describe('SearchConversation (New Component System)', () => {
       const wrapper = createWrapper()
 
       const userAvatar = wrapper.find(
-        '.w-9.h-9.border.border-black.rounded-full'
+        '.w-9.h-9.border.border-black.rounded-search'
       )
       expect(userAvatar.exists()).toBe(true)
 
@@ -131,7 +131,7 @@ describe('SearchConversation (New Component System)', () => {
         'h-9',
         'border',
         'border-black',
-        'rounded-full',
+        'rounded-search',
         'flex',
         'items-center',
         'justify-center',

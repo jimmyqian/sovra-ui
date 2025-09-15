@@ -49,12 +49,7 @@ describe('Search Workflow Integration', () => {
 
     // Find search input and search button
     const searchInput = wrapper.find('textarea')
-    const searchButton = wrapper
-      .findAll('button')
-      .find(
-        btn =>
-          btn.text().includes('Search') || btn.classes().includes('btn-primary')
-      )
+    const searchButton = wrapper.find('[data-testid="search-button"]')
 
     expect(searchInput.exists()).toBe(true)
     expect(searchButton?.exists()).toBe(true)
@@ -131,12 +126,7 @@ describe('Search Workflow Integration', () => {
     const store = useSearchStore()
     const performSearchSpy = vi.spyOn(store, 'performSearch')
 
-    const searchButton = wrapper
-      .findAll('button')
-      .find(
-        btn =>
-          btn.text().includes('Search') || btn.classes().includes('btn-primary')
-      )
+    const searchButton = wrapper.find('[data-testid="search-button"]')
 
     // Click search with empty input
     if (searchButton) {
@@ -166,12 +156,7 @@ describe('Search Workflow Integration', () => {
     const performSearchSpy = vi.spyOn(store, 'performSearch')
 
     const searchInput = wrapper.find('textarea')
-    const searchButton = wrapper
-      .findAll('button')
-      .find(
-        btn =>
-          btn.text().includes('Search') || btn.classes().includes('btn-primary')
-      )
+    const searchButton = wrapper.find('[data-testid="search-button"]')
 
     // Enter whitespace-only query
     await searchInput.setValue('   ')
@@ -295,12 +280,7 @@ describe('Search Workflow Integration', () => {
     handleSearchActionSpy.mockReturnValue(false)
 
     const searchInput = wrapper.find('textarea')
-    const searchButton = wrapper
-      .findAll('button')
-      .find(
-        btn =>
-          btn.text().includes('Search') || btn.classes().includes('btn-primary')
-      )
+    const searchButton = wrapper.find('[data-testid="search-button"]')
 
     // Test query with special characters
     const specialQuery = "John O'Connor & Associates - NYC"
@@ -339,12 +319,7 @@ describe('Search Workflow Integration', () => {
     handleSearchActionSpy.mockReturnValue(false)
 
     const searchInput = wrapper.find('textarea')
-    const searchButton = wrapper
-      .findAll('button')
-      .find(
-        btn =>
-          btn.text().includes('Search') || btn.classes().includes('btn-primary')
-      )
+    const searchButton = wrapper.find('[data-testid="search-button"]')
 
     // Test very long query
     const longQuery =

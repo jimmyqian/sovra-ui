@@ -4,6 +4,7 @@
     :type="type"
     :class="buttonClasses"
     :disabled="disabled"
+    v-bind="$attrs"
     @click="$emit('click', $event)"
   >
     <slot />
@@ -39,7 +40,7 @@
 
   const buttonClasses = computed(() => {
     const baseClasses =
-      'inline-flex items-center justify-center rounded-full font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+      'inline-flex items-center justify-center gap-2 rounded-search font-medium cursor-pointer transition-all transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
 
     const focusClasses =
       props.variant === 'outline'
@@ -47,15 +48,18 @@
         : 'focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2'
 
     const variantClasses = {
-      primary: 'btn-primary',
-      outline: props.active ? 'btn-outline-active' : 'btn-outline',
-      ghost: 'btn-ghost'
+      primary: 'bg-brand-orange text-bg-card border-none hover:scale-110',
+      outline: props.active
+        ? 'bg-transparent-active border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-bg-card'
+        : 'bg-transparent border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-bg-card',
+      ghost:
+        'bg-transparent border-none text-brand-orange hover:bg-brand-orange hover:text-bg-card'
     }
 
     const sizeClasses = {
       sm: 'px-3 py-1.5 text-xs',
       md: 'px-4 py-2 text-sm',
-      lg: 'px-6 py-3 text-base'
+      lg: 'px-8 py-3 text-base'
     }
 
     const widthClass = props.fullWidth ? 'w-full' : ''

@@ -7,7 +7,7 @@
     <!-- Pi Symbol Button -->
     <button
       class="absolute bottom-8 right-4 text-text-secondary hover:text-text-primary transition-colors duration-200 text-xxs font-mono cursor-pointer select-none"
-      style="font-size: 0.65rem;"
+      style="font-size: 0.65rem"
       aria-label="Developer actions"
       @click="handlePiClick"
     >
