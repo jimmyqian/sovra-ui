@@ -21,6 +21,7 @@
               placeholder="Johnson, who is around 26 years old, works in a software company in California"
               @search="handleSearch"
               @file-upload="handleFileUpload"
+              @speech-error="handleSpeechError"
             />
           </div>
 
@@ -73,7 +74,7 @@
     }
   }
 
-  const handleFileUpload = (_files: FileList) => {
+  const handleFileUpload = (_files: File[]) => {
     // TODO: Implement file upload functionality
     // console.log('Files uploaded:', files)
     // TODO: Implement file upload functionality
@@ -170,7 +171,7 @@
               '.png',
               '.gif'
             ],
-            onUpload: (files: FileList) => handleFileUpload(files)
+            onUpload: (files: FileList) => handleFileUpload(Array.from(files))
           }
         ]
       }
@@ -193,6 +194,12 @@
     // TODO: Implement filter creation
     // console.log('Create filter clicked')
     // TODO: Implement filter creation
+  }
+
+  const handleSpeechError = (_error: string) => {
+    // TODO: Implement proper speech error handling UI
+    // For now, errors are handled by the SearchBar component itself
+    // In future, could show toast notifications or set error state
   }
 
   function handlePiClick() {

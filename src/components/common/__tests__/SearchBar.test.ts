@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import SearchBar from '../SearchBar.vue'
@@ -117,7 +117,7 @@ describe('SearchBar', () => {
     expect(emittedFiles).toBeInstanceOf(Array)
     expect(emittedFiles).toHaveLength(1)
     expect(emittedFiles[0]).toBeInstanceOf(File)
-    expect(emittedFiles[0].name).toBe('test.pdf')
+    expect(emittedFiles[0]?.name).toBe('test.pdf')
   })
 
   it('has correct file input attributes', () => {
@@ -325,6 +325,278 @@ describe('SearchBar', () => {
       // Should handle enter key
       await textarea.trigger('keypress.enter')
       expect(wrapper.emitted('search')).toHaveLength(2) // One from button click, one from enter
+    })
+  })
+
+  describe('Speech Recognition', () => {
+    let mockSpeechRecognition: any
+    let originalSpeechRecognition: any
+    let originalWebkitSpeechRecognition: any
+
+    beforeEach(() => {
+      // Store original values
+      originalSpeechRecognition = (window as any).SpeechRecognition
+      originalWebkitSpeechRecognition = (window as any).webkitSpeechRecognition
+
+      // Mock SpeechRecognition
+      mockSpeechRecognition = {
+        continuous: false,
+        interimResults: false,
+        lang: 'en-US',
+        start: vi.fn(),
+        stop: vi.fn(),
+        abort: vi.fn(),
+        onstart: null,
+        onend: null,
+        onresult: null,
+        onerror: null
+      }
+
+      // Mock window.SpeechRecognition
+      Object.defineProperty(window, 'SpeechRecognition', {
+        value: vi.fn(() => mockSpeechRecognition),
+        writable: true,
+        configurable: true
+      })
+
+      Object.defineProperty(window, 'webkitSpeechRecognition', {
+        value: vi.fn(() => mockSpeechRecognition),
+        writable: true,
+        configurable: true
+      })
+    })
+
+    afterEach(() => {
+      // Restore original values
+      if (originalSpeechRecognition !== undefined) {
+        Object.defineProperty(window, 'SpeechRecognition', {
+          value: originalSpeechRecognition,
+          writable: true,
+          configurable: true
+        })
+      } else {
+        delete (window as any).SpeechRecognition
+      }
+
+      if (originalWebkitSpeechRecognition !== undefined) {
+        Object.defineProperty(window, 'webkitSpeechRecognition', {
+          value: originalWebkitSpeechRecognition,
+          writable: true,
+          configurable: true
+        })
+      } else {
+        delete (window as any).webkitSpeechRecognition
+      }
+    })
+
+    it('initializes speech recognition when supported', async () => {
+      mount(SearchBar, {
+        props: defaultProps
+      })
+
+      await nextTick()
+
+      // Should have created speech recognition instance
+      expect(
+        window.SpeechRecognition ?? window.webkitSpeechRecognition
+      ).toHaveBeenCalled()
+    })
+
+    it('disables microphone button when speech not supported', async () => {
+      // Remove speech recognition support by setting to undefined
+      Object.defineProperty(window, 'SpeechRecognition', {
+        value: undefined,
+        writable: true,
+        configurable: true
+      })
+      Object.defineProperty(window, 'webkitSpeechRecognition', {
+        value: undefined,
+        writable: true,
+        configurable: true
+      })
+
+      const wrapper = mount(SearchBar, {
+        props: defaultProps
+      })
+
+      await nextTick()
+
+      const micButton = wrapper.findAll('button')[1]
+      expect(micButton).toBeTruthy()
+      if (micButton) {
+        expect(micButton.element.disabled).toBe(true)
+      }
+    })
+
+    it('starts speech recognition when microphone button clicked', async () => {
+      const wrapper = mount(SearchBar, {
+        props: defaultProps
+      })
+
+      await nextTick()
+
+      const micButton = wrapper.findAll('button')[1]
+      expect(micButton).toBeTruthy()
+      if (micButton) {
+        await micButton.trigger('click')
+        expect(mockSpeechRecognition.start).toHaveBeenCalled()
+      }
+    })
+
+    it('stops speech recognition when clicked while listening', async () => {
+      const wrapper = mount(SearchBar, {
+        props: defaultProps
+      })
+
+      await nextTick()
+
+      // Simulate starting recognition
+      if (mockSpeechRecognition.onstart) {
+        mockSpeechRecognition.onstart()
+      }
+
+      await nextTick()
+
+      const micButton = wrapper.findAll('button')[1]
+      expect(micButton).toBeTruthy()
+      if (micButton) {
+        await micButton.trigger('click')
+        expect(mockSpeechRecognition.stop).toHaveBeenCalled()
+      }
+    })
+
+    it('updates model value when speech result received', async () => {
+      const wrapper = mount(SearchBar, {
+        props: defaultProps
+      })
+
+      await nextTick()
+
+      // Simulate speech recognition result
+      const mockEvent = {
+        results: [[{ transcript: 'hello world', confidence: 0.9 }]]
+      }
+
+      if (mockSpeechRecognition.onresult) {
+        mockSpeechRecognition.onresult(mockEvent)
+      }
+
+      await nextTick()
+
+      expect(wrapper.emitted('update:modelValue')).toBeTruthy()
+      expect(wrapper.emitted('update:modelValue')?.[0]).toEqual(['hello world'])
+    })
+
+    it('auto-submits search after speech input', async () => {
+      const wrapper = mount(SearchBar, {
+        props: defaultProps
+      })
+
+      await nextTick()
+
+      // Simulate speech recognition result
+      const mockEvent = {
+        results: [[{ transcript: 'search query', confidence: 0.9 }]]
+      }
+
+      if (mockSpeechRecognition.onresult) {
+        mockSpeechRecognition.onresult(mockEvent)
+      }
+
+      await nextTick()
+
+      // Wait for setTimeout to trigger search
+      await new Promise(resolve => setTimeout(resolve, 150))
+
+      expect(wrapper.emitted('search')).toBeTruthy()
+    })
+
+    it('emits speech error when recognition fails', async () => {
+      const wrapper = mount(SearchBar, {
+        props: defaultProps
+      })
+
+      await nextTick()
+
+      // Simulate speech recognition error
+      const mockErrorEvent = {
+        error: 'no-speech',
+        message: 'No speech detected'
+      }
+
+      if (mockSpeechRecognition.onerror) {
+        mockSpeechRecognition.onerror(mockErrorEvent)
+      }
+
+      await nextTick()
+
+      expect(wrapper.emitted('speechError')).toBeTruthy()
+      expect(wrapper.emitted('speechError')?.[0]).toEqual([
+        'No speech was detected. Please try again.'
+      ])
+    })
+
+    it('handles different error types with appropriate messages', async () => {
+      const wrapper = mount(SearchBar, {
+        props: defaultProps
+      })
+
+      await nextTick()
+
+      const errorTypes = [
+        {
+          error: 'audio-capture',
+          expectedMessage:
+            'No microphone was found. Please check your microphone settings.'
+        },
+        {
+          error: 'not-allowed',
+          expectedMessage:
+            'Microphone access was denied. Please allow microphone access and try again.'
+        },
+        {
+          error: 'network',
+          expectedMessage: 'Network error occurred during speech recognition.'
+        },
+        {
+          error: 'unknown',
+          expectedMessage: 'Speech recognition error: unknown'
+        }
+      ]
+
+      for (const errorType of errorTypes) {
+        const mockErrorEvent = {
+          error: errorType.error,
+          message: 'Error message'
+        }
+
+        if (mockSpeechRecognition.onerror) {
+          mockSpeechRecognition.onerror(mockErrorEvent)
+        }
+
+        await nextTick()
+      }
+
+      expect(wrapper.emitted('speechError')).toHaveLength(errorTypes.length)
+    })
+
+    it('does not start speech recognition when disabled', async () => {
+      const wrapper = mount(SearchBar, {
+        props: {
+          ...defaultProps,
+          disabled: true
+        }
+      })
+
+      await nextTick()
+
+      const micButton = wrapper.findAll('button')[1]
+      expect(micButton).toBeTruthy()
+      if (micButton) {
+        expect(micButton.element.disabled).toBe(true)
+        await micButton.trigger('click')
+        expect(mockSpeechRecognition.start).not.toHaveBeenCalled()
+      }
     })
   })
 })

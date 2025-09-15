@@ -37,6 +37,7 @@
             @search="handleSearch"
             @file-upload="handleFileUpload"
             @file-error="handleFileError"
+            @speech-error="handleSpeechError"
           />
 
           <!-- Loading Spinner -->
@@ -97,6 +98,12 @@
     // TODO: Implement proper error handling UI
     // TODO: Implement proper error handling UI instead of console.error
     // For now, you could show a toast notification or set an error state
+  }
+
+  const handleSpeechError = (_error: string) => {
+    // TODO: Implement proper speech error handling UI
+    // For now, errors are handled by the SearchBar component itself
+    // In future, could show toast notifications or set error state
   }
 
   function handlePiClick() {
