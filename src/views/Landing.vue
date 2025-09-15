@@ -90,23 +90,9 @@
       return
     }
 
-    // Check if this should trigger the lightbox (first search)
-    const lightboxTriggered = lightboxStore.handleSearchAction()
-
     try {
       await searchStore.performSearch(searchQuery.value)
-
-      // Only navigate if lightbox wasn't triggered or after a delay
-      if (lightboxTriggered) {
-        // Wait a bit before navigating to let the lightbox show
-        setTimeout(async () => {
-          if (!lightboxStore.isVisible) {
-            await router.push('/search')
-          }
-        }, 1000)
-      } else {
-        await router.push('/search')
-      }
+      await router.push('/search')
     } catch {
       // TODO: Implement proper error handling/logging
       // console.error('Search failed:', error)
