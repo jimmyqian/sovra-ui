@@ -112,6 +112,9 @@
   .text-brand-blue {
     color: var(--color-brand-blue);
   }
+  .text-border-dashed {
+    color: var(--color-border-dashed);
+  }
 
   /* Border Colors */
   .border-border-light {

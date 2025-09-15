@@ -66,14 +66,12 @@
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
-  import { useLightboxStore } from '@/stores/lightbox'
   import Logo from '@/components/common/Logo.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
 
   const router = useRouter()
   const searchStore = useSearchStore()
-  const lightboxStore = useLightboxStore()
   const searchQuery = ref('')
 
   const handleSearch = async () => {
@@ -82,15 +80,8 @@
     }
 
     try {
-      // Check if lightbox should be triggered
-      const shouldShowLightbox = lightboxStore.handleSearchAction()
-
       await searchStore.performSearch(searchQuery.value)
-
-      // Only navigate if lightbox wasn't triggered
-      if (!shouldShowLightbox) {
-        await router.push('/search')
-      }
+      await router.push('/search')
     } catch {
       // TODO: Implement proper error handling/logging
       // console.error('Search failed:', error)
@@ -102,7 +93,7 @@
     // console.log('Files uploaded:', files)
   }
 
-  const handleFileError = (error: string) => {
+  const handleFileError = (_error: string) => {
     // TODO: Implement proper error handling UI
     // TODO: Implement proper error handling UI instead of console.error
     // For now, you could show a toast notification or set an error state

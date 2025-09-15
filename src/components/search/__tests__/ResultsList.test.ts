@@ -8,7 +8,6 @@ import { mount } from '@vue/test-utils'
 import ResultsList from '../ResultsList.vue'
 import ResultCard from '../ResultCard.vue'
 import FilterCriteria from '../FilterCriteria.vue'
-import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
 import MoreIcon from '@/components/icons/MoreIcon.vue'
 import type { SearchResult } from '@/types/search'
 
@@ -27,13 +26,6 @@ vi.mock('../FilterCriteria.vue', () => ({
     template: '<div class="mock-filter-criteria">FilterCriteria</div>',
     props: ['filters'],
     emits: ['removeFilter', 'dropdownClick', 'edit', 'createMore']
-  }
-}))
-
-vi.mock('@/components/layout/CopyrightFooter.vue', () => ({
-  default: {
-    name: 'CopyrightFooter',
-    template: '<div class="mock-copyright-footer">CopyrightFooter</div>'
   }
 }))
 
@@ -80,7 +72,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -101,7 +92,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -116,10 +106,6 @@ describe('ResultsList', () => {
 
       // Load more button section
       expect(wrapper.text()).toContain('Load More Results')
-
-      // Footer section
-      const footer = wrapper.findComponent(CopyrightFooter)
-      expect(footer.exists()).toBe(true)
     })
 
     it('renders with empty results array', () => {
@@ -129,7 +115,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -149,7 +134,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -165,7 +149,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -200,7 +183,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -221,7 +203,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -240,7 +221,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -264,7 +244,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -290,7 +269,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -313,7 +291,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -332,7 +309,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -362,7 +338,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -400,7 +375,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -420,7 +394,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -440,7 +413,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -464,7 +436,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -495,7 +466,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -520,7 +490,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -528,7 +497,6 @@ describe('ResultsList', () => {
 
       expect(wrapper.findComponent(FilterCriteria).exists()).toBe(true)
       expect(wrapper.findAllComponents(ResultCard)).toHaveLength(2)
-      expect(wrapper.findComponent(CopyrightFooter).exists()).toBe(true)
       expect(wrapper.findComponent(MoreIcon).exists()).toBe(true)
     })
 
@@ -539,7 +507,6 @@ describe('ResultsList', () => {
           components: {
             ResultCard,
             FilterCriteria,
-            CopyrightFooter,
             MoreIcon
           }
         }
@@ -549,10 +516,6 @@ describe('ResultsList', () => {
       const headerSection = wrapper.findAll('div')[1]
       expect(headerSection).toBeTruthy()
       expect(headerSection!.findComponent(FilterCriteria).exists()).toBe(true)
-
-      // CopyrightFooter should be at the bottom
-      const footerComponent = wrapper.findComponent(CopyrightFooter)
-      expect(footerComponent.exists()).toBe(true)
     })
   })
 })

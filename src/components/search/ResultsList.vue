@@ -60,8 +60,6 @@
         <MoreIcon v-if="!isLoading" />
       </Button>
     </div>
-
-    <CopyrightFooter />
   </div>
 </template>
 
@@ -70,7 +68,6 @@
   import Button from '@/components/ui/Button.vue'
   import ResultCard from './ResultCard.vue'
   import FilterCriteria from './FilterCriteria.vue'
-  import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
   import MoreIcon from '@/components/icons/MoreIcon.vue'
   import type { SearchResult } from '@/types/search'
 

@@ -223,16 +223,17 @@ describe('Landing Component', () => {
       // Wait for async operations
       await new Promise(resolve => setTimeout(resolve, 0))
 
-      expect(handleSearchActionSpy).toHaveBeenCalled()
+      // Lightbox should NOT be triggered during normal searches (pi symbol only)
+      expect(handleSearchActionSpy).not.toHaveBeenCalled()
       expect(routerPushSpy).toHaveBeenCalledWith('/search')
     })
 
-    it('should delay navigation when lightbox is triggered on first search', async () => {
+    it('should navigate normally during regular searches (lightbox only for pi symbol)', async () => {
       const wrapper = createWrapper()
       const searchStore = useSearchStore()
       const lightboxStore = useLightboxStore()
 
-      // Mock successful search with lightbox trigger
+      // Mock successful search with no lightbox trigger during normal searches
       const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
       performSearchSpy.mockResolvedValue()
 
@@ -240,7 +241,7 @@ describe('Landing Component', () => {
         lightboxStore,
         'handleSearchAction'
       )
-      handleSearchActionSpy.mockReturnValue(true) // First search, trigger lightbox
+      handleSearchActionSpy.mockReturnValue(false) // No lightbox during normal searches
 
       // Mock router push
       const routerPushSpy = vi.spyOn(router, 'push')
@@ -254,9 +255,10 @@ describe('Landing Component', () => {
       // Wait for immediate operations
       await new Promise(resolve => setTimeout(resolve, 0))
 
-      expect(handleSearchActionSpy).toHaveBeenCalled()
-      // Should not navigate immediately when lightbox is triggered
-      expect(routerPushSpy).not.toHaveBeenCalled()
+      // Lightbox should NOT be triggered during normal searches (pi symbol only)
+      expect(handleSearchActionSpy).not.toHaveBeenCalled()
+      // Should navigate normally since lightbox is not triggered
+      expect(routerPushSpy).toHaveBeenCalledWith('/search')
     })
 
     it('should handle search errors gracefully', async () => {

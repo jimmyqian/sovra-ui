@@ -71,7 +71,8 @@ describe('Search Workflow Integration', () => {
 
     // Verify store method was called
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
-    expect(handleSearchActionSpy).toHaveBeenCalled()
+    // Lightbox should NOT be triggered during normal searches (pi symbol only)
+    expect(handleSearchActionSpy).not.toHaveBeenCalled()
 
     // Verify router navigation was called (no query parameter needed anymore)
     expect(pushSpy).toHaveBeenCalledWith('/search')
@@ -108,7 +109,8 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
-    expect(handleSearchActionSpy).toHaveBeenCalled()
+    // Lightbox should NOT be triggered during normal searches (pi symbol only)
+    expect(handleSearchActionSpy).not.toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
@@ -293,7 +295,8 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(specialQuery)
-    expect(handleSearchActionSpy).toHaveBeenCalled()
+    // Lightbox should NOT be triggered during normal searches (pi symbol only)
+    expect(handleSearchActionSpy).not.toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
@@ -334,7 +337,8 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(longQuery)
-    expect(handleSearchActionSpy).toHaveBeenCalled()
+    // Lightbox should NOT be triggered during normal searches (pi symbol only)
+    expect(handleSearchActionSpy).not.toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 

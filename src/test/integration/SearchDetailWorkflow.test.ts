@@ -210,7 +210,6 @@ describe('SearchDetail Integration Tests', () => {
     expect(wrapper.text()).toContain('Loans / Deposits')
     expect(wrapper.text()).toContain('Average Pay')
     expect(wrapper.text()).toContain('Show all references')
-    expect(wrapper.text()).toContain(`© ${new Date().getFullYear()} Sovra.ai`)
   })
 
   it('handles search functionality', async () => {

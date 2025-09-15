@@ -34,16 +34,11 @@
         Show all references
       </button>
     </div>
-
-    <!-- Copyright Footer -->
-    <div class="text-center pt-6 border-t border-border-light">
-      <p class="text-xs text-text-muted">© {{ currentYear }} Sovra.ai</p>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref } from 'vue'
 
   interface ReferenceCategory {
     id: string
@@ -60,8 +55,6 @@
     { id: 'timeLine', label: 'Time Line View', active: false },
     { id: 'ssnFinance', label: 'SSN & Finance', active: false }
   ])
-
-  const currentYear = computed(() => new Date().getFullYear())
 
   interface Emits {
     (e: 'categoryToggle', categoryId: string, active: boolean): void

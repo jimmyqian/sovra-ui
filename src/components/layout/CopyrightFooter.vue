@@ -1,12 +1,12 @@
 <template>
   <footer
-    class="flex justify-between items-center text-text-secondary text-xs pt-4 pr-4 pb-8 pl-8 md:pt-3 md:pr-3 md:pb-8 md:pl-8"
+    class="flex justify-between items-end text-text-secondary text-xs pt-4 pr-4 pb-8 pl-8 md:pt-3 md:pr-3 md:pb-8 md:pl-8"
   >
     <span>©{{ currentYear }} sovra.ai</span>
 
     <!-- Pi Symbol Button -->
     <button
-      class="text-text-secondary hover:text-text-primary transition-colors duration-200 text-xxs font-mono cursor-pointer select-none"
+      class="text-border-dashed hover:text-text-primary transition-colors duration-200 text-xxs font-mono cursor-pointer select-none"
       style="font-size: 0.65rem"
       aria-label="Developer actions"
       @click="handlePiClick"

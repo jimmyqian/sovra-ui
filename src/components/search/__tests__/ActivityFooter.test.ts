@@ -110,13 +110,6 @@ describe('ActivityFooter', () => {
     expect(showReferencesButton?.classes()).toContain('text-brand-orange')
   })
 
-  it('displays current year in copyright footer', () => {
-    const wrapper = mount(ActivityFooter)
-    const currentYear = new Date().getFullYear()
-
-    expect(wrapper.text()).toContain(`© ${currentYear} Sovra.ai`)
-  })
-
   it('emits categoryToggle event when category is clicked', async () => {
     const wrapper = mount(ActivityFooter)
 
@@ -182,17 +175,5 @@ describe('ActivityFooter', () => {
 
     const showReferencesContainer = wrapper.find('.text-center')
     expect(showReferencesContainer.exists()).toBe(true)
-  })
-
-  it('has proper copyright section styling', () => {
-    const wrapper = mount(ActivityFooter)
-
-    const copyrightSection = wrapper.find('.text-center.pt-6.border-t')
-    expect(copyrightSection.exists()).toBe(true)
-    expect(copyrightSection.classes()).toContain('border-border-light')
-
-    const copyrightText = copyrightSection.find('p')
-    expect(copyrightText.classes()).toContain('text-xs')
-    expect(copyrightText.classes()).toContain('text-text-muted')
   })
 })
