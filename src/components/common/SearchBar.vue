@@ -24,7 +24,17 @@
         <UploadIcon />
       </Button>
       <div class="flex items-center gap-2">
-        <Button variant="ghost" size="sm" :disabled="disabled">
+        <Button
+          variant="ghost"
+          size="sm"
+          :disabled="disabled || !speechSupported"
+          :class="{
+            'text-brand-orange': isListening,
+            'animate-pulse': isListening
+          }"
+          @click="toggleSpeechRecognition"
+          :aria-label="isListening ? 'Stop voice input' : 'Start voice input'"
+        >
           <MicrophoneIcon />
         </Button>
         <Button
@@ -52,12 +62,17 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, nextTick, watch } from 'vue'
+  import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue'
   import Button from '@/components/ui/Button.vue'
   import UploadIcon from '@/components/icons/UploadIcon.vue'
   import MicrophoneIcon from '@/components/icons/MicrophoneIcon.vue'
   import SearchButtonIcon from '@/components/icons/SearchButtonIcon.vue'
   import { validateFiles } from '@/utils/fileValidation'
+  import type {
+    SpeechRecognition,
+    SpeechRecognitionEvent,
+    SpeechRecognitionErrorEvent
+  } from '@/types/speech'
 
   interface Props {
     modelValue: string
@@ -70,6 +85,7 @@
     (e: 'search'): void
     (e: 'fileUpload', files: File[]): void
     (e: 'fileError', error: string): void
+    (e: 'speechError', error: string): void
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -80,6 +96,11 @@
 
   const fileInput = ref<HTMLInputElement>()
   const textarea = ref<HTMLTextAreaElement>()
+
+  // Speech recognition state
+  const isListening = ref(false)
+  const speechSupported = ref(false)
+  let recognition: SpeechRecognition | null = null
 
   const adjustTextareaHeight = () => {
     if (textarea.value) {
@@ -132,6 +153,100 @@
     // Clear the input for security (prevents file path disclosure)
     target.value = ''
   }
+
+  // Speech Recognition Functions
+  const initializeSpeechRecognition = () => {
+    if (typeof window !== 'undefined') {
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition
+      if (SpeechRecognition) {
+        speechSupported.value = true
+        recognition = new SpeechRecognition()
+
+        // Configure speech recognition
+        recognition.continuous = false
+        recognition.interimResults = false
+        recognition.lang = 'en-US'
+
+        recognition.onstart = () => {
+          isListening.value = true
+        }
+
+        recognition.onend = () => {
+          isListening.value = false
+        }
+
+        recognition.onresult = (event: SpeechRecognitionEvent) => {
+          if (event.results.length > 0) {
+            const transcript = event.results[0]?.[0]?.transcript ?? ''
+            if (transcript.trim()) {
+              emit('update:modelValue', transcript.trim())
+              // Auto-submit the search after speech input
+              setTimeout(() => {
+                emit('search')
+              }, 100)
+            }
+          }
+        }
+
+        recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
+          isListening.value = false
+          let errorMessage = 'Speech recognition error occurred'
+
+          switch (event.error) {
+            case 'no-speech':
+              errorMessage = 'No speech was detected. Please try again.'
+              break
+            case 'audio-capture':
+              errorMessage =
+                'No microphone was found. Please check your microphone settings.'
+              break
+            case 'not-allowed':
+              errorMessage =
+                'Microphone access was denied. Please allow microphone access and try again.'
+              break
+            case 'network':
+              errorMessage = 'Network error occurred during speech recognition.'
+              break
+            default:
+              errorMessage = `Speech recognition error: ${event.error}`
+          }
+
+          emit('speechError', errorMessage)
+        }
+      }
+    }
+  }
+
+  const toggleSpeechRecognition = () => {
+    if (!recognition || props.disabled) {
+      return
+    }
+
+    if (isListening.value) {
+      recognition.stop()
+    } else {
+      try {
+        recognition.start()
+      } catch (error) {
+        emit(
+          'speechError',
+          'Failed to start speech recognition. Please try again.'
+        )
+      }
+    }
+  }
+
+  // Lifecycle hooks
+  onMounted(() => {
+    initializeSpeechRecognition()
+  })
+
+  onUnmounted(() => {
+    if (recognition && isListening.value) {
+      recognition.stop()
+    }
+  })
 
   watch(
     () => props.modelValue,
