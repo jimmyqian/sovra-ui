@@ -75,9 +75,8 @@ describe('Landing Page Integration', () => {
     })
   }
 
-  describe('First Search Lightbox Integration', () => {
-    it('triggers lightbox on first search and delays navigation', async () => {
-      mockLightboxStore.handleSearchAction.mockReturnValue(true) // First search
+  describe('Normal Search Integration (No Lightbox)', () => {
+    it('performs normal search without lightbox trigger', async () => {
       mockSearchStore.performSearch.mockResolvedValue(undefined)
 
       wrapper = createWrapper()
@@ -89,16 +88,15 @@ describe('Landing Page Integration', () => {
       await searchButton.trigger('click')
       await flushPromises()
 
-      // Verify lightbox was triggered
-      expect(mockLightboxStore.handleSearchAction).toHaveBeenCalled()
+      // Verify lightbox was NOT triggered during normal searches (pi symbol only)
+      expect(mockLightboxStore.handleSearchAction).not.toHaveBeenCalled()
       expect(mockSearchStore.performSearch).toHaveBeenCalledWith('test query')
 
-      // Navigation should be delayed, not immediate
-      expect(mockPush).not.toHaveBeenCalled()
+      // Navigation should happen immediately for normal searches
+      expect(mockPush).toHaveBeenCalledWith('/search')
     })
 
-    it('navigates immediately on subsequent searches', async () => {
-      mockLightboxStore.handleSearchAction.mockReturnValue(false) // Not first search
+    it('navigates immediately during normal searches', async () => {
       mockSearchStore.performSearch.mockResolvedValue(undefined)
 
       wrapper = createWrapper()
@@ -110,16 +108,15 @@ describe('Landing Page Integration', () => {
       await searchButton.trigger('click')
       await flushPromises()
 
-      // Verify search was performed
-      expect(mockLightboxStore.handleSearchAction).toHaveBeenCalled()
+      // Verify search was performed without lightbox trigger
+      expect(mockLightboxStore.handleSearchAction).not.toHaveBeenCalled()
       expect(mockSearchStore.performSearch).toHaveBeenCalledWith('test query')
 
-      // Navigation should be immediate
+      // Navigation should be immediate for normal searches
       expect(mockPush).toHaveBeenCalledWith('/search')
     })
 
     it('handles Enter key press correctly', async () => {
-      mockLightboxStore.handleSearchAction.mockReturnValue(true)
       mockSearchStore.performSearch.mockResolvedValue(undefined)
 
       wrapper = createWrapper()
@@ -130,9 +127,10 @@ describe('Landing Page Integration', () => {
       await searchInput.trigger('keypress.enter')
       await flushPromises()
 
-      // Verify lightbox was triggered
-      expect(mockLightboxStore.handleSearchAction).toHaveBeenCalled()
+      // Verify lightbox was NOT triggered during normal searches (pi symbol only)
+      expect(mockLightboxStore.handleSearchAction).not.toHaveBeenCalled()
       expect(mockSearchStore.performSearch).toHaveBeenCalledWith('test query')
+      expect(mockPush).toHaveBeenCalledWith('/search')
     })
 
     it('does not search with empty query', async () => {
@@ -165,8 +163,7 @@ describe('Landing Page Integration', () => {
   })
 
   describe('Search Error Handling', () => {
-    it('handles search errors gracefully with lightbox', async () => {
-      mockLightboxStore.handleSearchAction.mockReturnValue(true)
+    it('handles search errors gracefully', async () => {
       mockSearchStore.performSearch.mockRejectedValue(
         new Error('Search failed')
       )
@@ -179,30 +176,8 @@ describe('Landing Page Integration', () => {
       await searchButton.trigger('click')
       await flushPromises()
 
-      // Verify lightbox was triggered even on error
-      expect(mockLightboxStore.handleSearchAction).toHaveBeenCalled()
-      expect(mockSearchStore.performSearch).toHaveBeenCalledWith('test query')
-
-      // Navigation should not happen on error
-      expect(mockPush).not.toHaveBeenCalled()
-    })
-
-    it('handles search errors gracefully without lightbox', async () => {
-      mockLightboxStore.handleSearchAction.mockReturnValue(false)
-      mockSearchStore.performSearch.mockRejectedValue(
-        new Error('Search failed')
-      )
-
-      wrapper = createWrapper()
-      const searchInput = wrapper.find('textarea')
-      const searchButton = wrapper.find('[data-testid="search-button"]')
-
-      await searchInput.setValue('test query')
-      await searchButton.trigger('click')
-      await flushPromises()
-
-      // Verify search was attempted
-      expect(mockLightboxStore.handleSearchAction).toHaveBeenCalled()
+      // Verify lightbox was NOT triggered during normal searches (pi symbol only)
+      expect(mockLightboxStore.handleSearchAction).not.toHaveBeenCalled()
       expect(mockSearchStore.performSearch).toHaveBeenCalledWith('test query')
 
       // Navigation should not happen on error

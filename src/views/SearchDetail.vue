@@ -61,6 +61,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Page Footer -->
+    <CopyrightFooter @pi-click="handlePiClick" />
   </div>
 </template>
 
@@ -75,6 +78,7 @@
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
   import CategoryTabs from '@/components/search/CategoryTabs.vue'
   import ActivityFooter from '@/components/search/ActivityFooter.vue'
+  import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
   import type { ConversationMessage } from '@/types/conversation'
 
   const route = useRoute()
@@ -260,6 +264,11 @@
     // TODO: Implement search refinement
     // console.log('Refine search clicked')
     // TODO: Implement search refinement
+  }
+
+  function handlePiClick() {
+    // This function is kept for event binding compatibility but not used
+    // The pi symbol now directly triggers lightbox from the footer component
   }
 
   onMounted(() => {

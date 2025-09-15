@@ -38,6 +38,9 @@
         />
       </div>
     </div>
+
+    <!-- Page Footer -->
+    <CopyrightFooter @pi-click="handlePiClick" />
   </div>
 </template>
 
@@ -49,6 +52,7 @@
   import SearchBar from '@/components/common/SearchBar.vue'
   import SearchConversation from '@/components/search/SearchConversation.vue'
   import ResultsList from '@/components/search/ResultsList.vue'
+  import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
   import type { ConversationMessage } from '@/types/conversation'
 
   const searchStore = useSearchStore()
@@ -189,5 +193,10 @@
     // TODO: Implement filter creation
     // console.log('Create filter clicked')
     // TODO: Implement filter creation
+  }
+
+  function handlePiClick() {
+    // This function is kept for event binding compatibility but not used
+    // The pi symbol now directly triggers lightbox from the footer component
   }
 </script>

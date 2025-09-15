@@ -50,7 +50,13 @@ describe('CopyrightFooter', () => {
       const wrapper = mount(CopyrightFooter)
 
       const footer = wrapper.find('footer')
-      const expectedClasses = ['text-left', 'text-text-secondary', 'text-xs']
+      const expectedClasses = [
+        'flex',
+        'justify-between',
+        'items-end',
+        'text-text-secondary',
+        'text-xs'
+      ]
 
       expectedClasses.forEach(className => {
         expect(footer.classes()).toContain(className)
@@ -89,7 +95,9 @@ describe('CopyrightFooter', () => {
 
       const footer = wrapper.find('footer')
       const allExpectedClasses = [
-        'text-left',
+        'flex',
+        'justify-between',
+        'items-end',
         'text-text-secondary',
         'text-xs',
         'pt-4',
@@ -210,7 +218,9 @@ describe('CopyrightFooter', () => {
       const footer = wrapper.find('footer')
       expect(footer.classes()).toContain('text-xs')
       expect(footer.classes()).toContain('text-text-secondary')
-      expect(footer.classes()).toContain('text-left')
+      expect(footer.classes()).toContain('flex')
+      expect(footer.classes()).toContain('justify-between')
+      expect(footer.classes()).toContain('items-end')
     })
   })
 
@@ -241,20 +251,37 @@ describe('CopyrightFooter', () => {
       expect(footer.classes()).toContain('md:pl-8')
     })
 
-    it('maintains left text alignment', () => {
+    it('maintains proper layout with flexbox for bottom-aligned pi button', () => {
       const wrapper = mount(CopyrightFooter)
 
       const footer = wrapper.find('footer')
-      expect(footer.classes()).toContain('text-left')
+      expect(footer.classes()).toContain('flex')
+      expect(footer.classes()).toContain('justify-between')
+      expect(footer.classes()).toContain('items-end')
+
+      // Check that pi button is inline (no positioning classes) and has invisible styling
+      const piButton = wrapper.find('button')
+      expect(piButton.classes()).not.toContain('fixed')
+      expect(piButton.classes()).not.toContain('absolute')
+      expect(piButton.classes()).not.toContain('bottom-8')
+      expect(piButton.classes()).not.toContain('right-4')
+      expect(piButton.classes()).toContain('text-border-dashed')
     })
   })
 
-  describe('Component Simplicity', () => {
-    it('is a purely presentational component', () => {
+  describe('Component Behavior', () => {
+    it('emits piClick event when pi button is clicked', async () => {
       const wrapper = mount(CopyrightFooter)
 
-      // Should not emit any events
-      expect(Object.keys(wrapper.emitted())).toHaveLength(0)
+      const piButton = wrapper.find('button')
+      await piButton.trigger('click')
+
+      expect(wrapper.emitted('piClick')).toBeTruthy()
+      expect(wrapper.emitted('piClick')![0]).toEqual([])
+    })
+
+    it('should not accept any props', () => {
+      const wrapper = mount(CopyrightFooter)
 
       // Should not accept any props
       expect(Object.keys(wrapper.props())).toHaveLength(0)

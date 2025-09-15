@@ -1,9 +1,11 @@
 <template>
   <p :class="computedClasses">
     <template v-if="item.emphasis === 'strong'">
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <strong v-html="sanitizeHtml(item.content)"></strong>
     </template>
     <template v-else>
+      <!-- eslint-disable-next-line vue/no-v-html -->
       <span v-html="sanitizeHtml(item.content)"></span>
     </template>
   </p>

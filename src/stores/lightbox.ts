@@ -16,14 +16,7 @@ export interface LightboxState {
 
 export const useLightboxStore = defineStore('lightbox', () => {
   // Available video URLs for random selection
-  const videoUrls = [
-    'https://youtu.be/3MH54ewvcWo',
-    'https://www.youtube.com/watch?v=cNAdtkSjSps',
-    'https://www.youtube.com/watch?v=km5YVF5x_CU',
-    'https://www.youtube.com/watch?v=zInV4hJFq_w',
-    'https://youtu.be/QFgcqB8-AxE',
-    'https://youtu.be/QbC6dLG_dQY?list=RDQbC6dLG_dQY'
-  ]
+  const videoUrls = ['https://youtu.be/QbC6dLG_dQY?list=RDQbC6dLG_dQY']
 
   // State
   const isVisible = ref<boolean>(false)
