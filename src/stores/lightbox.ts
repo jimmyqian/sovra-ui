@@ -56,6 +56,27 @@ export const useLightboxStore = defineStore('lightbox', () => {
   }
 
   /**
+   * Show the lightbox with a randomly selected video
+   * Always selects a DIFFERENT video than the current one, ensuring variety
+   */
+  const showLightboxWithRandomVideo = () => {
+    const currentVideoUrl = videoUrl.value
+    const availableVideos = videoUrls.filter(url => url !== currentVideoUrl)
+
+    // If we somehow have no other videos available, use all videos
+    const videosToChooseFrom =
+      availableVideos.length > 0 ? availableVideos : videoUrls
+
+    // Generate random selection from available videos (excluding current one)
+    const timestamp = Date.now()
+    const randomSeed = Math.random() * timestamp
+    const randomIndex = Math.floor(randomSeed % videosToChooseFrom.length)
+
+    videoUrl.value = videosToChooseFrom[randomIndex] ?? videoUrls[0] ?? ''
+    isVisible.value = true
+  }
+
+  /**
    * Hide the lightbox
    */
   const hideLightbox = () => {
@@ -64,10 +85,18 @@ export const useLightboxStore = defineStore('lightbox', () => {
 
   /**
    * Select a random video URL from the available videos
+   * Excludes the currently playing video to ensure variety
    */
   const selectRandomVideo = (): string => {
-    const randomIndex = Math.floor(Math.random() * videoUrls.length)
-    return videoUrls[randomIndex] ?? videoUrls[0] ?? ''
+    const currentVideoUrl = videoUrl.value
+    const availableVideos = videoUrls.filter(url => url !== currentVideoUrl)
+
+    // If we somehow have no other videos available, use all videos
+    const videosToChooseFrom =
+      availableVideos.length > 0 ? availableVideos : videoUrls
+
+    const randomIndex = Math.floor(Math.random() * videosToChooseFrom.length)
+    return videosToChooseFrom[randomIndex] ?? videoUrls[0] ?? ''
   }
 
   /**
@@ -145,6 +174,7 @@ export const useLightboxStore = defineStore('lightbox', () => {
     // Actions
     showLightbox,
     showLightboxWithVideo,
+    showLightboxWithRandomVideo,
     hideLightbox,
     handleSearchAction,
     selectRandomVideo,
