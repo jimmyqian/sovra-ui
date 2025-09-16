@@ -113,6 +113,8 @@
 <script setup lang="ts">
   import { ref, onMounted, computed, watch, nextTick } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
+  import { useConversationStore } from '@/stores/conversation'
+  import { useSearchStore } from '@/stores/search'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import AppSidebar from '@/components/navigation/AppSidebar.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
@@ -129,6 +131,8 @@
 
   const route = useRoute()
   const router = useRouter()
+  const conversationStore = useConversationStore()
+  const searchStore = useSearchStore()
   const searchQuery = ref('')
   const detailScrollContainer = ref<HTMLElement | null>(null)
 
@@ -277,10 +281,64 @@
     router.push('/search')
   }
 
-  const handleSearch = () => {
-    // TODO: Implement search functionality
-    // console.log('Search initiated:', searchQuery.value)
-    // Implement search functionality
+  const handleSearch = async () => {
+    if (searchQuery.value.trim()) {
+      // Add user message to conversation
+      const userMessageId = `user-message-${Date.now()}`
+      const systemResponseId = `system-response-${Date.now()}`
+      const thinkingPlaceholderId = `thinking-${Date.now()}`
+
+      conversationStore.addMessage({
+        id: userMessageId,
+        sender: 'user',
+        timestamp: new Date(),
+        content: searchQuery.value
+      })
+
+      // Add thinking placeholder immediately
+      conversationStore.addMessage({
+        id: thinkingPlaceholderId,
+        sender: 'system',
+        timestamp: new Date(),
+        items: [
+          {
+            id: `thinking-text-${Date.now()}`,
+            type: 'text',
+            content: 'thinking...',
+            emphasis: 'normal',
+            isThinking: true
+          }
+        ]
+      })
+
+      // Store the query before clearing input
+      const queryToSearch = searchQuery.value
+
+      // Clear the search input
+      searchQuery.value = ''
+
+      // Wait 3 seconds before performing search and replacing thinking placeholder
+      setTimeout(async () => {
+        // Perform the search
+        await searchStore.performSearch(queryToSearch)
+
+        // Find and replace the thinking placeholder
+        conversationStore.updateMessage(thinkingPlaceholderId, {
+          id: systemResponseId,
+          sender: 'system',
+          timestamp: new Date(),
+          items: [
+            {
+              id: `text-${Date.now()}`,
+              type: 'text',
+              content:
+                "Based on the additional information you provided I have refined the profile details. The information has been updated to reflect the new search criteria.",
+              emphasis: 'normal'
+            }
+          ]
+        })
+      }, 3000)
+    }
   }
 
   const handleFileUpload = (_files: File[]) => {
@@ -307,44 +365,23 @@
     // Implement tag navigation functionality - could scroll to section or change view
   }
 
-  // Generate conversation data for the detail page
+  // Use the persisted conversation from the store
   const conversationMessages = computed<ConversationMessage[]>(() => {
-    return [
-      {
-        id: 'detail-response-1',
-        sender: 'system',
-        timestamp: new Date(),
-        items: [
-          {
-            id: 'detail-summary',
-            type: 'results-summary',
-            resultCount: 1,
-            template: 'Perfect match! Found detailed profile for Johnson Smith.'
-          },
-          {
-            id: 'detail-text-1',
-            type: 'text',
-            content:
-              "This appears to be the person you're looking for. Review the detailed information and use the actions below to explore related profiles.",
-            emphasis: 'secondary'
-          },
-          {
-            id: 'detail-action-1',
-            type: 'action-button',
-            text: 'Find similar profiles',
-            variant: 'primary',
-            onClick: () => handleSimilarProfiles()
-          },
-          {
-            id: 'detail-action-2',
-            type: 'action-button',
-            text: 'Refine search criteria',
-            variant: 'secondary',
-            onClick: () => handleRefineSearch()
-          }
-        ]
+    const totalResults = searchStore.displayTotalResults
+    const messages = [...conversationStore.conversationHistory]
+
+    // Update the result count in the initial system response if it exists
+    if (messages.length >= 2 && messages[1]?.sender === 'system') {
+      const systemMessage = messages[1]
+      const resultsSummaryItem = systemMessage.items?.find(
+        item => item.type === 'results-summary'
+      )
+      if (resultsSummaryItem && 'resultCount' in resultsSummaryItem) {
+        resultsSummaryItem.resultCount = totalResults
       }
-    ]
+    }
+
+    return messages
   })
 
   const handleSimilarProfiles = () => {
@@ -365,12 +402,30 @@
     // In future, could show toast notifications or set error state
   }
 
+  const handleHintClick = (_hintType: string) => {
+    // TODO: Implement hint click functionality
+    // console.log('Hint clicked:', hintType)
+    // TODO: Implement hint click functionality
+  }
+
+  const handleCreateFilter = () => {
+    // TODO: Implement filter creation
+    // console.log('Create filter clicked')
+    // TODO: Implement filter creation
+  }
+
   function handlePiClick() {
     // This function is kept for event binding compatibility but not used
     // The pi symbol now directly triggers lightbox from the footer component
   }
 
   onMounted(() => {
+    // Initialize hint handlers on mount
+    conversationStore.updateHintHandlers({
+      onHintClick: handleHintClick,
+      onCreateFilter: handleCreateFilter
+    })
+
     // Load person data based on route params
     const personId = route.params.id as string
     if (personId) {

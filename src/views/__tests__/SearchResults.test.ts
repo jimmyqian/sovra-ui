@@ -8,6 +8,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import SearchResults from '../SearchResults.vue'
 import { useSearchStore } from '@/stores/search'
+import { useConversationStore } from '@/stores/conversation'
 import type { SearchResult } from '@/types/search'
 
 // Mock components to avoid dependency issues
@@ -87,9 +88,19 @@ describe('SearchResults Component', () => {
   })
 
   const createWrapper = () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+
+    // Initialize the conversation store with proper hint handlers
+    const conversationStore = useConversationStore()
+    conversationStore.updateHintHandlers({
+      onHintClick: () => {},
+      onCreateFilter: () => {}
+    })
+
     return mount(SearchResults, {
       global: {
-        plugins: [createPinia(), router]
+        plugins: [pinia, router]
       }
     })
   }

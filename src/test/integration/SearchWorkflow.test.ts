@@ -6,6 +6,7 @@ import Landing from '@/views/Landing.vue'
 import SearchResults from '@/views/SearchResults.vue'
 import { useSearchStore } from '@/stores/search'
 import { useLightboxStore } from '@/stores/lightbox'
+import { useConversationStore } from '@/stores/conversation'
 
 // Mock router for integration testing
 const createMockRouter = () => {
@@ -192,6 +193,13 @@ describe('Search Workflow Integration', () => {
     // Navigate to search page
     await router.push('/search')
 
+    // Initialize conversation store with hint handlers
+    const conversationStore = useConversationStore()
+    conversationStore.updateHintHandlers({
+      onHintClick: () => {},
+      onCreateFilter: () => {}
+    })
+
     const wrapper = mount(SearchResults, {
       global: {
         plugins: [router, pinia]
@@ -238,6 +246,13 @@ describe('Search Workflow Integration', () => {
 
     // Navigate to search results (no query parameter needed)
     await router.push('/search')
+
+    // Initialize conversation store with hint handlers
+    const conversationStore = useConversationStore()
+    conversationStore.updateHintHandlers({
+      onHintClick: () => {},
+      onCreateFilter: () => {}
+    })
 
     const wrapper = mount(SearchResults, {
       global: {
