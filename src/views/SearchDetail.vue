@@ -36,6 +36,17 @@
             class="flex-1 overflow-y-auto max-h-full detail-scroll"
             @scroll="handleDetailScroll"
           >
+            <!-- Back Navigation -->
+            <div class="flex items-center gap-2 p-6 pb-0">
+              <button
+                class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
+                @click="handleBackToSearch"
+              >
+                <ChevronLeftIcon />
+                <span>Back to Search Results</span>
+              </button>
+            </div>
+
             <main class="p-6 space-y-6">
               <!-- Person Profile Section -->
               <PersonProfile
@@ -101,7 +112,7 @@
 
 <script setup lang="ts">
   import { ref, onMounted, computed, watch, nextTick } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import AppSidebar from '@/components/navigation/AppSidebar.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
@@ -113,9 +124,11 @@
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
+  import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
   import type { ConversationMessage } from '@/types/conversation'
 
   const route = useRoute()
+  const router = useRouter()
   const searchQuery = ref('')
   const detailScrollContainer = ref<HTMLElement | null>(null)
 
@@ -257,6 +270,11 @@
         behavior: 'smooth'
       })
     }
+  }
+
+  const handleBackToSearch = () => {
+    // Navigate back to search results
+    router.push('/search')
   }
 
   const handleSearch = () => {
