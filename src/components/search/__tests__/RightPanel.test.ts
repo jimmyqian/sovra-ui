@@ -1,0 +1,295 @@
+/**
+ * RightPanel Component Tests
+ * Tests the unified right panel that can switch between results and person details
+ */
+
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
+import RightPanel from '../RightPanel.vue'
+
+// Mock components
+vi.mock('../ResultsList.vue', () => ({
+  default: {
+    name: 'ResultsList',
+    template: '<div data-testid="results-list">ResultsList</div>',
+    props: ['results', 'isLoading', 'hasMore', 'error'],
+    emits: ['loadMore', 'personSelected']
+  }
+}))
+
+vi.mock('../PersonProfile.vue', () => ({
+  default: {
+    name: 'PersonProfile',
+    template: '<div data-testid="person-profile">PersonProfile</div>',
+    props: ['person'],
+    emits: ['tagClick']
+  }
+}))
+
+vi.mock('../DetailedResultCard.vue', () => ({
+  default: {
+    name: 'DetailedResultCard',
+    template: '<div data-testid="detailed-result-card">DetailedResultCard</div>',
+    props: ['person']
+  }
+}))
+
+vi.mock('../CategoryTabs.vue', () => ({
+  default: {
+    name: 'CategoryTabs',
+    template: '<div data-testid="category-tabs">CategoryTabs</div>',
+    props: ['accounts', 'personalData', 'professionalData', 'financeData', 'legalData']
+  }
+}))
+
+vi.mock('../ActivityFooter.vue', () => ({
+  default: {
+    name: 'ActivityFooter',
+    template: '<div data-testid="activity-footer">ActivityFooter</div>',
+    emits: ['categoryToggle', 'showReferences']
+  }
+}))
+
+vi.mock('@/components/layout/CopyrightFooter.vue', () => ({
+  default: {
+    name: 'CopyrightFooter',
+    template: '<div data-testid="copyright-footer">CopyrightFooter</div>',
+    emits: ['piClick']
+  }
+}))
+
+const mockSearchResult = {
+  id: 1,
+  name: 'John Doe',
+  age: 30,
+  gender: 'Male',
+  maritalStatus: 'Married',
+  location: 'New York, NY',
+  rating: 8.5,
+  references: 15,
+  companies: 3,
+  contacts: 25
+}
+
+const mockResults = [mockSearchResult]
+
+const defaultProps = {
+  results: mockResults,
+  isLoading: false,
+  hasMore: true,
+  error: null,
+  selectedPerson: null
+}
+
+describe('RightPanel', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  describe('Results View', () => {
+    it('should render ResultsList when no person is selected', () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+
+      expect(wrapper.find('[data-testid="results-list"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="person-profile"]').exists()).toBe(false)
+    })
+
+    it('should pass correct props to ResultsList', () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
+
+      expect(resultsList.props('results')).toEqual(mockResults)
+      expect(resultsList.props('isLoading')).toBe(false)
+      expect(resultsList.props('hasMore')).toBe(true)
+      expect(resultsList.props('error')).toBe(null)
+    })
+
+    it('should show scroll buttons when results are scrollable', () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+
+      // Mock scrollable content
+      wrapper.vm.hasScrollableContent = true
+      wrapper.vm.canScrollUp = true
+      wrapper.vm.canScrollDown = true
+
+      expect(wrapper.find('.scroll-button-top').exists()).toBe(true)
+      expect(wrapper.find('.scroll-button-bottom').exists()).toBe(true)
+    })
+
+    it('should show load more button when hasMore is true', () => {
+      const wrapper = mount(RightPanel, { props: { ...defaultProps, hasMore: true } })
+      expect(wrapper.text()).toContain('Load More Results')
+    })
+
+    it('should emit loadMore when load more button is clicked', async () => {
+      const wrapper = mount(RightPanel, { props: { ...defaultProps, hasMore: true } })
+
+      await wrapper.find('button:contains("Load More Results")').trigger('click')
+      expect(wrapper.emitted('loadMore')).toBeTruthy()
+    })
+  })
+
+  describe('Person Details View', () => {
+    const propsWithSelectedPerson = {
+      ...defaultProps,
+      selectedPerson: mockSearchResult
+    }
+
+    it('should render person details when person is selected', () => {
+      const wrapper = mount(RightPanel, { props: propsWithSelectedPerson })
+
+      expect(wrapper.find('[data-testid="results-list"]').exists()).toBe(false)
+      expect(wrapper.find('[data-testid="person-profile"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="detailed-result-card"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="category-tabs"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="activity-footer"]').exists()).toBe(true)
+    })
+
+    it('should show back to results button', () => {
+      const wrapper = mount(RightPanel, { props: propsWithSelectedPerson })
+
+      expect(wrapper.text()).toContain('Back to Results')
+    })
+
+    it('should emit backToResults when back button is clicked', async () => {
+      const wrapper = mount(RightPanel, { props: propsWithSelectedPerson })
+
+      await wrapper.find('button:contains("Back to Results")').trigger('click')
+      expect(wrapper.emitted('backToResults')).toBeTruthy()
+    })
+
+    it('should generate detailed person data from search result', () => {
+      const wrapper = mount(RightPanel, { props: propsWithSelectedPerson })
+      const detailedData = wrapper.vm.getDetailedPersonData(mockSearchResult)
+
+      expect(detailedData.name).toBe(mockSearchResult.name)
+      expect(detailedData.stats.age).toBe(mockSearchResult.age.toString())
+      expect(detailedData.personal.currentLocation).toBe(mockSearchResult.location)
+      expect(detailedData.personal.spouse).toBe('Justine m. 2023-2025') // Married status
+    })
+
+    it('should handle single marital status correctly', () => {
+      const singlePerson = { ...mockSearchResult, maritalStatus: 'Single' }
+      const wrapper = mount(RightPanel, { props: { ...defaultProps, selectedPerson: singlePerson } })
+      const detailedData = wrapper.vm.getDetailedPersonData(singlePerson)
+
+      expect(detailedData.personal.spouse).toBe('Single')
+    })
+  })
+
+  describe('Event Handling', () => {
+    it('should emit personSelected when ResultsList emits personSelected', async () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
+
+      await resultsList.vm.$emit('personSelected', mockSearchResult)
+      expect(wrapper.emitted('personSelected')).toBeTruthy()
+      expect(wrapper.emitted('personSelected')?.[0]).toEqual([mockSearchResult])
+    })
+
+    it('should emit piClick when footer emits piClick', async () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+      const footer = wrapper.findComponent({ name: 'CopyrightFooter' })
+
+      await footer.vm.$emit('piClick')
+      expect(wrapper.emitted('piClick')).toBeTruthy()
+    })
+  })
+
+  describe('Scroll Functionality', () => {
+    it('should handle results scroll events', () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+
+      // Mock scroll container
+      const mockContainer = {
+        scrollTop: 100,
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      wrapper.vm.resultsScrollContainer = mockContainer
+
+      wrapper.vm.handleResultsScroll()
+
+      expect(wrapper.vm.showTopFade).toBe(true) // scrollTop > 20
+      expect(wrapper.vm.canScrollUp).toBe(true)
+      expect(wrapper.vm.canScrollDown).toBe(true)
+      expect(wrapper.vm.hasScrollableContent).toBe(true)
+    })
+
+    it('should scroll to top when top scroll button is clicked', () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+
+      const mockScrollTo = vi.fn()
+      wrapper.vm.resultsScrollContainer = {
+        scrollTop: 300,
+        scrollTo: mockScrollTo
+      }
+
+      wrapper.vm.scrollResultsToTop()
+
+      expect(mockScrollTo).toHaveBeenCalledWith({
+        top: 100, // 300 - 200
+        behavior: 'smooth'
+      })
+    })
+
+    it('should scroll to bottom when bottom scroll button is clicked', () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+
+      const mockScrollTo = vi.fn()
+      wrapper.vm.resultsScrollContainer = {
+        scrollTop: 100,
+        scrollHeight: 500,
+        clientHeight: 300,
+        scrollTo: mockScrollTo
+      }
+
+      wrapper.vm.scrollResultsToBottom()
+
+      expect(mockScrollTo).toHaveBeenCalledWith({
+        top: 200, // min(200, 100 + 200)
+        behavior: 'smooth'
+      })
+    })
+  })
+
+  describe('Error Handling', () => {
+    it('should pass error to ResultsList', () => {
+      const error = 'Something went wrong'
+      const wrapper = mount(RightPanel, { props: { ...defaultProps, error } })
+      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
+
+      expect(resultsList.props('error')).toBe(error)
+    })
+
+    it('should handle loading state', () => {
+      const wrapper = mount(RightPanel, { props: { ...defaultProps, isLoading: true } })
+      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
+
+      expect(resultsList.props('isLoading')).toBe(true)
+    })
+  })
+
+  describe('Responsive Design', () => {
+    it('should have proper CSS classes for responsive layout', () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+
+      expect(wrapper.classes()).toContain('flex-1')
+      expect(wrapper.classes()).toContain('flex')
+      expect(wrapper.classes()).toContain('flex-col')
+      expect(wrapper.classes()).toContain('max-h-full')
+      expect(wrapper.classes()).toContain('overflow-hidden')
+    })
+
+    it('should show fade overlays only in results view', () => {
+      const wrapper = mount(RightPanel, { props: defaultProps })
+      expect(wrapper.find('.fade-overlay').exists()).toBe(true)
+      expect(wrapper.find('.fade-overlay-top').exists()).toBe(true)
+
+      wrapper.setProps({ selectedPerson: mockSearchResult })
+      expect(wrapper.find('.fade-overlay').exists()).toBe(false)
+      expect(wrapper.find('.fade-overlay-top').exists()).toBe(false)
+    })
+  })
+})

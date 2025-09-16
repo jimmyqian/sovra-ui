@@ -64,64 +64,18 @@
           </div>
         </div>
 
-        <!-- Right Panel: Results -->
-        <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
-          <div
-            ref="resultsScrollContainer"
-            class="flex-1 overflow-y-auto max-h-full results-scroll"
-            @scroll="handleResultsScroll"
-          >
-            <ResultsList
-              :results="results"
-              :is-loading="isLoading"
-              :has-more="false"
-              :error="error"
-              @load-more="handleLoadMore"
-            />
-          </div>
-          <!-- Fade-out gradient overlay at top - shows when scrolled -->
-          <div
-            class="fade-overlay-top"
-            :class="[{ visible: showTopFade }]"
-          ></div>
-          <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
-          <div class="fade-overlay"></div>
-          <!-- Scroll Control Buttons -->
-          <button
-            v-if="hasScrollableContent && canScrollUp"
-            class="scroll-button scroll-button-top"
-            aria-label="Scroll to top"
-            @click="scrollResultsToTop"
-          >
-            <ChevronUpIcon />
-          </button>
-          <button
-            v-if="hasScrollableContent && canScrollDown"
-            class="scroll-button scroll-button-bottom"
-            aria-label="Scroll to bottom"
-            @click="scrollResultsToBottom"
-          >
-            <ChevronDownIcon />
-          </button>
-          <!-- Load More Button - Always visible outside scroll area -->
-          <div
-            v-if="hasMore"
-            class="px-8 py-4 text-center md:px-4 bg-bg-primary border-t border-border-light"
-          >
-            <Button
-              variant="outline"
-              size="lg"
-              :disabled="isLoading"
-              class="mx-auto"
-              @click="handleLoadMore"
-            >
-              {{ isLoading ? 'Loading...' : 'Load More Results' }}
-              <MoreIcon v-if="!isLoading" />
-            </Button>
-          </div>
-          <!-- Page Footer -->
-          <CopyrightFooter @pi-click="handlePiClick" />
-        </div>
+        <!-- Right Panel: Results or Person Details -->
+        <RightPanel
+          :results="results"
+          :is-loading="isLoading"
+          :has-more="hasMore"
+          :error="error"
+          :selected-person="selectedPerson"
+          @load-more="handleLoadMore"
+          @person-selected="handlePersonSelected"
+          @back-to-results="handleBackToResults"
+          @pi-click="handlePiClick"
+        />
       </div>
     </div>
   </div>
@@ -129,28 +83,25 @@
 
 <script setup lang="ts">
   import { ref, computed, nextTick, watch } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import AppSidebar from '@/components/navigation/AppSidebar.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
   import SearchConversation from '@/components/search/SearchConversation.vue'
-  import ResultsList from '@/components/search/ResultsList.vue'
-  import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
-  import Button from '@/components/ui/Button.vue'
-  import MoreIcon from '@/components/icons/MoreIcon.vue'
+  import RightPanel from '@/components/search/RightPanel.vue'
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import type { ConversationMessage } from '@/types/conversation'
+  import type { SearchResult } from '@/types/search'
 
+  const route = useRoute()
+  const router = useRouter()
   const searchStore = useSearchStore()
   const conversationScrollContainer = ref<HTMLElement | null>(null)
-  const resultsScrollContainer = ref<HTMLElement | null>(null)
 
   const newQuery = ref('')
-  const showTopFade = ref(false)
-  const canScrollUp = ref(false)
-  const canScrollDown = ref(false)
-  const hasScrollableContent = ref(false)
+  const selectedPerson = ref<SearchResult | null>(null)
 
   // Conversation scroll state
   const canScrollUpConversation = ref(false)
@@ -340,21 +291,21 @@
     await searchStore.loadMoreResults()
   }
 
-  const handleResultsScroll = () => {
-    if (resultsScrollContainer.value) {
-      const container = resultsScrollContainer.value
-      const scrollTop = container.scrollTop
-      const scrollHeight = container.scrollHeight
-      const clientHeight = container.clientHeight
+  const handlePersonSelected = (person: SearchResult) => {
+    selectedPerson.value = person
+    // Update URL with query parameter to maintain browser history
+    router.push({
+      path: '/search',
+      query: { ...route.query, personId: person.id }
+    })
+  }
 
-      // Show top fade when scrolled more than 20px from top
-      showTopFade.value = scrollTop > 20
-
-      // Update scroll button states
-      canScrollUp.value = scrollTop > 0
-      canScrollDown.value = scrollTop < scrollHeight - clientHeight
-      hasScrollableContent.value = scrollHeight > clientHeight
-    }
+  const handleBackToResults = () => {
+    selectedPerson.value = null
+    // Remove personId from URL
+    const newQuery = { ...route.query }
+    delete newQuery.personId
+    router.push({ path: '/search', query: newQuery })
   }
 
   const handleConversationScroll = () => {
@@ -368,31 +319,6 @@
       canScrollUpConversation.value = scrollTop > 0
       canScrollDownConversation.value = scrollTop < scrollHeight - clientHeight
       hasScrollableContentConversation.value = scrollHeight > clientHeight
-    }
-  }
-
-  const scrollResultsToTop = () => {
-    if (resultsScrollContainer.value) {
-      const currentScroll = resultsScrollContainer.value.scrollTop
-      const scrollAmount = 200 // Approximately 1.5 card heights
-      resultsScrollContainer.value.scrollTo({
-        top: Math.max(0, currentScroll - scrollAmount),
-        behavior: 'smooth'
-      })
-    }
-  }
-
-  const scrollResultsToBottom = () => {
-    if (resultsScrollContainer.value) {
-      const currentScroll = resultsScrollContainer.value.scrollTop
-      const scrollAmount = 200 // Approximately 1.5 card heights
-      const maxScroll =
-        resultsScrollContainer.value.scrollHeight -
-        resultsScrollContainer.value.clientHeight
-      resultsScrollContainer.value.scrollTo({
-        top: Math.min(maxScroll, currentScroll + scrollAmount),
-        behavior: 'smooth'
-      })
     }
   }
 
@@ -450,14 +376,21 @@
     { deep: true }
   )
 
-  // Watch for changes in results to update scroll state
+  // Initialize selected person from URL parameters
   watch(
-    results,
-    () => {
-      // Check scroll state after results update
-      nextTick(() => {
-        handleResultsScroll()
-      })
+    () => route.query.personId,
+    personId => {
+      if (personId && results.value.length > 0) {
+        const personIdStr =
+          typeof personId === 'string' ? personId : personId[0]
+        const personIdNum = parseInt(personIdStr ?? '0', 10)
+        const person = results.value.find(r => r.id === personIdNum)
+        if (person) {
+          selectedPerson.value = person
+        }
+      } else if (!personId) {
+        selectedPerson.value = null
+      }
     },
     { immediate: true }
   )
@@ -503,41 +436,8 @@
     scroll-behavior: smooth;
   }
 
-  .fade-overlay {
-    position: absolute;
-    bottom: 128px; /* Above Load More button and footer */
-    left: 0;
-    right: 0;
-    height: 160px; /* Fixed height instead of percentage */
-    background: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgb(248 248 248) 100%
-    );
-    pointer-events: none;
-    z-index: 10;
-  }
-
-  .fade-overlay-top {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 160px; /* Same height as bottom fade */
-    background: linear-gradient(to top, transparent 0%, rgb(248 248 248) 100%);
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .fade-overlay-top.visible {
-    opacity: 1;
-  }
-
-  /* Hide scrollbars on conversation panel and results panel */
-  .conversation-scroll,
-  .results-scroll {
+  /* Hide scrollbars on conversation panel */
+  .conversation-scroll {
     /* Hide scrollbar for Chrome, Safari and Opera */
     &::-webkit-scrollbar {
       display: none;
@@ -582,7 +482,7 @@
   }
 
   .scroll-button-bottom {
-    bottom: 144px; /* Above Load More button and footer */
+    bottom: 190px; /* Above search input area */
   }
 
   /* Conversation scroll buttons - positioned differently */
