@@ -278,7 +278,7 @@ describe('CSS Responsive Design Classes', () => {
     })
   })
 
-  describe.skip('Responsive Component Patterns - DEPRECATED', () => {
+  describe('Responsive Component Patterns - DEPRECATED', () => {
     it('applies responsive button patterns correctly', () => {
       const wrapper = mount(TestComponent, {
         props: {

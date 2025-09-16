@@ -17,7 +17,7 @@ const TestComponent = defineComponent({
 })
 
 describe('CSS Component Pattern Utilities', () => {
-  describe.skip('Button Pattern Classes - DEPRECATED', () => {
+  describe('Button Pattern Classes - DEPRECATED', () => {
     it('applies btn-primary pattern correctly', () => {
       const wrapper = mount(TestComponent, {
         props: {
