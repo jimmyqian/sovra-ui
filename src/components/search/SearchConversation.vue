@@ -7,7 +7,7 @@
         v-if="message.sender === 'user'"
         :content="message.content"
         :class="{
-          'mt-8': index > 0 && messages[index - 1]?.sender === 'system'
+          'mt-8': index === 2 && messages[index - 1]?.sender === 'system'
         }"
       />
 
