@@ -57,8 +57,8 @@
   ])
 
   interface Emits {
-    (e: 'categoryToggle', categoryId: string, active: boolean): void
-    (e: 'showReferences'): void
+    (_e: 'categoryToggle', _categoryId: string, _active: boolean): void
+    (_e: 'showReferences'): void
   }
 
   const emit = defineEmits<Emits>()

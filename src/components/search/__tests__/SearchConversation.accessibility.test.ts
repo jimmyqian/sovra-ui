@@ -57,10 +57,20 @@ describe('SearchConversation Accessibility', () => {
     userQuery = mockSearchQuery,
     messages = createTestMessages()
   ) => {
+    // Add user message at the beginning of messages array
+    const allMessages = [
+      {
+        id: 'user-message-accessibility',
+        sender: 'user' as const,
+        timestamp: new Date(),
+        content: userQuery
+      },
+      ...messages
+    ]
+
     return mount(SearchConversation, {
       props: {
-        userQuery,
-        messages
+        messages: allMessages
       },
       global: {
         components: { LogoIcon }

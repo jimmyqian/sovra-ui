@@ -74,7 +74,8 @@ export interface ConversationMessage {
   id: string
   sender: 'user' | 'system'
   timestamp?: Date
-  items: ConversationItem[]
+  content?: string // For user messages
+  items?: ConversationItem[] // For system messages
 }
 
 export interface SearchConversationProps {

@@ -9,10 +9,7 @@
         <!-- Left Panel: Search & Conversation -->
         <div class="w-full bg-bg-card flex flex-col md:w-2/5 md:h-full">
           <AppHeader />
-          <SearchConversation
-            :messages="conversationMessages"
-            :user-query="currentQuery"
-          />
+          <SearchConversation :messages="conversationMessages" />
 
           <!-- Search Input -->
           <div class="px-8 py-4 md:px-4">
@@ -20,7 +17,6 @@
               v-model="newQuery"
               placeholder="Johnson, who is around 26 years old, works in a software company in California"
               @search="handleSearch"
-              @file-upload="handleFileUpload"
               @speech-error="handleSpeechError"
             />
           </div>
@@ -62,6 +58,17 @@
     'Johnson, who is around 26 years old, works in a software company in California'
   )
 
+  // Initialize conversation history with the first user query and system response
+  const conversationHistory = ref<ConversationMessage[]>([
+    {
+      id: 'user-message-1',
+      sender: 'user',
+      timestamp: new Date(),
+      content:
+        'Johnson, who is around 26 years old, works in a software company in California'
+    }
+  ])
+
   // Use search store data instead of local state
   const results = computed(() => searchStore.results)
   const isLoading = computed(() => searchStore.isLoading)
@@ -70,14 +77,39 @@
 
   const handleSearch = async () => {
     if (newQuery.value.trim()) {
-      await searchStore.performSearch(newQuery.value)
-    }
-  }
+      // Add user message to conversation
+      const userMessageId = `user-message-${Date.now()}`
+      const systemResponseId = `system-response-${Date.now()}`
 
-  const handleFileUpload = (_files: File[]) => {
-    // TODO: Implement file upload functionality
-    // console.log('Files uploaded:', files)
-    // TODO: Implement file upload functionality
+      conversationHistory.value.push({
+        id: userMessageId,
+        sender: 'user',
+        timestamp: new Date(),
+        content: newQuery.value
+      })
+
+      // Add system response
+      conversationHistory.value.push({
+        id: systemResponseId,
+        sender: 'system',
+        timestamp: new Date(),
+        items: [
+          {
+            id: `text-${Date.now()}`,
+            type: 'text',
+            content:
+              "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?",
+            emphasis: 'normal'
+          }
+        ]
+      })
+
+      // Perform the search
+      await searchStore.performSearch(newQuery.value)
+
+      // Clear the search input
+      newQuery.value = ''
+    }
   }
 
   const handleLoadMore = async () => {
@@ -85,13 +117,16 @@
   }
 
   // Generate conversation data based on search state
-  const currentQuery = computed(() => searchStore.currentQuery)
 
   const conversationMessages = computed<ConversationMessage[]>(() => {
     const totalResults = searchStore.displayTotalResults
 
-    return [
-      {
+    // Start with conversation history and add the initial system response if it's not already there
+    const messages = [...conversationHistory.value]
+
+    // Add initial system response if conversation only has the user message
+    if (messages.length === 1 && messages[0]?.sender === 'user') {
+      messages.push({
         id: 'system-response-1',
         sender: 'system',
         timestamp: new Date(),
@@ -134,60 +169,23 @@
             emphasis: 'secondary'
           },
           {
-            id: 'refinement-age',
-            type: 'refinement',
-            label: 'Only show results with ages from:',
-            inputType: 'age-range',
-            value: { min: '', max: '' },
-            onChange: (
-              value: string | { min: string; max: string } | string[] | boolean
-            ) => {
-              if (
-                typeof value === 'object' &&
-                value !== null &&
-                !Array.isArray(value)
-              ) {
-                handleAgeRangeChange(value)
-              }
-            }
-          },
-          {
             id: 'action-button-1',
             type: 'action-button',
             text: 'create a filter using the details that you provided',
             variant: 'dashed',
             onClick: () => handleCreateFilter()
-          },
-          {
-            id: 'file-upload-1',
-            type: 'file-upload',
-            label: 'Upload additional documents',
-            acceptedTypes: [
-              '.pdf',
-              '.doc',
-              '.docx',
-              '.jpg',
-              '.jpeg',
-              '.png',
-              '.gif'
-            ],
-            onUpload: (files: FileList) => handleFileUpload(Array.from(files))
           }
         ]
-      }
-    ]
+      })
+    }
+
+    return messages
   })
 
   const handleHintClick = (_hintType: string) => {
     // TODO: Implement hint click functionality
     // console.log('Hint clicked:', hintType)
     // TODO: Implement hint click functionality
-  }
-
-  const handleAgeRangeChange = (_ageRange: { min: string; max: string }) => {
-    // TODO: Implement age range filtering
-    // console.log('Age range changed:', ageRange)
-    // TODO: Implement age range filtering
   }
 
   const handleCreateFilter = () => {

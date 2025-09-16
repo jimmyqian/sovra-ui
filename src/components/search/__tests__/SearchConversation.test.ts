@@ -17,6 +17,12 @@ describe('SearchConversation', () => {
   const createWrapper = (userQuery = mockSearchQuery, resultCount = 56) => {
     const defaultMessages: ConversationMessage[] = [
       {
+        id: 'user-message-1',
+        sender: 'user',
+        timestamp: new Date(),
+        content: userQuery
+      },
+      {
         id: 'system-response-1',
         sender: 'system',
         timestamp: new Date(),
@@ -71,7 +77,6 @@ describe('SearchConversation', () => {
 
     return mount(SearchConversation, {
       props: {
-        userQuery,
         messages: defaultMessages
       },
       global: {
@@ -81,13 +86,9 @@ describe('SearchConversation', () => {
   }
 
   // @ts-ignore - keeping for future use
-  const _createWrapperWithMessages = (
-    userQuery = mockSearchQuery,
-    messages: ConversationMessage[]
-  ) => {
+  const _createWrapperWithMessages = (messages: ConversationMessage[]) => {
     return mount(SearchConversation, {
       props: {
-        userQuery,
         messages
       },
       global: {

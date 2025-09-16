@@ -51,10 +51,10 @@
   }
 
   interface Emits {
-    (e: 'removeFilter', filterId: string): void
-    (e: 'dropdownClick', filterId: string): void
-    (e: 'edit'): void
-    (e: 'createMore'): void
+    (_e: 'removeFilter', _filterId: string): void
+    (_e: 'dropdownClick', _filterId: string): void
+    (_e: 'edit'): void
+    (_e: 'createMore'): void
   }
 
   defineProps<Props>()

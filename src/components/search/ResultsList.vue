@@ -79,8 +79,8 @@
   }
 
   interface Emits {
-    (e: 'loadMore'): void
-    (e: 'load-more'): void
+    (_e: 'loadMore'): void
+    (_e: 'load-more'): void
   }
 
   withDefaults(defineProps<Props>(), {

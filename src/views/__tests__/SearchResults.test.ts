@@ -29,7 +29,7 @@ vi.mock('@/components/common/SearchBar.vue', () => ({
   default: {
     name: 'SearchBar',
     props: ['modelValue', 'placeholder'],
-    emits: ['update:modelValue', 'search', 'fileUpload'],
+    emits: ['update:modelValue', 'search'],
     template: `
       <div data-testid="search-bar">
         <input
@@ -47,7 +47,7 @@ vi.mock('@/components/common/SearchBar.vue', () => ({
 vi.mock('@/components/search/SearchConversation.vue', () => ({
   default: {
     name: 'SearchConversation',
-    props: ['messages', 'userQuery'],
+    props: ['messages'],
     template: '<div data-testid="search-conversation">Conversation</div>'
   }
 }))
@@ -248,29 +248,22 @@ describe('SearchResults Component', () => {
 
       expect(loadMoreSpy).toHaveBeenCalled()
     })
-
-    it('should handle file upload', async () => {
-      const wrapper = createWrapper()
-      const mockFiles = [new File(['test'], 'test.txt')] as unknown as FileList
-
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      await searchBar.vm.$emit('fileUpload', mockFiles)
-
-      // File upload is handled gracefully (no console logging in production)
-      expect(searchBar.exists()).toBe(true)
-    })
   })
 
   describe('Conversation Integration', () => {
-    it('should pass current query to SearchConversation', async () => {
+    it('should include initial user query in conversation messages', async () => {
       const wrapper = createWrapper()
-      const store = useSearchStore()
-
-      store.setQuery('test query')
       await wrapper.vm.$nextTick()
 
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
-      expect(conversation.props('userQuery')).toBe('test query')
+      const messages = conversation.props('messages')
+
+      // Check that the first message is a user message with the initial query
+      expect(messages).toBeDefined()
+      expect(Array.isArray(messages)).toBe(true)
+      expect(messages.length).toBeGreaterThan(0)
+      expect(messages[0].sender).toBe('user')
+      expect(messages[0].content).toContain('Johnson')
     })
 
     it('should generate conversation messages', async () => {
@@ -298,11 +291,13 @@ describe('SearchResults Component', () => {
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
 
-      const systemMessage = messages[0]
+      // First message should be user message, second should be system
+      expect(messages[0].sender).toBe('user')
+      const systemMessage = messages[1]
       expect(systemMessage).toBeDefined()
       expect(systemMessage.sender).toBe('system')
 
-      const resultsSummary = systemMessage.items.find(
+      const resultsSummary = systemMessage.items?.find(
         (item: any) => item.type === 'results-summary'
       )
       expect(resultsSummary).toBeDefined()
@@ -317,7 +312,8 @@ describe('SearchResults Component', () => {
 
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
-      const hintsGroup = messages[0]?.items.find(
+      // Look for hints group in the system message (second message)
+      const hintsGroup = messages[1]?.items?.find(
         (item: any) => item.type === 'hints-group'
       )
 
@@ -330,19 +326,18 @@ describe('SearchResults Component', () => {
       expect(typeof firstHint.onClick).toBe('function')
     })
 
-    it('should handle age range changes', async () => {
+    it('should not include age range filter in conversation', async () => {
       const wrapper = createWrapper()
       await wrapper.vm.$nextTick()
 
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
-      const refinement = messages[0]?.items.find(
+      // Look for refinement in the system message (should not exist)
+      const refinement = messages[1]?.items?.find(
         (item: any) => item.type === 'refinement'
       )
 
-      expect(refinement).toBeDefined()
-      expect(refinement.inputType).toBe('age-range')
-      expect(typeof refinement.onChange).toBe('function')
+      expect(refinement).toBeUndefined()
     })
 
     it('should handle create filter action', async () => {
@@ -351,7 +346,8 @@ describe('SearchResults Component', () => {
 
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
-      const actionButton = messages[0]?.items.find(
+      // Look for action button in the system message (second message)
+      const actionButton = messages[1]?.items?.find(
         (item: any) => item.type === 'action-button'
       )
 
@@ -360,19 +356,18 @@ describe('SearchResults Component', () => {
       expect(typeof actionButton.onClick).toBe('function')
     })
 
-    it('should handle file upload in conversation', async () => {
+    it('should not include file upload in conversation', async () => {
       const wrapper = createWrapper()
       await wrapper.vm.$nextTick()
 
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
-      const fileUpload = messages[0]?.items.find(
+      // Look for file upload in the system message (should not exist)
+      const fileUpload = messages[1]?.items?.find(
         (item: any) => item.type === 'file-upload'
       )
 
-      expect(fileUpload).toBeDefined()
-      expect(fileUpload.acceptedTypes).toBeDefined()
-      expect(typeof fileUpload.onUpload).toBe('function')
+      expect(fileUpload).toBeUndefined()
     })
   })
 

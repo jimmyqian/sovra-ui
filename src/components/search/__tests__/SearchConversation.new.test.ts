@@ -67,10 +67,22 @@ describe('SearchConversation (New Component System)', () => {
     userQuery = mockUserQuery,
     messages = createTestMessages()
   ) => {
+    // Add user message at the beginning if userQuery is provided
+    const allMessages = userQuery
+      ? [
+          {
+            id: 'user-message-new',
+            sender: 'user' as const,
+            timestamp: new Date(),
+            content: userQuery
+          },
+          ...messages
+        ]
+      : messages
+
     return mount(SearchConversation, {
       props: {
-        userQuery,
-        messages
+        messages: allMessages
       },
       global: {
         components: { LogoIcon }

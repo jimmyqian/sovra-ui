@@ -97,7 +97,7 @@
   }
 
   interface Emits {
-    (e: 'tagClick', tag: string): void
+    (_e: 'tagClick', _tag: string): void
   }
 
   defineProps<Props>()
