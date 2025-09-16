@@ -591,6 +591,6 @@
   }
 
   .conversation-scroll-button.scroll-button-bottom {
-    bottom: 200px; /* Much higher above search input area */
+    bottom: 190px; /* Move down 10px from previous position */
   }
 </style>
