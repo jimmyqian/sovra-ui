@@ -66,6 +66,57 @@
       timestamp: new Date(),
       content:
         'Johnson, who is around 26 years old, works in a software company in California'
+    },
+    {
+      id: 'system-response-1',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'results-summary',
+          type: 'results-summary',
+          resultCount: 0 // Will be updated by computed property
+        },
+        {
+          id: 'text-1',
+          type: 'text',
+          content:
+            "Alternatively, you can use the hints below for finding the person you're looking for.",
+          emphasis: 'secondary'
+        },
+        {
+          id: 'hints-group-1',
+          type: 'hints-group',
+          hints: [
+            {
+              text: 'What specific software role does Johnson hold in his California job',
+              onClick: () => handleHintClick('software role')
+            },
+            {
+              text: 'Which California tech hubs are most likely where Johnson works',
+              onClick: () => handleHintClick('California tech hubs')
+            },
+            {
+              text: 'What skills Johnson has from his current software role',
+              onClick: () => handleHintClick('software skills')
+            }
+          ]
+        },
+        {
+          id: 'text-2',
+          type: 'text',
+          content:
+            'Or include further information, such as any documents you may have about him, web links, pictures, or videos; if so, submit them by using the upload option.',
+          emphasis: 'secondary'
+        },
+        {
+          id: 'action-button-1',
+          type: 'action-button',
+          text: 'create a filter using the details that you provided',
+          variant: 'dashed',
+          onClick: () => handleCreateFilter()
+        }
+      ]
     }
   ])
 
@@ -123,63 +174,17 @@
 
   const conversationMessages = computed<ConversationMessage[]>(() => {
     const totalResults = searchStore.displayTotalResults
-
-    // Start with conversation history and add the initial system response if it's not already there
     const messages = [...conversationHistory.value]
 
-    // Add initial system response if conversation only has the user message
-    if (messages.length === 1 && messages[0]?.sender === 'user') {
-      messages.push({
-        id: 'system-response-1',
-        sender: 'system',
-        timestamp: new Date(),
-        items: [
-          {
-            id: 'results-summary',
-            type: 'results-summary',
-            resultCount: totalResults
-          },
-          {
-            id: 'text-1',
-            type: 'text',
-            content:
-              "Alternatively, you can use the hints below for finding the person you're looking for.",
-            emphasis: 'secondary'
-          },
-          {
-            id: 'hints-group-1',
-            type: 'hints-group',
-            hints: [
-              {
-                text: 'What specific software role does Johnson hold in his California job',
-                onClick: () => handleHintClick('software role')
-              },
-              {
-                text: 'Which California tech hubs are most likely where Johnson works',
-                onClick: () => handleHintClick('California tech hubs')
-              },
-              {
-                text: 'What skills Johnson has from his current software role',
-                onClick: () => handleHintClick('software skills')
-              }
-            ]
-          },
-          {
-            id: 'text-2',
-            type: 'text',
-            content:
-              'Or include further information, such as any documents you may have about him, web links, pictures, or videos; if so, submit them by using the upload option.',
-            emphasis: 'secondary'
-          },
-          {
-            id: 'action-button-1',
-            type: 'action-button',
-            text: 'create a filter using the details that you provided',
-            variant: 'dashed',
-            onClick: () => handleCreateFilter()
-          }
-        ]
-      })
+    // Update the result count in the initial system response if it exists
+    if (messages.length >= 2 && messages[1]?.sender === 'system') {
+      const systemMessage = messages[1]
+      const resultsSummaryItem = systemMessage.items?.find(
+        item => item.type === 'results-summary'
+      )
+      if (resultsSummaryItem && 'resultCount' in resultsSummaryItem) {
+        resultsSummaryItem.resultCount = totalResults
+      }
     }
 
     return messages
