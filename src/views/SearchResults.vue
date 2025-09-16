@@ -88,27 +88,30 @@
         content: newQuery.value
       })
 
-      // Add system response
-      conversationHistory.value.push({
-        id: systemResponseId,
-        sender: 'system',
-        timestamp: new Date(),
-        items: [
-          {
-            id: `text-${Date.now()}`,
-            type: 'text',
-            content:
-              "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?",
-            emphasis: 'normal'
-          }
-        ]
-      })
-
       // Perform the search
       await searchStore.performSearch(newQuery.value)
 
       // Clear the search input
       newQuery.value = ''
+
+      // Wait 3 seconds before showing system response
+      setTimeout(() => {
+        // Add system response after delay
+        conversationHistory.value.push({
+          id: systemResponseId,
+          sender: 'system',
+          timestamp: new Date(),
+          items: [
+            {
+              id: `text-${Date.now()}`,
+              type: 'text',
+              content:
+                "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?",
+              emphasis: 'normal'
+            }
+          ]
+        })
+      }, 3000)
     }
   }
 
