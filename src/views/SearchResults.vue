@@ -7,17 +7,17 @@
       <!-- Main Content Area -->
       <div class="flex-1 flex flex-col md:flex-row">
         <!-- Left Panel: Search & Conversation -->
-        <div class="w-full bg-bg-card flex flex-col md:w-2/5 h-full">
+        <div class="w-full bg-bg-card flex flex-col md:w-2/5 h-full relative">
           <AppHeader />
 
           <!-- Scrollable Conversation Area -->
-          <div class="flex-1 overflow-y-auto">
+          <div class="flex-1 overflow-y-auto pb-24">
             <SearchConversation :messages="conversationMessages" />
           </div>
 
           <!-- Fixed Search Input -->
           <div
-            class="px-8 py-4 md:px-4 bg-bg-card border-t border-border-light"
+            class="absolute bottom-0 left-0 right-0 px-8 py-4 md:px-4 bg-bg-card border-t border-border-light"
           >
             <SearchBar
               v-model="newQuery"
