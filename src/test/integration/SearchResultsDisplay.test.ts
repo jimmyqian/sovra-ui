@@ -119,7 +119,7 @@ describe('Search Results Display Integration', () => {
     // Verify responsive classes
     const leftPanel = wrapper.find('.w-full.bg-bg-card')
     expect(leftPanel.classes()).toContain('md:w-2/5')
-    expect(leftPanel.classes()).toContain('md:h-full')
+    expect(leftPanel.classes()).toContain('h-full')
 
     // Verify main content area has responsive flex direction
     const mainContent = wrapper.find('.flex-1.flex.flex-col.md\\:flex-row')

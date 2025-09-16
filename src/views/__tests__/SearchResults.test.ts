@@ -387,7 +387,7 @@ describe('SearchResults Component', () => {
 
       // Check for responsive classes
       expect(wrapper.find('.md\\:w-2\\/5').exists()).toBe(true)
-      expect(wrapper.find('.md\\:h-full').exists()).toBe(true)
+      expect(wrapper.find('.h-full').exists()).toBe(true)
     })
   })
 

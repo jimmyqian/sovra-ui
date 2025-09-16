@@ -7,7 +7,7 @@
       <!-- Main Content Area -->
       <div class="flex-1 flex flex-col md:flex-row">
         <!-- Left Panel: Search & Conversation -->
-        <div class="w-full bg-bg-card flex flex-col md:w-2/5 md:h-full">
+        <div class="w-full bg-bg-card flex flex-col md:w-2/5 h-full">
           <AppHeader />
 
           <!-- Scrollable Conversation Area -->
