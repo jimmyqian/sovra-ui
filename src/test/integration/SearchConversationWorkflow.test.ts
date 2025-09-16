@@ -213,7 +213,7 @@ describe('Search Conversation Integration Tests', () => {
 
       // Should have main flex container
       const mainContainer = wrapper.find(
-        '.min-h-screen.bg-bg-primary.flex.flex-col'
+        '.h-screen.bg-bg-primary.flex.flex-col'
       )
       expect(mainContainer.exists()).toBe(true)
 

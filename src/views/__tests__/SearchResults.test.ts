@@ -138,8 +138,8 @@ describe('SearchResults Component', () => {
       const wrapper = createWrapper()
 
       // Check main layout
-      expect(wrapper.find('.min-h-screen').exists()).toBe(true)
       expect(wrapper.find('.h-screen').exists()).toBe(true)
+      expect(wrapper.find('.flex-1.flex').exists()).toBe(true)
       expect(wrapper.find('.md\\:flex-row').exists()).toBe(true)
     })
 

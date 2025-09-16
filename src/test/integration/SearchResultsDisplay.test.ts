@@ -30,8 +30,8 @@ describe('Search Results Display Integration', () => {
     })
 
     // Verify main layout structure
-    expect(wrapper.find('.min-h-screen').exists()).toBe(true)
-    expect(wrapper.find('.flex-1.flex.h-screen').exists()).toBe(true)
+    expect(wrapper.find('.h-screen').exists()).toBe(true)
+    expect(wrapper.find('.flex-1.flex').exists()).toBe(true)
 
     // Verify left panel (search conversation)
     const leftPanel = wrapper.find('.w-full.bg-bg-card')

@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen bg-bg-primary flex flex-col">
-    <div class="flex-1 flex h-screen">
+  <div class="h-screen bg-bg-primary flex flex-col">
+    <div class="flex-1 flex">
       <!-- Left Navigation Sidebar -->
       <AppSidebar />
 
@@ -29,18 +29,19 @@
         </div>
 
         <!-- Right Panel: Results -->
-        <ResultsList
-          :results="results"
-          :is-loading="isLoading"
-          :has-more="hasMore"
-          :error="error"
-          @load-more="handleLoadMore"
-        />
+        <div class="flex-1 flex flex-col">
+          <ResultsList
+            :results="results"
+            :is-loading="isLoading"
+            :has-more="hasMore"
+            :error="error"
+            @load-more="handleLoadMore"
+          />
+          <!-- Page Footer -->
+          <CopyrightFooter @pi-click="handlePiClick" />
+        </div>
       </div>
     </div>
-
-    <!-- Page Footer -->
-    <CopyrightFooter @pi-click="handlePiClick" />
   </div>
 </template>
 

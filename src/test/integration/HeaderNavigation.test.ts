@@ -121,7 +121,7 @@ describe('Header Navigation Integration', () => {
     expect(sidebarComponent.exists()).toBe(true)
 
     // Verify sidebar positioning in layout
-    const mainLayout = wrapper.find('.flex-1.flex.h-screen')
+    const mainLayout = wrapper.find('.flex-1.flex')
     expect(mainLayout.exists()).toBe(true)
     expect(mainLayout.findComponent(AppSidebar).exists()).toBe(true)
   })
@@ -221,7 +221,7 @@ describe('Header Navigation Integration', () => {
     expect(sidebarComponent.exists()).toBe(true)
 
     // Verify they're positioned correctly relative to each other
-    const mainLayout = wrapper.find('.flex-1.flex.h-screen')
+    const mainLayout = wrapper.find('.flex-1.flex')
     expect(mainLayout.exists()).toBe(true)
   })
 
@@ -277,10 +277,10 @@ describe('Header Navigation Integration', () => {
     })
 
     // Verify component structure hierarchy
-    const mainContainer = wrapper.find('.min-h-screen.bg-bg-primary')
+    const mainContainer = wrapper.find('.h-screen.bg-bg-primary')
     expect(mainContainer.exists()).toBe(true)
 
-    const flexContainer = wrapper.find('.flex-1.flex.h-screen')
+    const flexContainer = wrapper.find('.flex-1.flex')
     expect(flexContainer.exists()).toBe(true)
 
     // Sidebar should be first child
