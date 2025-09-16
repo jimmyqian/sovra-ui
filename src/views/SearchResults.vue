@@ -9,10 +9,16 @@
         <!-- Left Panel: Search & Conversation -->
         <div class="w-full bg-bg-card flex flex-col md:w-2/5 md:h-full">
           <AppHeader />
-          <SearchConversation :messages="conversationMessages" />
 
-          <!-- Search Input -->
-          <div class="px-8 py-4 md:px-4">
+          <!-- Scrollable Conversation Area -->
+          <div class="flex-1 overflow-y-auto">
+            <SearchConversation :messages="conversationMessages" />
+          </div>
+
+          <!-- Fixed Search Input -->
+          <div
+            class="px-8 py-4 md:px-4 bg-bg-card border-t border-border-light"
+          >
             <SearchBar
               v-model="newQuery"
               placeholder="Johnson, who is around 26 years old, works in a software company in California"
@@ -20,9 +26,6 @@
               @speech-error="handleSpeechError"
             />
           </div>
-
-          <!-- Spacer to push content up and search box immediately after content -->
-          <div class="flex-1"></div>
         </div>
 
         <!-- Right Panel: Results -->
