@@ -174,7 +174,6 @@ describe('SearchDetail Integration Tests', () => {
     })
 
     // Check CategoryTabs component
-    expect(wrapper.text()).toContain('Accounts')
     expect(wrapper.text()).toContain('Relationship Status')
     expect(wrapper.text()).toContain('Married')
   })
@@ -206,7 +205,6 @@ describe('SearchDetail Integration Tests', () => {
     })
 
     // Check ActivityFooter content
-    expect(wrapper.text()).toContain('Activity Log')
     expect(wrapper.text()).toContain('Loans / Deposits')
     expect(wrapper.text()).toContain('Average Pay')
     expect(wrapper.text()).toContain('Show all references')
@@ -254,12 +252,11 @@ describe('SearchDetail Integration Tests', () => {
       }
     })
 
-    // Check accounts section is present
-    expect(wrapper.text()).toContain('Accounts')
-
-    // Check that account buttons are rendered
-    const accountButtons = wrapper.findAll('button').slice(0, 5) // First 5 should be account buttons
-    expect(accountButtons.length).toBeGreaterThanOrEqual(5)
+    // Check that category tabs are rendered
+    expect(wrapper.text()).toContain('Personal')
+    expect(wrapper.text()).toContain('Professional')
+    expect(wrapper.text()).toContain('Finance')
+    expect(wrapper.text()).toContain('Legal')
   })
 
   it('maintains responsive layout structure', async () => {
@@ -284,9 +281,11 @@ describe('SearchDetail Integration Tests', () => {
     ).toBe(true)
 
     // Check right panel structure
-    expect(wrapper.find('.flex-1.bg-bg-primary.overflow-y-auto').exists()).toBe(
-      true
-    )
+    expect(
+      wrapper
+        .find('.flex-1.flex.flex-col.max-h-full.overflow-hidden.relative')
+        .exists()
+    ).toBe(true)
     expect(wrapper.find('main.p-6.space-y-6').exists()).toBe(true)
   })
 
@@ -419,7 +418,9 @@ describe('SearchDetail Integration Tests', () => {
     })
 
     // Verify image gallery is part of the DetailedResultCard which is in the right panel
-    const rightPanel = wrapper.find('.flex-1.bg-bg-primary.overflow-y-auto')
+    const rightPanel = wrapper.find(
+      '.flex-1.flex.flex-col.max-h-full.overflow-hidden.relative'
+    )
     expect(rightPanel.exists()).toBe(true)
 
     const detailedCard = rightPanel.findComponent({

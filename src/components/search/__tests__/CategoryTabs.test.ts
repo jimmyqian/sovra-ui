@@ -4,13 +4,6 @@ import CategoryTabs from '../CategoryTabs.vue'
 
 describe('CategoryTabs', () => {
   const mockProps = {
-    accounts: [
-      { type: 'instagram', url: 'https://instagram.com/test' },
-      { type: 'whatsapp', url: 'https://wa.me/1234567890' },
-      { type: 'facebook', url: 'https://facebook.com/test' },
-      { type: 'twitter', url: 'https://twitter.com/test' },
-      { type: 'linkedin', url: 'https://linkedin.com/in/test' }
-    ],
     personalData: {
       relationshipStatus: 'Married',
       children: '2 children',
@@ -32,20 +25,6 @@ describe('CategoryTabs', () => {
       licenses: 'Professional Engineer License'
     }
   }
-
-  it('renders accounts section with correct title', () => {
-    const wrapper = mount(CategoryTabs, { props: mockProps })
-
-    expect(wrapper.text()).toContain('Accounts')
-    expect(wrapper.find('h3').text()).toBe('Accounts')
-  })
-
-  it('displays all account buttons', () => {
-    const wrapper = mount(CategoryTabs, { props: mockProps })
-
-    const accountButtons = wrapper.findAll('button').slice(0, 5) // First 5 buttons are accounts
-    expect(accountButtons).toHaveLength(5)
-  })
 
   it('renders all tab labels correctly', () => {
     const wrapper = mount(CategoryTabs, { props: mockProps })
@@ -135,36 +114,12 @@ describe('CategoryTabs', () => {
     expect(professionalTab?.classes()).toContain('text-text-secondary')
   })
 
-  it('applies correct account button styling for different platforms', () => {
-    const wrapper = mount(CategoryTabs, { props: mockProps })
-
-    const accountButtons = wrapper.findAll('button').slice(0, 5)
-
-    // Check that buttons have transition classes
-    accountButtons.forEach(button => {
-      expect(button.classes()).toContain('transition-colors')
-    })
-  })
-
   it('has proper component structure', () => {
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     expect(wrapper.classes()).toContain('bg-bg-card')
     expect(wrapper.classes()).toContain('border')
     expect(wrapper.classes()).toContain('rounded-lg')
-  })
-
-  it('handles empty accounts array gracefully', () => {
-    const propsWithEmptyAccounts = {
-      ...mockProps,
-      accounts: []
-    }
-
-    const wrapper = mount(CategoryTabs, { props: propsWithEmptyAccounts })
-
-    expect(wrapper.text()).toContain('Accounts')
-    const accountButtons = wrapper.findAll('button').slice(0, 0) // No account buttons
-    expect(accountButtons).toHaveLength(0)
   })
 
   it('displays legal background check with proper styling', async () => {

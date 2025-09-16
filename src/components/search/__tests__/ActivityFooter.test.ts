@@ -3,15 +3,6 @@ import { mount } from '@vue/test-utils'
 import ActivityFooter from '../ActivityFooter.vue'
 
 describe('ActivityFooter', () => {
-  it('renders activity log section', () => {
-    const wrapper = mount(ActivityFooter)
-
-    expect(wrapper.find('h3').text()).toBe('Activity Log')
-    expect(wrapper.text()).toContain(
-      'Recent activity and data updates will appear here...'
-    )
-  })
-
   it('displays all reference category buttons', () => {
     const wrapper = mount(ActivityFooter)
 
@@ -156,15 +147,6 @@ describe('ActivityFooter', () => {
       .find(btn => btn.text() === 'Loans / Deposits')
     expect(loansButton?.classes()).toContain('hover:border-brand-orange')
     expect(loansButton?.classes()).toContain('hover:text-brand-orange')
-  })
-
-  it('displays activity log with proper styling', () => {
-    const wrapper = mount(ActivityFooter)
-
-    const activitySection = wrapper.find('.bg-bg-card')
-    expect(activitySection.exists()).toBe(true)
-    expect(activitySection.classes()).toContain('border')
-    expect(activitySection.classes()).toContain('rounded-lg')
   })
 
   it('centers reference categories and show references button', () => {

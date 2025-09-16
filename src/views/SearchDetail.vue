@@ -30,46 +30,77 @@
         </div>
 
         <!-- Right Panel: Person Details -->
-        <div class="flex-1 bg-bg-primary overflow-y-auto">
-          <main class="p-6 space-y-6">
-            <!-- Person Profile Section -->
-            <PersonProfile
-              :person="{
-                ...personProfile,
-                profileImage: detailedPerson.profileImage
-              }"
-              @tag-click="handleTagClick"
-            />
+        <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
+          <div
+            ref="detailScrollContainer"
+            class="flex-1 overflow-y-auto max-h-full detail-scroll"
+            @scroll="handleDetailScroll"
+          >
+            <main class="p-6 space-y-6">
+              <!-- Person Profile Section -->
+              <PersonProfile
+                :person="{
+                  ...personProfile,
+                  profileImage: detailedPerson.profileImage
+                }"
+                @tag-click="handleTagClick"
+              />
 
-            <!-- Detailed Information -->
-            <DetailedResultCard :person="detailedPerson" />
+              <!-- Detailed Information -->
+              <DetailedResultCard :person="detailedPerson" />
 
-            <!-- Category Tabs -->
-            <CategoryTabs
-              :accounts="accounts"
-              :personal-data="categoryData.personal"
-              :professional-data="categoryData.professional"
-              :finance-data="categoryData.finance"
-              :legal-data="categoryData.legal"
-            />
+              <!-- Category Tabs -->
+              <CategoryTabs
+                :personal-data="categoryData.personal"
+                :professional-data="categoryData.professional"
+                :finance-data="categoryData.finance"
+                :legal-data="categoryData.legal"
+              />
 
-            <!-- Activity Footer -->
-            <ActivityFooter
-              @category-toggle="handleCategoryToggle"
-              @show-references="handleShowReferences"
-            />
-          </main>
+              <!-- Activity Footer -->
+              <ActivityFooter
+                @category-toggle="handleCategoryToggle"
+                @show-references="handleShowReferences"
+              />
+            </main>
+
+            <!-- Page Footer -->
+            <CopyrightFooter @pi-click="handlePiClick" />
+          </div>
+
+          <!-- Fade-out gradient overlay at top - shows when scrolled -->
+          <div
+            class="fade-overlay-top"
+            :class="[{ visible: showTopFade }]"
+          ></div>
+          <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
+          <div class="fade-overlay"></div>
+
+          <!-- Scroll Control Buttons -->
+          <button
+            v-if="hasScrollableContent && canScrollUp"
+            class="scroll-button scroll-button-top"
+            aria-label="Scroll to top"
+            @click="scrollDetailToTop"
+          >
+            <ChevronUpIcon />
+          </button>
+          <button
+            v-if="hasScrollableContent && canScrollDown"
+            class="scroll-button scroll-button-bottom"
+            aria-label="Scroll to bottom"
+            @click="scrollDetailToBottom"
+          >
+            <ChevronDownIcon />
+          </button>
         </div>
       </div>
     </div>
-
-    <!-- Page Footer -->
-    <CopyrightFooter @pi-click="handlePiClick" />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, computed } from 'vue'
+  import { ref, onMounted, computed, watch, nextTick } from 'vue'
   import { useRoute } from 'vue-router'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import AppSidebar from '@/components/navigation/AppSidebar.vue'
@@ -80,10 +111,19 @@
   import CategoryTabs from '@/components/search/CategoryTabs.vue'
   import ActivityFooter from '@/components/search/ActivityFooter.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
+  import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
+  import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import type { ConversationMessage } from '@/types/conversation'
 
   const route = useRoute()
   const searchQuery = ref('')
+  const detailScrollContainer = ref<HTMLElement | null>(null)
+
+  // Scroll state
+  const showTopFade = ref(false)
+  const canScrollUp = ref(false)
+  const canScrollDown = ref(false)
+  const hasScrollableContent = ref(false)
 
   // Mock data - in real app this would come from API based on route params
   const personProfile = ref({
@@ -154,14 +194,6 @@
     }
   })
 
-  const accounts = ref([
-    { type: 'instagram', url: 'https://instagram.com/johnsonsmith' },
-    { type: 'whatsapp', url: 'https://wa.me/1234567890' },
-    { type: 'facebook', url: 'https://facebook.com/johnsonsmith' },
-    { type: 'twitter', url: 'https://twitter.com/johnsonsmith' },
-    { type: 'linkedin', url: 'https://linkedin.com/in/johnsonsmith' }
-  ])
-
   const categoryData = ref({
     personal: {
       relationshipStatus: 'Married',
@@ -184,6 +216,48 @@
       licenses: 'Professional Engineer License'
     }
   })
+
+  const handleDetailScroll = () => {
+    if (detailScrollContainer.value) {
+      const container = detailScrollContainer.value
+      const scrollTop = container.scrollTop
+      const scrollHeight = container.scrollHeight
+      const clientHeight = container.clientHeight
+
+      // Show top fade when scrolled more than 20px from top
+      showTopFade.value = scrollTop > 20
+
+      // Update scroll button states
+      canScrollUp.value = scrollTop > 0
+      canScrollDown.value = scrollTop < scrollHeight - clientHeight
+      hasScrollableContent.value = scrollHeight > clientHeight
+    }
+  }
+
+  const scrollDetailToTop = () => {
+    if (detailScrollContainer.value) {
+      const currentScroll = detailScrollContainer.value.scrollTop
+      const scrollAmount = 200 // Approximately 1.5 card heights
+      detailScrollContainer.value.scrollTo({
+        top: Math.max(0, currentScroll - scrollAmount),
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  const scrollDetailToBottom = () => {
+    if (detailScrollContainer.value) {
+      const currentScroll = detailScrollContainer.value.scrollTop
+      const scrollAmount = 200 // Approximately 1.5 card heights
+      const maxScroll =
+        detailScrollContainer.value.scrollHeight -
+        detailScrollContainer.value.clientHeight
+      detailScrollContainer.value.scrollTo({
+        top: Math.min(maxScroll, currentScroll + scrollAmount),
+        behavior: 'smooth'
+      })
+    }
+  }
 
   const handleSearch = () => {
     // TODO: Implement search functionality
@@ -285,5 +359,105 @@
       // TODO: Load person data for production
       // In real app: loadPersonData(personId)
     }
+
+    // Initialize scroll state
+    nextTick(() => {
+      handleDetailScroll()
+    })
   })
+
+  // Watch for changes in content to update scroll state
+  watch(
+    [personProfile, detailedPerson, categoryData],
+    () => {
+      // Check scroll state after content update
+      nextTick(() => {
+        handleDetailScroll()
+      })
+    },
+    { deep: true, immediate: true }
+  )
 </script>
+
+<style scoped>
+  .fade-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 160px; /* Fixed height instead of percentage */
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(248 248 248) 100%
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .fade-overlay-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 160px; /* Same height as bottom fade */
+    background: linear-gradient(to top, transparent 0%, rgb(248 248 248) 100%);
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .fade-overlay-top.visible {
+    opacity: 1;
+  }
+
+  /* Hide scrollbars on detail panel */
+  .detail-scroll {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Scroll control buttons */
+  .scroll-button {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: #ff6b35; /* brand-orange */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 20;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .scroll-button:hover {
+    background-color: #e55a2e; /* darker orange on hover */
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  .scroll-button:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  .scroll-button-top {
+    top: 16px;
+  }
+
+  .scroll-button-bottom {
+    bottom: 16px;
+  }
+</style>

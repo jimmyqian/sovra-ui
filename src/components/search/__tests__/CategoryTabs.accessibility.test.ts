@@ -4,11 +4,6 @@ import CategoryTabs from '../CategoryTabs.vue'
 
 describe('CategoryTabs Accessibility', () => {
   const mockProps = {
-    accounts: [
-      { type: 'instagram', url: 'https://instagram.com/test' },
-      { type: 'whatsapp', url: 'https://wa.me/1234567890' },
-      { type: 'facebook', url: 'https://facebook.com/test' }
-    ],
     personalData: {
       relationshipStatus: 'Married',
       children: '2 children',
@@ -30,14 +25,6 @@ describe('CategoryTabs Accessibility', () => {
       licenses: 'Professional Engineer License'
     }
   }
-
-  it('provides proper heading hierarchy', () => {
-    const wrapper = mount(CategoryTabs, { props: mockProps })
-
-    const accountsHeading = wrapper.find('h3')
-    expect(accountsHeading.exists()).toBe(true)
-    expect(accountsHeading.text()).toBe('Accounts')
-  })
 
   it('implements accessible tab pattern', () => {
     const wrapper = mount(CategoryTabs, { props: mockProps })
@@ -128,18 +115,6 @@ describe('CategoryTabs Accessibility', () => {
     expect(labels.length).toBeGreaterThan(0)
   })
 
-  it('handles social media buttons accessibly', () => {
-    const wrapper = mount(CategoryTabs, { props: mockProps })
-
-    const accountButtons = wrapper.findAll('button').slice(0, 3) // Account buttons
-
-    accountButtons.forEach(button => {
-      // Should have proper styling and be interactive
-      expect(button.classes()).toContain('transition-colors')
-      expect(button.classes()).toContain('rounded-lg')
-    })
-  })
-
   it('maintains proper semantic structure', () => {
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
@@ -211,13 +186,6 @@ describe('CategoryTabs Accessibility', () => {
       expect(button.classes()).toContain('py-2')
       expect(button.classes()).toContain('px-1')
     })
-
-    // Account buttons should have proper sizing
-    const accountButtons = wrapper.findAll('button').slice(0, 3)
-    accountButtons.forEach(button => {
-      expect(button.classes()).toContain('w-10')
-      expect(button.classes()).toContain('h-10')
-    })
   })
 
   it('handles empty or missing data gracefully', async () => {
@@ -233,7 +201,6 @@ describe('CategoryTabs Accessibility', () => {
     const wrapper = mount(CategoryTabs, { props: propsWithMissingData })
 
     // Should still render structure properly
-    expect(wrapper.find('h3').text()).toBe('Accounts')
     expect(wrapper.text()).toContain('Personal')
 
     // Should handle empty values without breaking accessibility

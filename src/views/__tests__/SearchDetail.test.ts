@@ -209,11 +209,6 @@ describe('SearchDetail Component', () => {
       const wrapper = createWrapper()
       const categoryTabs = wrapper.findComponent({ name: 'CategoryTabs' })
 
-      const accounts = categoryTabs.props('accounts')
-      expect(accounts).toBeDefined()
-      expect(accounts.length).toBeGreaterThan(0)
-      expect(accounts[0].type).toBe('instagram')
-
       const personalData = categoryTabs.props('personalData')
       expect(personalData.relationshipStatus).toBe('Married')
 
@@ -389,20 +384,6 @@ describe('SearchDetail Component', () => {
   })
 
   describe('Data Structure', () => {
-    it('should render accounts data in category tabs', () => {
-      const wrapper = createWrapper()
-      const categoryTabs = wrapper.findComponent({ name: 'CategoryTabs' })
-
-      const accounts = categoryTabs.props('accounts')
-      expect(accounts).toBeDefined()
-      expect(Array.isArray(accounts)).toBe(true)
-      expect(accounts.length).toBeGreaterThan(0)
-
-      const firstAccount = accounts[0]
-      expect(firstAccount).toHaveProperty('type')
-      expect(firstAccount).toHaveProperty('url')
-    })
-
     it('should render category data in category tabs', () => {
       const wrapper = createWrapper()
       const categoryTabs = wrapper.findComponent({ name: 'CategoryTabs' })

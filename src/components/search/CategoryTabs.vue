@@ -1,20 +1,5 @@
 <template>
   <div class="bg-bg-card border rounded-lg p-6">
-    <!-- Social Media Accounts -->
-    <div class="mb-6">
-      <h3 class="font-semibold text-text-primary mb-4">Accounts</h3>
-      <div class="flex gap-3">
-        <button
-          v-for="account in accounts"
-          :key="account.type"
-          class="w-10 h-10 rounded-lg flex items-center justify-center transition-colors"
-          :class="getAccountClasses(account.type)"
-        >
-          <div class="w-5 h-5 rounded border border-current opacity-75"></div>
-        </button>
-      </div>
-    </div>
-
     <!-- Category Tabs -->
     <div class="border-b border-border-light mb-6">
       <div class="flex gap-6">
@@ -122,11 +107,6 @@
 <script setup lang="ts">
   import { ref } from 'vue'
 
-  interface Account {
-    type: string
-    url?: string
-  }
-
   interface PersonalData {
     relationshipStatus: string
     children: string
@@ -152,7 +132,6 @@
   }
 
   interface Props {
-    accounts: Account[]
     personalData: PersonalData
     professionalData: ProfessionalData
     financeData: FinanceData
@@ -169,23 +148,4 @@
     { id: 'finance', label: 'Finance' },
     { id: 'legal', label: 'Legal' }
   ]
-
-  const getAccountClasses = (type: string) => {
-    const baseClasses = 'transition-colors'
-
-    switch (type.toLowerCase()) {
-      case 'instagram':
-        return `${baseClasses} bg-pink-500 text-white hover:bg-pink-600`
-      case 'whatsapp':
-        return `${baseClasses} bg-green-500 text-white hover:bg-green-600`
-      case 'facebook':
-        return `${baseClasses} bg-blue-500 text-white hover:bg-blue-600`
-      case 'twitter':
-        return `${baseClasses} bg-blue-400 text-white hover:bg-blue-500`
-      case 'linkedin':
-        return `${baseClasses} bg-blue-700 text-white hover:bg-blue-800`
-      default:
-        return `${baseClasses} bg-gray-200 text-text-secondary hover:bg-gray-300`
-    }
-  }
 </script>

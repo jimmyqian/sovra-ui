@@ -179,7 +179,6 @@ describe('DetailedResultCard Accessibility', () => {
       expect(headingTexts).toContain('Professional')
       expect(headingTexts).toContain('Finance')
       expect(headingTexts).toContain('Legal')
-      expect(headingTexts).toContain('Accounts')
 
       // All section headings should be h3 elements
       headings.forEach(heading => {

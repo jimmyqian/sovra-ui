@@ -1,13 +1,5 @@
 <template>
   <div class="space-y-6">
-    <!-- Activity Log -->
-    <div class="bg-bg-card border rounded-lg p-6">
-      <h3 class="font-semibold text-text-primary mb-4">Activity Log</h3>
-      <div class="text-sm text-text-secondary">
-        Recent activity and data updates will appear here...
-      </div>
-    </div>
-
     <!-- Reference Categories -->
     <div class="flex flex-wrap gap-3 justify-center">
       <button
