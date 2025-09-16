@@ -139,12 +139,12 @@ describe('Search Results Display Integration', () => {
     const resultsComponent = wrapper.findComponent({ name: 'ResultsList' })
 
     // Simulate load more action
-    await resultsComponent.vm.$emit('load-more')
+    await resultsComponent.vm.$emit('loadMore')
 
     // Verify load more event is handled via results component
     expect(resultsComponent.exists()).toBe(true)
     // The load-more event should be emittable
-    expect(() => resultsComponent.vm.$emit('load-more')).not.toThrow()
+    expect(() => resultsComponent.vm.$emit('loadMore')).not.toThrow()
   })
 
   it('integrates search bar functionality within results page', async () => {
@@ -265,7 +265,7 @@ describe('Search Results Display Integration', () => {
     // Should have load more handler via results component
     expect(resultsComponent.exists()).toBe(true)
     // The load-more event should be emittable
-    expect(() => resultsComponent.vm.$emit('load-more')).not.toThrow()
+    expect(() => resultsComponent.vm.$emit('loadMore')).not.toThrow()
   })
 
   it('displays search statistics and metadata', async () => {

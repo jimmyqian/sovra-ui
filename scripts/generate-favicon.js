@@ -18,10 +18,12 @@ const logoPathsContent = fs.readFileSync(logoPathsFile, 'utf8')
 
 // Extract the viewBox
 const viewBoxMatch = logoPathsContent.match(/LOGO_VIEWBOX = "([^"]+)"/)
-const viewBox = viewBoxMatch ? viewBoxMatch[1] : "0 0 51 52"
+const viewBox = viewBoxMatch ? viewBoxMatch[1] : '0 0 51 52'
 
 // Extract the paths array
-const pathsMatch = logoPathsContent.match(/LOGO_PATHS = \[([\s\S]*?)\] as const/)
+const pathsMatch = logoPathsContent.match(
+  /LOGO_PATHS = \[([\s\S]*?)\] as const/
+)
 if (!pathsMatch) {
   console.error('Could not extract logo paths from logo-paths.ts')
   process.exit(1)
