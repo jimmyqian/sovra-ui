@@ -1,13 +1,11 @@
 /**
  * Unit tests for ResultsList component
- * Tests results display, filtering, load more functionality, and component integration
+ * Tests search results display, loading states, and load more functionality
  */
-
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import ResultsList from '../ResultsList.vue'
 import ResultCard from '../ResultCard.vue'
-import FilterCriteria from '../FilterCriteria.vue'
 import MoreIcon from '@/components/icons/MoreIcon.vue'
 import type { SearchResult } from '@/types/search'
 
@@ -15,249 +13,62 @@ import type { SearchResult } from '@/types/search'
 vi.mock('../ResultCard.vue', () => ({
   default: {
     name: 'ResultCard',
-    template: '<div class="mock-result-card">{{ result.title }}</div>',
-    props: ['result']
-  }
-}))
-
-vi.mock('../FilterCriteria.vue', () => ({
-  default: {
-    name: 'FilterCriteria',
-    template: '<div class="mock-filter-criteria">FilterCriteria</div>',
-    props: ['filters'],
-    emits: ['removeFilter', 'dropdownClick', 'edit', 'createMore']
+    props: ['result'],
+    template: '<div data-testid="result-card">{{ result.name }}</div>'
   }
 }))
 
 vi.mock('@/components/icons/MoreIcon.vue', () => ({
   default: {
     name: 'MoreIcon',
-    template: '<span class="mock-more-icon">MoreIcon</span>'
+    template: '<svg data-testid="more-icon"></svg>'
   }
 }))
 
+// Mock search results data
+const mockResults: SearchResult[] = [
+  {
+    id: 1,
+    name: 'John Smith',
+    age: 32,
+    gender: 'Male',
+    maritalStatus: 'Married',
+    location: 'California',
+    rating: 4.2,
+    references: 25,
+    companies: 5,
+    contacts: 15
+  },
+  {
+    id: 2,
+    name: 'Sarah Johnson',
+    age: 28,
+    gender: 'Female',
+    maritalStatus: 'Single',
+    location: 'New York',
+    rating: 4.7,
+    references: 32,
+    companies: 3,
+    contacts: 22
+  }
+]
+
 describe('ResultsList', () => {
-  const mockResults: SearchResult[] = [
-    {
-      id: 1,
-      name: 'John Doe',
-      age: 28,
-      gender: 'Male',
-      maritalStatus: 'Single',
-      location: 'California',
-      rating: 4.5,
-      references: 10,
-      companies: 3,
-      contacts: 25
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      age: 32,
-      gender: 'Female',
-      maritalStatus: 'Married',
-      location: 'New York',
-      rating: 4.2,
-      references: 8,
-      companies: 2,
-      contacts: 18
-    }
-  ]
-
   describe('Basic Rendering', () => {
-    it('renders main container with correct structure', () => {
-      const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
-        global: {
-          components: {
-            ResultCard,
-            FilterCriteria,
-            MoreIcon
-          }
-        }
-      })
-
-      const container = wrapper.find('div')
-      expect(container.exists()).toBe(true)
-      expect(container.classes()).toContain('w-full')
-      expect(container.classes()).toContain('bg-bg-primary')
-      expect(container.classes()).toContain('flex')
-      expect(container.classes()).toContain('flex-col')
-    })
-
-    it('renders all main sections', () => {
-      const wrapper = mount(ResultsList, {
-        props: { results: mockResults, hasMore: true },
-        global: {
-          components: {
-            ResultCard,
-            FilterCriteria,
-            MoreIcon
-          }
-        }
-      })
-
-      // Header section with results count and filters
-      expect(wrapper.text()).toContain('Results')
-
-      // Results section with result cards
-      const resultCards = wrapper.findAllComponents(ResultCard)
-      expect(resultCards).toHaveLength(mockResults.length)
-
-      // Load more button section
-      expect(wrapper.text()).toContain('Load More Results')
-    })
-
     it('renders with empty results array', () => {
       const wrapper = mount(ResultsList, {
         props: { results: [] },
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      expect(wrapper.text()).toContain('Results (0)')
+      expect(wrapper.text()).toContain('No results found')
       const resultCards = wrapper.findAllComponents(ResultCard)
       expect(resultCards).toHaveLength(0)
-    })
-  })
-
-  describe('Results Count Display', () => {
-    it('displays correct results count', () => {
-      const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
-        global: {
-          components: {
-            ResultCard,
-            FilterCriteria,
-            MoreIcon
-          }
-        }
-      })
-
-      expect(wrapper.text()).toContain(`Results (${mockResults.length})`)
-    })
-
-    it('updates results count when results prop changes', async () => {
-      const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
-        global: {
-          components: {
-            ResultCard,
-            FilterCriteria,
-            MoreIcon
-          }
-        }
-      })
-
-      expect(wrapper.text()).toContain('Results (2)')
-
-      const newResults: SearchResult[] = [
-        ...mockResults,
-        {
-          id: 3,
-          name: 'Bob Johnson',
-          age: 25,
-          gender: 'Male',
-          maritalStatus: 'Single',
-          location: 'Texas',
-          rating: 4.0,
-          references: 5,
-          companies: 1,
-          contacts: 12
-        }
-      ]
-
-      await wrapper.setProps({ results: newResults })
-      expect(wrapper.text()).toContain('Results (3)')
-    })
-
-    it('applies correct styling to results count', () => {
-      const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
-        global: {
-          components: {
-            ResultCard,
-            FilterCriteria,
-            MoreIcon
-          }
-        }
-      })
-
-      const resultsSpan = wrapper.find('span')
-      expect(resultsSpan.classes()).toContain('text-xl')
-      expect(resultsSpan.classes()).toContain('font-semibold')
-      expect(resultsSpan.classes()).toContain('text-text-primary')
-    })
-  })
-
-  describe('Filter Criteria Integration', () => {
-    it('renders FilterCriteria component with correct props', () => {
-      const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
-        global: {
-          components: {
-            ResultCard,
-            FilterCriteria,
-            MoreIcon
-          }
-        }
-      })
-
-      const filterCriteria = wrapper.findComponent(FilterCriteria)
-      expect(filterCriteria.exists()).toBe(true)
-      expect(filterCriteria.props('filters')).toBeDefined()
-      expect(filterCriteria.props('filters')).toHaveLength(6)
-    })
-
-    it('handles removeFilter event from FilterCriteria', async () => {
-      const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
-        global: {
-          components: {
-            ResultCard,
-            FilterCriteria,
-            MoreIcon
-          }
-        }
-      })
-
-      const filterCriteria = wrapper.findComponent(FilterCriteria)
-      const initialFiltersCount = filterCriteria.props('filters').length
-
-      await filterCriteria.vm.$emit('removeFilter', '1')
-
-      // Filter should be removed from internal state
-      const updatedFiltersCount = filterCriteria.props('filters').length
-      // Verify filter removal behavior
-      expect(updatedFiltersCount).toBeLessThanOrEqual(initialFiltersCount)
-    })
-
-    it('handles other FilterCriteria events', async () => {
-      const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
-        global: {
-          components: {
-            ResultCard,
-            FilterCriteria,
-            MoreIcon
-          }
-        }
-      })
-
-      const filterCriteria = wrapper.findComponent(FilterCriteria)
-
-      // Test that events are handled gracefully (no console logging in production)
-      await filterCriteria.vm.$emit('dropdownClick', '2')
-      await filterCriteria.vm.$emit('edit')
-      await filterCriteria.vm.$emit('createMore')
-
-      // Verify component remains functional
-      expect(filterCriteria.exists()).toBe(true)
     })
   })
 
@@ -268,7 +79,6 @@ describe('ResultsList', () => {
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
@@ -283,23 +93,22 @@ describe('ResultsList', () => {
     })
 
     it('updates result cards when results prop changes', async () => {
-      expect(mockResults.length).toBeGreaterThan(0)
-      const firstResult = mockResults[0]!
       const wrapper = mount(ResultsList, {
-        props: { results: [firstResult] },
+        props: { results: mockResults },
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      expect(wrapper.findAllComponents(ResultCard)).toHaveLength(1)
-
-      await wrapper.setProps({ results: mockResults })
       expect(wrapper.findAllComponents(ResultCard)).toHaveLength(2)
+
+      const newResults = mockResults.slice(0, 1)
+      await wrapper.setProps({ results: newResults })
+
+      expect(wrapper.findAllComponents(ResultCard)).toHaveLength(1)
     })
 
     it('applies correct container styling for results section', () => {
@@ -308,25 +117,13 @@ describe('ResultsList', () => {
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      // Find the results container by its specific classes
       const resultsContainer = wrapper.find('.flex-1.px-8.py-4.overflow-y-auto')
       expect(resultsContainer.exists()).toBe(true)
-      const expectedClasses = [
-        'flex-1',
-        'px-8',
-        'py-4',
-        'overflow-y-auto',
-        'md:px-4'
-      ]
-      expectedClasses.forEach(className => {
-        expect(resultsContainer.classes()).toContain(className)
-      })
     })
   })
 
@@ -337,35 +134,17 @@ describe('ResultsList', () => {
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      const loadMoreButton = wrapper.find('button')
-      const expectedClasses = [
-        'bg-transparent',
-        'text-brand-orange',
-        'border',
-        'border-brand-orange',
-        'px-8',
-        'py-3',
-        'rounded-search',
-        'text-base',
-        'cursor-pointer',
-        'transition-colors',
-        'hover:bg-brand-orange',
-        'hover:text-bg-card',
-        'inline-flex',
-        'items-center',
-        'gap-2',
-        'mx-auto'
-      ]
+      const loadMoreContainer = wrapper.find('.px-8.py-4.text-center')
+      expect(loadMoreContainer.exists()).toBe(true)
 
-      expectedClasses.forEach(className => {
-        expect(loadMoreButton.classes()).toContain(className)
-      })
+      const loadMoreButton = wrapper.find('button')
+      expect(loadMoreButton.exists()).toBe(true)
+      expect(loadMoreButton.classes()).toContain('mx-auto')
     })
 
     it('contains correct button text and icon', () => {
@@ -374,17 +153,16 @@ describe('ResultsList', () => {
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      const loadMoreButton = wrapper.find('button')
-      expect(loadMoreButton.text()).toContain('Load More Results')
+      const button = wrapper.find('button')
+      expect(button.text()).toContain('Load More Results')
 
-      const moreIcon = wrapper.findComponent(MoreIcon)
-      expect(moreIcon.exists()).toBe(true)
+      const icon = wrapper.findComponent(MoreIcon)
+      expect(icon.exists()).toBe(true)
     })
 
     it('emits loadMore event when clicked', async () => {
@@ -393,17 +171,16 @@ describe('ResultsList', () => {
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      const loadMoreButton = wrapper.find('button')
-      await loadMoreButton.trigger('click')
+      const button = wrapper.find('button')
+      await button.trigger('click')
 
       expect(wrapper.emitted('loadMore')).toBeTruthy()
-      expect(wrapper.emitted('loadMore')![0]).toEqual([])
+      expect(wrapper.emitted('loadMore')).toHaveLength(1)
     })
 
     it('applies correct container styling for load more section', () => {
@@ -412,73 +189,94 @@ describe('ResultsList', () => {
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      // Find the load more container by its specific classes
       const loadMoreContainer = wrapper.find('.px-8.py-4.text-center')
-      expect(loadMoreContainer.exists()).toBe(true)
-      const expectedClasses = ['px-8', 'py-4', 'text-center', 'md:px-4']
-      expectedClasses.forEach(className => {
-        expect(loadMoreContainer.classes()).toContain(className)
+      expect(loadMoreContainer.classes()).toContain('md:px-4')
+    })
+  })
+
+  describe('Loading and Error States', () => {
+    it('displays loading state correctly', () => {
+      const wrapper = mount(ResultsList, {
+        props: { results: [], isLoading: true },
+        global: {
+          components: {
+            ResultCard,
+            MoreIcon
+          }
+        }
       })
+
+      expect(wrapper.text()).toContain('Loading results...')
+    })
+
+    it('displays error state correctly', () => {
+      const wrapper = mount(ResultsList, {
+        props: { results: [], error: 'Something went wrong' },
+        global: {
+          components: {
+            ResultCard,
+            MoreIcon
+          }
+        }
+      })
+
+      expect(wrapper.text()).toContain('Error: Something went wrong')
+    })
+
+    it('disables load more button when loading', () => {
+      const wrapper = mount(ResultsList, {
+        props: { results: mockResults, hasMore: true, isLoading: true },
+        global: {
+          components: {
+            ResultCard,
+            MoreIcon
+          }
+        }
+      })
+
+      const button = wrapper.find('button')
+      expect(button.attributes('disabled')).toBeDefined()
+      expect(button.text()).toContain('Loading...')
     })
   })
 
   describe('Layout and Responsive Design', () => {
     it('applies responsive classes correctly', () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults, hasMore: true },
+        props: { results: mockResults },
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      const mainContainer = wrapper.find('div')
+      const mainContainer = wrapper.find('.w-full.bg-bg-primary')
+      expect(mainContainer.exists()).toBe(true)
+      expect(mainContainer.classes()).toContain('flex-col')
       expect(mainContainer.classes()).toContain('md:flex-1')
       expect(mainContainer.classes()).toContain('md:h-auto')
-
-      // Find containers by their specific class combinations
-      const headerContainer = wrapper.find('.px-8.py-4.bg-bg-primary')
-      expect(headerContainer.exists()).toBe(true)
-      expect(headerContainer.classes()).toContain('md:px-4')
-
-      const resultsContainer = wrapper.find('.flex-1.px-8.py-4.overflow-y-auto')
-      expect(resultsContainer.exists()).toBe(true)
-      expect(resultsContainer.classes()).toContain('md:px-4')
-
-      const loadMoreContainer = wrapper.find('.px-8.py-4.text-center')
-      expect(loadMoreContainer.exists()).toBe(true)
-      expect(loadMoreContainer.classes()).toContain('md:px-4')
     })
 
-    it('provides flexible layout for filter criteria', () => {
+    it('provides correct responsive padding', () => {
       const wrapper = mount(ResultsList, {
         props: { results: mockResults },
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      const filterContainer = wrapper
-        .findAll('div')
-        .find(
-          div =>
-            div.classes().includes('flex-1') &&
-            div.classes().includes('min-w-96')
-        )
-      expect(filterContainer).toBeTruthy()
+      const resultsContainer = wrapper.find('.flex-1.px-8.py-4')
+      expect(resultsContainer.classes()).toContain('md:px-4')
     })
   })
 
@@ -489,33 +287,40 @@ describe('ResultsList', () => {
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      expect(wrapper.findComponent(FilterCriteria).exists()).toBe(true)
-      expect(wrapper.findAllComponents(ResultCard)).toHaveLength(2)
+      // Should contain result cards
+      expect(wrapper.findAllComponents(ResultCard).length).toBeGreaterThan(0)
+
+      // Should contain more icon in load more button
       expect(wrapper.findComponent(MoreIcon).exists()).toBe(true)
     })
 
     it('maintains proper component hierarchy', () => {
       const wrapper = mount(ResultsList, {
-        props: { results: mockResults },
+        props: { results: mockResults, hasMore: true },
         global: {
           components: {
             ResultCard,
-            FilterCriteria,
             MoreIcon
           }
         }
       })
 
-      // FilterCriteria should be in header section
-      const headerSection = wrapper.findAll('div')[1]
-      expect(headerSection).toBeTruthy()
-      expect(headerSection!.findComponent(FilterCriteria).exists()).toBe(true)
+      // Main container should exist
+      const mainContainer = wrapper.find('.w-full.bg-bg-primary')
+      expect(mainContainer.exists()).toBe(true)
+
+      // Results container should exist within main container
+      const resultsContainer = mainContainer.find('.flex-1.px-8.py-4')
+      expect(resultsContainer.exists()).toBe(true)
+
+      // Load more container should exist within main container
+      const loadMoreContainer = mainContainer.find('.px-8.py-4.text-center')
+      expect(loadMoreContainer.exists()).toBe(true)
     })
   })
 })

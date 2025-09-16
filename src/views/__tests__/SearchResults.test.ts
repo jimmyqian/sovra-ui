@@ -178,7 +178,7 @@ describe('SearchResults Component', () => {
       const resultsList = wrapper.findComponent({ name: 'ResultsList' })
       expect(resultsList.props('results')).toEqual(mockResults)
       expect(resultsList.props('isLoading')).toBe(false)
-      expect(resultsList.props('hasMore')).toBe(true)
+      expect(resultsList.props('hasMore')).toBe(false) // Now always false since we handle Load More outside
       expect(resultsList.props('error')).toBe(null)
     })
 
@@ -220,6 +220,13 @@ describe('SearchResults Component', () => {
       // Trigger search
       await searchBar.vm.$emit('search')
 
+      // Search should not be called immediately (it's delayed by 3 seconds)
+      expect(performSearchSpy).not.toHaveBeenCalled()
+
+      // Wait for the 3-second delay
+      await new Promise(resolve => setTimeout(resolve, 3100))
+
+      // Now search should have been called
       expect(performSearchSpy).toHaveBeenCalledWith('new search query')
     })
 
@@ -409,6 +416,425 @@ describe('SearchResults Component', () => {
       expect(
         wrapper.findComponent({ name: 'SearchBar' }).props('modelValue')
       ).toBe('')
+    })
+  })
+
+  describe('Scroll Fade Effects', () => {
+    it('should show top fade when results are scrolled down', async () => {
+      const wrapper = createWrapper()
+
+      // Initially top fade should not be visible
+      const topFade = wrapper.find('.fade-overlay-top')
+      expect(topFade.exists()).toBe(true)
+      expect(topFade.classes()).not.toContain('visible')
+
+      // Mock scroll event with scrollTop > 20
+      const resultsContainer = wrapper.find('.results-scroll')
+      expect(resultsContainer.exists()).toBe(true)
+
+      // Simulate scroll event
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 50,
+        writable: true
+      })
+
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      // Top fade should now be visible
+      expect(topFade.classes()).toContain('visible')
+    })
+
+    it('should hide top fade when scrolled back to top', async () => {
+      const wrapper = createWrapper()
+      const topFade = wrapper.find('.fade-overlay-top')
+      const resultsContainer = wrapper.find('.results-scroll')
+
+      // Simulate scroll down first
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 50,
+        writable: true
+      })
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      expect(topFade.classes()).toContain('visible')
+
+      // Now scroll back to top
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 0,
+        writable: true
+      })
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      // Top fade should be hidden again
+      expect(topFade.classes()).not.toContain('visible')
+    })
+
+    it('should always show bottom fade overlay', () => {
+      const wrapper = createWrapper()
+
+      const bottomFade = wrapper.find('.fade-overlay')
+      expect(bottomFade.exists()).toBe(true)
+      // Bottom fade should always be visible (no conditional visibility)
+    })
+  })
+
+  describe('Scroll Control Buttons', () => {
+    it('should show scroll buttons when content is scrollable', async () => {
+      const wrapper = createWrapper()
+
+      // Mock scrollable content
+      const resultsContainer = wrapper.find('.results-scroll')
+      expect(resultsContainer.exists()).toBe(true)
+
+      // Mock scroll properties
+      Object.defineProperty(resultsContainer.element, 'scrollHeight', {
+        value: 1000,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'clientHeight', {
+        value: 400,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 100,
+        writable: true
+      })
+
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const scrollButtons = wrapper.findAll('.scroll-button')
+      expect(scrollButtons.length).toBeGreaterThan(0)
+    })
+
+    it('should hide scroll buttons when content is not scrollable', async () => {
+      const wrapper = createWrapper()
+
+      const resultsContainer = wrapper.find('.results-scroll')
+
+      // Mock non-scrollable content
+      Object.defineProperty(resultsContainer.element, 'scrollHeight', {
+        value: 300,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'clientHeight', {
+        value: 400,
+        writable: true
+      })
+
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const scrollButtons = wrapper.findAll('.scroll-button')
+      expect(scrollButtons.length).toBe(0)
+    })
+
+    it('should hide top button when at top of content', async () => {
+      const wrapper = createWrapper()
+
+      const resultsContainer = wrapper.find('.results-scroll')
+
+      // Mock scrollable content at top
+      Object.defineProperty(resultsContainer.element, 'scrollHeight', {
+        value: 1000,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'clientHeight', {
+        value: 400,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 0,
+        writable: true
+      })
+
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const topButton = wrapper.find('.scroll-button-top')
+      expect(topButton.exists()).toBe(false)
+
+      const bottomButton = wrapper.find('.scroll-button-bottom')
+      expect(bottomButton.exists()).toBe(true)
+    })
+
+    it('should hide bottom button when at bottom of content', async () => {
+      const wrapper = createWrapper()
+
+      const resultsContainer = wrapper.find('.results-scroll')
+
+      // Mock scrollable content at bottom
+      Object.defineProperty(resultsContainer.element, 'scrollHeight', {
+        value: 1000,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'clientHeight', {
+        value: 400,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 600, // scrollHeight - clientHeight
+        writable: true
+      })
+
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const topButton = wrapper.find('.scroll-button-top')
+      expect(topButton.exists()).toBe(true)
+
+      const bottomButton = wrapper.find('.scroll-button-bottom')
+      expect(bottomButton.exists()).toBe(false)
+    })
+
+    it('should scroll incrementally when buttons are clicked', async () => {
+      const wrapper = createWrapper()
+
+      const resultsContainer = wrapper.find('.results-scroll')
+
+      // Mock scrollable content in middle position
+      Object.defineProperty(resultsContainer.element, 'scrollHeight', {
+        value: 1000,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'clientHeight', {
+        value: 400,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 300,
+        writable: true
+      })
+
+      // Mock scrollTo method
+      const scrollToSpy = vi.fn()
+      resultsContainer.element.scrollTo = scrollToSpy
+
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const topButton = wrapper.find('.scroll-button-top')
+      const bottomButton = wrapper.find('.scroll-button-bottom')
+
+      expect(topButton.exists()).toBe(true)
+      expect(bottomButton.exists()).toBe(true)
+
+      // Click top button - should scroll up by 200px
+      await topButton.trigger('click')
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 100, // 300 - 200
+        behavior: 'smooth'
+      })
+
+      // Click bottom button - should scroll down by 200px
+      await bottomButton.trigger('click')
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 500, // 300 + 200
+        behavior: 'smooth'
+      })
+    })
+
+    it('should not scroll beyond boundaries', async () => {
+      const wrapper = createWrapper()
+
+      const resultsContainer = wrapper.find('.results-scroll')
+
+      // Mock scrollable content near top
+      Object.defineProperty(resultsContainer.element, 'scrollHeight', {
+        value: 1000,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'clientHeight', {
+        value: 400,
+        writable: true
+      })
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 50, // Near top
+        writable: true
+      })
+
+      const scrollToSpy = vi.fn()
+      resultsContainer.element.scrollTo = scrollToSpy
+
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const topButton = wrapper.find('.scroll-button-top')
+
+      // Click top button when near top - should not go below 0
+      await topButton.trigger('click')
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 0, // Math.max(0, 50 - 200)
+        behavior: 'smooth'
+      })
+
+      // Test bottom boundary
+      Object.defineProperty(resultsContainer.element, 'scrollTop', {
+        value: 550, // Near bottom (600 is max: 1000 - 400)
+        writable: true
+      })
+
+      await resultsContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const bottomButton = wrapper.find('.scroll-button-bottom')
+
+      // Click bottom button when near bottom - should not exceed max
+      await bottomButton.trigger('click')
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 600, // Math.min(600, 550 + 200)
+        behavior: 'smooth'
+      })
+    })
+  })
+
+  describe('Conversation Scroll Control Buttons', () => {
+    it('should show conversation scroll buttons when content is scrollable', async () => {
+      const wrapper = createWrapper()
+
+      // Mock scrollable conversation content
+      const conversationContainer = wrapper.find('.conversation-scroll')
+      expect(conversationContainer.exists()).toBe(true)
+
+      // Mock scroll properties
+      Object.defineProperty(conversationContainer.element, 'scrollHeight', {
+        value: 800,
+        writable: true
+      })
+      Object.defineProperty(conversationContainer.element, 'clientHeight', {
+        value: 300,
+        writable: true
+      })
+      Object.defineProperty(conversationContainer.element, 'scrollTop', {
+        value: 50,
+        writable: true
+      })
+
+      await conversationContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const conversationScrollButtons = wrapper.findAll(
+        '.conversation-scroll-button'
+      )
+      expect(conversationScrollButtons.length).toBeGreaterThan(0)
+    })
+
+    it('should hide conversation scroll buttons when content is not scrollable', async () => {
+      const wrapper = createWrapper()
+
+      const conversationContainer = wrapper.find('.conversation-scroll')
+
+      // Mock non-scrollable conversation content
+      Object.defineProperty(conversationContainer.element, 'scrollHeight', {
+        value: 200,
+        writable: true
+      })
+      Object.defineProperty(conversationContainer.element, 'clientHeight', {
+        value: 300,
+        writable: true
+      })
+
+      await conversationContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const conversationScrollButtons = wrapper.findAll(
+        '.conversation-scroll-button'
+      )
+      expect(conversationScrollButtons.length).toBe(0)
+    })
+
+    it('should scroll conversation incrementally when buttons are clicked', async () => {
+      const wrapper = createWrapper()
+
+      const conversationContainer = wrapper.find('.conversation-scroll')
+
+      // Mock scrollable conversation content in middle position
+      Object.defineProperty(conversationContainer.element, 'scrollHeight', {
+        value: 800,
+        writable: true
+      })
+      Object.defineProperty(conversationContainer.element, 'clientHeight', {
+        value: 300,
+        writable: true
+      })
+      Object.defineProperty(conversationContainer.element, 'scrollTop', {
+        value: 250,
+        writable: true
+      })
+
+      // Mock scrollTo method
+      const scrollToSpy = vi.fn()
+      conversationContainer.element.scrollTo = scrollToSpy
+
+      await conversationContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const topButton = wrapper.find(
+        '.conversation-scroll-button.scroll-button-top'
+      )
+      const bottomButton = wrapper.find(
+        '.conversation-scroll-button.scroll-button-bottom'
+      )
+
+      expect(topButton.exists()).toBe(true)
+      expect(bottomButton.exists()).toBe(true)
+
+      // Click top button - should scroll up by 200px
+      await topButton.trigger('click')
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 50, // 250 - 200
+        behavior: 'smooth'
+      })
+
+      // Click bottom button - should scroll down by 200px
+      await bottomButton.trigger('click')
+      expect(scrollToSpy).toHaveBeenCalledWith({
+        top: 450, // 250 + 200
+        behavior: 'smooth'
+      })
+    })
+
+    it('should position conversation scroll buttons differently from results buttons', async () => {
+      const wrapper = createWrapper()
+
+      const conversationContainer = wrapper.find('.conversation-scroll')
+
+      // Mock scrollable conversation content to make buttons appear
+      Object.defineProperty(conversationContainer.element, 'scrollHeight', {
+        value: 800,
+        writable: true
+      })
+      Object.defineProperty(conversationContainer.element, 'clientHeight', {
+        value: 300,
+        writable: true
+      })
+      Object.defineProperty(conversationContainer.element, 'scrollTop', {
+        value: 150,
+        writable: true
+      })
+
+      await conversationContainer.trigger('scroll')
+      await wrapper.vm.$nextTick()
+
+      const conversationTopButton = wrapper.find(
+        '.conversation-scroll-button.scroll-button-top'
+      )
+      const conversationBottomButton = wrapper.find(
+        '.conversation-scroll-button.scroll-button-bottom'
+      )
+
+      // Check that conversation buttons exist and have specific positioning classes
+      expect(conversationTopButton.exists()).toBe(true)
+      expect(conversationBottomButton.exists()).toBe(true)
+      expect(conversationTopButton.classes()).toContain(
+        'conversation-scroll-button'
+      )
+      expect(conversationBottomButton.classes()).toContain(
+        'conversation-scroll-button'
+      )
     })
   })
 })

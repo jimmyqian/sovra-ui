@@ -106,7 +106,10 @@ function validateSingleFile(file: File): FileValidationResult {
   const allowedExtensions =
     ALLOWED_FILE_TYPES[file.type as keyof typeof ALLOWED_FILE_TYPES]
 
-  if (!allowedExtensions.includes(fileExtension)) {
+  if (
+    !allowedExtensions ||
+    !(allowedExtensions as readonly string[]).includes(fileExtension)
+  ) {
     return {
       isValid: false,
       error: 'File extension does not match file type.'

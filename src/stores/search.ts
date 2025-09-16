@@ -144,7 +144,7 @@ export const useSearchStore = defineStore('search', () => {
       if (!loadMore) {
         setQuery(sanitizedQuery)
         resetPagination()
-        clearResults()
+        // Don't clear results immediately - keep them visible until new results are ready
         addToHistory(sanitizedQuery)
       }
 
@@ -169,9 +169,9 @@ export const useSearchStore = defineStore('search', () => {
             1,
           name: `Johnson Smith ${i + 1}`,
           age: Math.floor(Math.random() * 50) + 20,
-          gender: i % 2 === 0 ? 'Male' : 'Female',
+          gender: 'Male',
           maritalStatus: ['Single', 'Married', 'Divorced'][i % 3] ?? 'Single',
-          location: 'Mock Location',
+          location: 'California',
           rating: Math.round(Math.random() * 5 * 10) / 10,
           references: Math.floor(Math.random() * 100),
           companies: Math.floor(Math.random() * 10),

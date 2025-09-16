@@ -17,12 +17,39 @@
           <!-- Scrollable Conversation Area -->
           <div
             ref="conversationScrollContainer"
-            class="flex-1 overflow-y-auto smooth-scroll"
+            class="flex-1 overflow-y-auto smooth-scroll conversation-scroll"
+            @scroll="handleConversationScroll"
           >
             <div class="pb-40">
               <SearchConversation :messages="conversationMessages" />
             </div>
           </div>
+
+          <!-- Conversation Scroll Control Buttons -->
+          <button
+            v-if="
+              hasScrollableContentConversation &&
+              canScrollUpConversation &&
+              !isAutoScrolling
+            "
+            class="scroll-button scroll-button-top conversation-scroll-button"
+            aria-label="Scroll conversation to top"
+            @click="scrollConversationToTop"
+          >
+            <ChevronUpIcon />
+          </button>
+          <button
+            v-if="
+              hasScrollableContentConversation &&
+              canScrollDownConversation &&
+              !isAutoScrolling
+            "
+            class="scroll-button scroll-button-bottom conversation-scroll-button"
+            aria-label="Scroll conversation to bottom"
+            @click="scrollConversationToBottom"
+          >
+            <ChevronDownIcon />
+          </button>
 
           <!-- Fixed Search Input -->
           <div
@@ -38,15 +65,59 @@
         </div>
 
         <!-- Right Panel: Results -->
-        <div class="flex-1 flex flex-col max-h-full overflow-hidden">
-          <div class="flex-1 overflow-y-auto max-h-full">
+        <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
+          <div
+            ref="resultsScrollContainer"
+            class="flex-1 overflow-y-auto max-h-full results-scroll"
+            @scroll="handleResultsScroll"
+          >
             <ResultsList
               :results="results"
               :is-loading="isLoading"
-              :has-more="hasMore"
+              :has-more="false"
               :error="error"
               @load-more="handleLoadMore"
             />
+          </div>
+          <!-- Fade-out gradient overlay at top - shows when scrolled -->
+          <div
+            class="fade-overlay-top"
+            :class="[{ visible: showTopFade }]"
+          ></div>
+          <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
+          <div class="fade-overlay"></div>
+          <!-- Scroll Control Buttons -->
+          <button
+            v-if="hasScrollableContent && canScrollUp"
+            class="scroll-button scroll-button-top"
+            aria-label="Scroll to top"
+            @click="scrollResultsToTop"
+          >
+            <ChevronUpIcon />
+          </button>
+          <button
+            v-if="hasScrollableContent && canScrollDown"
+            class="scroll-button scroll-button-bottom"
+            aria-label="Scroll to bottom"
+            @click="scrollResultsToBottom"
+          >
+            <ChevronDownIcon />
+          </button>
+          <!-- Load More Button - Always visible outside scroll area -->
+          <div
+            v-if="hasMore"
+            class="px-8 py-4 text-center md:px-4 bg-bg-primary border-t border-border-light"
+          >
+            <Button
+              variant="outline"
+              size="lg"
+              :disabled="isLoading"
+              class="mx-auto"
+              @click="handleLoadMore"
+            >
+              {{ isLoading ? 'Loading...' : 'Load More Results' }}
+              <MoreIcon v-if="!isLoading" />
+            </Button>
           </div>
           <!-- Page Footer -->
           <CopyrightFooter @pi-click="handlePiClick" />
@@ -65,12 +136,27 @@
   import SearchConversation from '@/components/search/SearchConversation.vue'
   import ResultsList from '@/components/search/ResultsList.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
+  import Button from '@/components/ui/Button.vue'
+  import MoreIcon from '@/components/icons/MoreIcon.vue'
+  import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
+  import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import type { ConversationMessage } from '@/types/conversation'
 
   const searchStore = useSearchStore()
   const conversationScrollContainer = ref<HTMLElement | null>(null)
+  const resultsScrollContainer = ref<HTMLElement | null>(null)
 
   const newQuery = ref('')
+  const showTopFade = ref(false)
+  const canScrollUp = ref(false)
+  const canScrollDown = ref(false)
+  const hasScrollableContent = ref(false)
+
+  // Conversation scroll state
+  const canScrollUpConversation = ref(false)
+  const canScrollDownConversation = ref(false)
+  const hasScrollableContentConversation = ref(false)
+  const isAutoScrolling = ref(false)
 
   // Initialize conversation history with the first user query and system response
   const conversationHistory = ref<ConversationMessage[]>([
@@ -144,6 +230,7 @@
   const scrollToBottom = async () => {
     await nextTick()
     if (conversationScrollContainer.value) {
+      isAutoScrolling.value = true
       const container = conversationScrollContainer.value
       const startPosition = container.scrollTop
       const targetPosition = container.scrollHeight - container.clientHeight
@@ -166,6 +253,9 @@
 
         if (progress < 1) {
           globalThis.requestAnimationFrame(animateScroll)
+        } else {
+          // Animation complete, allow buttons to show again
+          isAutoScrolling.value = false
         }
       }
 
@@ -209,14 +299,17 @@
       // Scroll to show thinking placeholder
       scrollToBottom()
 
-      // Perform the search
-      await searchStore.performSearch(newQuery.value)
+      // Store the query before clearing input
+      const queryToSearch = newQuery.value
 
       // Clear the search input
       newQuery.value = ''
 
-      // Wait 3 seconds before replacing thinking placeholder with actual response
-      setTimeout(() => {
+      // Wait 3 seconds before performing search and replacing thinking placeholder
+      setTimeout(async () => {
+        // Perform the search
+        await searchStore.performSearch(queryToSearch)
+
         // Find and replace the thinking placeholder
         const thinkingIndex = conversationHistory.value.findIndex(
           msg => msg.id === thinkingPlaceholderId
@@ -245,6 +338,87 @@
 
   const handleLoadMore = async () => {
     await searchStore.loadMoreResults()
+  }
+
+  const handleResultsScroll = () => {
+    if (resultsScrollContainer.value) {
+      const container = resultsScrollContainer.value
+      const scrollTop = container.scrollTop
+      const scrollHeight = container.scrollHeight
+      const clientHeight = container.clientHeight
+
+      // Show top fade when scrolled more than 20px from top
+      showTopFade.value = scrollTop > 20
+
+      // Update scroll button states
+      canScrollUp.value = scrollTop > 0
+      canScrollDown.value = scrollTop < scrollHeight - clientHeight
+      hasScrollableContent.value = scrollHeight > clientHeight
+    }
+  }
+
+  const handleConversationScroll = () => {
+    if (conversationScrollContainer.value) {
+      const container = conversationScrollContainer.value
+      const scrollTop = container.scrollTop
+      const scrollHeight = container.scrollHeight
+      const clientHeight = container.clientHeight
+
+      // Update conversation scroll button states
+      canScrollUpConversation.value = scrollTop > 0
+      canScrollDownConversation.value = scrollTop < scrollHeight - clientHeight
+      hasScrollableContentConversation.value = scrollHeight > clientHeight
+    }
+  }
+
+  const scrollResultsToTop = () => {
+    if (resultsScrollContainer.value) {
+      const currentScroll = resultsScrollContainer.value.scrollTop
+      const scrollAmount = 200 // Approximately 1.5 card heights
+      resultsScrollContainer.value.scrollTo({
+        top: Math.max(0, currentScroll - scrollAmount),
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  const scrollResultsToBottom = () => {
+    if (resultsScrollContainer.value) {
+      const currentScroll = resultsScrollContainer.value.scrollTop
+      const scrollAmount = 200 // Approximately 1.5 card heights
+      const maxScroll =
+        resultsScrollContainer.value.scrollHeight -
+        resultsScrollContainer.value.clientHeight
+      resultsScrollContainer.value.scrollTo({
+        top: Math.min(maxScroll, currentScroll + scrollAmount),
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  const scrollConversationToTop = () => {
+    if (conversationScrollContainer.value) {
+      const currentScroll = conversationScrollContainer.value.scrollTop
+      const scrollAmount = 200 // Same scroll amount as results
+      conversationScrollContainer.value.scrollTo({
+        top: Math.max(0, currentScroll - scrollAmount),
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  const scrollConversationToBottom = () => {
+    if (conversationScrollContainer.value) {
+      const currentScroll = conversationScrollContainer.value.scrollTop
+      const scrollAmount = 200 // Same scroll amount as results
+      const maxScroll =
+        conversationScrollContainer.value.scrollHeight -
+        conversationScrollContainer.value.clientHeight
+      conversationScrollContainer.value.scrollTo({
+        top: Math.min(maxScroll, currentScroll + scrollAmount),
+        behavior: 'smooth'
+      })
+    }
   }
 
   // Generate conversation data based on search state
@@ -276,6 +450,30 @@
     { deep: true }
   )
 
+  // Watch for changes in results to update scroll state
+  watch(
+    results,
+    () => {
+      // Check scroll state after results update
+      nextTick(() => {
+        handleResultsScroll()
+      })
+    },
+    { immediate: true }
+  )
+
+  // Watch for changes in conversation messages to update scroll state
+  watch(
+    conversationMessages,
+    () => {
+      // Check scroll state after conversation update
+      nextTick(() => {
+        handleConversationScroll()
+      })
+    },
+    { deep: true, immediate: true }
+  )
+
   const handleHintClick = (_hintType: string) => {
     // TODO: Implement hint click functionality
     // console.log('Hint clicked:', hintType)
@@ -303,5 +501,96 @@
 <style scoped>
   .smooth-scroll {
     scroll-behavior: smooth;
+  }
+
+  .fade-overlay {
+    position: absolute;
+    bottom: 128px; /* Above Load More button and footer */
+    left: 0;
+    right: 0;
+    height: 160px; /* Fixed height instead of percentage */
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(248 248 248) 100%
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .fade-overlay-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 160px; /* Same height as bottom fade */
+    background: linear-gradient(to top, transparent 0%, rgb(248 248 248) 100%);
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .fade-overlay-top.visible {
+    opacity: 1;
+  }
+
+  /* Hide scrollbars on conversation panel and results panel */
+  .conversation-scroll,
+  .results-scroll {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Scroll control buttons */
+  .scroll-button {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background-color: #ff6b35; /* brand-orange */
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    z-index: 20;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .scroll-button:hover {
+    background-color: #e55a2e; /* darker orange on hover */
+    transform: translateX(-50%) scale(1.05);
+  }
+
+  .scroll-button:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  .scroll-button-top {
+    top: 16px;
+  }
+
+  .scroll-button-bottom {
+    bottom: 144px; /* Above Load More button and footer */
+  }
+
+  /* Conversation scroll buttons - positioned differently */
+  .conversation-scroll-button.scroll-button-top {
+    top: 80px; /* Below header */
+  }
+
+  .conversation-scroll-button.scroll-button-bottom {
+    bottom: 200px; /* Much higher above search input area */
   }
 </style>
