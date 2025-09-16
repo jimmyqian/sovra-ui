@@ -20,6 +20,7 @@
           v-for="result in results"
           :key="result.id"
           :result="result"
+          @person-selected="handlePersonSelected"
         />
       </div>
 
@@ -61,7 +62,7 @@
 
   interface Emits {
     (_e: 'loadMore'): void
-    (_e: 'load-more'): void
+    (_e: 'personSelected', _person: SearchResult): void
   }
 
   withDefaults(defineProps<Props>(), {
@@ -71,5 +72,9 @@
 
   const handleLoadMore = () => {
     emit('loadMore')
+  }
+
+  const handlePersonSelected = (person: SearchResult) => {
+    emit('personSelected', person)
   }
 </script>

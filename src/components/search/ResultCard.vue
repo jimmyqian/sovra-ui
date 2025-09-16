@@ -1,7 +1,7 @@
 <template>
   <div
     class="result-card cursor-pointer transition-all duration-200 hover:shadow-card hover:bg-bg-secondary"
-    @click="navigateToDetail"
+    @click="handlePersonSelect"
   >
     <div class="flex items-start gap-4 flex-1 md:min-w-80">
       <div class="w-15 h-15 bg-border-lighter rounded-full flex-shrink-0"></div>
@@ -42,7 +42,6 @@
 </template>
 
 <script setup lang="ts">
-  import { useRouter } from 'vue-router'
   import type { SearchResult } from '@/types/search'
   import ScoreBar from '@/components/common/ScoreBar.vue'
 
@@ -50,12 +49,14 @@
     result: SearchResult
   }
 
-  const props = defineProps<Props>()
-  const router = useRouter()
+  interface Emits {
+    (_e: 'personSelected', _person: SearchResult): void
+  }
 
-  const navigateToDetail = () => {
-    // Generate a unique ID for the search result
-    const personId = props.result.name.toLowerCase().replace(/\s+/g, '-')
-    router.push({ name: 'SearchDetail', params: { id: personId } })
+  const props = defineProps<Props>()
+  const emit = defineEmits<Emits>()
+
+  const handlePersonSelect = () => {
+    emit('personSelected', props.result)
   }
 </script>

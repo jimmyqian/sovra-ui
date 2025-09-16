@@ -175,11 +175,11 @@ describe('SearchResults Component', () => {
 
       await wrapper.vm.$nextTick()
 
-      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
-      expect(resultsList.props('results')).toEqual(mockResults)
-      expect(resultsList.props('isLoading')).toBe(false)
-      expect(resultsList.props('hasMore')).toBe(false) // Now always false since we handle Load More outside
-      expect(resultsList.props('error')).toBe(null)
+      const rightPanel = wrapper.findComponent({ name: 'RightPanel' })
+      expect(rightPanel.props('results')).toEqual(mockResults)
+      expect(rightPanel.props('isLoading')).toBe(false)
+      expect(rightPanel.props('hasMore')).toBe(true) // Now passed through to RightPanel
+      expect(rightPanel.props('error')).toBe(null)
     })
 
     it('should show loading state', async () => {
