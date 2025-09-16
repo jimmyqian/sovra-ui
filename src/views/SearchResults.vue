@@ -131,6 +131,7 @@
       // Add user message to conversation
       const userMessageId = `user-message-${Date.now()}`
       const systemResponseId = `system-response-${Date.now()}`
+      const thinkingPlaceholderId = `thinking-${Date.now()}`
 
       conversationHistory.value.push({
         id: userMessageId,
@@ -139,29 +140,50 @@
         content: newQuery.value
       })
 
+      // Add thinking placeholder immediately
+      conversationHistory.value.push({
+        id: thinkingPlaceholderId,
+        sender: 'system',
+        timestamp: new Date(),
+        items: [
+          {
+            id: `thinking-text-${Date.now()}`,
+            type: 'text',
+            content: 'thinking...',
+            emphasis: 'normal',
+            isThinking: true
+          }
+        ]
+      })
+
       // Perform the search
       await searchStore.performSearch(newQuery.value)
 
       // Clear the search input
       newQuery.value = ''
 
-      // Wait 3 seconds before showing system response
+      // Wait 3 seconds before replacing thinking placeholder with actual response
       setTimeout(() => {
-        // Add system response after delay
-        conversationHistory.value.push({
-          id: systemResponseId,
-          sender: 'system',
-          timestamp: new Date(),
-          items: [
-            {
-              id: `text-${Date.now()}`,
-              type: 'text',
-              content:
-                "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?",
-              emphasis: 'normal'
-            }
-          ]
-        })
+        // Find and replace the thinking placeholder
+        const thinkingIndex = conversationHistory.value.findIndex(
+          msg => msg.id === thinkingPlaceholderId
+        )
+        if (thinkingIndex !== -1) {
+          conversationHistory.value[thinkingIndex] = {
+            id: systemResponseId,
+            sender: 'system',
+            timestamp: new Date(),
+            items: [
+              {
+                id: `text-${Date.now()}`,
+                type: 'text',
+                content:
+                  "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?",
+                emphasis: 'normal'
+              }
+            ]
+          }
+        }
       }, 3000)
     }
   }

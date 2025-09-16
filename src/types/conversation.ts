@@ -13,6 +13,7 @@ export interface TextParagraphItem extends BaseConversationItem {
   content: string
   emphasis?: 'normal' | 'strong' | 'secondary'
   className?: string
+  isThinking?: boolean
 }
 
 export interface SearchHintItem extends BaseConversationItem {

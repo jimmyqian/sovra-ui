@@ -12,7 +12,11 @@
       <div v-else-if="message.sender === 'system'" class="flex flex-col">
         <div class="flex gap-4">
           <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">
-            <LogoIcon :size="36" color="var(--color-logo-gray)" />
+            <LogoIcon
+              :size="36"
+              color="var(--color-logo-gray)"
+              :class="{ 'thinking-pulse': isThinkingMessage(message) }"
+            />
           </div>
           <div class="flex-1">
             <!-- Render conversation items dynamically -->
@@ -62,4 +66,28 @@
   }
 
   defineProps<Props>()
+
+  const isThinkingMessage = (message: ConversationMessage) => {
+    return (
+      message.items?.some(
+        item => item.type === 'text' && 'isThinking' in item && item.isThinking
+      ) ?? false
+    )
+  }
 </script>
+
+<style scoped>
+  @keyframes thinking-pulse {
+    0%,
+    100% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+
+  .thinking-pulse {
+    animation: thinking-pulse 1s ease-in-out infinite;
+  }
+</style>
