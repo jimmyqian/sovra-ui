@@ -27,7 +27,13 @@ export default [
         __filename: 'readonly',
         global: 'readonly',
         module: 'readonly',
-        require: 'readonly'
+        require: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly'
       }
     },
     plugins: {
@@ -50,7 +56,13 @@ export default [
       // General best practices
       'no-console': 'warn',
       'no-debugger': 'error',
-      'no-unused-vars': 'warn',
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ],
       'prefer-const': 'error',
       'no-var': 'error',
       'object-shorthand': 'error',
@@ -70,7 +82,7 @@ export default [
 
   // TypeScript-specific configuration
   {
-    files: ['**/*.{ts,tsx,vue}'],
+    files: ['**/*.{ts,tsx}'],
     ignores: ['vite.config.ts', '*.config.ts'],
     languageOptions: {
       parser: typescriptParser,
@@ -126,6 +138,25 @@ export default [
         ecmaVersion: 2020,
         sourceType: 'module',
         extraFileExtensions: ['.vue']
+      },
+      globals: {
+        // Browser globals
+        window: 'readonly',
+        document: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        // DOM types
+        HTMLElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLTextAreaElement: 'readonly',
+        File: 'readonly',
+        FileList: 'readonly',
+        Event: 'readonly',
+        MouseEvent: 'readonly',
+        KeyboardEvent: 'readonly',
+        URLSearchParams: 'readonly'
       }
     },
     plugins: {
@@ -134,10 +165,7 @@ export default [
       prettier
     },
     rules: {
-      // TypeScript rules enabled for Vue files
-      '@typescript-eslint/prefer-optional-chain': 'error',
-      '@typescript-eslint/prefer-nullish-coalescing': 'error',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      // Basic TypeScript rules (non-type-aware) for Vue files
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/no-unused-vars': [
@@ -157,7 +185,19 @@ export default [
 
       // Vue best practices
       'vue/no-unused-components': 'warn',
-      'vue/no-unused-vars': 'warn',
+      'vue/no-unused-vars': [
+        'warn',
+        {
+          ignorePattern: '^_'
+        }
+      ],
+      'no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ],
       'vue/require-default-prop': 'error',
       'vue/require-prop-types': 'error',
       'vue/prefer-true-attribute-shorthand': 'error',

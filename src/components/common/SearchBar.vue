@@ -32,8 +32,8 @@
             'text-brand-orange': isListening,
             'animate-pulse': isListening
           }"
-          @click="toggleSpeechRecognition"
           :aria-label="isListening ? 'Stop voice input' : 'Start voice input'"
+          @click="toggleSpeechRecognition"
         >
           <MicrophoneIcon />
         </Button>
@@ -81,11 +81,11 @@
   }
 
   interface Emits {
-    (e: 'update:modelValue', value: string): void
-    (e: 'search'): void
-    (e: 'fileUpload', files: File[]): void
-    (e: 'fileError', error: string): void
-    (e: 'speechError', error: string): void
+    (_e: 'update:modelValue', _value: string): void
+    (_e: 'search'): void
+    (_e: 'fileUpload', _files: File[]): void
+    (_e: 'fileError', _error: string): void
+    (_e: 'speechError', _error: string): void
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -158,7 +158,7 @@
   const initializeSpeechRecognition = () => {
     if (typeof window !== 'undefined') {
       const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition
+        window.SpeechRecognition ?? window.webkitSpeechRecognition
       if (SpeechRecognition) {
         speechSupported.value = true
         recognition = new SpeechRecognition()
@@ -228,7 +228,7 @@
     } else {
       try {
         recognition.start()
-      } catch (error) {
+      } catch {
         emit(
           'speechError',
           'Failed to start speech recognition. Please try again.'

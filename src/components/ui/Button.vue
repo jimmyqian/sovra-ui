@@ -27,7 +27,7 @@
   }
 
   interface Emits {
-    (e: 'click', event: MouseEvent): void
+    (_e: 'click', _event: MouseEvent): void
   }
 
   const props = withDefaults(defineProps<Props>(), {

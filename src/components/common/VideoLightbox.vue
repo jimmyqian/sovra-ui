@@ -63,7 +63,7 @@
 
   interface Emits {
     /** Emitted when lightbox should be closed */
-    (e: 'close'): void
+    (_e: 'close'): void
   }
 
   const props = withDefaults(defineProps<Props>(), {

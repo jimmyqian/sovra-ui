@@ -21,7 +21,7 @@
 
   interface Emits {
     /** Emitted when pi symbol is clicked */
-    (e: 'piClick'): void
+    (_e: 'piClick'): void
   }
 
   const emit = defineEmits<Emits>()

@@ -13,6 +13,7 @@ export interface TextParagraphItem extends BaseConversationItem {
   content: string
   emphasis?: 'normal' | 'strong' | 'secondary'
   className?: string
+  isThinking?: boolean
 }
 
 export interface SearchHintItem extends BaseConversationItem {
@@ -74,7 +75,8 @@ export interface ConversationMessage {
   id: string
   sender: 'user' | 'system'
   timestamp?: Date
-  items: ConversationItem[]
+  content?: string // For user messages
+  items?: ConversationItem[] // For system messages
 }
 
 export interface SearchConversationProps {
