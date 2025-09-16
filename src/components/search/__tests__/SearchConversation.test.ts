@@ -321,12 +321,38 @@ describe('SearchConversation', () => {
   })
 
   describe('System Response', () => {
-    it('renders LogoIcon with correct props', () => {
+    it('renders LogoIcon with gray color for normal messages', () => {
       const wrapper = createWrapper()
 
       const logoIcon = wrapper.findComponent(LogoIcon)
       expect(logoIcon.props('size')).toBe(36)
       expect(logoIcon.props('color')).toBe('var(--color-logo-gray)')
+      expect(logoIcon.classes()).not.toContain('thinking-pulse')
+    })
+
+    it('renders LogoIcon with gray pulsing animation for thinking messages', () => {
+      const thinkingMessages = [
+        {
+          id: 'thinking-message',
+          sender: 'system' as const,
+          timestamp: new Date(),
+          items: [
+            {
+              id: 'thinking-text',
+              type: 'text' as const,
+              content: 'thinking...',
+              emphasis: 'normal' as const,
+              isThinking: true
+            }
+          ]
+        }
+      ]
+
+      const wrapper = _createWrapperWithMessages(thinkingMessages)
+      const logoIcon = wrapper.findComponent(LogoIcon)
+      expect(logoIcon.props('size')).toBe(36)
+      expect(logoIcon.props('color')).toBe('var(--color-logo-gray)')
+      expect(logoIcon.classes()).toContain('thinking-pulse')
     })
 
     it('displays the main response message', () => {

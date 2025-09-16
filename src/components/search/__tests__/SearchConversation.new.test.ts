@@ -107,6 +107,7 @@ describe('SearchConversation (New Component System)', () => {
       expect(logoIcon.exists()).toBe(true)
       expect(logoIcon.props('size')).toBe(36)
       expect(logoIcon.props('color')).toBe('var(--color-logo-gray)')
+      expect(logoIcon.classes()).not.toContain('thinking-pulse')
     })
   })
 
