@@ -292,11 +292,10 @@
   }
 
   const handlePersonSelected = (person: SearchResult) => {
-    selectedPerson.value = person
-    // Update URL with query parameter to maintain browser history
+    // Navigate to dedicated SearchDetail page
     router.push({
-      path: '/search',
-      query: { ...route.query, personId: person.id }
+      name: 'SearchDetail',
+      params: { id: person.id.toString() }
     })
   }
 

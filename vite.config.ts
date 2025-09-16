@@ -13,6 +13,15 @@ export default defineConfig({
   server: {
     port: 3000
   },
+  build: {
+    rollupOptions: {
+      output: {
+        // Ensure all assets are in a single bundle for SPA
+        manualChunks: undefined
+      }
+    }
+  },
+  base: './', // Use relative paths for SPA deployment
   test: {
     globals: true,
     environment: 'jsdom',
