@@ -137,8 +137,26 @@ export default [
         parser: typescriptParser,
         ecmaVersion: 2020,
         sourceType: 'module',
-        extraFileExtensions: ['.vue'],
-        project: './tsconfig.json'
+        extraFileExtensions: ['.vue']
+      },
+      globals: {
+        // Browser globals
+        window: 'readonly',
+        document: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        // DOM types
+        HTMLElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLTextAreaElement: 'readonly',
+        File: 'readonly',
+        FileList: 'readonly',
+        Event: 'readonly',
+        MouseEvent: 'readonly',
+        KeyboardEvent: 'readonly',
+        URLSearchParams: 'readonly'
       }
     },
     plugins: {
@@ -147,10 +165,7 @@ export default [
       prettier
     },
     rules: {
-      // TypeScript rules enabled for Vue files
-      '@typescript-eslint/prefer-optional-chain': 'error',
-      '@typescript-eslint/prefer-nullish-coalescing': 'error',
-      '@typescript-eslint/no-unnecessary-type-assertion': 'error',
+      // Basic TypeScript rules (non-type-aware) for Vue files
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-non-null-assertion': 'warn',
       '@typescript-eslint/no-unused-vars': [

@@ -1,11 +1,14 @@
 <template>
   <div class="px-8 py-8">
     <!-- Render all messages (both user and system) -->
-    <template v-for="message in messages" :key="message.id">
+    <template v-for="(message, index) in messages" :key="message.id">
       <!-- User Message -->
       <UserMessage
         v-if="message.sender === 'user'"
         :content="message.content"
+        :class="{
+          'mt-8': index > 0 && messages[index - 1]?.sender === 'system'
+        }"
       />
 
       <!-- System Message -->
