@@ -148,7 +148,7 @@ describe('SearchResults Component', () => {
       const searchBar = wrapper.findComponent({ name: 'SearchBar' })
 
       expect(searchBar.props('placeholder')).toContain(
-        'Johnson, who is around 26 years old'
+        "Tell me more about who you're looking for"
       )
     })
   })
@@ -387,7 +387,7 @@ describe('SearchResults Component', () => {
 
       // Check for responsive classes
       expect(wrapper.find('.md\\:w-2\\/5').exists()).toBe(true)
-      expect(wrapper.find('.h-full').exists()).toBe(true)
+      expect(wrapper.find('.max-h-full').exists()).toBe(true)
     })
   })
 
@@ -402,13 +402,13 @@ describe('SearchResults Component', () => {
       expect(searchBar.exists()).toBe(true)
     })
 
-    it('should maintain default search query', () => {
+    it('should maintain empty search query by default', () => {
       const wrapper = createWrapper()
 
-      // Check that component has default search query
+      // Check that component starts with empty search query
       expect(
         wrapper.findComponent({ name: 'SearchBar' }).props('modelValue')
-      ).toContain('Johnson, who is around 26 years old')
+      ).toBe('')
     })
   })
 })

@@ -1,18 +1,27 @@
 <template>
-  <div class="h-screen bg-bg-primary flex flex-col">
-    <div class="flex-1 flex">
+  <div
+    class="h-screen bg-bg-primary flex flex-col max-h-screen overflow-hidden"
+  >
+    <div class="flex-1 flex max-h-full overflow-hidden">
       <!-- Left Navigation Sidebar -->
       <AppSidebar />
 
       <!-- Main Content Area -->
-      <div class="flex-1 flex flex-col md:flex-row">
+      <div class="flex-1 flex flex-col md:flex-row max-h-full overflow-hidden">
         <!-- Left Panel: Search & Conversation -->
-        <div class="w-full bg-bg-card flex flex-col md:w-2/5 h-full relative">
+        <div
+          class="w-full bg-bg-card flex flex-col md:w-2/5 max-h-full relative overflow-hidden"
+        >
           <AppHeader />
 
           <!-- Scrollable Conversation Area -->
-          <div class="flex-1 overflow-y-auto pb-24">
-            <SearchConversation :messages="conversationMessages" />
+          <div
+            ref="conversationScrollContainer"
+            class="flex-1 overflow-y-auto smooth-scroll"
+          >
+            <div class="pb-40">
+              <SearchConversation :messages="conversationMessages" />
+            </div>
           </div>
 
           <!-- Fixed Search Input -->
@@ -21,7 +30,7 @@
           >
             <SearchBar
               v-model="newQuery"
-              placeholder="Johnson, who is around 26 years old, works in a software company in California"
+              placeholder="Tell me more about who you're looking for"
               @search="handleSearch"
               @speech-error="handleSpeechError"
             />
@@ -29,14 +38,16 @@
         </div>
 
         <!-- Right Panel: Results -->
-        <div class="flex-1 flex flex-col">
-          <ResultsList
-            :results="results"
-            :is-loading="isLoading"
-            :has-more="hasMore"
-            :error="error"
-            @load-more="handleLoadMore"
-          />
+        <div class="flex-1 flex flex-col max-h-full overflow-hidden">
+          <div class="flex-1 overflow-y-auto max-h-full">
+            <ResultsList
+              :results="results"
+              :is-loading="isLoading"
+              :has-more="hasMore"
+              :error="error"
+              @load-more="handleLoadMore"
+            />
+          </div>
           <!-- Page Footer -->
           <CopyrightFooter @pi-click="handlePiClick" />
         </div>
@@ -46,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue'
+  import { ref, computed, nextTick, watch } from 'vue'
   import { useSearchStore } from '@/stores/search'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import AppSidebar from '@/components/navigation/AppSidebar.vue'
@@ -57,10 +68,9 @@
   import type { ConversationMessage } from '@/types/conversation'
 
   const searchStore = useSearchStore()
+  const conversationScrollContainer = ref<HTMLElement | null>(null)
 
-  const newQuery = ref(
-    'Johnson, who is around 26 years old, works in a software company in California'
-  )
+  const newQuery = ref('')
 
   // Initialize conversation history with the first user query and system response
   const conversationHistory = ref<ConversationMessage[]>([
@@ -130,6 +140,39 @@
   const hasMore = computed(() => searchStore.pagination.hasMore)
   const error = computed(() => searchStore.error)
 
+  // Auto-scroll to bottom function with 1-second smooth animation
+  const scrollToBottom = async () => {
+    await nextTick()
+    if (conversationScrollContainer.value) {
+      const container = conversationScrollContainer.value
+      const startPosition = container.scrollTop
+      const targetPosition = container.scrollHeight - container.clientHeight
+      const distance = targetPosition - startPosition
+      const duration = 1000 // 1 second
+      let startTime: number | null = null
+
+      const animateScroll = (currentTime: number) => {
+        if (startTime === null) startTime = currentTime
+        const timeElapsed = currentTime - startTime
+        const progress = Math.min(timeElapsed / duration, 1)
+
+        // Easing function for smooth animation (ease-in-out)
+        const easeInOut =
+          progress < 0.5
+            ? 2 * progress * progress
+            : 1 - Math.pow(-2 * progress + 2, 2) / 2
+
+        container.scrollTop = startPosition + distance * easeInOut
+
+        if (progress < 1) {
+          globalThis.requestAnimationFrame(animateScroll)
+        }
+      }
+
+      globalThis.requestAnimationFrame(animateScroll)
+    }
+  }
+
   const handleSearch = async () => {
     if (newQuery.value.trim()) {
       // Add user message to conversation
@@ -143,6 +186,9 @@
         timestamp: new Date(),
         content: newQuery.value
       })
+
+      // Scroll to show new user message
+      scrollToBottom()
 
       // Add thinking placeholder immediately
       conversationHistory.value.push({
@@ -159,6 +205,9 @@
           }
         ]
       })
+
+      // Scroll to show thinking placeholder
+      scrollToBottom()
 
       // Perform the search
       await searchStore.performSearch(newQuery.value)
@@ -187,6 +236,8 @@
               }
             ]
           }
+          // Scroll to show new system response
+          scrollToBottom()
         }
       }, 3000)
     }
@@ -216,6 +267,15 @@
     return messages
   })
 
+  // Watch for changes in conversation messages and auto-scroll
+  watch(
+    conversationMessages,
+    () => {
+      scrollToBottom()
+    },
+    { deep: true }
+  )
+
   const handleHintClick = (_hintType: string) => {
     // TODO: Implement hint click functionality
     // console.log('Hint clicked:', hintType)
@@ -239,3 +299,9 @@
     // The pi symbol now directly triggers lightbox from the footer component
   }
 </script>
+
+<style scoped>
+  .smooth-scroll {
+    scroll-behavior: smooth;
+  }
+</style>

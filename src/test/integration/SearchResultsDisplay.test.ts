@@ -119,7 +119,7 @@ describe('Search Results Display Integration', () => {
     // Verify responsive classes
     const leftPanel = wrapper.find('.w-full.bg-bg-card')
     expect(leftPanel.classes()).toContain('md:w-2/5')
-    expect(leftPanel.classes()).toContain('h-full')
+    expect(leftPanel.classes()).toContain('max-h-full')
 
     // Verify main content area has responsive flex direction
     const mainContent = wrapper.find('.flex-1.flex.flex-col.md\\:flex-row')
@@ -163,7 +163,9 @@ describe('Search Results Display Integration', () => {
 
     // Verify search bar has correct placeholder
     const searchBarProps = searchBar.props()
-    expect(searchBarProps.placeholder).toContain('Johnson')
+    expect(searchBarProps.placeholder).toContain(
+      "Tell me more about who you're looking for"
+    )
 
     // Test search functionality
     const newQuery = 'New search query'
