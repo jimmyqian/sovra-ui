@@ -222,14 +222,14 @@ describe('CSS Responsive Design Classes', () => {
     it('applies responsive brand color classes correctly', () => {
       const wrapper = mount(TestComponent, {
         props: {
-          customClass: 'bg-bg-card md:bg-brand-orange-dark lg:bg-brand-blue'
+          customClass: 'bg-bg-card md:bg-brand-orange lg:bg-brand-blue'
         },
         slots: { default: 'Responsive colors' }
       })
 
       const element = wrapper.find('div')
       expect(element.classes()).toContain('bg-bg-card')
-      expect(element.classes()).toContain('md:bg-brand-orange-dark')
+      expect(element.classes()).toContain('md:bg-brand-orange')
       expect(element.classes()).toContain('lg:bg-brand-blue')
     })
 
@@ -311,14 +311,15 @@ describe('CSS Responsive Design Classes', () => {
     it('applies responsive hover states correctly', () => {
       const wrapper = mount(TestComponent, {
         props: {
-          customClass: 'bg-bg-card hover:bg-brand-orange-dark md:hover:bg-brand-blue'
+          customClass:
+            'bg-bg-card hover:bg-brand-orange md:hover:bg-brand-blue'
         },
         slots: { default: 'Responsive hover' }
       })
 
       const element = wrapper.find('div')
       expect(element.classes()).toContain('bg-bg-card')
-      expect(element.classes()).toContain('hover:bg-brand-orange-dark')
+      expect(element.classes()).toContain('hover:bg-brand-orange')
       expect(element.classes()).toContain('md:hover:bg-brand-blue')
     })
 
@@ -359,13 +360,13 @@ describe('CSS Responsive Design Classes', () => {
       const wrapper = mount(TestComponent, {
         props: {
           customClass:
-            'bg-brand-orange-dark text-bg-card p-2 md:p-4 lg:p-6 rounded md:rounded-tag w-full md:w-1/2 lg:w-1/3'
+            'bg-brand-orange text-bg-card p-2 md:p-4 lg:p-6 rounded md:rounded-tag w-full md:w-1/2 lg:w-1/3'
         },
         slots: { default: 'Complex responsive styling' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toContain('bg-brand-orange-dark')
+      expect(element.classes()).toContain('bg-brand-orange')
       expect(element.classes()).toContain('text-bg-card')
       expect(element.classes()).toContain('p-2')
       expect(element.classes()).toContain('md:p-4')
@@ -532,7 +533,7 @@ describe('CSS Responsive Design Classes', () => {
         'flex-col md:flex-row',
         'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
         'hidden md:block lg:hidden',
-        'bg-bg-card md:bg-brand-orange-dark lg:bg-brand-blue'
+        'bg-bg-card md:bg-brand-orange lg:bg-brand-blue'
       ]
 
       responsivePatterns.forEach(classString => {

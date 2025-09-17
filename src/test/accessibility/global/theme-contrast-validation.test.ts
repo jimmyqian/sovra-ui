@@ -10,7 +10,7 @@ import { ColorContrastCalculator } from '../utils/contrast-calculator'
 describe('Global Theme Color Contrast Validation', () => {
   const themeColors = {
     brand: {
-      'brand-orange-dark': '#a6480e',
+      'brand-orange': '#a6480e',
       'brand-orange-light': '#f7931e',
       'brand-blue': '#4285f4'
     },
@@ -136,8 +136,8 @@ describe('Global Theme Color Contrast Validation', () => {
       expect(issues.every(issue => typeof issue === 'string')).toBe(true)
     })
 
-    it('should validate brand-orange-dark meets WCAG AA requirements for text usage', () => {
-      const brandOrange = themeColors.brand['brand-orange-dark']
+    it('should validate brand-orange meets WCAG AA requirements for text usage', () => {
+      const brandOrange = themeColors.brand['brand-orange']
       const whiteBackground = '#ffffff'
       const primaryBackground = themeColors.background['bg-primary']
       const cardBackground = themeColors.background['bg-card']
@@ -160,7 +160,7 @@ describe('Global Theme Color Contrast Validation', () => {
         cardBackground
       )
 
-      // brand-orange-dark should meet WCAG AA standards (4.5:1) on all light backgrounds
+      // brand-orange should meet WCAG AA standards (4.5:1) on all light backgrounds
       expect(whiteResult.passesAA).toBe(true)
       expect(whiteResult.ratio).toBeGreaterThanOrEqual(4.5)
 
@@ -201,11 +201,11 @@ describe('Global Theme Color Contrast Validation', () => {
         {
           name: 'Primary Button',
           fg: themeColors.background['bg-card'],
-          bg: themeColors.brand['brand-orange-dark']
+          bg: themeColors.brand['brand-orange']
         },
         {
           name: 'Outline Button',
-          fg: themeColors.brand['brand-orange-dark'],
+          fg: themeColors.brand['brand-orange'],
           bg: themeColors.background['bg-card']
         },
         {
@@ -287,7 +287,7 @@ describe('Global Theme Color Contrast Validation', () => {
 
     it('should validate focus indicators meet visibility requirements', () => {
       // Focus indicators typically use brand colors
-      const focusColor = themeColors.brand['brand-orange-dark']
+      const focusColor = themeColors.brand['brand-orange']
       const backgrounds = Object.values(themeColors.background)
 
       backgrounds.forEach(bgColor => {

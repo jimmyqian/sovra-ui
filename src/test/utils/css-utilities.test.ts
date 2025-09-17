@@ -15,14 +15,14 @@ const TestComponent = defineComponent({
 
 describe('CSS Utility Class Application', () => {
   describe('Custom Brand Color Classes', () => {
-    it('applies bg-brand-orange-dark class correctly', () => {
+    it('applies bg-brand-orange class correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: 'bg-brand-orange-dark' },
+        props: { customClass: 'bg-brand-orange' },
         slots: { default: 'Test content' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toContain('bg-brand-orange-dark')
+      expect(element.classes()).toContain('bg-brand-orange')
       expect(element.text()).toBe('Test content')
     })
 
@@ -36,14 +36,14 @@ describe('CSS Utility Class Application', () => {
       expect(element.classes()).toContain('bg-brand-blue')
     })
 
-    it('applies text-brand-orange-dark class correctly', () => {
+    it('applies text-brand-orange class correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: 'text-brand-orange-dark' },
+        props: { customClass: 'text-brand-orange' },
         slots: { default: 'Test content' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toContain('text-brand-orange-dark')
+      expect(element.classes()).toContain('text-brand-orange')
     })
 
     it('applies text-brand-blue class correctly', () => {
@@ -55,7 +55,6 @@ describe('CSS Utility Class Application', () => {
       const element = wrapper.find('div')
       expect(element.classes()).toContain('text-brand-blue')
     })
-
   })
 
   describe('Custom Background Color Classes', () => {
@@ -242,28 +241,29 @@ describe('CSS Utility Class Application', () => {
     it('applies responsive color classes correctly', () => {
       const wrapper = mount(TestComponent, {
         props: {
-          customClass: 'bg-bg-card md:bg-brand-orange-dark lg:bg-brand-blue'
+          customClass: 'bg-bg-card md:bg-brand-orange lg:bg-brand-blue'
         },
         slots: { default: 'Responsive colors' }
       })
 
       const element = wrapper.find('div')
       expect(element.classes()).toContain('bg-bg-card')
-      expect(element.classes()).toContain('md:bg-brand-orange-dark')
+      expect(element.classes()).toContain('md:bg-brand-orange')
       expect(element.classes()).toContain('lg:bg-brand-blue')
     })
 
     it('applies hover state classes correctly', () => {
       const wrapper = mount(TestComponent, {
         props: {
-          customClass: 'bg-bg-card hover:bg-brand-orange-dark hover:text-bg-card'
+          customClass:
+            'bg-bg-card hover:bg-brand-orange hover:text-bg-card'
         },
         slots: { default: 'Hover states' }
       })
 
       const element = wrapper.find('div')
       expect(element.classes()).toContain('bg-bg-card')
-      expect(element.classes()).toContain('hover:bg-brand-orange-dark')
+      expect(element.classes()).toContain('hover:bg-brand-orange')
       expect(element.classes()).toContain('hover:text-bg-card')
     })
   })
@@ -273,13 +273,13 @@ describe('CSS Utility Class Application', () => {
       const wrapper = mount(TestComponent, {
         props: {
           customClass:
-            'bg-brand-orange-dark text-bg-card border border-border-light rounded-tag p-15 shadow-card'
+            'bg-brand-orange text-bg-card border border-border-light rounded-tag p-15 shadow-card'
         },
         slots: { default: 'Complex styling' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toContain('bg-brand-orange-dark')
+      expect(element.classes()).toContain('bg-brand-orange')
       expect(element.classes()).toContain('text-bg-card')
       expect(element.classes()).toContain('border')
       expect(element.classes()).toContain('border-border-light')
@@ -292,7 +292,7 @@ describe('CSS Utility Class Application', () => {
       const wrapper = mount(TestComponent, {
         props: {
           customClass:
-            'text-sm md:text-base lg:text-lg hover:text-brand-orange-dark focus:text-brand-blue'
+            'text-sm md:text-base lg:text-lg hover:text-brand-orange focus:text-brand-blue'
         },
         slots: { default: 'Complex responsive' }
       })
@@ -301,7 +301,7 @@ describe('CSS Utility Class Application', () => {
       expect(element.classes()).toContain('text-sm')
       expect(element.classes()).toContain('md:text-base')
       expect(element.classes()).toContain('lg:text-lg')
-      expect(element.classes()).toContain('hover:text-brand-orange-dark')
+      expect(element.classes()).toContain('hover:text-brand-orange')
       expect(element.classes()).toContain('focus:text-brand-blue')
     })
   })
@@ -320,22 +320,22 @@ describe('CSS Utility Class Application', () => {
 
     it('handles single class strings', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: 'bg-brand-orange-dark' },
+        props: { customClass: 'bg-brand-orange' },
         slots: { default: 'Single class' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toEqual(['bg-brand-orange-dark'])
+      expect(element.classes()).toEqual(['bg-brand-orange'])
     })
 
     it('handles space-separated class strings', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: 'bg-brand-orange-dark text-bg-card p-4' },
+        props: { customClass: 'bg-brand-orange text-bg-card p-4' },
         slots: { default: 'Multiple classes' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toContain('bg-brand-orange-dark')
+      expect(element.classes()).toContain('bg-brand-orange')
       expect(element.classes()).toContain('text-bg-card')
       expect(element.classes()).toContain('p-4')
       expect(element.classes().length).toBe(3)
@@ -343,12 +343,12 @@ describe('CSS Utility Class Application', () => {
 
     it('handles extra whitespace in class strings', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: '  bg-brand-orange-dark   text-bg-card  ' },
+        props: { customClass: '  bg-brand-orange   text-bg-card  ' },
         slots: { default: 'Whitespace handling' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toContain('bg-brand-orange-dark')
+      expect(element.classes()).toContain('bg-brand-orange')
       expect(element.classes()).toContain('text-bg-card')
     })
   })
@@ -366,12 +366,14 @@ describe('CSS Utility Class Application', () => {
       })
 
       const wrapper = mount(ButtonComponent, {
-        props: { customClass: 'bg-brand-orange-dark text-bg-card p-2 rounded-lg' },
+        props: {
+          customClass: 'bg-brand-orange text-bg-card p-2 rounded-lg'
+        },
         slots: { default: 'Button Text' }
       })
 
       const button = wrapper.find('button')
-      expect(button.classes()).toContain('bg-brand-orange-dark')
+      expect(button.classes()).toContain('bg-brand-orange')
       expect(button.classes()).toContain('text-bg-card')
       expect(button.classes()).toContain('p-2')
       expect(button.classes()).toContain('rounded-lg')
@@ -394,7 +396,7 @@ describe('CSS Utility Class Application', () => {
           <div 
             :class="[
               'base-class',
-              isActive ? 'bg-brand-orange-dark' : 'bg-bg-card',
+              isActive ? 'bg-brand-orange' : 'bg-bg-card',
               isActive ? 'text-bg-card' : 'text-text-primary'
             ]"
             @click="toggle"
@@ -411,7 +413,7 @@ describe('CSS Utility Class Application', () => {
       expect(div.classes()).toContain('base-class')
       expect(div.classes()).toContain('bg-bg-card')
       expect(div.classes()).toContain('text-text-primary')
-      expect(div.classes()).not.toContain('bg-brand-orange-dark')
+      expect(div.classes()).not.toContain('bg-brand-orange')
       expect(div.classes()).not.toContain('text-bg-card')
     })
   })

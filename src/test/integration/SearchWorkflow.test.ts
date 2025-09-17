@@ -378,7 +378,7 @@ describe('Search Workflow Integration', () => {
 
     // Should show loading spinner
     expect(wrapper.find('.animate-spin').exists()).toBe(true)
-    expect(wrapper.find('.border-brand-orange-dark').exists()).toBe(true)
+    expect(wrapper.find('.border-brand-orange').exists()).toBe(true)
   })
 
   it('shows error state when search fails', async () => {

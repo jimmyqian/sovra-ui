@@ -389,7 +389,7 @@
     transform: translateX(-50%);
     width: 24px;
     height: 24px;
-    color: var(--color-brand-orange-dark);
+    color: var(--color-brand-orange);
     transition: all 0.2s ease;
     z-index: 20;
   }

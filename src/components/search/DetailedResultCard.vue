@@ -45,7 +45,7 @@
                 class="bg-card-dark rounded-br-xl overflow-hidden flex items-center justify-center"
                 style="aspect-ratio: 1.85 / 1"
               >
-                <span class="text-brand-orange-dark font-medium text-sm"
+                <span class="text-brand-orange font-medium text-sm"
                   >{{ person.imageCount ?? 21 }}+ Images</span
                 >
               </div>
@@ -90,7 +90,7 @@
                 {{ person.stats.netWorth.split(' ').slice(1).join(' ') }}
               </div>
               <button
-                class="text-xs text-brand-orange-dark hover:underline cursor-pointer"
+                class="text-xs text-brand-orange hover:underline cursor-pointer"
               >
                 Reference
               </button>
@@ -163,7 +163,7 @@
             </svg>
           </div>
           <!-- Login Button -->
-          <button class="text-sm text-brand-orange-dark hover:underline ml-3">
+          <button class="text-sm text-brand-orange hover:underline ml-3">
             Login for more details →
           </button>
         </div>
@@ -192,7 +192,7 @@
 
             <div>
               <div class="text-text-secondary">Spouse</div>
-              <div class="font-medium text-brand-orange-dark">
+              <div class="font-medium text-brand-orange">
                 {{ person.personal.spouse }}
               </div>
             </div>
@@ -218,7 +218,7 @@
                 Sciences ({{ person.personal.education.year }})
               </div>
               <div
-                class="text-brand-orange-dark text-sm hover:underline cursor-pointer"
+                class="text-brand-orange text-sm hover:underline cursor-pointer"
               >
                 Know More
               </div>

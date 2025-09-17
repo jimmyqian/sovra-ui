@@ -39,7 +39,7 @@ describe('CategoryTabs Accessibility', () => {
 
     // Active tab should be visually distinct
     const activeTab = tabButtons.find(btn =>
-      btn.classes().includes('border-brand-orange-dark')
+      btn.classes().includes('border-brand-orange')
     )
     expect(activeTab?.exists()).toBe(true)
   })
@@ -80,8 +80,8 @@ describe('CategoryTabs Accessibility', () => {
     const personalTab = wrapper
       .findAll('button')
       .find(btn => btn.text() === 'Personal')
-    expect(personalTab?.classes()).toContain('text-brand-orange-dark')
-    expect(personalTab?.classes()).toContain('border-brand-orange-dark')
+    expect(personalTab?.classes()).toContain('text-brand-orange')
+    expect(personalTab?.classes()).toContain('border-brand-orange')
 
     // Inactive tabs should have accessible colors
     const professionalTab = wrapper
@@ -148,7 +148,7 @@ describe('CategoryTabs Accessibility', () => {
     await financeTab?.trigger('click')
 
     // Should update both visual and content state
-    expect(financeTab?.classes()).toContain('border-brand-orange-dark')
+    expect(financeTab?.classes()).toContain('border-brand-orange')
     expect(wrapper.text()).toContain('Annual Income')
     expect(wrapper.text()).not.toContain('Relationship Status')
   })

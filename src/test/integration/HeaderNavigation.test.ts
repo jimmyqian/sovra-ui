@@ -52,7 +52,7 @@ describe('Header Navigation Integration', () => {
     expect(logoText.classes()).toContain('font-semibold')
 
     // Verify orange accent bar
-    const accentBar = logoComponent.find('.absolute.bg-brand-orange-dark')
+    const accentBar = logoComponent.find('.absolute.bg-brand-orange')
     expect(accentBar.exists()).toBe(true)
   })
 
@@ -93,7 +93,7 @@ describe('Header Navigation Integration', () => {
     // Verify first item (search) is active
     const searchItem = navItems[0]!
     expect(searchItem).toBeTruthy()
-    expect(searchItem.classes()).toContain('bg-brand-orange-dark')
+    expect(searchItem.classes()).toContain('bg-brand-orange')
     expect(searchItem.classes()).toContain('text-bg-card')
 
     // Verify other items have hover states

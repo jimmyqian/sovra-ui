@@ -100,13 +100,13 @@ describe('PersonProfile', () => {
     })
 
     // Find the Read More button
-    const readMoreButton = wrapper.find('.text-brand-orange-dark')
+    const readMoreButton = wrapper.find('.text-brand-orange')
     expect(readMoreButton.exists()).toBe(true)
     expect(readMoreButton.text()).toBe('Read More')
 
     // Check initial styling
     expect(readMoreButton.classes()).toContain('ml-1')
-    expect(readMoreButton.classes()).toContain('text-brand-orange-dark')
+    expect(readMoreButton.classes()).toContain('text-brand-orange')
     expect(readMoreButton.classes()).toContain('hover:underline')
     expect(readMoreButton.classes()).toContain('cursor-pointer')
 

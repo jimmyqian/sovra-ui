@@ -89,7 +89,9 @@ describe('Search Conversation Integration Tests', () => {
     it('handles hint clicks', async () => {
       const wrapper = createSearchResultsWrapper()
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark.cursor-pointer')
+      const hintElements = wrapper.findAll(
+        '.text-brand-orange.cursor-pointer'
+      )
       expect(hintElements.length).toBeGreaterThan(0)
 
       // Click a hint

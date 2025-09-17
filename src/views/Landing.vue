@@ -43,7 +43,7 @@
           <!-- Loading Spinner -->
           <div v-if="searchStore.isLoading" class="flex justify-center mt-4">
             <div
-              class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-orange-dark"
+              class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-orange"
             ></div>
           </div>
 

@@ -26,7 +26,7 @@
 
   const props = withDefaults(defineProps<Props>(), {
     size: 24,
-    color: 'var(--color-brand-orange-dark)'
+    color: 'var(--color-brand-orange)'
   })
 
   // Use the provided color prop, defaulting to brand orange
