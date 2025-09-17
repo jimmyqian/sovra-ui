@@ -27,9 +27,9 @@ describe('ActivityFooter', () => {
     const averagePayButton = wrapper
       .findAll('button')
       .find(btn => btn.text() === 'Average Pay')
-    expect(averagePayButton?.classes()).toContain('bg-brand-orange-dark')
+    expect(averagePayButton?.classes()).toContain('bg-brand-orange')
     expect(averagePayButton?.classes()).toContain('text-white')
-    expect(averagePayButton?.classes()).toContain('border-brand-orange-dark')
+    expect(averagePayButton?.classes()).toContain('border-brand-orange')
   })
 
   it('has inactive styling for non-active categories', () => {
@@ -49,11 +49,11 @@ describe('ActivityFooter', () => {
     const travelsButton = wrapper
       .findAll('button')
       .find(btn => btn.text() === 'Travels')
-    expect(travelsButton?.classes()).not.toContain('bg-brand-orange-dark')
+    expect(travelsButton?.classes()).not.toContain('bg-brand-orange')
 
     await travelsButton?.trigger('click')
 
-    expect(travelsButton?.classes()).toContain('bg-brand-orange-dark')
+    expect(travelsButton?.classes()).toContain('bg-brand-orange')
     expect(travelsButton?.classes()).toContain('text-white')
   })
 
@@ -70,8 +70,8 @@ describe('ActivityFooter', () => {
     await travelsButton?.trigger('click')
     await eventsButton?.trigger('click')
 
-    expect(travelsButton?.classes()).toContain('bg-brand-orange-dark')
-    expect(eventsButton?.classes()).toContain('bg-brand-orange-dark')
+    expect(travelsButton?.classes()).toContain('bg-brand-orange')
+    expect(eventsButton?.classes()).toContain('bg-brand-orange')
   })
 
   it('can deactivate a previously active category', async () => {
@@ -81,12 +81,12 @@ describe('ActivityFooter', () => {
     const averagePayButton = wrapper
       .findAll('button')
       .find(btn => btn.text() === 'Average Pay')
-    expect(averagePayButton?.classes()).toContain('bg-brand-orange-dark')
+    expect(averagePayButton?.classes()).toContain('bg-brand-orange')
 
     // Click to deactivate
     await averagePayButton?.trigger('click')
 
-    expect(averagePayButton?.classes()).not.toContain('bg-brand-orange-dark')
+    expect(averagePayButton?.classes()).not.toContain('bg-brand-orange')
     expect(averagePayButton?.classes()).toContain('bg-bg-card')
   })
 
@@ -97,8 +97,10 @@ describe('ActivityFooter', () => {
       .findAll('button')
       .find(btn => btn.text() === 'Show all references')
     expect(showReferencesButton?.exists()).toBe(true)
-    expect(showReferencesButton?.classes()).toContain('border-brand-orange-dark')
-    expect(showReferencesButton?.classes()).toContain('text-brand-orange-dark')
+    expect(showReferencesButton?.classes()).toContain(
+      'border-brand-orange'
+    )
+    expect(showReferencesButton?.classes()).toContain('text-brand-orange')
   })
 
   it('emits categoryToggle event when category is clicked', async () => {
@@ -111,7 +113,7 @@ describe('ActivityFooter', () => {
 
     // Note: The current implementation doesn't emit events, but this test shows the expected behavior
     // In a real implementation, you would check for emitted events here
-    expect(travelsButton?.classes()).toContain('bg-brand-orange-dark')
+    expect(travelsButton?.classes()).toContain('bg-brand-orange')
   })
 
   it('emits showReferences event when show references button is clicked', async () => {
@@ -145,8 +147,8 @@ describe('ActivityFooter', () => {
     const loansButton = wrapper
       .findAll('button')
       .find(btn => btn.text() === 'Loans / Deposits')
-    expect(loansButton?.classes()).toContain('hover:border-brand-orange-dark')
-    expect(loansButton?.classes()).toContain('hover:text-brand-orange-dark')
+    expect(loansButton?.classes()).toContain('hover:border-brand-orange')
+    expect(loansButton?.classes()).toContain('hover:text-brand-orange')
   })
 
   it('centers reference categories and show references button', () => {

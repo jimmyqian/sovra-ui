@@ -50,7 +50,7 @@ describe('SearchHintsGroup', () => {
         props: { item: baseItem }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
       expect(hintElements).toHaveLength(3)
     })
 
@@ -71,10 +71,10 @@ describe('SearchHintsGroup', () => {
         props: { item: baseItem }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
 
       hintElements.forEach(element => {
-        expect(element.classes()).toContain('text-brand-orange-dark')
+        expect(element.classes()).toContain('text-brand-orange')
         expect(element.classes()).toContain('pb-2')
         expect(element.classes()).toContain('cursor-pointer')
         expect(element.classes()).toContain('hover:text-brand-orange-light')
@@ -90,7 +90,7 @@ describe('SearchHintsGroup', () => {
         props: { item: baseItem }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
 
       // First and second hints should not have border-b
       expect(hintElements[0]!.classes()).not.toContain('border-b')
@@ -105,7 +105,7 @@ describe('SearchHintsGroup', () => {
         props: { item: baseItem }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
 
       // Third hint has custom class
       expect(hintElements[2]!.classes()).toContain('custom-hint-class')
@@ -122,7 +122,7 @@ describe('SearchHintsGroup', () => {
         props: { item: baseItem }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
 
       // Click first hint
       await hintElements[0]!.trigger('click')
@@ -152,7 +152,7 @@ describe('SearchHintsGroup', () => {
         props: { item: itemWithoutClick }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
 
       // Should not throw error when clicking
       await expect(hintElements[0]!.trigger('click')).resolves.not.toThrow()
@@ -172,7 +172,7 @@ describe('SearchHintsGroup', () => {
       // Type assertion to access private method for testing
       ;(component as any).handleHintClick = handleHintClickSpy
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
       await hintElements[0]!.trigger('click')
 
       expect(handleHintClickSpy).toHaveBeenCalledWith(mockHints[0])
@@ -193,7 +193,7 @@ describe('SearchHintsGroup', () => {
       const container = wrapper.find('.my-6')
       expect(container.exists()).toBe(true)
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
       expect(hintElements).toHaveLength(0)
     })
   })
@@ -204,7 +204,7 @@ describe('SearchHintsGroup', () => {
         props: { item: baseItem }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
 
       hintElements.forEach(element => {
         expect(element.classes()).toContain('cursor-pointer')
@@ -218,7 +218,7 @@ describe('SearchHintsGroup', () => {
         props: { item: baseItem }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
 
       hintElements.forEach(element => {
         expect(element.classes()).toContain('hover:text-brand-orange-light')
@@ -242,7 +242,7 @@ describe('SearchHintsGroup', () => {
         props: { item: largeItem }
       })
 
-      const hintElements = wrapper.findAll('.text-brand-orange-dark')
+      const hintElements = wrapper.findAll('.text-brand-orange')
       expect(hintElements).toHaveLength(100)
 
       // Last hint should have border-b

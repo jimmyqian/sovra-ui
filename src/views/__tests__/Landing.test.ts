@@ -125,7 +125,7 @@ describe('Landing Component', () => {
 
       const spinner = wrapper.find('.animate-spin')
       expect(spinner.exists()).toBe(true)
-      expect(spinner.classes()).toContain('border-brand-orange-dark')
+      expect(spinner.classes()).toContain('border-brand-orange')
     })
 
     it('should show error message when search fails', async () => {

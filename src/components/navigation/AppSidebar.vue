@@ -3,7 +3,7 @@
     class="w-15 bg-bg-card border-r border-border-light flex flex-col items-center py-8 gap-4 flex-shrink-0"
   >
     <div
-      class="w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer transition-colors bg-brand-orange-dark text-bg-card"
+      class="w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer transition-colors bg-brand-orange text-bg-card"
     >
       <svg
         width="20"

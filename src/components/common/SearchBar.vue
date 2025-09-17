@@ -29,7 +29,7 @@
           size="sm"
           :disabled="disabled || !speechSupported"
           :class="{
-            'text-brand-orange-dark': isListening,
+            'text-brand-orange': isListening,
             'animate-pulse': isListening
           }"
           :aria-label="isListening ? 'Stop voice input' : 'Start voice input'"
