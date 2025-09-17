@@ -85,6 +85,7 @@
   import { ref, computed, nextTick, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
+  import { useConversationStore } from '@/stores/conversation'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import AppSidebar from '@/components/navigation/AppSidebar.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
@@ -98,6 +99,7 @@
   const route = useRoute()
   const router = useRouter()
   const searchStore = useSearchStore()
+  const conversationStore = useConversationStore()
   const conversationScrollContainer = ref<HTMLElement | null>(null)
 
   const newQuery = ref('')
@@ -108,68 +110,6 @@
   const canScrollDownConversation = ref(false)
   const hasScrollableContentConversation = ref(false)
   const isAutoScrolling = ref(false)
-
-  // Initialize conversation history with the first user query and system response
-  const conversationHistory = ref<ConversationMessage[]>([
-    {
-      id: 'user-message-1',
-      sender: 'user',
-      timestamp: new Date(),
-      content:
-        'Johnson, who is around 26 years old, works in a software company in California'
-    },
-    {
-      id: 'system-response-1',
-      sender: 'system',
-      timestamp: new Date(),
-      items: [
-        {
-          id: 'results-summary',
-          type: 'results-summary',
-          resultCount: 0 // Will be updated by computed property
-        },
-        {
-          id: 'text-1',
-          type: 'text',
-          content:
-            "Alternatively, you can use the hints below for finding the person you're looking for.",
-          emphasis: 'secondary'
-        },
-        {
-          id: 'hints-group-1',
-          type: 'hints-group',
-          hints: [
-            {
-              text: 'What specific software role does Johnson hold in his California job',
-              onClick: () => handleHintClick('software role')
-            },
-            {
-              text: 'Which California tech hubs are most likely where Johnson works',
-              onClick: () => handleHintClick('California tech hubs')
-            },
-            {
-              text: 'What skills Johnson has from his current software role',
-              onClick: () => handleHintClick('software skills')
-            }
-          ]
-        },
-        {
-          id: 'text-2',
-          type: 'text',
-          content:
-            'Or include further information, such as any documents you may have about him, web links, pictures, or videos; if so, submit them by using the upload option.',
-          emphasis: 'secondary'
-        },
-        {
-          id: 'action-button-1',
-          type: 'action-button',
-          text: 'create a filter using the details that you provided',
-          variant: 'dashed',
-          onClick: () => handleCreateFilter()
-        }
-      ]
-    }
-  ])
 
   // Use search store data instead of local state
   const results = computed(() => searchStore.results)
@@ -221,7 +161,7 @@
       const systemResponseId = `system-response-${Date.now()}`
       const thinkingPlaceholderId = `thinking-${Date.now()}`
 
-      conversationHistory.value.push({
+      conversationStore.addMessage({
         id: userMessageId,
         sender: 'user',
         timestamp: new Date(),
@@ -232,7 +172,7 @@
       scrollToBottom()
 
       // Add thinking placeholder immediately
-      conversationHistory.value.push({
+      conversationStore.addMessage({
         id: thinkingPlaceholderId,
         sender: 'system',
         timestamp: new Date(),
@@ -262,27 +202,22 @@
         await searchStore.performSearch(queryToSearch)
 
         // Find and replace the thinking placeholder
-        const thinkingIndex = conversationHistory.value.findIndex(
-          msg => msg.id === thinkingPlaceholderId
-        )
-        if (thinkingIndex !== -1) {
-          conversationHistory.value[thinkingIndex] = {
-            id: systemResponseId,
-            sender: 'system',
-            timestamp: new Date(),
-            items: [
-              {
-                id: `text-${Date.now()}`,
-                type: 'text',
-                content:
-                  "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?",
-                emphasis: 'normal'
-              }
-            ]
-          }
-          // Scroll to show new system response
-          scrollToBottom()
-        }
+        conversationStore.updateMessage(thinkingPlaceholderId, {
+          id: systemResponseId,
+          sender: 'system',
+          timestamp: new Date(),
+          items: [
+            {
+              id: `text-${Date.now()}`,
+              type: 'text',
+              content:
+                "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?",
+              emphasis: 'normal'
+            }
+          ]
+        })
+        // Scroll to show new system response
+        scrollToBottom()
       }, 3000)
     }
   }
@@ -347,10 +282,9 @@
   }
 
   // Generate conversation data based on search state
-
   const conversationMessages = computed<ConversationMessage[]>(() => {
     const totalResults = searchStore.displayTotalResults
-    const messages = [...conversationHistory.value]
+    const messages = [...conversationStore.conversationHistory]
 
     // Update the result count in the initial system response if it exists
     if (messages.length >= 2 && messages[1]?.sender === 'system') {
@@ -417,6 +351,12 @@
     // console.log('Create filter clicked')
     // TODO: Implement filter creation
   }
+
+  // Initialize hint handlers after function definitions
+  conversationStore.updateHintHandlers({
+    onHintClick: handleHintClick,
+    onCreateFilter: handleCreateFilter
+  })
 
   const handleSpeechError = (_error: string) => {
     // TODO: Implement proper speech error handling UI
