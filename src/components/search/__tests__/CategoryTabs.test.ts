@@ -101,7 +101,7 @@ describe('CategoryTabs', () => {
       .findAll('button')
       .find(btn => btn.text() === 'Personal')
     expect(personalTab?.classes()).toContain('border-brand-orange')
-    expect(personalTab?.classes()).toContain('text-brand-orange')
+    expect(personalTab?.classes()).toContain('text-brand-orange-dark')
   })
 
   it('applies correct styling to inactive tabs', () => {

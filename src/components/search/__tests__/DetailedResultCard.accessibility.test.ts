@@ -122,7 +122,7 @@ describe('DetailedResultCard Accessibility', () => {
       expect(countIndicator.exists()).toBe(true)
 
       // Check that the count text is readable and properly styled
-      const countText = countIndicator.find('.text-brand-orange')
+      const countText = countIndicator.find('.text-brand-orange-dark')
       expect(countText.exists()).toBe(true)
       expect(countText.text()).toBe('21+ Images')
 
@@ -134,12 +134,12 @@ describe('DetailedResultCard Accessibility', () => {
     })
 
     it('should maintain proper color contrast for image count indicator', () => {
-      const countIndicator = wrapper.find('.bg-card-dark .text-brand-orange')
+      const countIndicator = wrapper.find('.bg-card-dark .text-brand-orange-dark')
       expect(countIndicator.exists()).toBe(true)
 
       // The bg-card-dark (#FFEDE2) with brand-orange text should provide sufficient contrast
       // This is a visual design choice that should be validated
-      expect(countIndicator.classes()).toContain('text-brand-orange')
+      expect(countIndicator.classes()).toContain('text-brand-orange-dark')
     })
 
     it('should handle empty image arrays accessibly', () => {
@@ -231,11 +231,11 @@ describe('DetailedResultCard Accessibility', () => {
 
     it('should use semantic color coding with sufficient contrast', () => {
       // Orange brand color is used for interactive elements and highlights
-      const orangeElements = wrapper.findAll('.text-brand-orange')
+      const orangeElements = wrapper.findAll('.text-brand-orange-dark')
       expect(orangeElements.length).toBeGreaterThan(0)
 
       // Check specific use cases of brand orange
-      const imageCountElements = wrapper.findAll('.text-brand-orange')
+      const imageCountElements = wrapper.findAll('.text-brand-orange-dark')
       const imageCountElement = imageCountElements.find(el =>
         el.text().includes('21+ Images')
       )
@@ -270,7 +270,7 @@ describe('DetailedResultCard Accessibility', () => {
     it('should handle focus for interactive elements', () => {
       // Find interactive elements like buttons and links
       const knowMoreLink = wrapper.find(
-        '.text-brand-orange.hover\\:underline.cursor-pointer'
+        '.text-brand-orange-dark.hover\\:underline.cursor-pointer'
       )
       expect(knowMoreLink.exists()).toBe(true)
 

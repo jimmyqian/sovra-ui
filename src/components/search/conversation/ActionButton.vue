@@ -23,7 +23,7 @@
       secondary:
         'bg-bg-secondary border border-border-light hover:bg-border-hover',
       dashed:
-        'bg-transparent border border-dashed border-border-dashed hover:bg-border-hover text-brand-orange'
+        'bg-transparent border border-dashed border-border-dashed hover:bg-border-hover text-brand-orange-dark'
     }
 
     return [

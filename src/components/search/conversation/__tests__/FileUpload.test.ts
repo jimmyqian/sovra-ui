@@ -61,7 +61,7 @@ describe('FileUpload Component', () => {
 
       expect(wrapper.find('.border-dashed').exists()).toBe(true)
       expect(wrapper.find('.hover\\:border-brand-orange').exists()).toBe(true)
-      expect(wrapper.find('.text-brand-orange').exists()).toBe(true)
+      expect(wrapper.find('.text-brand-orange-dark').exists()).toBe(true)
     })
   })
 
@@ -302,7 +302,7 @@ describe('FileUpload Component', () => {
       const wrapper = createWrapper(item)
 
       const button = wrapper.find('button')
-      expect(button.classes()).toContain('text-brand-orange')
+      expect(button.classes()).toContain('text-brand-orange-dark')
       expect(button.classes()).toContain('hover:text-brand-orange-light')
       expect(button.classes()).toContain('cursor-pointer')
     })

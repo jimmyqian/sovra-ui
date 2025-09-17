@@ -80,7 +80,7 @@ describe('CategoryTabs Accessibility', () => {
     const personalTab = wrapper
       .findAll('button')
       .find(btn => btn.text() === 'Personal')
-    expect(personalTab?.classes()).toContain('text-brand-orange')
+    expect(personalTab?.classes()).toContain('text-brand-orange-dark')
     expect(personalTab?.classes()).toContain('border-brand-orange')
 
     // Inactive tabs should have accessible colors

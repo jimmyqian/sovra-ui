@@ -141,7 +141,7 @@ describe('DetailedResultCard', () => {
     expect(countIndicator.classes()).toContain('items-center')
     expect(countIndicator.classes()).toContain('justify-center')
 
-    const countText = countIndicator.find('.text-brand-orange')
+    const countText = countIndicator.find('.text-brand-orange-dark')
     expect(countText.exists()).toBe(true)
     expect(countText.text()).toBe('21+ Images')
   })

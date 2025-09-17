@@ -404,9 +404,9 @@ describe('SearchDetail Integration Tests', () => {
     expect(galleryImages).toHaveLength(7) // Should show 7 images total
 
     // Verify count indicator styling
-    const countIndicator = wrapper.find('.bg-card-dark .text-brand-orange')
+    const countIndicator = wrapper.find('.bg-card-dark .text-brand-orange-dark')
     expect(countIndicator.exists()).toBe(true)
-    expect(countIndicator.classes()).toContain('text-brand-orange')
+    expect(countIndicator.classes()).toContain('text-brand-orange-dark')
     expect(countIndicator.classes()).toContain('font-medium')
   })
 

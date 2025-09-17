@@ -15,7 +15,7 @@
         @change="handleFileChange"
       />
       <button
-        class="text-brand-orange hover:text-brand-orange-light cursor-pointer"
+        class="text-brand-orange-dark hover:text-brand-orange-dark cursor-pointer"
         @click="triggerFileInput"
       >
         Click to upload files or drag and drop

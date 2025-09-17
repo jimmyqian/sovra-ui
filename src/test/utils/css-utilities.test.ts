@@ -56,24 +56,24 @@ describe('CSS Utility Class Application', () => {
       expect(element.classes()).toContain('text-brand-blue')
     })
 
-    it('applies bg-brand-orange-text class correctly', () => {
+    it('applies bg-brand-orange-dark class correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: 'bg-brand-orange-text' },
+        props: { customClass: 'bg-brand-orange-dark' },
         slots: { default: 'Test content' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toContain('bg-brand-orange-text')
+      expect(element.classes()).toContain('bg-brand-orange-dark')
     })
 
-    it('applies text-brand-orange-text class correctly', () => {
+    it('applies text-brand-orange-dark class correctly', () => {
       const wrapper = mount(TestComponent, {
-        props: { customClass: 'text-brand-orange-text' },
+        props: { customClass: 'text-brand-orange-dark' },
         slots: { default: 'Test content' }
       })
 
       const element = wrapper.find('div')
-      expect(element.classes()).toContain('text-brand-orange-text')
+      expect(element.classes()).toContain('text-brand-orange-dark')
     })
   })
 

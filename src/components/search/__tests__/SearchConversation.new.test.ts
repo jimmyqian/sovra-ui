@@ -261,7 +261,7 @@ describe('SearchConversation (New Component System)', () => {
       expect(textElements.length).toBeGreaterThan(0)
 
       // Hints should be clickable
-      const hintElements = wrapper.findAll('.text-brand-orange.cursor-pointer')
+      const hintElements = wrapper.findAll('.text-brand-orange-dark.cursor-pointer')
       expect(hintElements.length).toBeGreaterThan(0)
 
       // Button should have dashed variant styling

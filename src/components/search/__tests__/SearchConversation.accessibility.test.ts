@@ -202,7 +202,7 @@ describe('SearchConversation Accessibility', () => {
         .filter(div => div.classes().includes('text-brand-orange'))
 
       hints.forEach(hint => {
-        expect(hint.classes()).toContain('text-brand-orange')
+        expect(hint.classes()).toContain('text-brand-orange-dark')
         // Note: Brand orange may not meet WCAG AA standards, but is acceptable for interactive elements
       })
     })

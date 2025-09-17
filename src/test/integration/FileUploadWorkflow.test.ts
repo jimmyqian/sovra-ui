@@ -344,7 +344,7 @@ describe('File Upload Workflow Integration', () => {
     // Upload button should be properly styled and accessible
     expect(uploadButton.classes()).toContain('bg-transparent')
     expect(uploadButton.classes()).toContain('border-brand-orange')
-    expect(uploadButton.classes()).toContain('text-brand-orange')
+    expect(uploadButton.classes()).toContain('text-brand-orange-dark')
     expect(uploadButton.text()).toContain('Upload')
   })
 })

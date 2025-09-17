@@ -12,7 +12,7 @@ describe('Global Theme Color Contrast Validation', () => {
     brand: {
       'brand-orange': '#ff6f16',
       'brand-orange-light': '#f7931e',
-      'brand-orange-text': '#a6480e',
+      'brand-orange-dark': '#a6480e',
       'brand-blue': '#4285f4'
     },
     text: {
@@ -137,31 +137,31 @@ describe('Global Theme Color Contrast Validation', () => {
       expect(issues.every(issue => typeof issue === 'string')).toBe(true)
     })
 
-    it('should validate brand-orange-text meets WCAG AA requirements for text usage', () => {
-      const brandOrangeText = themeColors.brand['brand-orange-text']
+    it('should validate brand-orange-dark meets WCAG AA requirements for text usage', () => {
+      const brandOrangeDark = themeColors.brand['brand-orange-dark']
       const whiteBackground = '#ffffff'
       const primaryBackground = themeColors.background['bg-primary']
       const cardBackground = themeColors.background['bg-card']
 
       // Test on white background
       const whiteResult = ColorContrastCalculator.checkContrastCompliance(
-        brandOrangeText,
+        brandOrangeDark,
         whiteBackground
       )
 
       // Test on primary background
       const primaryResult = ColorContrastCalculator.checkContrastCompliance(
-        brandOrangeText,
+        brandOrangeDark,
         primaryBackground
       )
 
       // Test on card background
       const cardResult = ColorContrastCalculator.checkContrastCompliance(
-        brandOrangeText,
+        brandOrangeDark,
         cardBackground
       )
 
-      // brand-orange-text should meet WCAG AA standards (4.5:1) on all light backgrounds
+      // brand-orange-dark should meet WCAG AA standards (4.5:1) on all light backgrounds
       expect(whiteResult.passesAA).toBe(true)
       expect(whiteResult.ratio).toBeGreaterThanOrEqual(4.5)
 

@@ -144,7 +144,7 @@ describe('SearchBar', () => {
     // Check for button component styling
     expect(uploadButton.classes()).toContain('bg-transparent')
     expect(uploadButton.classes()).toContain('border-brand-orange')
-    expect(uploadButton.classes()).toContain('text-brand-orange')
+    expect(uploadButton.classes()).toContain('text-brand-orange-dark')
     expect(uploadButton.text()).toContain('Upload')
   })
 

@@ -93,7 +93,7 @@ describe('ActionButton', () => {
       expect(button.classes()).toContain('border-dashed')
       expect(button.classes()).toContain('border-border-dashed')
       expect(button.classes()).toContain('hover:bg-border-hover')
-      expect(button.classes()).toContain('text-brand-orange')
+      expect(button.classes()).toContain('text-brand-orange-dark')
     })
 
     it('applies dashed variant when explicitly specified', () => {
@@ -109,7 +109,7 @@ describe('ActionButton', () => {
       const button = wrapper.find('button')
       expect(button.classes()).toContain('bg-transparent')
       expect(button.classes()).toContain('border-dashed')
-      expect(button.classes()).toContain('text-brand-orange')
+      expect(button.classes()).toContain('text-brand-orange-dark')
     })
   })
 
