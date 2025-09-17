@@ -102,7 +102,7 @@ describe('AppSidebar', () => {
       expect(firstIcon).toBeTruthy()
 
       if (firstIcon) {
-        expect(firstIcon.classes()).toContain('bg-brand-orange')
+        expect(firstIcon.classes()).toContain('bg-brand-orange-dark')
         expect(firstIcon.classes()).toContain('text-bg-card')
         expect(firstIcon.classes()).not.toContain('hover:bg-border-hover')
       }
@@ -126,7 +126,7 @@ describe('AppSidebar', () => {
           expect(icon.classes()).toContain('hover:bg-border-hover')
           expect(icon.classes()).toContain('text-text-secondary')
           expect(icon.classes()).toContain('hover:text-text-primary')
-          expect(icon.classes()).not.toContain('bg-brand-orange')
+          expect(icon.classes()).not.toContain('bg-brand-orange-dark')
         }
       }
     })
@@ -306,14 +306,14 @@ describe('AppSidebar', () => {
 
       // Active icon styling
       if (activeIcon) {
-        expect(activeIcon.classes()).toContain('bg-brand-orange')
+        expect(activeIcon.classes()).toContain('bg-brand-orange-dark')
         expect(activeIcon.classes()).toContain('text-bg-card')
       }
 
       // Inactive icon styling
       if (inactiveIcon) {
         expect(inactiveIcon.classes()).toContain('text-text-secondary')
-        expect(inactiveIcon.classes()).not.toContain('bg-brand-orange')
+        expect(inactiveIcon.classes()).not.toContain('bg-brand-orange-dark')
       }
     })
 

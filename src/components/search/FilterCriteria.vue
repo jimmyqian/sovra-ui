@@ -29,7 +29,7 @@
       edit ✏️
     </button>
     <button
-      class="text-brand-orange-dark border-brand-orange bg-transparent border px-3 py-1 rounded-tag text-sm cursor-pointer transition-all duration-200 hover:bg-brand-orange hover:text-bg-card"
+      class="text-brand-orange-dark border-brand-orange-dark bg-transparent border px-3 py-1 rounded-tag text-sm cursor-pointer transition-all duration-200 hover:bg-brand-orange-dark hover:text-bg-card"
       @click="handleCreateMore"
     >
       🔍 Create more criteria

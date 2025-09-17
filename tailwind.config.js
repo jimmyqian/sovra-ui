@@ -6,9 +6,8 @@ module.exports = {
       colors: {
         // Theme-aware semantic colors using CSS variables
         brand: {
-          orange: 'var(--color-brand-orange)',
-          'orange-light': 'var(--color-brand-orange-light)',
           'orange-dark': 'var(--color-brand-orange-dark)',
+          'orange-light': 'var(--color-brand-orange-light)',
           blue: 'var(--color-brand-blue)'
         },
         text: {

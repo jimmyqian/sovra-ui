@@ -49,7 +49,7 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('bg-brand-orange')
+        expect(wrapper.classes()).toContain('bg-brand-orange-dark')
       })
 
       it('applies outline variant classes', () => {
@@ -59,7 +59,7 @@ describe('Button', () => {
         })
 
         expect(wrapper.classes()).toContain('bg-transparent')
-        expect(wrapper.classes()).not.toContain('bg-brand-orange')
+        expect(wrapper.classes()).not.toContain('bg-brand-orange-dark')
       })
 
       it('applies ghost variant classes', () => {
@@ -69,7 +69,7 @@ describe('Button', () => {
         })
 
         expect(wrapper.classes()).toContain('bg-transparent')
-        expect(wrapper.classes()).not.toContain('bg-brand-orange')
+        expect(wrapper.classes()).not.toContain('bg-brand-orange-dark')
       })
     })
 
@@ -212,7 +212,7 @@ describe('Button', () => {
           slots: { default: 'Primary Active' }
         })
 
-        expect(wrapper.classes()).toContain('bg-brand-orange')
+        expect(wrapper.classes()).toContain('bg-brand-orange-dark')
         expect(wrapper.classes()).not.toContain('bg-transparent-active')
       })
     })
@@ -274,7 +274,7 @@ describe('Button', () => {
         'duration-200',
         'focus:outline-none',
         'focus:ring-2',
-        'focus:ring-brand-orange',
+        'focus:ring-brand-orange-dark',
         'focus:ring-offset-2',
         'disabled:opacity-50',
         'disabled:cursor-not-allowed'
@@ -330,7 +330,7 @@ describe('Button', () => {
 
       expect(wrapper.classes()).toContain('focus:outline-none')
       expect(wrapper.classes()).toContain('focus:ring-2')
-      expect(wrapper.classes()).toContain('focus:ring-brand-orange')
+      expect(wrapper.classes()).toContain('focus:ring-brand-orange-dark')
     })
 
     it('provides proper disabled state for screen readers', () => {

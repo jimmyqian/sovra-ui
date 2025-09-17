@@ -60,7 +60,7 @@ describe('FileUpload Component', () => {
       const wrapper = createWrapper(item)
 
       expect(wrapper.find('.border-dashed').exists()).toBe(true)
-      expect(wrapper.find('.hover\\:border-brand-orange').exists()).toBe(true)
+      expect(wrapper.find('.hover\\:border-brand-orange-dark').exists()).toBe(true)
       expect(wrapper.find('.text-brand-orange-dark').exists()).toBe(true)
     })
   })
@@ -293,7 +293,7 @@ describe('FileUpload Component', () => {
       const wrapper = createWrapper(item)
 
       const dropZone = wrapper.find('.border-dashed')
-      expect(dropZone.classes()).toContain('hover:border-brand-orange')
+      expect(dropZone.classes()).toContain('hover:border-brand-orange-dark')
       expect(dropZone.classes()).toContain('transition-colors')
     })
 

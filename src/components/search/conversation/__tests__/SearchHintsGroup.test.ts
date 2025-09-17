@@ -77,7 +77,7 @@ describe('SearchHintsGroup', () => {
         expect(element.classes()).toContain('text-brand-orange-dark')
         expect(element.classes()).toContain('pb-2')
         expect(element.classes()).toContain('cursor-pointer')
-        expect(element.classes()).toContain('hover:text-brand-orange-dark')
+        expect(element.classes()).toContain('hover:text-brand-orange-light')
         expect(element.classes()).toContain('border-t')
         expect(element.classes()).toContain('border-dashed')
         expect(element.classes()).toContain('border-border-dashed')
@@ -221,7 +221,7 @@ describe('SearchHintsGroup', () => {
       const hintElements = wrapper.findAll('.text-brand-orange-dark')
 
       hintElements.forEach(element => {
-        expect(element.classes()).toContain('hover:text-brand-orange-dark')
+        expect(element.classes()).toContain('hover:text-brand-orange-light')
       })
     })
   })

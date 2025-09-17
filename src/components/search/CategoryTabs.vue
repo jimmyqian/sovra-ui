@@ -9,7 +9,7 @@
           class="py-2 px-1 text-sm font-medium border-b-2 transition-colors"
           :class="
             activeTab === tab.id
-              ? 'border-brand-orange text-brand-orange-dark'
+              ? 'border-brand-orange-dark text-brand-orange-dark'
               : 'border-transparent text-text-secondary hover:text-text-primary'
           "
           @click="activeTab = tab.id"

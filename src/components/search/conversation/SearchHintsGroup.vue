@@ -3,7 +3,7 @@
     <div
       v-for="(hint, index) in item.hints"
       :key="index"
-      class="text-brand-orange-dark pb-2 cursor-pointer hover:text-brand-orange-dark border-t border-dashed border-border-dashed pt-2"
+      class="text-brand-orange-dark pb-2 cursor-pointer hover:text-brand-orange-light border-t border-dashed border-border-dashed pt-2"
       :class="{
         'border-b': index === item.hints.length - 1,
         [hint.className || '']: hint.className

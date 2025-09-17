@@ -60,7 +60,7 @@ describe('ActionButton', () => {
       })
 
       const button = wrapper.find('button')
-      expect(button.classes()).toContain('bg-brand-orange')
+      expect(button.classes()).toContain('bg-brand-orange-dark')
       expect(button.classes()).toContain('text-bg-card')
       expect(button.classes()).toContain('hover:bg-brand-orange-light')
     })
@@ -277,7 +277,7 @@ describe('ActionButton', () => {
       expect(button.classes()).toContain('px-4')
       expect(button.classes()).toContain('rounded-search')
       // Should have primary variant classes
-      expect(button.classes()).toContain('bg-brand-orange')
+      expect(button.classes()).toContain('bg-brand-orange-dark')
       expect(button.classes()).toContain('text-bg-card')
       // Should have custom class
       expect(button.classes()).toContain('my-custom-class')

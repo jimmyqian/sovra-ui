@@ -244,7 +244,7 @@ describe('SearchBar Accessibility', () => {
 
       // Even though it's an icon button, it should be recognizable
       if (searchButton) {
-        expect(searchButton.element.className).toContain('bg-brand-orange')
+        expect(searchButton.element.className).toContain('bg-brand-orange-dark')
 
         // Check ARIA attributes with warning on failure instead of test failure
         try {

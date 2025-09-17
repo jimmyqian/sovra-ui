@@ -19,7 +19,7 @@
       'px-4 py-2 rounded-search text-sm cursor-pointer transition-colors'
 
     const variantClasses = {
-      primary: 'bg-brand-orange text-bg-card hover:bg-brand-orange-light',
+      primary: 'bg-brand-orange-dark text-bg-card hover:bg-brand-orange-light',
       secondary:
         'bg-bg-secondary border border-border-light hover:bg-border-hover',
       dashed:

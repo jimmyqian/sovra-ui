@@ -236,7 +236,7 @@ describe('SearchConversation', () => {
           .findAll('div')
           .filter(
             div =>
-              div.classes().includes('text-brand-orange') &&
+              div.classes().includes('text-brand-orange-dark') &&
               div.classes().includes('cursor-pointer')
           )
         expect(hints.length).toBe(3)
@@ -407,7 +407,7 @@ describe('SearchConversation', () => {
         .findAll('div')
         .filter(
           div =>
-            div.classes().includes('text-brand-orange') &&
+            div.classes().includes('text-brand-orange-dark') &&
             div.classes().includes('cursor-pointer')
         )
 
@@ -415,7 +415,7 @@ describe('SearchConversation', () => {
 
       hintElements.forEach(hint => {
         const expectedClasses = [
-          'text-brand-orange',
+          'text-brand-orange-dark',
           'pb-2',
           'cursor-pointer',
           'hover:text-brand-orange-light',
@@ -438,7 +438,7 @@ describe('SearchConversation', () => {
         .findAll('div')
         .filter(
           div =>
-            div.classes().includes('text-brand-orange') &&
+            div.classes().includes('text-brand-orange-dark') &&
             div.classes().includes('cursor-pointer')
         )
 
@@ -452,7 +452,7 @@ describe('SearchConversation', () => {
 
       const hintElements = wrapper
         .findAll('div')
-        .filter(div => div.classes().includes('text-brand-orange'))
+        .filter(div => div.classes().includes('text-brand-orange-dark'))
 
       hintElements.forEach(hint => {
         expect(hint.classes()).toContain('cursor-pointer')
@@ -488,7 +488,7 @@ describe('SearchConversation', () => {
         'cursor-pointer',
         'hover:bg-border-hover',
         'transition-colors',
-        'text-brand-orange'
+        'text-brand-orange-dark'
       ]
 
       expectedClasses.forEach(className => {
