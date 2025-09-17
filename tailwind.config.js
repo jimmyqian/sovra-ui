@@ -8,6 +8,7 @@ module.exports = {
         brand: {
           orange: 'var(--color-brand-orange)',
           'orange-light': 'var(--color-brand-orange-light)',
+          'orange-text': 'var(--color-brand-orange-text)',
           blue: 'var(--color-brand-blue)'
         },
         text: {

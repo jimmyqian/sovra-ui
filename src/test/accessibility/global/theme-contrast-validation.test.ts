@@ -12,6 +12,7 @@ describe('Global Theme Color Contrast Validation', () => {
     brand: {
       'brand-orange': '#ff6f16',
       'brand-orange-light': '#f7931e',
+      'brand-orange-text': '#a6480e',
       'brand-blue': '#4285f4'
     },
     text: {
@@ -134,6 +135,49 @@ describe('Global Theme Color Contrast Validation', () => {
       expect(issues.length).toBeGreaterThan(0) // We expect brand colors to have limitations
       // Note: Brand color limitations are documented as acceptable for brand elements
       expect(issues.every(issue => typeof issue === 'string')).toBe(true)
+    })
+
+    it('should validate brand-orange-text meets WCAG AA requirements for text usage', () => {
+      const brandOrangeText = themeColors.brand['brand-orange-text']
+      const whiteBackground = '#ffffff'
+      const primaryBackground = themeColors.background['bg-primary']
+      const cardBackground = themeColors.background['bg-card']
+
+      // Test on white background
+      const whiteResult = ColorContrastCalculator.checkContrastCompliance(
+        brandOrangeText,
+        whiteBackground
+      )
+
+      // Test on primary background
+      const primaryResult = ColorContrastCalculator.checkContrastCompliance(
+        brandOrangeText,
+        primaryBackground
+      )
+
+      // Test on card background
+      const cardResult = ColorContrastCalculator.checkContrastCompliance(
+        brandOrangeText,
+        cardBackground
+      )
+
+      // brand-orange-text should meet WCAG AA standards (4.5:1) on all light backgrounds
+      expect(whiteResult.passesAA).toBe(true)
+      expect(whiteResult.ratio).toBeGreaterThanOrEqual(4.5)
+
+      expect(primaryResult.passesAA).toBe(true)
+      expect(primaryResult.ratio).toBeGreaterThanOrEqual(4.5)
+
+      expect(cardResult.passesAA).toBe(true)
+      expect(cardResult.ratio).toBeGreaterThanOrEqual(4.5)
+
+      // Verify this color is darker/more accessible than the original brand-orange
+      const originalBrandOrange = ColorContrastCalculator.getContrastRatio(
+        themeColors.brand['brand-orange'],
+        whiteBackground
+      )
+
+      expect(whiteResult.ratio).toBeGreaterThan(originalBrandOrange)
     })
 
     it('should validate brand colors work properly with light backgrounds for non-text usage', () => {
