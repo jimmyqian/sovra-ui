@@ -50,10 +50,10 @@
     const variantClasses = {
       primary: 'bg-brand-orange text-bg-card border-none hover:scale-110',
       outline: props.active
-        ? 'bg-transparent-active border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-bg-card'
-        : 'bg-transparent border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-bg-card',
+        ? 'bg-transparent-active border border-brand-orange text-brand-orange-dark hover:bg-brand-orange hover:text-bg-card'
+        : 'bg-transparent border border-brand-orange text-brand-orange-dark hover:bg-brand-orange hover:text-bg-card',
       ghost:
-        'bg-transparent border-none text-brand-orange hover:bg-brand-orange hover:text-bg-card'
+        'bg-transparent border-none text-brand-orange-dark hover:bg-brand-orange hover:text-bg-card'
     }
 
     const sizeClasses = {

@@ -49,7 +49,7 @@
             "
           ></span>
           <button
-            class="ml-1 text-brand-orange hover:underline cursor-pointer"
+            class="ml-1 text-brand-orange-dark hover:underline cursor-pointer"
             @click="toggleReadMore"
           >
             {{ isExpanded ? 'Show Less' : 'Read More' }}
@@ -66,7 +66,7 @@
             class="bg-bg-card border border-dashed border-border-dashed px-4 py-2 rounded-full text-text-secondary"
             >DOB - 10 Aug 2000</span
           >
-          <button class="text-brand-orange hover:underline">
+          <button class="text-brand-orange-dark hover:underline">
             Login for more details →
           </button>
         </div>
