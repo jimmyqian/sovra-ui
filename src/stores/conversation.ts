@@ -71,8 +71,13 @@ export const useConversationStore = defineStore('conversation', () => {
   }
 
   // Update an existing message by ID
-  const updateMessage = (messageId: string, updatedMessage: ConversationMessage) => {
-    const index = conversationHistory.value.findIndex(msg => msg.id === messageId)
+  const updateMessage = (
+    messageId: string,
+    updatedMessage: ConversationMessage
+  ) => {
+    const index = conversationHistory.value.findIndex(
+      msg => msg.id === messageId
+    )
     if (index !== -1) {
       conversationHistory.value[index] = updatedMessage
     }
@@ -80,7 +85,9 @@ export const useConversationStore = defineStore('conversation', () => {
 
   // Remove a message by ID
   const removeMessage = (messageId: string) => {
-    const index = conversationHistory.value.findIndex(msg => msg.id === messageId)
+    const index = conversationHistory.value.findIndex(
+      msg => msg.id === messageId
+    )
     if (index !== -1) {
       conversationHistory.value.splice(index, 1)
     }
@@ -97,16 +104,25 @@ export const useConversationStore = defineStore('conversation', () => {
 
     if (systemMessage?.items) {
       // Update hints group onClick handlers
-      const hintsGroup = systemMessage.items.find(item => item.type === 'hints-group')
+      const hintsGroup = systemMessage.items.find(
+        item => item.type === 'hints-group'
+      )
       if (hintsGroup && 'hints' in hintsGroup) {
         hintsGroup.hints.forEach((hint, index) => {
-          const hintTypes = ['software role', 'California tech hubs', 'software skills']
-          hint.onClick = () => handlers.onHintClick(hintTypes[index] ?? 'unknown')
+          const hintTypes = [
+            'software role',
+            'California tech hubs',
+            'software skills'
+          ]
+          hint.onClick = () =>
+            handlers.onHintClick(hintTypes[index] ?? 'unknown')
         })
       }
 
       // Update action button onClick handler
-      const actionButton = systemMessage.items.find(item => item.type === 'action-button')
+      const actionButton = systemMessage.items.find(
+        item => item.type === 'action-button'
+      )
       if (actionButton && 'onClick' in actionButton) {
         actionButton.onClick = handlers.onCreateFilter
       }

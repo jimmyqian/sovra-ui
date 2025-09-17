@@ -31,37 +31,20 @@
         </div>
       </div>
     </div>
-
-    <div v-if="hasMore" class="px-8 py-4 text-center md:px-4">
-      <Button
-        variant="outline"
-        size="lg"
-        :disabled="isLoading"
-        class="mx-auto"
-        @click="handleLoadMore"
-      >
-        {{ isLoading ? 'Loading...' : 'Load More Results' }}
-        <MoreIcon v-if="!isLoading" />
-      </Button>
-    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import Button from '@/components/ui/Button.vue'
   import ResultCard from './ResultCard.vue'
-  import MoreIcon from '@/components/icons/MoreIcon.vue'
   import type { SearchResult } from '@/types/search'
 
   interface Props {
     results: SearchResult[]
     isLoading?: boolean
-    hasMore?: boolean
     error?: string | null
   }
 
   interface Emits {
-    (_e: 'loadMore'): void
     (_e: 'personSelected', _person: SearchResult): void
   }
 
@@ -69,10 +52,6 @@
     error: null
   })
   const emit = defineEmits<Emits>()
-
-  const handleLoadMore = () => {
-    emit('loadMore')
-  }
 
   const handlePersonSelected = (person: SearchResult) => {
     emit('personSelected', person)

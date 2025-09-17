@@ -26,30 +26,26 @@
           </div>
 
           <!-- Conversation Scroll Control Buttons -->
-          <button
+          <ChevronUpIcon
             v-if="
               hasScrollableContentConversation &&
               canScrollUpConversation &&
               !isAutoScrolling
             "
-            class="scroll-button scroll-button-top conversation-scroll-button"
+            class="scroll-chevron scroll-chevron-top conversation-scroll-chevron cursor-pointer"
             aria-label="Scroll conversation to top"
             @click="scrollConversationToTop"
-          >
-            <ChevronUpIcon />
-          </button>
-          <button
+          />
+          <ChevronDownIcon
             v-if="
               hasScrollableContentConversation &&
               canScrollDownConversation &&
               !isAutoScrolling
             "
-            class="scroll-button scroll-button-bottom conversation-scroll-button"
+            class="scroll-chevron scroll-chevron-bottom conversation-scroll-chevron cursor-pointer"
             aria-label="Scroll conversation to bottom"
             @click="scrollConversationToBottom"
-          >
-            <ChevronDownIcon />
-          </button>
+          />
 
           <!-- Fixed Search Input -->
           <div
@@ -387,49 +383,41 @@
     scrollbar-width: none; /* Firefox */
   }
 
-  /* Scroll control buttons */
-  .scroll-button {
+  /* Scroll control chevrons */
+  .scroll-chevron {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background-color: #ff6b35; /* brand-orange */
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    color: var(--color-brand-orange);
     transition: all 0.2s ease;
     z-index: 20;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .scroll-button:hover {
-    background-color: #e55a2e; /* darker orange on hover */
-    transform: translateX(-50%) scale(1.05);
+  .scroll-chevron:hover {
+    color: #e55a2e; /* darker orange on hover */
+    transform: translateX(-50%) scale(1.1);
   }
 
-  .scroll-button:active {
+  .scroll-chevron:active {
     transform: translateX(-50%) scale(0.95);
   }
 
-  .scroll-button-top {
+  .scroll-chevron-top {
     top: 16px;
   }
 
-  .scroll-button-bottom {
+  .scroll-chevron-bottom {
     bottom: 190px; /* Above search input area */
   }
 
-  /* Conversation scroll buttons - positioned differently */
-  .conversation-scroll-button.scroll-button-top {
+  /* Conversation scroll chevrons - positioned differently */
+  .conversation-scroll-chevron.scroll-chevron-top {
     top: 80px; /* Below header */
   }
 
-  .conversation-scroll-button.scroll-button-bottom {
+  .conversation-scroll-chevron.scroll-chevron-bottom {
     bottom: 190px; /* Move down 10px from previous position */
   }
 </style>

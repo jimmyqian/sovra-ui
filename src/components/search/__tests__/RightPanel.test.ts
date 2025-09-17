@@ -110,7 +110,6 @@ describe('RightPanel', () => {
 
       expect(resultsList.props('results')).toEqual(mockResults)
       expect(resultsList.props('isLoading')).toBe(false)
-      expect(resultsList.props('hasMore')).toBe(true)
       expect(resultsList.props('error')).toBe(null)
     })
 

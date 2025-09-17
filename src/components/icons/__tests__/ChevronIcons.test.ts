@@ -89,3 +89,91 @@ describe('ChevronDownIcon', () => {
     )
   })
 })
+
+describe('Chevron Icons as Clickable Elements', () => {
+  it('ChevronUpIcon supports click events', async () => {
+    let clicked = false
+    const wrapper = mount(ChevronUpIcon, {
+      attrs: {
+        class: 'cursor-pointer',
+        onClick: () => {
+          clicked = true
+        }
+      }
+    })
+
+    const svg = wrapper.find('svg')
+    expect(svg.exists()).toBe(true)
+
+    await svg.trigger('click')
+    expect(clicked).toBe(true)
+  })
+
+  it('ChevronDownIcon supports click events', async () => {
+    let clicked = false
+    const wrapper = mount(ChevronDownIcon, {
+      attrs: {
+        class: 'cursor-pointer',
+        onClick: () => {
+          clicked = true
+        }
+      }
+    })
+
+    const svg = wrapper.find('svg')
+    expect(svg.exists()).toBe(true)
+
+    await svg.trigger('click')
+    expect(clicked).toBe(true)
+  })
+
+  it('ChevronUpIcon supports brand orange styling', () => {
+    const wrapper = mount(ChevronUpIcon, {
+      attrs: {
+        class: 'scroll-chevron',
+        style: 'color: var(--color-brand-orange)'
+      }
+    })
+
+    const svg = wrapper.find('svg')
+    expect(svg.classes()).toContain('scroll-chevron')
+    expect(svg.attributes('style')).toContain(
+      'color: var(--color-brand-orange)'
+    )
+  })
+
+  it('ChevronDownIcon supports brand orange styling', () => {
+    const wrapper = mount(ChevronDownIcon, {
+      attrs: {
+        class: 'scroll-chevron',
+        style: 'color: var(--color-brand-orange)'
+      }
+    })
+
+    const svg = wrapper.find('svg')
+    expect(svg.classes()).toContain('scroll-chevron')
+    expect(svg.attributes('style')).toContain(
+      'color: var(--color-brand-orange)'
+    )
+  })
+
+  it('chevron icons support aria-label for accessibility', () => {
+    const upWrapper = mount(ChevronUpIcon, {
+      attrs: {
+        'aria-label': 'Scroll to top'
+      }
+    })
+
+    const downWrapper = mount(ChevronDownIcon, {
+      attrs: {
+        'aria-label': 'Scroll to bottom'
+      }
+    })
+
+    const upSvg = upWrapper.find('svg')
+    const downSvg = downWrapper.find('svg')
+
+    expect(upSvg.attributes('aria-label')).toBe('Scroll to top')
+    expect(downSvg.attributes('aria-label')).toBe('Scroll to bottom')
+  })
+})
