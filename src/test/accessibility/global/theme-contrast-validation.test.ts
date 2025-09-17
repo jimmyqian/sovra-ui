@@ -10,7 +10,7 @@ import { ColorContrastCalculator } from '../utils/contrast-calculator'
 describe('Global Theme Color Contrast Validation', () => {
   const themeColors = {
     brand: {
-      'brand-orange': '#ff6f16',
+      'brand-orange-dark': '#a6480e',
       'brand-orange-light': '#f7931e',
       'brand-blue': '#4285f4'
     },
@@ -136,6 +136,44 @@ describe('Global Theme Color Contrast Validation', () => {
       expect(issues.every(issue => typeof issue === 'string')).toBe(true)
     })
 
+    it('should validate brand-orange-dark meets WCAG AA requirements for text usage', () => {
+      const brandOrange = themeColors.brand['brand-orange-dark']
+      const whiteBackground = '#ffffff'
+      const primaryBackground = themeColors.background['bg-primary']
+      const cardBackground = themeColors.background['bg-card']
+
+      // Test on white background
+      const whiteResult = ColorContrastCalculator.checkContrastCompliance(
+        brandOrange,
+        whiteBackground
+      )
+
+      // Test on primary background
+      const primaryResult = ColorContrastCalculator.checkContrastCompliance(
+        brandOrange,
+        primaryBackground
+      )
+
+      // Test on card background
+      const cardResult = ColorContrastCalculator.checkContrastCompliance(
+        brandOrange,
+        cardBackground
+      )
+
+      // brand-orange-dark should meet WCAG AA standards (4.5:1) on all light backgrounds
+      expect(whiteResult.passesAA).toBe(true)
+      expect(whiteResult.ratio).toBeGreaterThanOrEqual(4.5)
+
+      expect(primaryResult.passesAA).toBe(true)
+      expect(primaryResult.ratio).toBeGreaterThanOrEqual(4.5)
+
+      expect(cardResult.passesAA).toBe(true)
+      expect(cardResult.ratio).toBeGreaterThanOrEqual(4.5)
+
+      // This accessible color should have high contrast ratios
+      expect(whiteResult.ratio).toBeGreaterThanOrEqual(5.9)
+    })
+
     it('should validate brand colors work properly with light backgrounds for non-text usage', () => {
       const brandColors = themeColors.brand
       const lightBackgrounds = ['#ffffff', '#fdf7f4', '#f8f9fa']
@@ -163,11 +201,11 @@ describe('Global Theme Color Contrast Validation', () => {
         {
           name: 'Primary Button',
           fg: themeColors.background['bg-card'],
-          bg: themeColors.brand['brand-orange']
+          bg: themeColors.brand['brand-orange-dark']
         },
         {
           name: 'Outline Button',
-          fg: themeColors.brand['brand-orange'],
+          fg: themeColors.brand['brand-orange-dark'],
           bg: themeColors.background['bg-card']
         },
         {
@@ -249,7 +287,7 @@ describe('Global Theme Color Contrast Validation', () => {
 
     it('should validate focus indicators meet visibility requirements', () => {
       // Focus indicators typically use brand colors
-      const focusColor = themeColors.brand['brand-orange']
+      const focusColor = themeColors.brand['brand-orange-dark']
       const backgrounds = Object.values(themeColors.background)
 
       backgrounds.forEach(bgColor => {

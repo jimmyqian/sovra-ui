@@ -59,7 +59,7 @@ describe('FileUpload Accessibility', () => {
         // Check for high contrast text classes
         expect(wrapper.find('.text-text-primary').exists()).toBe(true)
         expect(wrapper.find('.text-text-muted').exists()).toBe(true)
-        expect(wrapper.find('.text-brand-orange').exists()).toBe(true)
+        expect(wrapper.find('.text-brand-orange-dark').exists()).toBe(true)
       })
 
       it('should provide information about accepted file types', () => {
@@ -398,7 +398,7 @@ describe('FileUpload Accessibility', () => {
 
       // Using theme colors that should meet WCAG standards
       expect(wrapper.find('.text-text-primary').exists()).toBe(true)
-      expect(wrapper.find('.text-brand-orange').exists()).toBe(true)
+      expect(wrapper.find('.text-brand-orange-dark').exists()).toBe(true)
       expect(wrapper.find('.border-border-dashed').exists()).toBe(true)
     })
 
@@ -426,7 +426,7 @@ describe('FileUpload Accessibility', () => {
 
       // Should work with high contrast by using semantic colors
       expect(wrapper.find('.border-dashed').exists()).toBe(true)
-      expect(wrapper.find('.hover\\:border-brand-orange').exists()).toBe(true)
+      expect(wrapper.find('.hover\\:border-brand-orange-dark').exists()).toBe(true)
     })
   })
 

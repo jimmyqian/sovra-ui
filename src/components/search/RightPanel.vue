@@ -11,9 +11,7 @@
       <ResultsList
         :results="results"
         :is-loading="isLoading"
-        :has-more="hasMore"
         :error="error"
-        @load-more="handleLoadMore"
         @person-selected="handlePersonSelected"
       />
     </div>
@@ -70,22 +68,18 @@
     <div v-if="!selectedPerson" class="fade-overlay"></div>
 
     <!-- Scroll Control Buttons for Results -->
-    <button
+    <ChevronUpIcon
       v-if="!selectedPerson && hasScrollableContent && canScrollUp"
-      class="scroll-button scroll-button-top"
+      class="scroll-chevron scroll-chevron-top cursor-pointer"
       aria-label="Scroll to top"
       @click="scrollResultsToTop"
-    >
-      <ChevronUpIcon />
-    </button>
-    <button
+    />
+    <ChevronDownIcon
       v-if="!selectedPerson && hasScrollableContent && canScrollDown"
-      class="scroll-button scroll-button-bottom"
+      class="scroll-chevron scroll-chevron-bottom cursor-pointer"
       aria-label="Scroll to bottom"
       @click="scrollResultsToBottom"
-    >
-      <ChevronDownIcon />
-    </button>
+    />
 
     <!-- Load More Button - Always visible outside scroll area -->
     <div
@@ -388,40 +382,32 @@
     scrollbar-width: none; /* Firefox */
   }
 
-  /* Scroll control buttons */
-  .scroll-button {
+  /* Scroll control chevrons */
+  .scroll-chevron {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 50%;
-    background-color: #ff6b35; /* brand-orange */
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    color: var(--color-brand-orange-dark);
     transition: all 0.2s ease;
     z-index: 20;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
-  .scroll-button:hover {
-    background-color: #e55a2e; /* darker orange on hover */
-    transform: translateX(-50%) scale(1.05);
+  .scroll-chevron:hover {
+    color: #e55a2e; /* darker orange on hover */
+    transform: translateX(-50%) scale(1.1);
   }
 
-  .scroll-button:active {
+  .scroll-chevron:active {
     transform: translateX(-50%) scale(0.95);
   }
 
-  .scroll-button-top {
+  .scroll-chevron-top {
     top: 16px;
   }
 
-  .scroll-button-bottom {
+  .scroll-chevron-bottom {
     bottom: 144px; /* Above Load More button and footer */
   }
 </style>

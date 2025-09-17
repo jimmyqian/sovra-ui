@@ -4,7 +4,7 @@
       {{ item.label }}
     </label>
     <div
-      class="border-2 border-dashed border-border-dashed rounded-lg p-4 text-center hover:border-brand-orange transition-colors"
+      class="border-2 border-dashed border-border-dashed rounded-lg p-4 text-center hover:border-brand-orange-dark transition-colors"
     >
       <input
         ref="fileInput"
@@ -15,7 +15,7 @@
         @change="handleFileChange"
       />
       <button
-        class="text-brand-orange hover:text-brand-orange-light cursor-pointer"
+        class="text-brand-orange-dark hover:text-brand-orange-light cursor-pointer"
         @click="triggerFileInput"
       >
         Click to upload files or drag and drop

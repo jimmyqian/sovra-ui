@@ -45,15 +45,15 @@
     const focusClasses =
       props.variant === 'outline'
         ? 'focus:outline-none focus:ring-0 focus:ring-offset-0'
-        : 'focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2'
+        : 'focus:outline-none focus:ring-2 focus:ring-brand-orange-dark focus:ring-offset-2'
 
     const variantClasses = {
-      primary: 'bg-brand-orange text-bg-card border-none hover:scale-110',
+      primary: 'bg-brand-orange-dark text-bg-card border-none hover:scale-110',
       outline: props.active
-        ? 'bg-transparent-active border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-bg-card'
-        : 'bg-transparent border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-bg-card',
+        ? 'bg-transparent-active border border-brand-orange-dark text-brand-orange-dark hover:bg-brand-orange-dark hover:text-bg-card'
+        : 'bg-transparent border border-brand-orange-dark text-brand-orange-dark hover:bg-brand-orange-dark hover:text-bg-card',
       ghost:
-        'bg-transparent border-none text-brand-orange hover:bg-brand-orange hover:text-bg-card'
+        'bg-transparent border-none text-brand-orange-dark hover:bg-brand-orange-dark hover:text-bg-card'
     }
 
     const sizeClasses = {

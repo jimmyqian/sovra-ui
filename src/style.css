@@ -5,7 +5,7 @@
 @layer base {
   :root {
     /* Sovra theme (default) */
-    --color-brand-orange: #ff6f16;
+    --color-brand-orange-dark: #a6480e;
     --color-brand-orange-light: #f7931e;
     --color-brand-blue: #4285f4;
     --color-text-primary: #333;
@@ -57,8 +57,8 @@
   .bg-card-dark {
     background-color: var(--color-bg-card-dark);
   }
-  .bg-brand-orange {
-    background-color: var(--color-brand-orange);
+  .bg-brand-orange-dark {
+    background-color: var(--color-brand-orange-dark);
   }
   .bg-brand-orange-light {
     background-color: var(--color-brand-orange-light);
@@ -103,8 +103,8 @@
   .text-text-muted {
     color: var(--color-text-muted);
   }
-  .text-brand-orange {
-    color: var(--color-brand-orange);
+  .text-brand-orange-dark {
+    color: var(--color-brand-orange-dark);
   }
   .text-brand-orange-light {
     color: var(--color-brand-orange-light);
@@ -148,7 +148,7 @@
   .bg-gradient-brand {
     background: linear-gradient(
       135deg,
-      var(--color-brand-orange),
+      var(--color-brand-orange-dark),
       var(--color-brand-orange-light)
     );
   }

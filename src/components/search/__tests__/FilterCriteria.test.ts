@@ -191,7 +191,7 @@ describe('FilterCriteria', () => {
         'text-base',
         'p-0',
         'ml-1',
-        'hover:text-brand-orange',
+        'hover:text-brand-orange-dark',
         'transition-colors'
       ]
 
@@ -259,7 +259,7 @@ describe('FilterCriteria', () => {
       const expectedClasses = [
         'cursor-pointer',
         'font-medium',
-        'hover:text-brand-orange',
+        'hover:text-brand-orange-dark',
         'transition-colors'
       ]
 
@@ -328,8 +328,8 @@ describe('FilterCriteria', () => {
         .find(btn => btn.text().includes('Create more'))
 
       const expectedClasses = [
-        'text-brand-orange',
-        'border-brand-orange',
+        'text-brand-orange-dark',
+        'border-brand-orange-dark',
         'bg-transparent',
         'border',
         'px-3',
@@ -339,7 +339,7 @@ describe('FilterCriteria', () => {
         'cursor-pointer',
         'transition-all',
         'duration-200',
-        'hover:bg-brand-orange',
+        'hover:bg-brand-orange-dark',
         'hover:text-bg-card'
       ]
 

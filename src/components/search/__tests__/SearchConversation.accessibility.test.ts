@@ -133,7 +133,7 @@ describe('SearchConversation Accessibility', () => {
         .filter(
           div =>
             div.classes().includes('cursor-pointer') &&
-            div.classes().includes('text-brand-orange')
+            div.classes().includes('text-brand-orange-dark')
         )
 
       expect(hints.length).toBe(3)
@@ -199,10 +199,10 @@ describe('SearchConversation Accessibility', () => {
 
       const hints = wrapper
         .findAll('div')
-        .filter(div => div.classes().includes('text-brand-orange'))
+        .filter(div => div.classes().includes('text-brand-orange-dark'))
 
       hints.forEach(hint => {
-        expect(hint.classes()).toContain('text-brand-orange')
+        expect(hint.classes()).toContain('text-brand-orange-dark')
         // Note: Brand orange may not meet WCAG AA standards, but is acceptable for interactive elements
       })
     })

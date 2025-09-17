@@ -339,7 +339,7 @@ describe('PersonProfile Accessibility', () => {
     })
 
     // Find the Read More button
-    const readMoreButton = wrapper.find('.text-brand-orange')
+    const readMoreButton = wrapper.find('.text-brand-orange-dark')
     expect(readMoreButton.exists()).toBe(true)
     expect(readMoreButton.element.tagName).toBe('BUTTON')
 
@@ -359,7 +359,7 @@ describe('PersonProfile Accessibility', () => {
     expect(readMoreButton.text()).toBe('Read More')
 
     // Should use appropriate styling for accessibility
-    expect(readMoreButton.classes()).toContain('text-brand-orange')
+    expect(readMoreButton.classes()).toContain('text-brand-orange-dark')
     expect(readMoreButton.classes()).toContain('hover:underline')
   })
 

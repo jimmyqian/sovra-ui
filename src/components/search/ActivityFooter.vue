@@ -8,8 +8,8 @@
         class="px-4 py-2 rounded-full text-sm border transition-colors"
         :class="
           category.active
-            ? 'bg-brand-orange text-white border-brand-orange'
-            : 'bg-bg-card text-text-secondary border-border-light hover:border-brand-orange hover:text-brand-orange'
+            ? 'bg-brand-orange-dark text-white border-brand-orange-dark'
+            : 'bg-bg-card text-text-secondary border-border-light hover:border-brand-orange-dark hover:text-brand-orange-dark'
         "
         @click="toggleCategory(category.id)"
       >
@@ -20,7 +20,7 @@
     <!-- Show References Button -->
     <div class="text-center">
       <button
-        class="px-6 py-2 rounded-full border border-brand-orange text-brand-orange text-sm transition-colors hover:bg-brand-orange hover:text-white"
+        class="px-6 py-2 rounded-full border border-brand-orange-dark text-brand-orange-dark text-sm transition-colors hover:bg-brand-orange-dark hover:text-white"
         @click="handleShowReferences"
       >
         Show all references

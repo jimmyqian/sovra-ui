@@ -42,23 +42,23 @@ describe('Logo', () => {
     const paths = wrapper.findAll('svg path')
     expect(paths).toHaveLength(3)
 
-    // All paths should have orange fill
+    // All paths should have accessible orange fill
     paths.forEach(path => {
-      expect(path.attributes('fill')).toBe('#FF6F15')
+      expect(path.attributes('fill')).toBe('var(--color-brand-orange-dark)')
     })
   })
 
   it('renders orange accent bar', () => {
     const wrapper = mount(Logo)
 
-    const accentBar = wrapper.find('.absolute.bg-brand-orange')
+    const accentBar = wrapper.find('.absolute.bg-brand-orange-dark')
     expect(accentBar.exists()).toBe(true)
   })
 
   it('has correct accent bar positioning and dimensions', () => {
     const wrapper = mount(Logo)
 
-    const accentBar = wrapper.find('.absolute.bg-brand-orange')
+    const accentBar = wrapper.find('.absolute.bg-brand-orange-dark')
     const style = accentBar.attributes('style')
 
     expect(style).toContain('top:16px')
@@ -75,7 +75,7 @@ describe('Logo', () => {
 
     // Text and accent bar should be inside relative container
     expect(textContainer.find('span').exists()).toBe(true)
-    expect(textContainer.find('.absolute.bg-brand-orange').exists()).toBe(true)
+    expect(textContainer.find('.absolute.bg-brand-orange-dark').exists()).toBe(true)
   })
 
   it('has correct main container layout', () => {
@@ -98,7 +98,7 @@ describe('Logo', () => {
     // Check that all paths have the required attributes
     paths.forEach(path => {
       expect(path.attributes('d')).toBeTruthy()
-      expect(path.attributes('fill')).toBe('#FF6F15')
+      expect(path.attributes('fill')).toBe('var(--color-brand-orange-dark)')
     })
   })
 
@@ -122,14 +122,28 @@ describe('Logo', () => {
   it('accent bar has correct CSS classes', () => {
     const wrapper = mount(Logo)
 
-    const accentBar = wrapper.find('.absolute.bg-brand-orange')
+    const accentBar = wrapper.find('.absolute.bg-brand-orange-dark')
     expect(accentBar.classes()).toContain('absolute')
-    expect(accentBar.classes()).toContain('bg-brand-orange')
+    expect(accentBar.classes()).toContain('bg-brand-orange-dark')
   })
 
   it('renders without errors when mounted', () => {
     expect(() => {
       mount(Logo)
     }).not.toThrow()
+  })
+
+  it('uses accessible brand orange color value', () => {
+    const wrapper = mount(Logo)
+
+    // Verify SVG paths use CSS variable for accessibility
+    const paths = wrapper.findAll('svg path')
+    paths.forEach(path => {
+      expect(path.attributes('fill')).toBe('var(--color-brand-orange-dark)')
+    })
+
+    // The CSS variable should resolve to the accessible color #a6480e
+    // This is tested in theme-contrast-validation.test.ts where 'brand-orange-dark': '#a6480e'
+    // provides 5.91:1 contrast ratio, exceeding WCAG AA requirements
   })
 })
