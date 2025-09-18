@@ -10,6 +10,9 @@
       video-title="Sovra Introduction Video"
       @close="lightboxStore.hideLightbox"
     />
+
+    <!-- Global Notification Container -->
+    <NotificationContainer />
   </div>
 </template>
 
@@ -19,6 +22,7 @@
   import { useLightboxStore } from '@/stores/lightbox'
   import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
   import VideoLightbox from '@/components/common/VideoLightbox.vue'
+  import NotificationContainer from '@/components/common/NotificationContainer.vue'
 
   const { initializeTheme } = useTheme()
   const lightboxStore = useLightboxStore()
