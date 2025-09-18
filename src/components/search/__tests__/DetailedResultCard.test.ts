@@ -1,8 +1,12 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import DetailedResultCard from '../DetailedResultCard.vue'
 
 describe('DetailedResultCard', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
   const mockPerson = {
     name: 'Johnson Smith',
     profileImage: '/test-profile.jpg',
@@ -185,7 +189,12 @@ describe('DetailedResultCard', () => {
     expect(wrapper.text()).toContain('ABC Technology Inc.')
   })
 
-  it('renders finance information section', () => {
+  it('renders finance information section', async () => {
+    // Set subscription level to 3 to access Finance section
+    const { useSubscriptionStore } = await import('@/stores/subscription')
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(3)
+
     const wrapper = mount(DetailedResultCard, {
       props: { person: mockPerson }
     })

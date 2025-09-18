@@ -75,6 +75,10 @@ describe('CategoryTabs', () => {
   })
 
   it('switches to finance tab when clicked', async () => {
+    // Set subscription level to 3 to access Finance tab
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(3)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     const financeTab = wrapper
@@ -91,6 +95,10 @@ describe('CategoryTabs', () => {
   })
 
   it('switches to legal tab when clicked', async () => {
+    // Set subscription level to 3 to access Legal tab
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(3)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     const legalTab = wrapper
@@ -135,6 +143,10 @@ describe('CategoryTabs', () => {
   })
 
   it('displays legal background check with proper styling', async () => {
+    // Set subscription level to 3 to access Legal tab
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(3)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     const legalTab = wrapper

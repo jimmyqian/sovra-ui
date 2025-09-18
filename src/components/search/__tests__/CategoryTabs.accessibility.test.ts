@@ -1,8 +1,13 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import CategoryTabs from '../CategoryTabs.vue'
 
 describe('CategoryTabs Accessibility', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
   const mockProps = {
     personalData: {
       relationshipStatus: 'Married',
@@ -140,6 +145,13 @@ describe('CategoryTabs Accessibility', () => {
 
   it('handles tab state changes accessibly', async () => {
     const wrapper = mount(CategoryTabs, { props: mockProps })
+
+    // Set subscription level to 3 to access Finance tab
+    const { useSubscriptionStore } = await import('@/stores/subscription')
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(3)
+
+    await wrapper.vm.$nextTick()
 
     // Switch to Finance tab
     const financeTab = wrapper

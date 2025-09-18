@@ -231,13 +231,13 @@ describe('App Component', () => {
     it('should have minimal, clean template structure', async () => {
       const wrapper = await createWrapper()
 
-      // Should only contain the app div and router-view
+      // Should contain the app div with router-view and notification container
       const appDiv = wrapper.find('#app')
       expect(appDiv.exists()).toBe(true)
 
-      // Check that it's a simple container
+      // Check that it contains router-view and notification container
       const children = appDiv.element.children
-      expect(children.length).toBe(1) // Only router-view
+      expect(children.length).toBe(2) // router-view and NotificationContainer
     })
 
     it('should not have any conditional rendering', async () => {
