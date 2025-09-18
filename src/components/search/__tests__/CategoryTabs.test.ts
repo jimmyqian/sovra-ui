@@ -1,8 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import CategoryTabs from '../CategoryTabs.vue'
+import { useSubscriptionStore } from '@/stores/subscription'
 
 describe('CategoryTabs', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
   const mockProps = {
     personalData: {
       relationshipStatus: 'Married',
@@ -26,8 +32,14 @@ describe('CategoryTabs', () => {
     }
   }
 
+  const createWrapper = (subscriptionLevel = 3) => {
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(subscriptionLevel as any)
+    return mount(CategoryTabs, { props: mockProps })
+  }
+
   it('renders all tab labels correctly', () => {
-    const wrapper = mount(CategoryTabs, { props: mockProps })
+    const wrapper = createWrapper()
 
     expect(wrapper.text()).toContain('Personal')
     expect(wrapper.text()).toContain('Professional')

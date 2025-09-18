@@ -172,52 +172,83 @@
       <!-- Three Column Section: Personal, Professional, Finance -->
       <div class="grid grid-cols-3 gap-6">
         <!-- Personal Column -->
-        <div class="space-y-4">
+        <div
+          class="space-y-4"
+          :class="
+            isSectionAccessible('personal')
+              ? ''
+              : 'bg-bg-muted rounded-lg p-4 opacity-60'
+          "
+        >
           <h3 class="text-lg font-semibold text-text-primary">Personal</h3>
 
           <div class="space-y-3 text-sm">
             <div>
               <div class="text-text-secondary">Born</div>
               <div class="font-medium text-text-primary">
-                {{ person.personal.birthDate }} Age {{ person.stats.age }} years
+                {{
+                  isSectionAccessible('personal')
+                    ? `${person.personal.birthDate} Age ${person.stats.age} years`
+                    : '████████ Age ██ years'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Place of birth</div>
               <div class="font-medium text-text-primary">
-                {{ person.personal.birthPlace }}
+                {{
+                  isSectionAccessible('personal')
+                    ? person.personal.birthPlace
+                    : '████████, USA'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Spouse</div>
               <div class="font-medium text-brand-orange">
-                {{ person.personal.spouse }}
+                {{
+                  isSectionAccessible('personal')
+                    ? person.personal.spouse
+                    : '████████'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Live In</div>
               <div class="font-medium text-text-primary">
-                {{ person.personal.currentLocation }}
+                {{
+                  isSectionAccessible('personal')
+                    ? person.personal.currentLocation
+                    : '████████'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Height/Weight</div>
               <div class="font-medium text-text-primary">
-                {{ person.personal.height }} / {{ person.personal.weight }}
+                {{
+                  isSectionAccessible('personal')
+                    ? `${person.personal.height} / ${person.personal.weight}`
+                    : '███ CMs / ██ KG'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Education</div>
               <div class="font-medium text-text-primary">
-                {{ person.personal.education.university }} School of Arts and
-                Sciences ({{ person.personal.education.year }})
+                {{
+                  isSectionAccessible('personal')
+                    ? `${person.personal.education.university} School of Arts and Sciences (${person.personal.education.year})`
+                    : '████████ University (████)'
+                }}
               </div>
               <div
+                v-if="isSectionAccessible('personal')"
                 class="text-brand-orange text-sm hover:underline cursor-pointer"
               >
                 Know More
@@ -227,35 +258,58 @@
         </div>
 
         <!-- Professional Column -->
-        <div class="space-y-4">
+        <div
+          class="space-y-4"
+          :class="
+            isSectionAccessible('professional')
+              ? ''
+              : 'bg-bg-muted rounded-lg p-4 opacity-60'
+          "
+        >
           <h3 class="text-lg font-semibold text-text-primary">Professional</h3>
 
           <div class="space-y-3 text-sm">
             <div>
               <div class="text-text-secondary">Current job title</div>
               <div class="font-medium text-text-primary">
-                {{ person.professional.currentJob }}
+                {{
+                  isSectionAccessible('professional')
+                    ? person.professional.currentJob
+                    : '████████ Engineer'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">avg pay</div>
               <div class="font-medium text-text-primary">
-                {{ person.professional.avgPay }}
+                {{
+                  isSectionAccessible('professional')
+                    ? person.professional.avgPay
+                    : '$██████/year'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">current employee</div>
               <div class="font-medium text-text-primary">
-                {{ person.professional.currentEmployer }}
+                {{
+                  isSectionAccessible('professional')
+                    ? person.professional.currentEmployer
+                    : '████████ Inc.'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Time in current field</div>
               <div class="font-medium text-text-primary">
-                {{ person.professional.timeInField }}
+                {{
+                  isSectionAccessible('professional')
+                    ? person.professional.timeInField
+                    : '█ years'
+                }}
               </div>
             </div>
 
@@ -264,47 +318,80 @@
                 Boards/Charities/Voluntaries
               </div>
               <div class="font-medium text-text-primary">
-                {{ person.professional.boards || 'N/A' }}
+                {{
+                  isSectionAccessible('professional')
+                    ? person.professional.boards || 'N/A'
+                    : '████████'
+                }}
               </div>
             </div>
           </div>
         </div>
 
         <!-- Finance Column -->
-        <div class="space-y-4">
+        <div
+          class="space-y-4"
+          :class="
+            isSectionAccessible('finance')
+              ? ''
+              : 'bg-bg-muted rounded-lg p-4 opacity-60'
+          "
+        >
           <h3 class="text-lg font-semibold text-text-primary">Finance</h3>
 
           <div class="space-y-3 text-sm">
             <div>
               <div class="text-text-secondary">$$$ worth</div>
-              <div class="text-text-secondary">(Credit score for B2B)</div>
+              <div class="text-text-secondary">
+                {{
+                  isSectionAccessible('finance')
+                    ? '(Credit score for B2B)'
+                    : '(████████)'
+                }}
+              </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Housing status Rent/Own</div>
               <div class="font-medium text-text-primary">
-                {{ person.finance.housingStatus }}
+                {{
+                  isSectionAccessible('finance')
+                    ? person.finance.housingStatus
+                    : '████'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">House worth</div>
               <div class="font-medium text-text-primary">
-                {{ person.finance.houseWorth || 'N/A' }}
+                {{
+                  isSectionAccessible('finance')
+                    ? person.finance.houseWorth || 'N/A'
+                    : '$███████'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Business entities</div>
               <div class="font-medium text-text-primary">
-                {{ person.finance.businessEntities || 'N/A' }}
+                {{
+                  isSectionAccessible('finance')
+                    ? person.finance.businessEntities || 'N/A'
+                    : '█ ████'
+                }}
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Bis ent status</div>
               <div class="font-medium text-text-primary">
-                {{ person.finance.businessStatus || 'N/A' }}
+                {{
+                  isSectionAccessible('finance')
+                    ? person.finance.businessStatus || 'N/A'
+                    : '██████'
+                }}
               </div>
             </div>
           </div>
@@ -352,6 +439,9 @@
 </template>
 
 <script setup lang="ts">
+  import { useSubscriptionStore } from '@/stores/subscription'
+  import type { SubscriptionLevel } from '@/types/subscription'
+
   interface PersonStats {
     age: string
     netWorth: string
@@ -413,4 +503,24 @@
   }
 
   defineProps<Props>()
+
+  const subscriptionStore = useSubscriptionStore()
+
+  // Define subscription level requirements for each section
+  // Personal: Level 1+ (all levels)
+  // Professional: Level 2+
+  // Finance: Level 3+
+  const sectionRequirements: Record<string, SubscriptionLevel> = {
+    personal: 1, // Level 1+ (all levels)
+    professional: 2, // Level 2+ (Standard and Premium)
+    finance: 3 // Level 3+ (Premium)
+  }
+
+  // Check if a section is accessible based on subscription level
+  const isSectionAccessible = (sectionId: string): boolean => {
+    const requiredLevel = sectionRequirements[sectionId]
+    return requiredLevel
+      ? subscriptionStore.canViewContent(requiredLevel)
+      : false
+  }
 </script>

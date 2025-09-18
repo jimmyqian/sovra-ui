@@ -5,7 +5,6 @@ import { createPinia, setActivePinia } from 'pinia'
 import Landing from '@/views/Landing.vue'
 import SearchResults from '@/views/SearchResults.vue'
 import { useSearchStore } from '@/stores/search'
-import { useLightboxStore } from '@/stores/lightbox'
 import { useConversationStore } from '@/stores/conversation'
 
 // Mock router for integration testing
@@ -39,14 +38,9 @@ describe('Search Workflow Integration', () => {
 
     // Get store instances
     const searchStore = useSearchStore()
-    const lightboxStore = useLightboxStore()
 
     const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
     performSearchSpy.mockResolvedValue()
-
-    // Mock lightbox to not trigger (not first search)
-    const handleSearchActionSpy = vi.spyOn(lightboxStore, 'handleSearchAction')
-    handleSearchActionSpy.mockReturnValue(false)
 
     // Find search input and search button
     const searchInput = wrapper.find('textarea')
@@ -72,8 +66,6 @@ describe('Search Workflow Integration', () => {
 
     // Verify store method was called
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
-    // Lightbox should NOT be triggered during normal searches (pi symbol only)
-    expect(handleSearchActionSpy).not.toHaveBeenCalled()
 
     // Verify router navigation was called (no query parameter needed anymore)
     expect(pushSpy).toHaveBeenCalledWith('/search')
@@ -91,14 +83,9 @@ describe('Search Workflow Integration', () => {
     })
 
     const searchStore = useSearchStore()
-    const lightboxStore = useLightboxStore()
 
     const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
     performSearchSpy.mockResolvedValue()
-
-    // Mock lightbox to not trigger (not first search)
-    const handleSearchActionSpy = vi.spyOn(lightboxStore, 'handleSearchAction')
-    handleSearchActionSpy.mockReturnValue(false)
 
     const searchInput = wrapper.find('textarea')
     const testQuery = 'Jane Smith marketing New York'
@@ -110,8 +97,6 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
-    // Lightbox should NOT be triggered during normal searches (pi symbol only)
-    expect(handleSearchActionSpy).not.toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
@@ -289,14 +274,9 @@ describe('Search Workflow Integration', () => {
     })
 
     const searchStore = useSearchStore()
-    const lightboxStore = useLightboxStore()
 
     const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
     performSearchSpy.mockResolvedValue()
-
-    // Mock lightbox to not trigger (not first search)
-    const handleSearchActionSpy = vi.spyOn(lightboxStore, 'handleSearchAction')
-    handleSearchActionSpy.mockReturnValue(false)
 
     const searchInput = wrapper.find('textarea')
     const searchButton = wrapper.find('[data-testid="search-button"]')
@@ -312,8 +292,6 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(specialQuery)
-    // Lightbox should NOT be triggered during normal searches (pi symbol only)
-    expect(handleSearchActionSpy).not.toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 
@@ -329,14 +307,9 @@ describe('Search Workflow Integration', () => {
     })
 
     const searchStore = useSearchStore()
-    const lightboxStore = useLightboxStore()
 
     const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
     performSearchSpy.mockResolvedValue()
-
-    // Mock lightbox to not trigger (not first search)
-    const handleSearchActionSpy = vi.spyOn(lightboxStore, 'handleSearchAction')
-    handleSearchActionSpy.mockReturnValue(false)
 
     const searchInput = wrapper.find('textarea')
     const searchButton = wrapper.find('[data-testid="search-button"]')
@@ -354,8 +327,6 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(longQuery)
-    // Lightbox should NOT be triggered during normal searches (pi symbol only)
-    expect(handleSearchActionSpy).not.toHaveBeenCalled()
     expect(pushSpy).toHaveBeenCalledWith('/search')
   })
 

@@ -9,7 +9,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Landing from '../Landing.vue'
 import { useSearchStore } from '@/stores/search'
 import { useConversationStore } from '@/stores/conversation'
-import { useLightboxStore } from '@/stores/lightbox'
 
 // Mock components to avoid dependency issues
 vi.mock('@/components/common/Logo.vue', () => ({
@@ -197,20 +196,13 @@ describe('Landing Component', () => {
       expect(performSearchSpy).not.toHaveBeenCalled()
     })
 
-    it('should navigate to search page after successful search without lightbox', async () => {
+    it('should navigate to search page after successful search', async () => {
       const wrapper = createWrapper()
       const searchStore = useSearchStore()
-      const lightboxStore = useLightboxStore()
 
-      // Mock successful search and no lightbox trigger
+      // Mock successful search
       const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
       performSearchSpy.mockResolvedValue()
-
-      const handleSearchActionSpy = vi.spyOn(
-        lightboxStore,
-        'handleSearchAction'
-      )
-      handleSearchActionSpy.mockReturnValue(false) // Not first search, no lightbox
 
       // Mock router push
       const routerPushSpy = vi.spyOn(router, 'push')
@@ -224,41 +216,6 @@ describe('Landing Component', () => {
       // Wait for async operations
       await new Promise(resolve => setTimeout(resolve, 0))
 
-      // Lightbox should NOT be triggered during normal searches (pi symbol only)
-      expect(handleSearchActionSpy).not.toHaveBeenCalled()
-      expect(routerPushSpy).toHaveBeenCalledWith('/search')
-    })
-
-    it('should navigate normally during regular searches (lightbox only for pi symbol)', async () => {
-      const wrapper = createWrapper()
-      const searchStore = useSearchStore()
-      const lightboxStore = useLightboxStore()
-
-      // Mock successful search with no lightbox trigger during normal searches
-      const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
-      performSearchSpy.mockResolvedValue()
-
-      const handleSearchActionSpy = vi.spyOn(
-        lightboxStore,
-        'handleSearchAction'
-      )
-      handleSearchActionSpy.mockReturnValue(false) // No lightbox during normal searches
-
-      // Mock router push
-      const routerPushSpy = vi.spyOn(router, 'push')
-      routerPushSpy.mockResolvedValue(undefined)
-
-      // Set search query and perform search via v-model
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      await searchBar.vm.$emit('update:modelValue', 'test query')
-      await searchBar.vm.$emit('search')
-
-      // Wait for immediate operations
-      await new Promise(resolve => setTimeout(resolve, 0))
-
-      // Lightbox should NOT be triggered during normal searches (pi symbol only)
-      expect(handleSearchActionSpy).not.toHaveBeenCalled()
-      // Should navigate normally since lightbox is not triggered
       expect(routerPushSpy).toHaveBeenCalledWith('/search')
     })
 
