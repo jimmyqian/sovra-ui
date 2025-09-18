@@ -20,8 +20,16 @@ const createMockRouter = () => {
 }
 
 describe('Header Navigation Integration', () => {
+  const createWrapper = (component = AppHeader) => {
+    return mount(component, {
+      global: {
+        plugins: [createPinia()]
+      }
+    })
+  }
+
   it('displays logo correctly in header component', () => {
-    const wrapper = mount(AppHeader)
+    const wrapper = createWrapper(AppHeader)
 
     // Verify header structure
     expect(wrapper.find('header').exists()).toBe(true)
@@ -35,7 +43,7 @@ describe('Header Navigation Integration', () => {
   })
 
   it('renders logo with correct styling in header', () => {
-    const wrapper = mount(AppHeader)
+    const wrapper = createWrapper(AppHeader)
     const logoComponent = wrapper.findComponent(Logo)
 
     // Verify logo SVG dimensions

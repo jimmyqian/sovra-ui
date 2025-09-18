@@ -42,7 +42,7 @@
   const hasMore = computed(() => searchStore.pagination.hasMore)
   const error = computed(() => searchStore.error)
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = async (_query: string) => {
     // Search handling is now done by ConversationPanel component
     // This is just for any additional logic specific to SearchResults
   }
@@ -190,4 +190,3 @@
     // Note: Script initialization now happens in search store during performSearch()
   })
 </script>
-

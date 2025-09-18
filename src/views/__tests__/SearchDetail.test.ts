@@ -180,18 +180,18 @@ describe('SearchDetail Component', () => {
     it('should have correct layout structure', () => {
       const wrapper = createWrapper()
 
-      expect(wrapper.find('.min-h-screen').exists()).toBe(true)
+      // Check SearchLayout structure
       expect(wrapper.find('.h-screen').exists()).toBe(true)
       expect(wrapper.find('.md\\:flex-row').exists()).toBe(true)
-      expect(wrapper.find('.md\\:w-2\\/5').exists()).toBe(true)
+      expect(wrapper.find('.bg-bg-primary').exists()).toBe(true)
     })
 
     it('should pass correct placeholder to SearchBar', () => {
       const wrapper = createWrapper()
       const searchBar = wrapper.findComponent({ name: 'SearchBar' })
 
-      expect(searchBar.props('placeholder')).toContain(
-        'Johnson, who is around 26 years old'
+      expect(searchBar.props('placeholder')).toBe(
+        "Tell me more about who you're looking for"
       )
     })
   })
@@ -453,10 +453,10 @@ describe('SearchDetail Component', () => {
     it('should maintain responsive design', () => {
       const wrapper = createWrapper()
 
-      // Check for responsive classes
-      expect(wrapper.find('.md\\:w-2\\/5').exists()).toBe(true)
-      expect(wrapper.find('.md\\:h-full').exists()).toBe(true)
+      // Check for responsive classes in SearchLayout
       expect(wrapper.find('.md\\:flex-row').exists()).toBe(true)
+      expect(wrapper.find('.max-h-full').exists()).toBe(true)
+      expect(wrapper.find('.overflow-hidden').exists()).toBe(true)
     })
 
     it('should have proper spacing and layout', () => {

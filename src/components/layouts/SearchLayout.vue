@@ -34,7 +34,7 @@
   }
 
   withDefaults(defineProps<Props>(), {
-    searchPlaceholder: 'Tell me more about who you\'re looking for'
+    searchPlaceholder: "Tell me more about who you're looking for"
   })
 
   const emit = defineEmits<{

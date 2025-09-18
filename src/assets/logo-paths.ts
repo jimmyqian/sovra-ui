@@ -45,9 +45,10 @@ function createGappedPath(path: string, gapDegrees: number): string {
  * @param gapDegrees - Size of gaps in degrees (0 = no gaps, 5 = small gaps)
  */
 export function generateLogoSVG(fillColor = '#ff6f16', gapDegrees = 0): string {
-  const paths = gapDegrees > 0
-    ? LOGO_PATHS.map(path => createGappedPath(path, gapDegrees))
-    : LOGO_PATHS
+  const paths =
+    gapDegrees > 0
+      ? LOGO_PATHS.map(path => createGappedPath(path, gapDegrees))
+      : LOGO_PATHS
 
   return `<svg viewBox="${LOGO_VIEWBOX}" fill="none" xmlns="http://www.w3.org/2000/svg">
 ${paths.map(path => `  <path d="${path}" fill="${fillColor}" />`).join('\n')}

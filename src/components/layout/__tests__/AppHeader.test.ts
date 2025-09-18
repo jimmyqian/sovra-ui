@@ -5,17 +5,23 @@
 
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia } from 'pinia'
 import AppHeader from '../AppHeader.vue'
 import Logo from '@/components/common/Logo.vue'
 
 describe('AppHeader', () => {
+  const createWrapper = () => {
+    return mount(AppHeader, {
+      global: {
+        components: { Logo },
+        plugins: [createPinia()]
+      }
+    })
+  }
+
   describe('Basic Rendering', () => {
     it('renders header element with correct structure', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const header = wrapper.find('header')
       expect(header.exists()).toBe(true)
@@ -23,49 +29,33 @@ describe('AppHeader', () => {
     })
 
     it('contains Logo component', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const logo = wrapper.findComponent(Logo)
       expect(logo.exists()).toBe(true)
     })
 
-    it('renders only Logo component inside header', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+    it('renders Logo and SubscriptionIndicator components inside header', () => {
+      const wrapper = createWrapper()
 
-      const headerContent = wrapper.find('header').element
-      const logoElement = wrapper.findComponent(Logo).element
+      const logo = wrapper.findComponent(Logo)
+      const subscriptionIndicator = wrapper.find('.subscription-indicator')
 
-      expect(headerContent.children.length).toBe(1)
-      expect(headerContent.contains(logoElement)).toBe(true)
+      expect(logo.exists()).toBe(true)
+      expect(subscriptionIndicator.exists()).toBe(true)
     })
   })
 
   describe('CSS Styling', () => {
     it('applies correct background styling classes', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('bg-bg-card')
     })
 
     it('applies correct padding classes', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('px-8')
@@ -73,11 +63,7 @@ describe('AppHeader', () => {
     })
 
     it('applies correct border styling classes', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('border-b')
@@ -85,11 +71,7 @@ describe('AppHeader', () => {
     })
 
     it('applies all expected CSS classes', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const header = wrapper.find('header')
       const expectedClasses = [
@@ -108,22 +90,14 @@ describe('AppHeader', () => {
 
   describe('Semantic Structure', () => {
     it('uses proper semantic header element', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       expect(wrapper.element.tagName).toBe('HEADER')
       expect(wrapper.element.getAttribute('role')).toBeFalsy() // Native header provides implicit role
     })
 
     it('provides proper landmark structure for navigation', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       // Header element provides banner landmark by default
       const header = wrapper.find('header')
@@ -134,20 +108,12 @@ describe('AppHeader', () => {
   describe('Component Integration', () => {
     it('successfully mounts with Logo component dependency', () => {
       expect(() => {
-        mount(AppHeader, {
-          global: {
-            components: { Logo }
-          }
-        })
+        createWrapper()
       }).not.toThrow()
     })
 
     it('passes no props to Logo component', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const logo = wrapper.findComponent(Logo)
       expect(Object.keys(logo.props())).toHaveLength(0)
@@ -156,33 +122,21 @@ describe('AppHeader', () => {
 
   describe('Layout Behavior', () => {
     it('maintains consistent header height with padding', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('py-4')
     })
 
     it('provides horizontal spacing for header content', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('px-8')
     })
 
     it('creates visual separation with bottom border', () => {
-      const wrapper = mount(AppHeader, {
-        global: {
-          components: { Logo }
-        }
-      })
+      const wrapper = createWrapper()
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('border-b')
