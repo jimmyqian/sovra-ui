@@ -292,7 +292,6 @@
 
   function handlePiClick() {
     // This function is kept for event binding compatibility but not used
-    // The pi symbol now directly triggers lightbox from the footer component
   }
 
   onMounted(() => {
