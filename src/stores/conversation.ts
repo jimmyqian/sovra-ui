@@ -1,8 +1,22 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import type { ConversationMessage } from '@/types/conversation'
+import {
+  getConversationScript,
+  getNextResponse,
+  getScriptedResults
+} from '@/utils/conversationScripts'
+import type { SearchResult } from '@/types/search'
 
 export const useConversationStore = defineStore('conversation', () => {
+  // Response tracking for script-based conversations
+  const currentScript = ref<ReturnType<typeof getConversationScript> | null>(
+    null
+  )
+  const responseIndex = ref(0)
+  const resultStage = ref(0) // Track which result stage we're on (0-3)
+  const originalQuery = ref('')
+
   // Conversation history that persists across navigation
   const conversationHistory = ref<ConversationMessage[]>([
     {
@@ -129,9 +143,53 @@ export const useConversationStore = defineStore('conversation', () => {
     }
   }
 
+  // Initialize conversation script based on search query
+  const initializeScript = (searchQuery: string) => {
+    originalQuery.value = searchQuery
+    currentScript.value = getConversationScript(searchQuery)
+    responseIndex.value = 0
+    resultStage.value = 0 // Start with initial results
+  }
+
+  // Get the next scripted response (without advancing result stage)
+  const getScriptedResponse = (): string => {
+    if (!currentScript.value) {
+      // Fallback to default if no script is initialized
+      return "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?"
+    }
+
+    const response = getNextResponse(currentScript.value, responseIndex.value)
+    responseIndex.value++
+    // Note: resultStage advancement is now handled separately
+    return response
+  }
+
+  // Advance to the next result stage (called when user provides new information)
+  const advanceResultStage = (): void => {
+    resultStage.value++
+  }
+
+  // Get the current scripted results for the current stage
+  const getCurrentScriptedResults = (): SearchResult[] => {
+    if (!currentScript.value) {
+      return []
+    }
+
+    return getScriptedResults(currentScript.value, resultStage.value)
+  }
+
+  // Reset script state
+  const resetScript = () => {
+    currentScript.value = null
+    responseIndex.value = 0
+    resultStage.value = 0
+    originalQuery.value = ''
+  }
+
   // Clear all conversation history
   const clearConversation = () => {
     conversationHistory.value = []
+    resetScript()
   }
 
   return {
@@ -140,6 +198,16 @@ export const useConversationStore = defineStore('conversation', () => {
     updateMessage,
     removeMessage,
     updateHintHandlers,
-    clearConversation
+    clearConversation,
+    initializeScript,
+    getScriptedResponse,
+    getCurrentScriptedResults,
+    advanceResultStage,
+    resetScript,
+    // Expose read-only state
+    currentScript: computed(() => currentScript.value),
+    responseIndex: computed(() => responseIndex.value),
+    resultStage: computed(() => resultStage.value),
+    originalQuery: computed(() => originalQuery.value)
   }
 })

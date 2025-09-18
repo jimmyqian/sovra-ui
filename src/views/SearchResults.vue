@@ -78,7 +78,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, nextTick, watch } from 'vue'
+  import { ref, computed, nextTick, watch, onMounted } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
   import { useConversationStore } from '@/stores/conversation'
@@ -194,10 +194,13 @@
 
       // Wait 3 seconds before performing search and replacing thinking placeholder
       setTimeout(async () => {
+        // Advance to next result stage (for narrowing down results)
+        conversationStore.advanceResultStage()
+
         // Perform the search
         await searchStore.performSearch(queryToSearch)
 
-        // Find and replace the thinking placeholder
+        // Find and replace the thinking placeholder with scripted response
         conversationStore.updateMessage(thinkingPlaceholderId, {
           id: systemResponseId,
           sender: 'system',
@@ -206,8 +209,7 @@
             {
               id: `text-${Date.now()}`,
               type: 'text',
-              content:
-                "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?",
+              content: conversationStore.getScriptedResponse(),
               emphasis: 'normal'
             }
           ]
@@ -364,6 +366,77 @@
     // This function is kept for event binding compatibility but not used
     // The pi symbol now directly triggers lightbox from the footer component
   }
+
+  // Initialize conversation script on component mount
+  onMounted(() => {
+    // If conversation is empty (cleared from landing), rebuild the default conversation
+    if (
+      conversationStore.conversationHistory.length === 0 &&
+      searchStore.currentQuery
+    ) {
+      // Rebuild the default conversation with the current search query
+      conversationStore.addMessage({
+        id: 'user-message-1',
+        sender: 'user',
+        timestamp: new Date(),
+        content: searchStore.currentQuery
+      })
+
+      conversationStore.addMessage({
+        id: 'system-response-1',
+        sender: 'system',
+        timestamp: new Date(),
+        items: [
+          {
+            id: 'results-summary',
+            type: 'results-summary',
+            resultCount: searchStore.displayTotalResults
+          },
+          {
+            id: 'text-1',
+            type: 'text',
+            content:
+              "Alternatively, you can use the hints below for finding the person you're looking for.",
+            emphasis: 'secondary'
+          },
+          {
+            id: 'hints-group-1',
+            type: 'hints-group',
+            hints: [
+              {
+                text: `What specific details about ${searchStore.currentQuery} can help narrow the search`,
+                onClick: () => {}
+              },
+              {
+                text: `Location or workplace information for ${searchStore.currentQuery}`,
+                onClick: () => {}
+              },
+              {
+                text: `Additional context about ${searchStore.currentQuery}`,
+                onClick: () => {}
+              }
+            ]
+          },
+          {
+            id: 'text-2',
+            type: 'text',
+            content:
+              'Or include further information, such as any documents you may have about him, web links, pictures, or videos; if so, submit them by using the upload option.',
+            emphasis: 'secondary'
+          },
+          {
+            id: 'action-button-1',
+            type: 'action-button',
+            text: 'create a filter using the details that you provided',
+            variant: 'dashed',
+            onClick: () => {}
+          }
+        ]
+      })
+    }
+
+    // Note: Script initialization now happens in search store during performSearch()
+  })
 </script>
 
 <style scoped>

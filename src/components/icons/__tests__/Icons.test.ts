@@ -428,9 +428,7 @@ describe('Icon Components', () => {
     })
 
     it('should use correct default colors', () => {
-      expect(mount(LogoIcon).props('color')).toBe(
-        'var(--color-brand-orange)'
-      )
+      expect(mount(LogoIcon).props('color')).toBe('var(--color-brand-orange)')
       expect(mount(MoreIcon).props('color')).toBe('currentColor')
     })
   })

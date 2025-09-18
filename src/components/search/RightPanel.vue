@@ -5,7 +5,8 @@
     <div
       v-if="!selectedPerson"
       ref="resultsScrollContainer"
-      class="flex-1 overflow-y-auto max-h-full results-scroll"
+      class="flex-1 overflow-y-auto results-scroll"
+      style="min-height: 0; max-height: 100%"
       @scroll="handleResultsScroll"
     >
       <ResultsList
@@ -83,7 +84,7 @@
 
     <!-- Load More Button - Always visible outside scroll area -->
     <div
-      v-if="!selectedPerson && hasMore"
+      v-if="!selectedPerson"
       class="px-8 py-4 text-center md:px-4 bg-bg-primary border-t border-border-light"
     >
       <Button
@@ -104,7 +105,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watch, nextTick } from 'vue'
+  import { ref, watch } from 'vue'
   import ResultsList from './ResultsList.vue'
   import PersonProfile from './PersonProfile.vue'
   import DetailedResultCard from './DetailedResultCard.vue'
@@ -326,12 +327,12 @@
 
   // Watch for changes in results to update scroll state
   watch(
-    () => props.results,
+    () => props.results.length,
     () => {
-      // Check scroll state after results update
-      nextTick(() => {
+      // Use a small delay to avoid layout thrashing during rapid updates
+      setTimeout(() => {
         handleResultsScroll()
-      })
+      }, 10)
     },
     { immediate: true }
   )

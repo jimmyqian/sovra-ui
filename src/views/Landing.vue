@@ -67,12 +67,14 @@
   import { ref } from 'vue'
   import { useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
+  import { useConversationStore } from '@/stores/conversation'
   import Logo from '@/components/common/Logo.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
 
   const router = useRouter()
   const searchStore = useSearchStore()
+  const conversationStore = useConversationStore()
   const searchQuery = ref('')
 
   const handleSearch = async () => {
@@ -81,6 +83,9 @@
     }
 
     try {
+      // Clear previous conversation when starting a new search from landing
+      conversationStore.clearConversation()
+
       await searchStore.performSearch(searchQuery.value)
       await router.push('/search')
     } catch {

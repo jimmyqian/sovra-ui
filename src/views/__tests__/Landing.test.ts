@@ -8,6 +8,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import Landing from '../Landing.vue'
 import { useSearchStore } from '@/stores/search'
+import { useConversationStore } from '@/stores/conversation'
 import { useLightboxStore } from '@/stores/lightbox'
 
 // Mock components to avoid dependency issues
@@ -319,6 +320,39 @@ describe('Landing Component', () => {
 
       const searchBar = wrapper.findComponent({ name: 'SearchBar' })
       expect(searchBar.props('disabled')).toBe(true)
+    })
+
+    it('should clear conversation when starting a new search from landing', async () => {
+      const wrapper = createWrapper()
+      const searchStore = useSearchStore()
+      const conversationStore = useConversationStore()
+
+      // Mock successful search
+      const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
+      performSearchSpy.mockResolvedValue()
+
+      // Mock router push
+      const routerPushSpy = vi.spyOn(router, 'push')
+      routerPushSpy.mockResolvedValue(undefined)
+
+      // Spy on conversation clear
+      const clearConversationSpy = vi.spyOn(
+        conversationStore,
+        'clearConversation'
+      )
+
+      // Perform search
+      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
+      await searchBar.vm.$emit('update:modelValue', 'John Caruso')
+      await searchBar.vm.$emit('search')
+
+      // Wait for async operations
+      await new Promise(resolve => setTimeout(resolve, 0))
+
+      // Verify conversation was cleared before navigation
+      expect(clearConversationSpy).toHaveBeenCalled()
+      expect(performSearchSpy).toHaveBeenCalledWith('John Caruso')
+      expect(routerPushSpy).toHaveBeenCalledWith('/search')
     })
   })
 })

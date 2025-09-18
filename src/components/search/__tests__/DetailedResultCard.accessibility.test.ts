@@ -134,9 +134,7 @@ describe('DetailedResultCard Accessibility', () => {
     })
 
     it('should maintain proper color contrast for image count indicator', () => {
-      const countIndicator = wrapper.find(
-        '.bg-card-dark .text-brand-orange'
-      )
+      const countIndicator = wrapper.find('.bg-card-dark .text-brand-orange')
       expect(countIndicator.exists()).toBe(true)
 
       // The bg-card-dark (#FFEDE2) with brand-orange text should provide sufficient contrast

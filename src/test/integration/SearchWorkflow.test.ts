@@ -208,7 +208,8 @@ describe('Search Workflow Integration', () => {
 
     // Capture the initial totalResults
     const initialResults = store.displayTotalResults
-    expect(initialResults).toBeGreaterThanOrEqual(30)
+    // Accept either scripted results (8+) or random results (30-80)
+    expect(initialResults).toBeGreaterThanOrEqual(8)
     expect(initialResults).toBeLessThanOrEqual(80)
     expect(wrapper.text()).toContain(`${initialResults} persons were found`)
 
@@ -226,7 +227,8 @@ describe('Search Workflow Integration', () => {
 
     // Should now show new results
     const newResults = store.displayTotalResults
-    expect(newResults).toBeGreaterThanOrEqual(30)
+    // Accept either scripted results (8 for initial stage) or random results (30-80)
+    expect(newResults).toBeGreaterThanOrEqual(8)
     expect(newResults).toBeLessThanOrEqual(80)
     expect(wrapper.text()).toContain(`${newResults} persons were found`)
     expect(store.isLoading).toBe(false)

@@ -426,9 +426,7 @@ describe('FileUpload Accessibility', () => {
 
       // Should work with high contrast by using semantic colors
       expect(wrapper.find('.border-dashed').exists()).toBe(true)
-      expect(wrapper.find('.hover\\:border-brand-orange').exists()).toBe(
-        true
-      )
+      expect(wrapper.find('.hover\\:border-brand-orange').exists()).toBe(true)
     })
   })
 

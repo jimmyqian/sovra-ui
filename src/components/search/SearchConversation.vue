@@ -7,12 +7,18 @@
         v-if="message.sender === 'user'"
         :content="message.content ?? ''"
         :class="{
-          'mt-8': index === 2 && messages[index - 1]?.sender === 'system'
+          'mt-4': index > 0 && messages[index - 1]?.sender === 'system'
         }"
       />
 
       <!-- System Message -->
-      <div v-else-if="message.sender === 'system'" class="flex flex-col">
+      <div
+        v-else-if="message.sender === 'system'"
+        class="flex flex-col mb-4"
+        :class="{
+          'mt-6': index > 0 && messages[index - 1]?.sender === 'user'
+        }"
+      >
         <div class="flex gap-4">
           <div class="w-10 h-10 flex items-center justify-center flex-shrink-0">
             <LogoIcon
