@@ -1,120 +1,91 @@
 <template>
-  <div class="min-h-screen bg-bg-primary flex flex-col">
-    <div class="flex-1 flex h-screen">
-      <!-- Left Navigation Sidebar -->
-      <AppSidebar />
-
-      <!-- Main Content Area -->
-      <div class="flex-1 flex flex-col md:flex-row">
-        <!-- Left Panel: Search & Conversation -->
-        <div class="w-full bg-bg-card flex flex-col md:w-2/5 md:h-full">
-          <AppHeader />
-          <SearchConversation
-            :messages="conversationMessages"
-            :user-query="searchQuery"
-          />
-
-          <!-- Search Input -->
-          <div class="px-8 py-4 md:px-4">
-            <SearchBar
-              v-model="searchQuery"
-              placeholder="Johnson, who is around 26 years old, works in a software company in California"
-              @search="handleSearch"
-              @file-upload="handleFileUpload"
-              @speech-error="handleSpeechError"
-            />
-          </div>
-
-          <!-- Spacer to push content up and search box immediately after content -->
-          <div class="flex-1"></div>
-        </div>
-
-        <!-- Right Panel: Person Details -->
-        <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
-          <div
-            ref="detailScrollContainer"
-            class="flex-1 overflow-y-auto max-h-full detail-scroll"
-            @scroll="handleDetailScroll"
+  <SearchLayout
+    search-placeholder="Tell me more about who you're looking for"
+    @search="handleSearch"
+    @file-upload="handleFileUpload"
+    @speech-error="handleSpeechError"
+  >
+    <!-- Right Panel: Person Details -->
+    <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
+      <div
+        ref="detailScrollContainer"
+        class="flex-1 overflow-y-auto max-h-full detail-scroll"
+        @scroll="handleDetailScroll"
+      >
+        <!-- Back Navigation -->
+        <div class="flex items-center gap-2 p-6 pb-0">
+          <button
+            class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
+            @click="handleBackToSearch"
           >
-            <!-- Back Navigation -->
-            <div class="flex items-center gap-2 p-6 pb-0">
-              <button
-                class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
-                @click="handleBackToSearch"
-              >
-                <ChevronLeftIcon />
-                <span>Back to Search Results</span>
-              </button>
-            </div>
-
-            <main class="p-6 space-y-6">
-              <!-- Person Profile Section -->
-              <PersonProfile
-                :person="{
-                  ...personProfile,
-                  profileImage: detailedPerson.profileImage
-                }"
-                @tag-click="handleTagClick"
-              />
-
-              <!-- Detailed Information -->
-              <DetailedResultCard :person="detailedPerson" />
-
-              <!-- Category Tabs -->
-              <CategoryTabs
-                :personal-data="categoryData.personal"
-                :professional-data="categoryData.professional"
-                :finance-data="categoryData.finance"
-                :legal-data="categoryData.legal"
-              />
-
-              <!-- Activity Footer -->
-              <ActivityFooter
-                @category-toggle="handleCategoryToggle"
-                @show-references="handleShowReferences"
-              />
-            </main>
-
-            <!-- Page Footer -->
-            <CopyrightFooter @pi-click="handlePiClick" />
-          </div>
-
-          <!-- Fade-out gradient overlay at top - shows when scrolled -->
-          <div
-            class="fade-overlay-top"
-            :class="[{ visible: showTopFade }]"
-          ></div>
-          <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
-          <div class="fade-overlay"></div>
-
-          <!-- Scroll Control Chevrons -->
-          <ChevronUpIcon
-            v-if="hasScrollableContent && canScrollUp"
-            class="scroll-chevron scroll-chevron-top cursor-pointer"
-            aria-label="Scroll to top"
-            @click="scrollDetailToTop"
-          />
-          <ChevronDownIcon
-            v-if="hasScrollableContent && canScrollDown"
-            class="scroll-chevron scroll-chevron-bottom cursor-pointer"
-            aria-label="Scroll to bottom"
-            @click="scrollDetailToBottom"
-          />
+            <ChevronLeftIcon />
+            <span>Back to Search Results</span>
+          </button>
         </div>
+
+        <main class="p-6 space-y-6">
+          <!-- Person Profile Section -->
+          <PersonProfile
+            :person="{
+              ...personProfile,
+              profileImage: detailedPerson.profileImage
+            }"
+            @tag-click="handleTagClick"
+          />
+
+          <!-- Detailed Information -->
+          <DetailedResultCard :person="detailedPerson" />
+
+          <!-- Category Tabs -->
+          <CategoryTabs
+            :personal-data="categoryData.personal"
+            :professional-data="categoryData.professional"
+            :finance-data="categoryData.finance"
+            :legal-data="categoryData.legal"
+          />
+
+          <!-- Activity Footer -->
+          <ActivityFooter
+            @category-toggle="handleCategoryToggle"
+            @show-references="handleShowReferences"
+          />
+        </main>
+
+        <!-- Page Footer -->
+        <CopyrightFooter @pi-click="handlePiClick" />
       </div>
+
+      <!-- Fade-out gradient overlay at top - shows when scrolled -->
+      <div
+        class="fade-overlay-top"
+        :class="[{ visible: showTopFade }]"
+      ></div>
+      <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
+      <div class="fade-overlay"></div>
+
+      <!-- Scroll Control Chevrons -->
+      <ChevronUpIcon
+        v-if="hasScrollableContent && canScrollUp"
+        class="scroll-chevron scroll-chevron-top cursor-pointer"
+        aria-label="Scroll to top"
+        @click="scrollDetailToTop"
+      />
+      <ChevronDownIcon
+        v-if="hasScrollableContent && canScrollDown"
+        class="scroll-chevron scroll-chevron-bottom cursor-pointer"
+        aria-label="Scroll to bottom"
+        @click="scrollDetailToBottom"
+      />
     </div>
-  </div>
+  </SearchLayout>
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, computed, watch, nextTick } from 'vue'
+  import { ref, onMounted, watch, nextTick } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useConversationStore } from '@/stores/conversation'
   import { useSearchStore } from '@/stores/search'
-  import AppHeader from '@/components/layout/AppHeader.vue'
-  import AppSidebar from '@/components/navigation/AppSidebar.vue'
-  import SearchBar from '@/components/common/SearchBar.vue'
-  import SearchConversation from '@/components/search/SearchConversation.vue'
+  import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
   import CategoryTabs from '@/components/search/CategoryTabs.vue'
@@ -123,16 +94,14 @@
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
-  import type { ConversationMessage } from '@/types/conversation'
 
   const route = useRoute()
   const router = useRouter()
   const conversationStore = useConversationStore()
   const searchStore = useSearchStore()
-  const searchQuery = ref('')
   const detailScrollContainer = ref<HTMLElement | null>(null)
 
-  // Scroll state
+  // Detail panel scroll state
   const showTopFade = ref(false)
   const canScrollUp = ref(false)
   const canScrollDown = ref(false)
@@ -277,64 +246,9 @@
     router.push('/search')
   }
 
-  const handleSearch = async () => {
-    if (searchQuery.value.trim()) {
-      // Add user message to conversation
-      const userMessageId = `user-message-${Date.now()}`
-      const systemResponseId = `system-response-${Date.now()}`
-      const thinkingPlaceholderId = `thinking-${Date.now()}`
-
-      conversationStore.addMessage({
-        id: userMessageId,
-        sender: 'user',
-        timestamp: new Date(),
-        content: searchQuery.value
-      })
-
-      // Add thinking placeholder immediately
-      conversationStore.addMessage({
-        id: thinkingPlaceholderId,
-        sender: 'system',
-        timestamp: new Date(),
-        items: [
-          {
-            id: `thinking-text-${Date.now()}`,
-            type: 'text',
-            content: 'thinking...',
-            emphasis: 'normal',
-            isThinking: true
-          }
-        ]
-      })
-
-      // Store the query before clearing input
-      const queryToSearch = searchQuery.value
-
-      // Clear the search input
-      searchQuery.value = ''
-
-      // Wait 3 seconds before performing search and replacing thinking placeholder
-      setTimeout(async () => {
-        // Perform the search
-        await searchStore.performSearch(queryToSearch)
-
-        // Find and replace the thinking placeholder
-        conversationStore.updateMessage(thinkingPlaceholderId, {
-          id: systemResponseId,
-          sender: 'system',
-          timestamp: new Date(),
-          items: [
-            {
-              id: `text-${Date.now()}`,
-              type: 'text',
-              content:
-                'Based on the additional information you provided I have refined the profile details. The information has been updated to reflect the new search criteria.',
-              emphasis: 'normal'
-            }
-          ]
-        })
-      }, 3000)
-    }
+  const handleSearch = async (query: string) => {
+    // Search handling is now done by ConversationPanel component
+    // This is just for any additional logic specific to SearchDetail
   }
 
   const handleFileUpload = (_files: File[]) => {
@@ -361,30 +275,6 @@
     // Implement tag navigation functionality - could scroll to section or change view
   }
 
-  // Use the persisted conversation from the store
-  const conversationMessages = computed<ConversationMessage[]>(() => {
-    const totalResults = searchStore.displayTotalResults
-    const messages = [...conversationStore.conversationHistory]
-
-    // Update the result count in the initial system response if it exists
-    if (messages.length >= 2 && messages[1]?.sender === 'system') {
-      const systemMessage = messages[1]
-      const resultsSummaryItem = systemMessage.items?.find(
-        item => item.type === 'results-summary'
-      )
-      if (resultsSummaryItem && 'resultCount' in resultsSummaryItem) {
-        resultsSummaryItem.resultCount = totalResults
-      }
-    }
-
-    return messages
-  })
-
-  // TODO: Implement similar profiles functionality
-  // const handleSimilarProfiles = () => {}
-
-  // TODO: Implement search refinement
-  // const handleRefineSearch = () => {}
 
   const handleSpeechError = (_error: string) => {
     // TODO: Implement proper speech error handling UI
