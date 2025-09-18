@@ -311,8 +311,7 @@ describe('CSS Responsive Design Classes', () => {
     it('applies responsive hover states correctly', () => {
       const wrapper = mount(TestComponent, {
         props: {
-          customClass:
-            'bg-bg-card hover:bg-brand-orange md:hover:bg-brand-blue'
+          customClass: 'bg-bg-card hover:bg-brand-orange md:hover:bg-brand-blue'
         },
         slots: { default: 'Responsive hover' }
       })

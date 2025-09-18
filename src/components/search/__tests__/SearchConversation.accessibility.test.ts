@@ -112,7 +112,7 @@ describe('SearchConversation Accessibility', () => {
           div =>
             div.classes().includes('flex') &&
             div.classes().includes('gap-4') &&
-            div.classes().includes('mb-8')
+            div.classes().includes('mb-4')
         )
       expect(userSection?.exists()).toBe(true)
 
@@ -330,7 +330,7 @@ describe('SearchConversation Accessibility', () => {
       // User section should be separated from system response
       const userSection = wrapper
         .findAll('div')
-        .find(div => div.classes().includes('mb-8'))
+        .find(div => div.classes().includes('mb-4'))
       expect(userSection?.exists()).toBe(true)
 
       // Suggestions section should have proper spacing

@@ -60,9 +60,7 @@ describe('FileUpload Component', () => {
       const wrapper = createWrapper(item)
 
       expect(wrapper.find('.border-dashed').exists()).toBe(true)
-      expect(wrapper.find('.hover\\:border-brand-orange').exists()).toBe(
-        true
-      )
+      expect(wrapper.find('.hover\\:border-brand-orange').exists()).toBe(true)
       expect(wrapper.find('.text-brand-orange').exists()).toBe(true)
     })
   })

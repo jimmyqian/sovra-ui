@@ -97,9 +97,7 @@ describe('ActivityFooter', () => {
       .findAll('button')
       .find(btn => btn.text() === 'Show all references')
     expect(showReferencesButton?.exists()).toBe(true)
-    expect(showReferencesButton?.classes()).toContain(
-      'border-brand-orange'
-    )
+    expect(showReferencesButton?.classes()).toContain('border-brand-orange')
     expect(showReferencesButton?.classes()).toContain('text-brand-orange')
   })
 

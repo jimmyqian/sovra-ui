@@ -75,9 +75,7 @@ describe('Logo', () => {
 
     // Text and accent bar should be inside relative container
     expect(textContainer.find('span').exists()).toBe(true)
-    expect(textContainer.find('.absolute.bg-brand-orange').exists()).toBe(
-      true
-    )
+    expect(textContainer.find('.absolute.bg-brand-orange').exists()).toBe(true)
   })
 
   it('has correct main container layout', () => {

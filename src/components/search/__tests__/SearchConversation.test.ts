@@ -517,7 +517,7 @@ describe('SearchConversation', () => {
           div =>
             div.classes().includes('flex') &&
             div.classes().includes('gap-4') &&
-            div.classes().includes('mb-8')
+            div.classes().includes('mb-4')
         )
       expect(userSection).toBeTruthy()
 
@@ -533,7 +533,7 @@ describe('SearchConversation', () => {
 
       const userSection = wrapper
         .findAll('div')
-        .find(div => div.classes().includes('mb-8'))
+        .find(div => div.classes().includes('mb-4'))
       expect(userSection).toBeTruthy()
 
       const suggestionSection = wrapper

@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full bg-bg-primary flex flex-col md:flex-1 md:h-auto">
-    <div class="flex-1 px-8 py-4 overflow-y-auto md:px-4">
+  <div class="w-full h-full bg-bg-primary">
+    <div class="h-full px-8 py-4 md:px-4">
       <!-- Error state -->
       <div v-if="error" class="flex items-center justify-center py-12">
         <div class="text-red-500">Error: {{ error }}</div>

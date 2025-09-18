@@ -261,9 +261,7 @@ describe('SearchConversation (New Component System)', () => {
       expect(textElements.length).toBeGreaterThan(0)
 
       // Hints should be clickable
-      const hintElements = wrapper.findAll(
-        '.text-brand-orange.cursor-pointer'
-      )
+      const hintElements = wrapper.findAll('.text-brand-orange.cursor-pointer')
       expect(hintElements.length).toBeGreaterThan(0)
 
       // Button should have dashed variant styling
@@ -310,7 +308,7 @@ describe('SearchConversation (New Component System)', () => {
       const wrapper = createWrapper()
 
       // User message section when query exists
-      const userSection = wrapper.find('.flex.gap-4.mb-8.items-start')
+      const userSection = wrapper.find('.flex.gap-4.mb-4.items-start')
       expect(userSection.exists()).toBe(true)
 
       // System response sections

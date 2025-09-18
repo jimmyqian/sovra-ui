@@ -255,8 +255,7 @@ describe('CSS Utility Class Application', () => {
     it('applies hover state classes correctly', () => {
       const wrapper = mount(TestComponent, {
         props: {
-          customClass:
-            'bg-bg-card hover:bg-brand-orange hover:text-bg-card'
+          customClass: 'bg-bg-card hover:bg-brand-orange hover:text-bg-card'
         },
         slots: { default: 'Hover states' }
       })
