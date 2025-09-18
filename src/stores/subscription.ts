@@ -9,6 +9,7 @@ import {
   isContentVisible,
   getRedactedText
 } from '@/types/subscription'
+import { useNotificationStore } from './notifications'
 
 export const useSubscriptionStore = defineStore('subscription', () => {
   // State
@@ -26,8 +27,19 @@ export const useSubscriptionStore = defineStore('subscription', () => {
 
   // Actions
   function setLevel(level: SubscriptionLevel) {
+    const previousLevel = currentLevel.value
     currentLevel.value = level
-    // TODO: Add user feedback for subscription level changes
+
+    // Show notification for level change
+    if (previousLevel !== level) {
+      const notificationStore = useNotificationStore()
+
+      notificationStore.success(
+        `Great success! I am now level ${level}!`,
+        undefined, // No message, just the title
+        2500 // Show for 2.5 seconds
+      )
+    }
   }
 
   function upgradeLevel() {
