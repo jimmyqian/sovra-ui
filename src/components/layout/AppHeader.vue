@@ -1,6 +1,8 @@
 <template>
   <header class="bg-bg-card px-8 py-4 border-b border-border-light">
-    <Logo />
+    <div class="flex items-center justify-between">
+      <Logo />
+    </div>
   </header>
 </template>
 

@@ -56,10 +56,7 @@
       </div>
 
       <!-- Fade-out gradient overlay at top - shows when scrolled -->
-      <div
-        class="fade-overlay-top"
-        :class="[{ visible: showTopFade }]"
-      ></div>
+      <div class="fade-overlay-top" :class="[{ visible: showTopFade }]"></div>
       <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
       <div class="fade-overlay"></div>
 
@@ -98,7 +95,7 @@
   const route = useRoute()
   const router = useRouter()
   const conversationStore = useConversationStore()
-  const searchStore = useSearchStore()
+  useSearchStore()
   const detailScrollContainer = ref<HTMLElement | null>(null)
 
   // Detail panel scroll state
@@ -246,7 +243,7 @@
     router.push('/search')
   }
 
-  const handleSearch = async (query: string) => {
+  const handleSearch = async (_query: string) => {
     // Search handling is now done by ConversationPanel component
     // This is just for any additional logic specific to SearchDetail
   }
@@ -274,7 +271,6 @@
     // console.log('Tag clicked:', tag)
     // Implement tag navigation functionality - could scroll to section or change view
   }
-
 
   const handleSpeechError = (_error: string) => {
     // TODO: Implement proper speech error handling UI

@@ -185,7 +185,7 @@ describe('conversationScripts', () => {
     })
 
     it('should handle empty script responses array', () => {
-      const emptyScript = { responses: [] }
+      const emptyScript = { responses: [], resultStages: [] }
       const response = getNextResponse(emptyScript, 0)
       expect(response).toBe(
         "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?"

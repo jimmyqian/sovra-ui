@@ -67,8 +67,8 @@
     searchPlaceholder?: string
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    searchPlaceholder: 'Tell me more about who you\'re looking for'
+  withDefaults(defineProps<Props>(), {
+    searchPlaceholder: "Tell me more about who you're looking for"
   })
 
   const emit = defineEmits<{

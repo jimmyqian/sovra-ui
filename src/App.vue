@@ -17,10 +17,14 @@
   import { onMounted } from 'vue'
   import { useTheme } from '@/composables/useTheme'
   import { useLightboxStore } from '@/stores/lightbox'
+  import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
   import VideoLightbox from '@/components/common/VideoLightbox.vue'
 
   const { initializeTheme } = useTheme()
   const lightboxStore = useLightboxStore()
+
+  // Setup keyboard shortcuts for subscription levels
+  useKeyboardShortcuts()
 
   onMounted(() => {
     initializeTheme()

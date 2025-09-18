@@ -1,10 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="flex items-center gap-2">
-    <LogoIcon
-      :size="52"
-      color="var(--color-brand-orange)"
-    />
+    <LogoIcon :size="52" color="var(--color-brand-orange)" />
     <div class="relative">
       <span class="text-logo font-semibold text-text-primary">SOVRa</span>
       <div
