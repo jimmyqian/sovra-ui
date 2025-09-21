@@ -88,6 +88,7 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useConversationStore } from '@/stores/conversation'
   import { useSearchStore } from '@/stores/search'
+  import { useSubscriptionStore } from '@/stores/subscription'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
@@ -103,6 +104,7 @@
   const router = useRouter()
   const conversationStore = useConversationStore()
   const searchStore = useSearchStore()
+  const subscriptionStore = useSubscriptionStore()
   const detailScrollContainer = ref<HTMLElement | null>(null)
 
   // Detail panel scroll state
@@ -344,9 +346,12 @@
     }
 
     // Show upsell popup when user navigates to detail page
+    // Only show if user is not already at maximum subscription level
     // Small delay to let the page render first
     setTimeout(() => {
-      showUpsellPopup.value = true
+      if (subscriptionStore.currentLevel < 3) {
+        showUpsellPopup.value = true
+      }
     }, 1000)
 
     // Initialize scroll state

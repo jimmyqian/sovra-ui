@@ -13,7 +13,7 @@ import { useNotificationStore } from './notifications'
 
 export const useSubscriptionStore = defineStore('subscription', () => {
   // State
-  const currentLevel = ref<SubscriptionLevel>(2) // Default to Standard level
+  const currentLevel = ref<SubscriptionLevel>(1) // Default to Basic level
 
   // Getters
   const currentTier = computed<SubscriptionTier>(
