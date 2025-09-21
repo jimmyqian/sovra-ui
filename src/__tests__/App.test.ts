@@ -235,9 +235,9 @@ describe('App Component', () => {
       const appDiv = wrapper.find('#app')
       expect(appDiv.exists()).toBe(true)
 
-      // Check that it's a simple container
+      // Check that it's a simple container with router-view and notification container
       const children = appDiv.element.children
-      expect(children.length).toBe(1) // Only router-view
+      expect(children.length).toBe(2) // router-view and NotificationContainer
     })
 
     it('should not have any conditional rendering', async () => {

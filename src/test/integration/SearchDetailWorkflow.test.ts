@@ -266,17 +266,23 @@ describe('SearchDetail Integration Tests', () => {
       }
     })
 
-    // Check main layout structure
-    expect(wrapper.find('.min-h-screen.bg-bg-primary').exists()).toBe(true)
-    expect(wrapper.find('.flex-1.flex.h-screen').exists()).toBe(true)
-    expect(wrapper.find('.flex-1.flex.flex-col.md\\:flex-row').exists()).toBe(
-      true
-    )
-
-    // Check left panel structure
+    // Check main layout structure (SearchLayout component)
+    expect(wrapper.find('.h-screen.bg-bg-primary').exists()).toBe(true)
+    expect(
+      wrapper.find('.flex-1.flex.max-h-full.overflow-hidden').exists()
+    ).toBe(true)
     expect(
       wrapper
-        .find('.w-full.bg-bg-card.flex.flex-col.md\\:w-2\\/5.md\\:h-full')
+        .find('.flex-1.flex.flex-col.md\\:flex-row.max-h-full.overflow-hidden')
+        .exists()
+    ).toBe(true)
+
+    // Check conversation panel structure (left panel)
+    expect(
+      wrapper
+        .find(
+          '.w-full.bg-bg-card.flex.flex-col.md\\:w-2\\/5.max-h-full.relative.overflow-hidden'
+        )
         .exists()
     ).toBe(true)
 
@@ -358,7 +364,7 @@ describe('SearchDetail Integration Tests', () => {
 
     const textarea = wrapper.find('textarea')
     expect(textarea.attributes('placeholder')).toContain(
-      'Johnson, who is around 26 years old'
+      "Tell me more about who you're looking for"
     )
   })
 

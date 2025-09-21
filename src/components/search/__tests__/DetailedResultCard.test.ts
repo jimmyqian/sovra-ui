@@ -1,8 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import DetailedResultCard from '../DetailedResultCard.vue'
+import { useSubscriptionStore } from '@/stores/subscription'
 
 describe('DetailedResultCard', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
   const mockPerson = {
     name: 'Johnson Smith',
     profileImage: '/test-profile.jpg',
@@ -186,6 +192,10 @@ describe('DetailedResultCard', () => {
   })
 
   it('renders finance information section', () => {
+    // Set subscription level to Premium (3) to ensure Finance content is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(3)
+
     const wrapper = mount(DetailedResultCard, {
       props: { person: mockPerson }
     })

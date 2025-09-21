@@ -339,10 +339,10 @@
 
   /* Conversation scroll chevrons - positioned differently */
   .conversation-scroll-chevron.scroll-chevron-top {
-    top: 80px; /* Below header */
+    top: 92px; /* Moved up 1px more from 93px to 92px */
   }
 
   .conversation-scroll-chevron.scroll-chevron-bottom {
-    bottom: 190px; /* Move down 10px from previous position */
+    bottom: 178px; /* Moved up 1px more from 177px to 178px (higher bottom value = moved up) */
   }
 </style>

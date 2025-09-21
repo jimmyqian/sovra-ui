@@ -1,8 +1,14 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import CategoryTabs from '../CategoryTabs.vue'
+import { useSubscriptionStore } from '@/stores/subscription'
 
 describe('CategoryTabs Accessibility', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
   const mockProps = {
     personalData: {
       relationshipStatus: 'Married',
@@ -139,17 +145,21 @@ describe('CategoryTabs Accessibility', () => {
   })
 
   it('handles tab state changes accessibly', async () => {
+    // Set subscription level to Standard (2) to ensure Professional tab is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
-    // Switch to Finance tab
-    const financeTab = wrapper
+    // Switch to Professional tab (which should be accessible at level 2)
+    const professionalTab = wrapper
       .findAll('button')
-      .find(btn => btn.text() === 'Finance')
-    await financeTab?.trigger('click')
+      .find(btn => btn.text() === 'Professional')
+    await professionalTab?.trigger('click')
 
     // Should update both visual and content state
-    expect(financeTab?.classes()).toContain('border-brand-orange')
-    expect(wrapper.text()).toContain('Annual Income')
+    expect(professionalTab?.classes()).toContain('border-brand-orange')
+    expect(wrapper.text()).toContain('Industry')
     expect(wrapper.text()).not.toContain('Relationship Status')
   })
 

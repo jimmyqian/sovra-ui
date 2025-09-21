@@ -6,6 +6,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { VueWrapper } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
 import DetailedResultCard from '../DetailedResultCard.vue'
 import '@/test/accessibility/shared/accessibility-matchers'
 
@@ -67,6 +68,7 @@ describe('DetailedResultCard Accessibility', () => {
   }
 
   beforeEach(() => {
+    setActivePinia(createPinia())
     document.body.innerHTML = '<div id="test-container"></div>'
   })
 
