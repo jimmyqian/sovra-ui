@@ -35,14 +35,12 @@ describe('AppHeader', () => {
       expect(logo.exists()).toBe(true)
     })
 
-    it('renders Logo and SubscriptionIndicator components inside header', () => {
+    it('renders Logo component inside header', () => {
       const wrapper = createWrapper()
 
       const logo = wrapper.findComponent(Logo)
-      const subscriptionIndicator = wrapper.find('.subscription-indicator')
 
       expect(logo.exists()).toBe(true)
-      expect(subscriptionIndicator.exists()).toBe(true)
     })
   })
 

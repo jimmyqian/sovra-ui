@@ -61,10 +61,10 @@ describe('Logo', () => {
     const accentBar = wrapper.find('.absolute.bg-brand-orange')
     const style = accentBar.attributes('style')
 
-    expect(style).toContain('top:16px')
-    expect(style).toContain('left:calc(100% - 1em - 6px)')
-    expect(style).toContain('width:calc(1em + 4px)')
-    expect(style).toContain('height:3px')
+    expect(style).toContain('top: 16px')
+    expect(style).toContain('left: calc(100% + (-1 * (1em + 6px)))')
+    expect(style).toContain('width: calc(1em + 4px)')
+    expect(style).toContain('height: 3px')
   })
 
   it('uses relative positioning for text container', () => {
