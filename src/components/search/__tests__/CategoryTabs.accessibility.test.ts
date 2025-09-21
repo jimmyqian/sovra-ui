@@ -51,6 +51,10 @@ describe('CategoryTabs Accessibility', () => {
   })
 
   it('provides keyboard navigation for tabs', async () => {
+    // Set subscription level to Standard (2) to ensure Professional tab is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     const professionalTab = wrapper
@@ -80,6 +84,10 @@ describe('CategoryTabs Accessibility', () => {
   })
 
   it('provides accessible color contrast for tabs', () => {
+    // Set subscription level to Standard (2) to ensure Professional tab is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     // Active tab should have sufficient contrast

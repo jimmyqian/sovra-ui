@@ -6,14 +6,19 @@
     @speech-error="handleSpeechError"
   >
     <!-- Hotkey Display -->
-    <div class="absolute top-4 right-4 z-10 bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm">
+    <div
+      class="absolute top-4 right-4 z-10 bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm"
+    >
       <div class="font-semibold mb-2">Keyboard Shortcuts</div>
       <div class="space-y-1">
         <div class="flex justify-between items-center gap-4">
           <span class="text-gray-300">Toggle view:</span>
           <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
         </div>
-        <div v-if="displayMode === 'timeline'" class="flex justify-between items-center gap-4">
+        <div
+          v-if="displayMode === 'timeline'"
+          class="flex justify-between items-center gap-4"
+        >
           <span class="text-gray-300">Rotate timeline:</span>
           <div class="flex gap-1">
             <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">Ctrl+V</kbd>

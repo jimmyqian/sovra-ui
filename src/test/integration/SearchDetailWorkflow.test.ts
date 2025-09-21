@@ -149,6 +149,11 @@ describe('SearchDetail Integration Tests', () => {
   })
 
   it('shows detailed person information in DetailedResultCard', async () => {
+    // Set subscription level to Standard (2) to ensure Professional content is accessible
+    const { useSubscriptionStore } = await import('@/stores/subscription')
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(SearchDetail, {
       global: {
         plugins: [router, pinia]
@@ -181,6 +186,11 @@ describe('SearchDetail Integration Tests', () => {
   })
 
   it('allows tab switching in category section', async () => {
+    // Set subscription level to Standard (2) to ensure Professional content is accessible
+    const { useSubscriptionStore } = await import('@/stores/subscription')
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(SearchDetail, {
       global: {
         plugins: [router, pinia]
