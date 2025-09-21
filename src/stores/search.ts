@@ -269,6 +269,11 @@ export const useSearchStore = defineStore('search', () => {
     searchHistory.value = []
   }
 
+  const findPersonById = (id: string | number): SearchResult | null => {
+    const numericId = typeof id === 'string' ? parseInt(id, 10) : id
+    return results.value.find(person => person.id === numericId) ?? null
+  }
+
   return {
     // State
     currentQuery,
@@ -296,6 +301,7 @@ export const useSearchStore = defineStore('search', () => {
     resetPagination,
     performSearch,
     loadMoreResults,
-    clearHistory
+    clearHistory,
+    findPersonById
   }
 })

@@ -5,6 +5,12 @@
     @file-upload="handleFileUpload"
     @speech-error="handleSpeechError"
   >
+    <!-- Upsell Popup -->
+    <UpsellPopup
+      v-model="showUpsellPopup"
+      @upgrade="handleUpgrade"
+      @maybe-later="handleMaybeLater"
+    />
     <!-- Right Panel: Person Details -->
     <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
       <div
@@ -78,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, watch, nextTick } from 'vue'
+  import { ref, computed, onMounted, watch, nextTick } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useConversationStore } from '@/stores/conversation'
   import { useSearchStore } from '@/stores/search'
@@ -91,11 +97,12 @@
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
+  import UpsellPopup from '@/components/common/UpsellPopup.vue'
 
   const route = useRoute()
   const router = useRouter()
   const conversationStore = useConversationStore()
-  useSearchStore()
+  const searchStore = useSearchStore()
   const detailScrollContainer = ref<HTMLElement | null>(null)
 
   // Detail panel scroll state
@@ -104,9 +111,26 @@
   const canScrollDown = ref(false)
   const hasScrollableContent = ref(false)
 
+  // Upsell popup state
+  const showUpsellPopup = ref(false)
+
+  // Get person data from route params and search store
+  const personId = computed(() => route.params.id as string)
+  const selectedPerson = computed(() => {
+    if (personId.value) {
+      return searchStore.findPersonById(personId.value)
+    }
+    return null
+  })
+
+  // Use the person's actual name or fallback to "Unknown Person"
+  const personName = computed(
+    () => selectedPerson.value?.name ?? 'Unknown Person'
+  )
+
   // Mock data - in real app this would come from API based on route params
-  const personProfile = ref({
-    name: 'Johnson Smith',
+  const personProfile = computed(() => ({
+    name: personName.value,
     tags: [
       'Overview',
       'Personal Life',
@@ -114,12 +138,11 @@
       'Finance',
       'Health'
     ],
-    description:
-      'Johnson Smith is an American businessman, inventor, and investor best known for co-founding the technology company ABC Inc. Johnson was also the founder of NeXT and chairman and majority shareholder of Pixar...'
-  })
+    description: `${personName.value} is an American businessman, inventor, and investor best known for co-founding the technology company ABC Inc. ${personName.value} was also the founder of NeXT and chairman and majority shareholder of Pixar...`
+  }))
 
-  const detailedPerson = ref({
-    name: 'Johnson Smith',
+  const detailedPerson = computed(() => ({
+    name: personName.value,
     profileImage:
       'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i3.png',
     images: [
@@ -171,7 +194,7 @@
       crimes: 'None',
       allegations: 'None'
     }
-  })
+  }))
 
   const categoryData = ref({
     personal: {
@@ -290,6 +313,18 @@
     // TODO: Implement filter creation
   }
 
+  // Upsell popup handlers
+  const handleUpgrade = () => {
+    // TODO: Implement actual upgrade flow
+    // TODO: Mr. T says: "Smart choice, fool! Upgrading to premium!"
+    // In real app, navigate to subscription/payment page
+  }
+
+  const handleMaybeLater = () => {
+    // TODO: Mr. T says: "Your loss, jibber-jabber! But I'll be waiting..."
+    // Maybe track this for remarketing/follow-up
+  }
+
   function handlePiClick() {
     // This function is kept for event binding compatibility but not used
   }
@@ -307,6 +342,12 @@
       // TODO: Load person data for production
       // In real app: loadPersonData(personId)
     }
+
+    // Show upsell popup when user navigates to detail page
+    // Small delay to let the page render first
+    setTimeout(() => {
+      showUpsellPopup.value = true
+    }, 1000)
 
     // Initialize scroll state
     nextTick(() => {
