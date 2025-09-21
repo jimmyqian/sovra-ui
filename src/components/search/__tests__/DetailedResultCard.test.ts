@@ -178,6 +178,10 @@ describe('DetailedResultCard', () => {
   })
 
   it('renders professional information section', () => {
+    // Set subscription level to Standard (2) to ensure Professional content is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(DetailedResultCard, {
       props: { person: mockPerson }
     })

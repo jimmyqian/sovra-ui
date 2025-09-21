@@ -59,6 +59,10 @@ describe('CategoryTabs', () => {
   })
 
   it('switches to professional tab when clicked', async () => {
+    // Set subscription level to Standard (2) to ensure Professional tab is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     const professionalTab = wrapper
@@ -125,6 +129,10 @@ describe('CategoryTabs', () => {
   })
 
   it('applies correct styling to inactive tabs', () => {
+    // Set subscription level to Standard (2) to ensure Professional tab is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     const professionalTab = wrapper
@@ -159,6 +167,10 @@ describe('CategoryTabs', () => {
   })
 
   it('maintains proper tab state when switching between tabs', async () => {
+    // Set subscription level to Standard (2) to ensure Professional tab is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     // Switch to Professional
@@ -178,6 +190,10 @@ describe('CategoryTabs', () => {
   })
 
   it('renders section headers in tab content', async () => {
+    // Set subscription level to Standard (2) to ensure Professional tab is accessible
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(2)
+
     const wrapper = mount(CategoryTabs, { props: mockProps })
 
     // Check Personal tab headers
