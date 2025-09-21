@@ -150,6 +150,21 @@ describe('SearchDetail Component', () => {
     const searchStore = useSearchStore()
     searchStore.updatePagination({ totalResults: 42 })
 
+    // Add mock person that matches the route ID for tests
+    const mockPerson = {
+      id: 123,
+      name: 'Johnson Smith',
+      age: 26,
+      gender: 'Male',
+      maritalStatus: 'Married',
+      location: 'California',
+      rating: 4.5,
+      references: 42,
+      companies: 3,
+      contacts: 15
+    }
+    searchStore.setResults([mockPerson])
+
     return mount(SearchDetail, {
       global: {
         plugins: [pinia, router]
