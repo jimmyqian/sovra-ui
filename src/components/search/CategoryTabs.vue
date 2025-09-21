@@ -24,13 +24,9 @@
             :class="[
               validActiveTab === tab.id
                 ? 'border-brand-orange text-brand-orange'
-                : 'border-transparent',
-              isTabAccessible(tab.id)
-                ? 'text-text-secondary hover:text-text-primary cursor-pointer'
-                : 'text-text-muted cursor-not-allowed opacity-60'
+                : 'border-transparent text-text-secondary hover:text-text-primary cursor-pointer'
             ]"
-            :disabled="!isTabAccessible(tab.id)"
-            @click="isTabAccessible(tab.id) ? (activeTab = tab.id) : null"
+            @click="activeTab = tab.id"
           >
             {{ tab.label }}
           </button>
@@ -50,25 +46,48 @@
           >
             <div class="flex justify-between">
               <span class="text-text-secondary">Relationship Status</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('personal')
-                  ? personalData.relationshipStatus
-                  : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ personalData.relationshipStatus }}
+                </span>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-text-secondary">Children</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('personal') ? personalData.children : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ personalData.children }}
+                </span>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-text-secondary">Interests</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('personal')
-                  ? personalData.interests
-                  : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ personalData.interests }}
+                </span>
+              </span>
             </div>
           </div>
         </div>
@@ -84,27 +103,48 @@
           >
             <div class="flex justify-between">
               <span class="text-text-secondary">Industry</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('professional')
-                  ? professionalData.industry
-                  : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('professional')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ professionalData.industry }}
+                </span>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-text-secondary">Years Experience</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('professional')
-                  ? professionalData.experience
-                  : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('professional')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ professionalData.experience }}
+                </span>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-text-secondary">Previous Companies</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('professional')
-                  ? professionalData.previousCompanies
-                  : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('professional')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ professionalData.previousCompanies }}
+                </span>
+              </span>
             </div>
           </div>
         </div>
@@ -120,27 +160,48 @@
           >
             <div class="flex justify-between">
               <span class="text-text-secondary">Annual Income</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('finance')
-                  ? financeData.annualIncome
-                  : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('finance')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ financeData.annualIncome }}
+                </span>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-text-secondary">Investment Portfolio</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('finance')
-                  ? financeData.investments
-                  : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('finance')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ financeData.investments }}
+                </span>
+              </span>
             </div>
             <div class="flex justify-between">
               <span class="text-text-secondary">Property Value</span>
-              <span class="text-text-primary">{{
-                isTabAccessible('finance')
-                  ? financeData.propertyValue
-                  : '████████'
-              }}</span>
+              <span class="text-text-primary">
+                <span
+                  v-if="!isTabAccessible('finance')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ financeData.propertyValue }}
+                </span>
+              </span>
             </div>
           </div>
         </div>
@@ -219,6 +280,10 @@
 
   defineProps<Props>()
 
+  const emit = defineEmits<{
+    showUpsell: []
+  }>()
+
   const subscriptionStore = useSubscriptionStore()
   const activeTab = ref('personal')
 
@@ -252,13 +317,11 @@
       : false
   }
 
-  // Check if current active tab is accessible, if not switch to first accessible
-  const validActiveTab = computed(() => {
-    if (isTabAccessible(activeTab.value)) {
-      return activeTab.value
-    }
-    // Find first accessible tab
-    const firstAccessible = allTabs.find(tab => isTabAccessible(tab.id))
-    return firstAccessible?.id || 'personal'
-  })
+  // Always use the active tab - don't auto-switch to allow viewing redacted content
+  const validActiveTab = computed(() => activeTab.value)
+
+  // Handle clicks on redacted content
+  const handleRedactedClick = () => {
+    emit('showUpsell')
+  }
 </script>

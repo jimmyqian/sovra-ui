@@ -56,10 +56,12 @@ ${paths.map(path => `  <path d="${path}" fill="${fillColor}" />`).join('\n')}
 
 const svgContent = generateLogoSVG(brandOrange, gapDegrees)
 
+// eslint-disable-next-line no-console
 console.log(`Generated favicon with ${gapDegrees}-degree gaps`)
 
 // Write the favicon
 const faviconPath = path.join(__dirname, '../public/favicon.svg')
 fs.writeFileSync(faviconPath, svgContent)
 
+// eslint-disable-next-line no-console
 console.log('✅ Generated favicon.svg from shared logo paths')
