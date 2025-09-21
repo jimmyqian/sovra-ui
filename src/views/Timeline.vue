@@ -6,13 +6,18 @@
     @speech-error="handleSpeechError"
   >
     <!-- Right Panel: Timeline Panel -->
-    <TimelinePanel />
+    <TimelinePanel ref="timelinePanelRef" :orientation="orientation" />
   </SearchLayout>
 </template>
 
 <script setup lang="ts">
+  import { ref, onMounted, onUnmounted } from 'vue'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import TimelinePanel from '@/components/timeline/TimelinePanel.vue'
+
+  const timelinePanelRef = ref<InstanceType<typeof TimelinePanel> | null>(null)
+  const orientation = ref<'horizontal' | 'vertical'>('horizontal')
+  const componentId = Math.random().toString(36).substr(2, 9)
 
   const handleSearch = async (query: string) => {
     // Handle timeline search functionality
@@ -28,6 +33,35 @@
   const handleSpeechError = (_error: string) => {
     // TODO: Implement proper speech error handling UI for timeline
   }
+
+  /**
+   * Handles keyboard shortcuts for timeline orientation toggle
+   */
+  const handleKeyDown = (event: KeyboardEvent): void => {
+    // Ctrl+V combination
+    if (event.ctrlKey && (event.key === 'v' || event.key === 'V')) {
+      event.preventDefault()
+      event.stopPropagation()
+      orientation.value = orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
+      return
+    }
+
+    // Simple 't' key as backup
+    if (event.key === 't' || event.key === 'T') {
+      event.preventDefault()
+      event.stopPropagation()
+      orientation.value = orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
+      return
+    }
+  }
+
+  onMounted(() => {
+    document.addEventListener('keydown', handleKeyDown)
+  })
+
+  onUnmounted(() => {
+    document.removeEventListener('keydown', handleKeyDown)
+  })
 </script>
 
 <script lang="ts">

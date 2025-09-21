@@ -86,6 +86,27 @@ describe('D3Timeline', () => {
     expect(wrapper.props('events')).toHaveLength(4)
   })
 
+  it('accepts orientation prop with default value', () => {
+    const wrapper = mount(D3Timeline, {
+      props: {
+        events: mockTimelineEvents
+      }
+    })
+
+    expect(wrapper.props('orientation')).toBe('horizontal')
+  })
+
+  it('accepts vertical orientation prop', () => {
+    const wrapper = mount(D3Timeline, {
+      props: {
+        events: mockTimelineEvents,
+        orientation: 'vertical'
+      }
+    })
+
+    expect(wrapper.props('orientation')).toBe('vertical')
+  })
+
   it('handles empty events array', () => {
     const wrapper = mount(D3Timeline, {
       props: {

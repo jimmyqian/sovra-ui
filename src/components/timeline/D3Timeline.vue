@@ -14,9 +14,12 @@
 
   interface Props {
     events: TimelineEvent[]
+    orientation?: 'horizontal' | 'vertical'
   }
 
-  const props = defineProps<Props>()
+  const props = withDefaults(defineProps<Props>(), {
+    orientation: 'horizontal'
+  })
 
   const timelineContainer = ref<HTMLElement | null>(null)
   let svg: d3.Selection<d3.BaseType, unknown, null, undefined> | null = null
@@ -32,7 +35,12 @@
     d3.select(timelineContainer.value).selectAll('*').remove()
 
     const container = timelineContainer.value
-    const margin = { top: 80, right: 40, bottom: 60, left: 120 }
+    const isVertical = props.orientation === 'vertical'
+
+    const margin = isVertical
+      ? { top: 60, right: 120, bottom: 40, left: 80 }
+      : { top: 80, right: 40, bottom: 60, left: 120 }
+
     const width = container.clientWidth - margin.left - margin.right
     const height = container.clientHeight - margin.top - margin.bottom
 
@@ -49,11 +57,12 @@
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`)
 
-    // Scales
-    const xScale = d3
+    // Scales - swap axes for vertical orientation
+    const yearExtent = d3.extent(props.events, d => d.year) as [number, number]
+    const primaryScale = d3
       .scaleLinear()
-      .domain(d3.extent(props.events, d => d.year) as [number, number])
-      .range([0, width])
+      .domain(yearExtent)
+      .range(isVertical ? [height, 0] : [0, width])
 
     const categories = ['fishing', 'camping', 'racing', 'whining']
     const colorScale = d3
@@ -62,43 +71,67 @@
       .range(['#3B82F6', '#10B981', '#F59E0B', '#EF4444'])
 
     // Calculate positions for each category line
-    const lineSpacing = height / (categories.length + 1)
+    const lineSpacing = (isVertical ? width : height) / (categories.length + 1)
     const categoryPositions = categories.map((_, i) => (i + 1) * lineSpacing)
 
-    // Create timeline axis at bottom
-    const xAxis = d3.axisBottom(xScale).tickFormat(d3.format('d'))
+    // Create timeline axis
+    const axis = isVertical ? d3.axisLeft(primaryScale).tickFormat(d3.format('d')) : d3.axisBottom(primaryScale).tickFormat(d3.format('d'))
+    const axisTransform = isVertical ? `translate(-20, 0)` : `translate(0,${height + 20})`
+
     g.append('g')
-      .attr('transform', `translate(0,${height + 20})`)
-      .call(xAxis)
+      .attr('transform', axisTransform)
+      .call(axis)
       .selectAll('text')
       .style('fill', 'rgb(156 163 175)')
       .style('font-size', '12px')
 
     // Add category lines and labels
     categories.forEach((category, i) => {
-      const yPos = categoryPositions[i]
+      const categoryPos = categoryPositions[i]
 
       // Add timeline line for this category
-      g.append('line')
-        .attr('x1', 0)
-        .attr('x2', width)
-        .attr('y1', yPos)
-        .attr('y2', yPos)
-        .attr('stroke', colorScale(category))
-        .attr('stroke-width', 2)
-        .attr('opacity', 0.6)
+      if (isVertical) {
+        g.append('line')
+          .attr('x1', categoryPos)
+          .attr('x2', categoryPos)
+          .attr('y1', 0)
+          .attr('y2', height)
+          .attr('stroke', colorScale(category))
+          .attr('stroke-width', 2)
+          .attr('opacity', 0.6)
 
-      // Add category label on the left
-      g.append('text')
-        .attr('x', -20)
-        .attr('y', yPos)
-        .attr('dy', '0.35em')
-        .attr('text-anchor', 'end')
-        .style('fill', colorScale(category))
-        .style('font-size', '14px')
-        .style('font-weight', '600')
-        .style('text-transform', 'capitalize')
-        .text(category)
+        // Add category label at the top
+        g.append('text')
+          .attr('x', categoryPos)
+          .attr('y', -20)
+          .attr('text-anchor', 'middle')
+          .style('fill', colorScale(category))
+          .style('font-size', '14px')
+          .style('font-weight', '600')
+          .style('text-transform', 'capitalize')
+          .text(category)
+      } else {
+        g.append('line')
+          .attr('x1', 0)
+          .attr('x2', width)
+          .attr('y1', categoryPos)
+          .attr('y2', categoryPos)
+          .attr('stroke', colorScale(category))
+          .attr('stroke-width', 2)
+          .attr('opacity', 0.6)
+
+        // Add category label on the left
+        g.append('text')
+          .attr('x', -20)
+          .attr('y', categoryPos)
+          .attr('dy', '0.35em')
+          .attr('text-anchor', 'end')
+          .style('fill', colorScale(category))
+          .style('font-size', '14px')
+          .style('font-weight', '600')
+          .style('text-transform', 'capitalize')
+          .text(category)
+      }
     })
 
     // Group events by category
@@ -107,7 +140,7 @@
     // Create events for each category
     categories.forEach((category, categoryIndex) => {
       const categoryEvents = eventsByCategory.get(category) ?? []
-      const yPos = categoryPositions[categoryIndex]
+      const categoryPos = categoryPositions[categoryIndex]
 
       const events = g
         .selectAll(`.event-${category}`)
@@ -115,7 +148,11 @@
         .enter()
         .append('g')
         .attr('class', `event event-${category}`)
-        .attr('transform', d => `translate(${xScale(d.year)},${yPos})`)
+        .attr('transform', d =>
+          isVertical
+            ? `translate(${categoryPos},${primaryScale(d.year)})`
+            : `translate(${primaryScale(d.year)},${categoryPos})`
+        )
 
       // Add event dots
       events
@@ -126,13 +163,13 @@
         .attr('stroke-width', 2)
         .style('cursor', 'pointer')
 
-      // Add event lines pointing up/down alternately
+      // Add event lines pointing left/right for vertical, up/down for horizontal
       events
         .append('line')
         .attr('x1', 0)
-        .attr('x2', 0)
+        .attr('x2', isVertical ? ((_, i) => (i % 2 === 0 ? -40 : 40)) : 0)
         .attr('y1', 0)
-        .attr('y2', (_, i) => (i % 2 === 0 ? -40 : 40))
+        .attr('y2', isVertical ? 0 : ((_, i) => (i % 2 === 0 ? -40 : 40)))
         .attr('stroke', colorScale(category))
         .attr('stroke-width', 1)
         .attr('opacity', 0.7)
@@ -140,10 +177,10 @@
       // Add event labels
       const labels = events
         .append('text')
-        .attr('x', 0)
-        .attr('y', (_, i) => (i % 2 === 0 ? -50 : 55))
-        .attr('text-anchor', 'middle')
-        .style('fill', 'rgb(229 231 235)')
+        .attr('x', isVertical ? ((_, i) => (i % 2 === 0 ? -50 : 55)) : 0)
+        .attr('y', isVertical ? 0 : ((_, i) => (i % 2 === 0 ? -50 : 55)))
+        .attr('text-anchor', isVertical ? ((_, i) => (i % 2 === 0 ? 'end' : 'start')) : 'middle')
+        .style('fill', 'rgb(0 0 0)')
         .style('font-size', '10px')
         .style('font-weight', '500')
         .style('cursor', 'pointer')
@@ -153,12 +190,12 @@
         const text = d3.select(this)
         const words = d.title.split(/\s+/)
         const lineHeight = 1.1
-        const maxWidth = 100
+        const maxWidth = isVertical ? 80 : 100
 
         text.text(null)
 
         let line: string[] = []
-        let tspan = text.append('tspan').attr('x', 0).attr('dy', 0)
+        let tspan = text.append('tspan').attr('x', text.attr('x')).attr('dy', 0)
 
         words.forEach(word => {
           line.push(word)
@@ -173,7 +210,7 @@
             line = [word]
             tspan = text
               .append('tspan')
-              .attr('x', 0)
+              .attr('x', text.attr('x'))
               .attr('dy', `${lineHeight}em`)
               .text(word)
           }
@@ -185,10 +222,13 @@
         d3.select(this).select('circle').transition().duration(200).attr('r', 8)
 
         // Show tooltip with description
+        const tooltipX = isVertical ? categoryPos : primaryScale(d.year)
+        const tooltipY = isVertical ? primaryScale(d.year) - 120 : categoryPos - 120
+
         const tooltip = g
           .append('g')
           .attr('class', 'tooltip')
-          .attr('transform', `translate(${xScale(d.year)},${yPos - 120})`)
+          .attr('transform', `translate(${tooltipX},${tooltipY})`)
 
         const text = tooltip
           .append('text')
@@ -295,7 +335,7 @@
       .style('fill', 'rgb(229 231 235)')
       .style('font-size', '18px')
       .style('font-weight', '600')
-      .text('Timeline by Category')
+      .text(`Timeline by Category (${isVertical ? 'Vertical' : 'Horizontal'})`)
   }
 
   /**
@@ -327,6 +367,13 @@
       createTimeline()
     },
     { deep: true }
+  )
+
+  watch(
+    () => props.orientation,
+    () => {
+      createTimeline()
+    }
   )
 </script>
 
