@@ -66,8 +66,11 @@
             class="bg-bg-card border border-dashed border-border-dashed px-4 py-2 rounded-full text-text-secondary"
             >DOB - 10 Aug 2000</span
           >
-          <button class="text-brand-orange hover:underline">
-            Login for more details →
+          <button
+            class="text-brand-orange hover:underline cursor-pointer"
+            @click="navigateToTimeline"
+          >
+            View timeline →
           </button>
         </div>
       </div>
@@ -82,6 +85,7 @@
 
 <script setup lang="ts">
   import { ref } from 'vue'
+  import { useRouter } from 'vue-router'
   import Button from '@/components/ui/Button.vue'
   import { sanitizeHtml, safeHighlight } from '@/utils/sanitize'
 
@@ -102,6 +106,7 @@
 
   defineProps<Props>()
   const emit = defineEmits<Emits>()
+  const router = useRouter()
 
   const isExpanded = ref(false)
   const activeTag = ref('Overview')
@@ -118,5 +123,9 @@
   const formatDescription = (description: string, name: string) => {
     // Safely highlight the person's name in the description
     return safeHighlight(description, name)
+  }
+
+  const navigateToTimeline = () => {
+    router.push('/timeline')
   }
 </script>

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createRouter, createWebHistory } from 'vue-router'
 import PersonProfile from '../PersonProfile.vue'
 import Button from '@/components/ui/Button.vue'
 
@@ -99,24 +100,26 @@ describe('PersonProfile', () => {
       }
     })
 
-    // Find the Read More button
-    const readMoreButton = wrapper.find('.text-brand-orange')
-    expect(readMoreButton.exists()).toBe(true)
-    expect(readMoreButton.text()).toBe('Read More')
+    // Find the Read More button (it's the first button with brand-orange text)
+    const readMoreButton = wrapper
+      .findAll('.text-brand-orange')
+      .find(button => button.text().includes('Read More'))
+    expect(readMoreButton?.exists()).toBe(true)
+    expect(readMoreButton?.text()).toBe('Read More')
 
     // Check initial styling
-    expect(readMoreButton.classes()).toContain('ml-1')
-    expect(readMoreButton.classes()).toContain('text-brand-orange')
-    expect(readMoreButton.classes()).toContain('hover:underline')
-    expect(readMoreButton.classes()).toContain('cursor-pointer')
+    expect(readMoreButton?.classes()).toContain('ml-1')
+    expect(readMoreButton?.classes()).toContain('text-brand-orange')
+    expect(readMoreButton?.classes()).toContain('hover:underline')
+    expect(readMoreButton?.classes()).toContain('cursor-pointer')
 
     // Click the button to toggle
-    await readMoreButton.trigger('click')
-    expect(readMoreButton.text()).toBe('Show Less')
+    await readMoreButton?.trigger('click')
+    expect(readMoreButton?.text()).toBe('Show Less')
 
     // Click again to toggle back
-    await readMoreButton.trigger('click')
-    expect(readMoreButton.text()).toBe('Read More')
+    await readMoreButton?.trigger('click')
+    expect(readMoreButton?.text()).toBe('Read More')
   })
 
   it('renders tag buttons with correct props', () => {
@@ -368,5 +371,62 @@ describe('PersonProfile', () => {
     const separatorContainer = separatorBorder.element.parentElement
     expect(separatorContainer?.classList.contains('flex')).toBe(true)
     expect(separatorContainer?.classList.contains('justify-center')).toBe(true)
+  })
+
+  it('displays timeline navigation button with correct text and styling', () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/timeline', component: { template: '<div>Timeline</div>' } }
+      ]
+    })
+
+    const wrapper = mount(PersonProfile, {
+      props: { person: mockPerson },
+      global: {
+        components: { Button },
+        plugins: [router]
+      }
+    })
+
+    // Find the timeline navigation button (it's the second button with brand-orange text)
+    const timelineButton = wrapper
+      .findAll('.text-brand-orange')
+      .find(button => button.text().includes('View timeline'))
+
+    expect(timelineButton?.exists()).toBe(true)
+    expect(timelineButton?.text()).toBe('View timeline →')
+    expect(timelineButton?.classes()).toContain('text-brand-orange')
+    expect(timelineButton?.classes()).toContain('hover:underline')
+    expect(timelineButton?.classes()).toContain('cursor-pointer')
+  })
+
+  it('navigates to timeline when timeline button is clicked', async () => {
+    const router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/timeline', component: { template: '<div>Timeline</div>' } }
+      ]
+    })
+
+    const routerPushSpy = vi.spyOn(router, 'push')
+
+    const wrapper = mount(PersonProfile, {
+      props: { person: mockPerson },
+      global: {
+        components: { Button },
+        plugins: [router]
+      }
+    })
+
+    // Find and click the timeline button
+    const timelineButton = wrapper
+      .findAll('.text-brand-orange')
+      .find(button => button.text().includes('View timeline'))
+
+    expect(timelineButton?.exists()).toBe(true)
+    await timelineButton?.trigger('click')
+
+    expect(routerPushSpy).toHaveBeenCalledWith('/timeline')
   })
 })
