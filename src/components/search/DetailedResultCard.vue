@@ -186,66 +186,100 @@
             <div>
               <div class="text-text-secondary">Born</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('personal')
-                    ? `${person.personal.birthDate} Age ${person.stats.age} years`
-                    : '████████ Age ██ years'
-                }}
+                <span
+                  v-if="!isSectionAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████ Age ██ years
+                </span>
+                <span v-else>
+                  {{
+                    `${person.personal.birthDate} Age ${person.stats.age} years`
+                  }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Place of birth</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('personal')
-                    ? person.personal.birthPlace
-                    : '████████, USA'
-                }}
+                <span
+                  v-if="!isSectionAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████, USA
+                </span>
+                <span v-else>
+                  {{ person.personal.birthPlace }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Spouse</div>
               <div class="font-medium text-brand-orange">
-                {{
-                  isSectionAccessible('personal')
-                    ? person.personal.spouse
-                    : '████████'
-                }}
+                <span
+                  v-if="!isSectionAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors text-text-primary"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ person.personal.spouse }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Live In</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('personal')
-                    ? person.personal.currentLocation
-                    : '████████'
-                }}
+                <span
+                  v-if="!isSectionAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ person.personal.currentLocation }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Height/Weight</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('personal')
-                    ? `${person.personal.height} / ${person.personal.weight}`
-                    : '███ CMs / ██ KG'
-                }}
+                <span
+                  v-if="!isSectionAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ███ CMs / ██ KG
+                </span>
+                <span v-else>
+                  {{ `${person.personal.height} / ${person.personal.weight}` }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Education</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('personal')
-                    ? `${person.personal.education.university} School of Arts and Sciences (${person.personal.education.year})`
-                    : '████████ University (████)'
-                }}
+                <span
+                  v-if="!isSectionAccessible('personal')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████ University (████)
+                </span>
+                <span v-else>
+                  {{
+                    `${person.personal.education.university} School of Arts and Sciences (${person.personal.education.year})`
+                  }}
+                </span>
               </div>
               <div
                 v-if="isSectionAccessible('personal')"
@@ -272,44 +306,64 @@
             <div>
               <div class="text-text-secondary">Current job title</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('professional')
-                    ? person.professional.currentJob
-                    : '████████ Engineer'
-                }}
+                <span
+                  v-if="!isSectionAccessible('professional')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████ Engineer
+                </span>
+                <span v-else>
+                  {{ person.professional.currentJob }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">avg pay</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('professional')
-                    ? person.professional.avgPay
-                    : '$██████/year'
-                }}
+                <span
+                  v-if="!isSectionAccessible('professional')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  $██████/year
+                </span>
+                <span v-else>
+                  {{ person.professional.avgPay }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">current employee</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('professional')
-                    ? person.professional.currentEmployer
-                    : '████████ Inc.'
-                }}
+                <span
+                  v-if="!isSectionAccessible('professional')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████ Inc.
+                </span>
+                <span v-else>
+                  {{ person.professional.currentEmployer }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Time in current field</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('professional')
-                    ? person.professional.timeInField
-                    : '█ years'
-                }}
+                <span
+                  v-if="!isSectionAccessible('professional')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  █ years
+                </span>
+                <span v-else>
+                  {{ person.professional.timeInField }}
+                </span>
               </div>
             </div>
 
@@ -318,11 +372,16 @@
                 Boards/Charities/Voluntaries
               </div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('professional')
-                    ? person.professional.boards || 'N/A'
-                    : '████████'
-                }}
+                <span
+                  v-if="!isSectionAccessible('professional')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████████
+                </span>
+                <span v-else>
+                  {{ person.professional.boards || 'N/A' }}
+                </span>
               </div>
             </div>
           </div>
@@ -343,55 +402,78 @@
             <div>
               <div class="text-text-secondary">$$$ worth</div>
               <div class="text-text-secondary">
-                {{
-                  isSectionAccessible('finance')
-                    ? '(Credit score for B2B)'
-                    : '(████████)'
-                }}
+                <span
+                  v-if="!isSectionAccessible('finance')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  (████████)
+                </span>
+                <span v-else> (Credit score for B2B) </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Housing status Rent/Own</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('finance')
-                    ? person.finance.housingStatus
-                    : '████'
-                }}
+                <span
+                  v-if="!isSectionAccessible('finance')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ████
+                </span>
+                <span v-else>
+                  {{ person.finance.housingStatus }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">House worth</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('finance')
-                    ? person.finance.houseWorth || 'N/A'
-                    : '$███████'
-                }}
+                <span
+                  v-if="!isSectionAccessible('finance')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  $███████
+                </span>
+                <span v-else>
+                  {{ person.finance.houseWorth || 'N/A' }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Business entities</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('finance')
-                    ? person.finance.businessEntities || 'N/A'
-                    : '█ ████'
-                }}
+                <span
+                  v-if="!isSectionAccessible('finance')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  █ ████
+                </span>
+                <span v-else>
+                  {{ person.finance.businessEntities || 'N/A' }}
+                </span>
               </div>
             </div>
 
             <div>
               <div class="text-text-secondary">Bis ent status</div>
               <div class="font-medium text-text-primary">
-                {{
-                  isSectionAccessible('finance')
-                    ? person.finance.businessStatus || 'N/A'
-                    : '██████'
-                }}
+                <span
+                  v-if="!isSectionAccessible('finance')"
+                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  @click="handleRedactedClick"
+                >
+                  ██████
+                </span>
+                <span v-else>
+                  {{ person.finance.businessStatus || 'N/A' }}
+                </span>
               </div>
             </div>
           </div>
@@ -504,6 +586,10 @@
 
   defineProps<Props>()
 
+  const emit = defineEmits<{
+    showUpsell: []
+  }>()
+
   const subscriptionStore = useSubscriptionStore()
 
   // Define subscription level requirements for each section
@@ -522,5 +608,10 @@
     return requiredLevel
       ? subscriptionStore.canViewContent(requiredLevel)
       : false
+  }
+
+  // Handle clicks on redacted content
+  const handleRedactedClick = () => {
+    emit('showUpsell')
   }
 </script>

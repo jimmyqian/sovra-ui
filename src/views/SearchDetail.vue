@@ -40,7 +40,10 @@
           />
 
           <!-- Detailed Information -->
-          <DetailedResultCard :person="detailedPerson" />
+          <DetailedResultCard
+            :person="detailedPerson"
+            @show-upsell="handleShowUpsell"
+          />
 
           <!-- Category Tabs -->
           <CategoryTabs
@@ -48,6 +51,7 @@
             :professional-data="categoryData.professional"
             :finance-data="categoryData.finance"
             :legal-data="categoryData.legal"
+            @show-upsell="handleShowUpsell"
           />
 
           <!-- Activity Footer -->
@@ -325,6 +329,10 @@
   const handleMaybeLater = () => {
     // TODO: Mr. T says: "Your loss, jibber-jabber! But I'll be waiting..."
     // Maybe track this for remarketing/follow-up
+  }
+
+  const handleShowUpsell = () => {
+    showUpsellPopup.value = true
   }
 
   function handlePiClick() {
