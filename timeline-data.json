@@ -1,0 +1,112 @@
+[
+  {
+    "year": 1982,
+    "title": "Epic Bass Fishing at Lake Tahoe",
+    "category": "fishing"
+  },
+  {
+    "year": 1985,
+    "title": "Mountain Camping Adventure in Yosemite",
+    "category": "camping"
+  },
+  {
+    "year": 1987,
+    "title": "Formula One Grand Prix Monaco Trip",
+    "category": "racing"
+  },
+  {
+    "year": 1989,
+    "title": "Complained About Rain During Beach Vacation",
+    "category": "whining"
+  },
+  {
+    "year": 1991,
+    "title": "Fly Fishing in Colorado Rivers",
+    "category": "fishing"
+  },
+  {
+    "year": 1993,
+    "title": "Backpacking Through Glacier National Park",
+    "category": "camping"
+  },
+  {
+    "year": 1995,
+    "title": "NASCAR Daytona 500 Weekend",
+    "category": "racing"
+  },
+  {
+    "year": 1997,
+    "title": "Whined About Mosquitoes All Week at the Cabin",
+    "category": "whining"
+  },
+  {
+    "year": 1999,
+    "title": "Deep Sea Fishing Charter in Florida Keys",
+    "category": "fishing"
+  },
+  {
+    "year": 2001,
+    "title": "Camping Under the Stars in Death Valley",
+    "category": "camping"
+  },
+  {
+    "year": 2003,
+    "title": "Indianapolis 500 Race Day Experience",
+    "category": "racing"
+  },
+  {
+    "year": 2005,
+    "title": "Complained About Hotel WiFi in Paris",
+    "category": "whining"
+  },
+  {
+    "year": 2007,
+    "title": "Salmon Fishing in Alaska",
+    "category": "fishing"
+  },
+  {
+    "year": 2009,
+    "title": "RV Camping Across the Southwest",
+    "category": "camping"
+  },
+  {
+    "year": 2011,
+    "title": "Le Mans 24 Hour Race Spectacle",
+    "category": "racing"
+  },
+  {
+    "year": 2013,
+    "title": "Whined About Airport Delays in Tokyo",
+    "category": "whining"
+  },
+  {
+    "year": 2015,
+    "title": "Ice Fishing Adventure in Minnesota",
+    "category": "fishing"
+  },
+  {
+    "year": 2017,
+    "title": "Glamping in the Redwood Forest",
+    "category": "camping"
+  },
+  {
+    "year": 2019,
+    "title": "MotoGP Championship in Italy",
+    "category": "racing"
+  },
+  {
+    "year": 2021,
+    "title": "Complained About Mask Requirements on Cruise",
+    "category": "whining"
+  },
+  {
+    "year": 2023,
+    "title": "Charter Fishing Trip in Cabo",
+    "category": "fishing"
+  },
+  {
+    "year": 2025,
+    "title": "Desert Camping with Solar Setup",
+    "category": "camping"
+  }
+]

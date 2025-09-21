@@ -5,12 +5,14 @@ import App from './App.vue'
 import Landing from './views/Landing.vue'
 import SearchResults from './views/SearchResults.vue'
 import SearchDetail from './views/SearchDetail.vue'
+import Timeline from './views/Timeline.vue'
 import './style.css'
 
 const routes = [
   { path: '/', component: Landing },
   { path: '/search', component: SearchResults },
-  { path: '/search/:id', component: SearchDetail, name: 'SearchDetail' }
+  { path: '/search/:id', component: SearchDetail, name: 'SearchDetail' },
+  { path: '/timeline', component: Timeline, name: 'Timeline' }
 ]
 
 const router = createRouter({
