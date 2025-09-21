@@ -17,7 +17,6 @@
 
   const timelinePanelRef = ref<InstanceType<typeof TimelinePanel> | null>(null)
   const orientation = ref<'horizontal' | 'vertical'>('horizontal')
-  const componentId = Math.random().toString(36).substr(2, 9)
 
   const handleSearch = async (query: string) => {
     // Handle timeline search functionality
@@ -42,7 +41,8 @@
     if (event.ctrlKey && (event.key === 'v' || event.key === 'V')) {
       event.preventDefault()
       event.stopPropagation()
-      orientation.value = orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
+      orientation.value =
+        orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
       return
     }
 
@@ -50,8 +50,8 @@
     if (event.key === 't' || event.key === 'T') {
       event.preventDefault()
       event.stopPropagation()
-      orientation.value = orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
-      return
+      orientation.value =
+        orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
     }
   }
 

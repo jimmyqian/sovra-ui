@@ -28,6 +28,11 @@ const mockTimelineEvents: TimelineEvent[] = [
     year: 2005,
     title: 'Complained About Hotel Service',
     category: 'whining'
+  },
+  {
+    year: 2010,
+    title: 'Molecular Gastronomy Course',
+    category: 'gourmet cooking'
   }
 ]
 
@@ -83,7 +88,7 @@ describe('D3Timeline', () => {
     })
 
     expect(wrapper.props('events')).toEqual(mockTimelineEvents)
-    expect(wrapper.props('events')).toHaveLength(4)
+    expect(wrapper.props('events')).toHaveLength(5)
   })
 
   it('accepts orientation prop with default value', () => {
@@ -144,7 +149,13 @@ describe('D3Timeline', () => {
 
     const events = wrapper.props('events')
     const categories = events.map((event: TimelineEvent) => event.category)
-    const validCategories = ['fishing', 'camping', 'racing', 'whining']
+    const validCategories = [
+      'fishing',
+      'camping',
+      'racing',
+      'whining',
+      'gourmet cooking'
+    ]
 
     categories.forEach((category: string) => {
       expect(validCategories).toContain(category)
@@ -152,7 +163,7 @@ describe('D3Timeline', () => {
 
     // Verify all expected categories are represented
     const uniqueCategories = [...new Set(categories)]
-    expect(uniqueCategories).toHaveLength(4)
+    expect(uniqueCategories).toHaveLength(5)
   })
 
   it('has valid year range', () => {
@@ -211,7 +222,8 @@ describe('D3Timeline', () => {
       { year: 1991, title: 'Fishing B', category: 'fishing' },
       { year: 1992, title: 'Camping A', category: 'camping' },
       { year: 1993, title: 'Racing A', category: 'racing' },
-      { year: 1994, title: 'Whining A', category: 'whining' }
+      { year: 1994, title: 'Whining A', category: 'whining' },
+      { year: 1995, title: 'Gourmet Cooking A', category: 'gourmet cooking' }
     ]
 
     const wrapper = mount(D3Timeline, {
@@ -221,11 +233,14 @@ describe('D3Timeline', () => {
     })
 
     const events = wrapper.props('events')
-    const categoriesPresent = [...new Set(events.map((e: TimelineEvent) => e.category))]
+    const categoriesPresent = [
+      ...new Set(events.map((e: TimelineEvent) => e.category))
+    ]
 
     expect(categoriesPresent).toContain('fishing')
     expect(categoriesPresent).toContain('camping')
     expect(categoriesPresent).toContain('racing')
     expect(categoriesPresent).toContain('whining')
+    expect(categoriesPresent).toContain('gourmet cooking')
   })
 })

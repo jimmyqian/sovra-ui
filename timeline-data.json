@@ -20,6 +20,11 @@
     "category": "whining"
   },
   {
+    "year": 1990,
+    "title": "Mastered French Soufflé Technique in Provence",
+    "category": "gourmet cooking"
+  },
+  {
     "year": 1991,
     "title": "Fly Fishing in Colorado Rivers",
     "category": "fishing"
@@ -31,13 +36,18 @@
   },
   {
     "year": 1995,
-    "title": "NASCAR Daytona 500 Weekend",
+    "title": "F1 British Grand Prix at Silverstone Weekend",
     "category": "racing"
   },
   {
     "year": 1997,
     "title": "Whined About Mosquitoes All Week at the Cabin",
     "category": "whining"
+  },
+  {
+    "year": 1998,
+    "title": "Truffle Hunting and Cooking Class in Tuscany",
+    "category": "gourmet cooking"
   },
   {
     "year": 1999,
@@ -51,13 +61,18 @@
   },
   {
     "year": 2003,
-    "title": "Indianapolis 500 Race Day Experience",
+    "title": "WRC Rally Finland Forest Stages Experience",
     "category": "racing"
   },
   {
     "year": 2005,
     "title": "Complained About Hotel WiFi in Paris",
     "category": "whining"
+  },
+  {
+    "year": 2006,
+    "title": "Private Sushi Master Class in Tokyo",
+    "category": "gourmet cooking"
   },
   {
     "year": 2007,
@@ -71,13 +86,18 @@
   },
   {
     "year": 2011,
-    "title": "Le Mans 24 Hour Race Spectacle",
+    "title": "F1 Hungarian Grand Prix Budapest Weekend",
     "category": "racing"
   },
   {
     "year": 2013,
     "title": "Whined About Airport Delays in Tokyo",
     "category": "whining"
+  },
+  {
+    "year": 2014,
+    "title": "Molecular Gastronomy Workshop in Copenhagen",
+    "category": "gourmet cooking"
   },
   {
     "year": 2015,
@@ -91,7 +111,7 @@
   },
   {
     "year": 2019,
-    "title": "MotoGP Championship in Italy",
+    "title": "WRC Rally Monte Carlo Snow Stages Adventure",
     "category": "racing"
   },
   {
@@ -103,6 +123,11 @@
     "year": 2023,
     "title": "Charter Fishing Trip in Cabo",
     "category": "fishing"
+  },
+  {
+    "year": 2022,
+    "title": "Farm-to-Table Cooking Retreat in Napa Valley",
+    "category": "gourmet cooking"
   },
   {
     "year": 2025,

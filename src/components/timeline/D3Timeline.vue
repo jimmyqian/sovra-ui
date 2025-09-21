@@ -64,19 +64,29 @@
       .domain(yearExtent)
       .range(isVertical ? [height, 0] : [0, width])
 
-    const categories = ['fishing', 'camping', 'racing', 'whining']
+    const categories = [
+      'fishing',
+      'camping',
+      'racing',
+      'whining',
+      'gourmet cooking'
+    ]
     const colorScale = d3
       .scaleOrdinal<string>()
       .domain(categories)
-      .range(['#3B82F6', '#10B981', '#F59E0B', '#EF4444'])
+      .range(['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'])
 
     // Calculate positions for each category line
     const lineSpacing = (isVertical ? width : height) / (categories.length + 1)
     const categoryPositions = categories.map((_, i) => (i + 1) * lineSpacing)
 
     // Create timeline axis
-    const axis = isVertical ? d3.axisLeft(primaryScale).tickFormat(d3.format('d')) : d3.axisBottom(primaryScale).tickFormat(d3.format('d'))
-    const axisTransform = isVertical ? `translate(-20, 0)` : `translate(0,${height + 20})`
+    const axis = isVertical
+      ? d3.axisLeft(primaryScale).tickFormat(d3.format('d'))
+      : d3.axisBottom(primaryScale).tickFormat(d3.format('d'))
+    const axisTransform = isVertical
+      ? `translate(-20, 0)`
+      : `translate(0,${height + 20})`
 
     g.append('g')
       .attr('transform', axisTransform)
@@ -87,7 +97,7 @@
 
     // Add category lines and labels
     categories.forEach((category, i) => {
-      const categoryPos = categoryPositions[i]
+      const categoryPos = categoryPositions[i] ?? 0
 
       // Add timeline line for this category
       if (isVertical) {
@@ -140,7 +150,7 @@
     // Create events for each category
     categories.forEach((category, categoryIndex) => {
       const categoryEvents = eventsByCategory.get(category) ?? []
-      const categoryPos = categoryPositions[categoryIndex]
+      const categoryPos = categoryPositions[categoryIndex] ?? 0
 
       const events = g
         .selectAll(`.event-${category}`)
@@ -167,9 +177,9 @@
       events
         .append('line')
         .attr('x1', 0)
-        .attr('x2', isVertical ? ((_, i) => (i % 2 === 0 ? -40 : 40)) : 0)
+        .attr('x2', isVertical ? (_, i) => (i % 2 === 0 ? -40 : 40) : 0)
         .attr('y1', 0)
-        .attr('y2', isVertical ? 0 : ((_, i) => (i % 2 === 0 ? -40 : 40)))
+        .attr('y2', isVertical ? 0 : (_, i) => (i % 2 === 0 ? -40 : 40))
         .attr('stroke', colorScale(category))
         .attr('stroke-width', 1)
         .attr('opacity', 0.7)
@@ -177,9 +187,12 @@
       // Add event labels
       const labels = events
         .append('text')
-        .attr('x', isVertical ? ((_, i) => (i % 2 === 0 ? -50 : 55)) : 0)
-        .attr('y', isVertical ? 0 : ((_, i) => (i % 2 === 0 ? -50 : 55)))
-        .attr('text-anchor', isVertical ? ((_, i) => (i % 2 === 0 ? 'end' : 'start')) : 'middle')
+        .attr('x', isVertical ? (_, i) => (i % 2 === 0 ? -50 : 55) : 0)
+        .attr('y', isVertical ? 0 : (_, i) => (i % 2 === 0 ? -50 : 55))
+        .attr(
+          'text-anchor',
+          isVertical ? (_, i) => (i % 2 === 0 ? 'end' : 'start') : 'middle'
+        )
         .style('fill', 'rgb(0 0 0)')
         .style('font-size', '10px')
         .style('font-weight', '500')
@@ -218,12 +231,14 @@
       })
 
       // Add hover effects for this category's events
-      events.on('mouseenter', function (event, d) {
+      events.on('mouseenter', function (_, d) {
         d3.select(this).select('circle').transition().duration(200).attr('r', 8)
 
         // Show tooltip with description
         const tooltipX = isVertical ? categoryPos : primaryScale(d.year)
-        const tooltipY = isVertical ? primaryScale(d.year) - 120 : categoryPos - 120
+        const tooltipY = isVertical
+          ? primaryScale(d.year) - 120
+          : categoryPos - 120
 
         const tooltip = g
           .append('g')
@@ -304,7 +319,7 @@
         // Create background rectangle after text is positioned
         const bbox = text.node()?.getBBox()
         if (bbox) {
-          const rect = tooltip
+          tooltip
             .insert('rect', ':first-child')
             .attr('x', bbox.x - 12)
             .attr('y', bbox.y - 8)
@@ -328,7 +343,7 @@
 
     // Add main title
     svg
-      .append('text')
+      ?.append('text')
       .attr('x', container.clientWidth / 2)
       .attr('y', 30)
       .attr('text-anchor', 'middle')

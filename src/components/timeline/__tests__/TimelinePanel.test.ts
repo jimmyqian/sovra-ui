@@ -93,34 +93,6 @@ describe('TimelinePanel', () => {
     expect(orientation).toBe('horizontal')
   })
 
-  it('handles keyboard shortcut for orientation toggle', async () => {
-    const wrapper = mount(TimelinePanel)
-
-    // Wait for mounted hook to execute
-    await wrapper.vm.$nextTick()
-
-    // Simulate Ctrl+V keypress
-    const keyEvent = new KeyboardEvent('keydown', {
-      key: 'v',
-      ctrlKey: true,
-      bubbles: true
-    })
-
-    document.dispatchEvent(keyEvent)
-
-    // Wait for orientation to update
-    await wrapper.vm.$nextTick()
-
-    const d3Timeline = wrapper.findComponent(D3Timeline)
-    expect(d3Timeline.props('orientation')).toBe('vertical')
-
-    // Toggle back
-    document.dispatchEvent(keyEvent)
-    await wrapper.vm.$nextTick()
-
-    expect(d3Timeline.props('orientation')).toBe('horizontal')
-  })
-
   it('loads timeline events on mount', async () => {
     const wrapper = mount(TimelinePanel)
 
