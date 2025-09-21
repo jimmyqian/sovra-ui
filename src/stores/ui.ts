@@ -22,6 +22,8 @@ export const useUIStore = defineStore('ui', () => {
   const viewMode = ref<ViewMode>('grid')
   const notifications = ref<Notification[]>([])
   const isLoading = ref<boolean>(false)
+  const hasShownUpsellPopup = ref<boolean>(false)
+  const conversationScrollPosition = ref<number>(0)
 
   // Getters
   const hasNotifications = computed(() => notifications.value.length > 0)
@@ -105,6 +107,30 @@ export const useUIStore = defineStore('ui', () => {
     addNotification(message, 'info')
   }
 
+  const markUpsellPopupShown = () => {
+    hasShownUpsellPopup.value = true
+  }
+
+  const canShowUpsellPopup = (): boolean => {
+    return !hasShownUpsellPopup.value
+  }
+
+  const resetUpsellPopupState = () => {
+    hasShownUpsellPopup.value = false
+  }
+
+  const saveConversationScrollPosition = (position: number) => {
+    conversationScrollPosition.value = position
+  }
+
+  const getConversationScrollPosition = (): number => {
+    return conversationScrollPosition.value
+  }
+
+  const resetConversationScrollPosition = () => {
+    conversationScrollPosition.value = 0
+  }
+
   // Helper functions
   const generateId = (): string => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2)
@@ -117,6 +143,8 @@ export const useUIStore = defineStore('ui', () => {
     viewMode,
     notifications,
     isLoading,
+    hasShownUpsellPopup,
+    conversationScrollPosition,
 
     // Getters
     hasNotifications,
@@ -137,6 +165,12 @@ export const useUIStore = defineStore('ui', () => {
     showSuccess,
     showError,
     showWarning,
-    showInfo
+    showInfo,
+    markUpsellPopupShown,
+    canShowUpsellPopup,
+    resetUpsellPopupState,
+    saveConversationScrollPosition,
+    getConversationScrollPosition,
+    resetConversationScrollPosition
   }
 })

@@ -17,7 +17,32 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    // If user navigated with back/forward buttons, use saved position
+    if (savedPosition) {
+      return savedPosition
+    }
+
+    // For routes that use SearchLayout (search results and search detail),
+    // preserve scroll position to maintain conversation panel state
+    const isFromSearchLayout =
+      from.path === '/search' ||
+      from.path.startsWith('/search/') ||
+      from.path === '/timeline'
+    const isToSearchLayout =
+      to.path === '/search' ||
+      to.path.startsWith('/search/') ||
+      to.path === '/timeline'
+
+    if (isFromSearchLayout && isToSearchLayout) {
+      // Preserve scroll position when navigating between SearchLayout routes
+      return false
+    }
+
+    // For other navigations, scroll to top
+    return { top: 0 }
+  }
 })
 
 const pinia = createPinia()
