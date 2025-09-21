@@ -56,8 +56,13 @@
 
   const handleSearch = async (query: string) => {
     // Handle timeline search functionality
+    // The actual search logic is handled by ConversationPanel component
+    // This handler is called after ConversationPanel processes the search
+    // and automatically triggers auto-scroll via the conversation store watchers
     if (query.trim()) {
-      // TODO: Implement timeline search functionality
+      // Optional: Add any timeline-specific search logic here
+      // For now, the ConversationPanel handles the core search functionality
+      // and auto-scroll is triggered automatically when new messages are added
     }
   }
 
@@ -101,6 +106,9 @@
 
   onMounted(() => {
     document.addEventListener('keydown', handleKeyDown)
+
+    // Note: Conversation panel scroll position should be preserved when navigating
+    // between screens. Auto-scroll only happens during search request/response cycles.
   })
 
   onUnmounted(() => {

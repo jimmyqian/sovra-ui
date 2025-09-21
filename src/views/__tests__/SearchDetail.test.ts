@@ -9,6 +9,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import SearchDetail from '../SearchDetail.vue'
 import { useConversationStore } from '@/stores/conversation'
 import { useSearchStore } from '@/stores/search'
+import { useSubscriptionStore } from '@/stores/subscription'
+import { useUIStore } from '@/stores/ui'
 
 // Mock vue-router
 const mockRoute = {
@@ -85,6 +87,7 @@ vi.mock('@/components/search/DetailedResultCard.vue', () => ({
   default: {
     name: 'DetailedResultCard',
     props: ['person'],
+    emits: ['showUpsell'],
     template:
       '<div data-testid="detailed-result-card">{{ person.name }} Details</div>'
   }
@@ -134,6 +137,15 @@ describe('SearchDetail Component', () => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
   })
+
+  const getTestStores = () => {
+    return {
+      conversationStore: useConversationStore(),
+      searchStore: useSearchStore(),
+      subscriptionStore: useSubscriptionStore(),
+      uiStore: useUIStore()
+    }
+  }
 
   const createWrapper = () => {
     const pinia = createPinia()
@@ -481,6 +493,85 @@ describe('SearchDetail Component', () => {
       expect(wrapper.find('.space-y-6').exists()).toBe(true)
       expect(wrapper.find('.p-6').exists()).toBe(true)
       expect(wrapper.find('.px-8.py-4').exists()).toBe(true)
+    })
+  })
+
+  describe('Upsell Popup One-Time Display', () => {
+    it('should only show upsell popup once when clicking redacted content multiple times', async () => {
+      const wrapper = createWrapper()
+      const { uiStore } = getTestStores()
+
+      // Set subscription level to 1 to enable redacted content
+      const { subscriptionStore } = getTestStores()
+      subscriptionStore.setLevel(1)
+
+      await wrapper.vm.$nextTick()
+
+      // Reset UI store to ensure clean state
+      uiStore.resetUpsellPopupState()
+
+      // Get the DetailedResultCard component
+      const detailedCard = wrapper.findComponent({ name: 'DetailedResultCard' })
+      expect(detailedCard.exists()).toBe(true)
+
+      // First click should show popup and mark as shown
+      expect(uiStore.canShowUpsellPopup()).toBe(true)
+
+      await detailedCard.vm.$emit('showUpsell')
+      await wrapper.vm.$nextTick()
+
+      expect(uiStore.hasShownUpsellPopup).toBe(true)
+      expect(uiStore.canShowUpsellPopup()).toBe(false)
+
+      // Second click should not show popup again
+      await detailedCard.vm.$emit('showUpsell')
+      await wrapper.vm.$nextTick()
+
+      // Popup state should remain the same
+      expect(uiStore.hasShownUpsellPopup).toBe(true)
+      expect(uiStore.canShowUpsellPopup()).toBe(false)
+    })
+
+    it('should track upsell popup state correctly via handleShowUpsell method', async () => {
+      const wrapper = createWrapper()
+      const { uiStore } = getTestStores()
+
+      // Reset UI store to ensure clean state
+      uiStore.resetUpsellPopupState()
+
+      // Initially should be able to show popup
+      expect(uiStore.canShowUpsellPopup()).toBe(true)
+
+      // Call handleShowUpsell method directly to test the logic
+      wrapper.vm.handleShowUpsell()
+      await wrapper.vm.$nextTick()
+
+      // Should now be marked as shown
+      expect(uiStore.hasShownUpsellPopup).toBe(true)
+      expect(uiStore.canShowUpsellPopup()).toBe(false)
+
+      // Calling again should not change state
+      wrapper.vm.handleShowUpsell()
+      await wrapper.vm.$nextTick()
+
+      expect(uiStore.hasShownUpsellPopup).toBe(true)
+      expect(uiStore.canShowUpsellPopup()).toBe(false)
+    })
+
+    it('should not show popup if already at maximum subscription level', async () => {
+      const { uiStore, subscriptionStore } = getTestStores()
+
+      // Reset UI store and set maximum subscription level
+      uiStore.resetUpsellPopupState()
+      subscriptionStore.setLevel(3)
+
+      // Create wrapper after setting up stores
+      const wrapper = createWrapper()
+      await wrapper.vm.$nextTick()
+
+      // Popup should not be shown for max level subscribers
+      expect(uiStore.hasShownUpsellPopup).toBe(false)
+      expect(uiStore.canShowUpsellPopup()).toBe(true)
     })
   })
 })

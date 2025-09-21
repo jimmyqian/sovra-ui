@@ -290,4 +290,55 @@ describe('UI Store', () => {
       })
     })
   })
+
+  describe('Upsell Popup Management', () => {
+    it('should start with popup not shown', () => {
+      const store = useUIStore()
+
+      expect(store.hasShownUpsellPopup).toBe(false)
+      expect(store.canShowUpsellPopup()).toBe(true)
+    })
+
+    it('should mark popup as shown and prevent further displays', () => {
+      const store = useUIStore()
+
+      // Initially can show popup
+      expect(store.canShowUpsellPopup()).toBe(true)
+
+      // Mark as shown
+      store.markUpsellPopupShown()
+
+      // Should now be marked as shown and cannot show again
+      expect(store.hasShownUpsellPopup).toBe(true)
+      expect(store.canShowUpsellPopup()).toBe(false)
+    })
+
+    it('should reset popup state', () => {
+      const store = useUIStore()
+
+      // Mark as shown
+      store.markUpsellPopupShown()
+      expect(store.canShowUpsellPopup()).toBe(false)
+
+      // Reset state
+      store.resetUpsellPopupState()
+
+      // Should be able to show again
+      expect(store.hasShownUpsellPopup).toBe(false)
+      expect(store.canShowUpsellPopup()).toBe(true)
+    })
+
+    it('should handle multiple mark attempts correctly', () => {
+      const store = useUIStore()
+
+      // Mark multiple times
+      store.markUpsellPopupShown()
+      store.markUpsellPopupShown()
+      store.markUpsellPopupShown()
+
+      // Should still be marked as shown only once
+      expect(store.hasShownUpsellPopup).toBe(true)
+      expect(store.canShowUpsellPopup()).toBe(false)
+    })
+  })
 })

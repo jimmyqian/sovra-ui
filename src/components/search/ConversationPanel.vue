@@ -53,9 +53,18 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, nextTick, watch } from 'vue'
+  import {
+    ref,
+    computed,
+    nextTick,
+    watch,
+    onMounted,
+    onBeforeUnmount
+  } from 'vue'
+  import { useRoute } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
   import { useConversationStore } from '@/stores/conversation'
+  import { useUIStore } from '@/stores/ui'
   import AppHeader from '@/components/layout/AppHeader.vue'
   import SearchBar from '@/components/common/SearchBar.vue'
   import SearchConversation from '@/components/search/SearchConversation.vue'
@@ -77,8 +86,10 @@
     speechError: [error: string]
   }>()
 
+  const route = useRoute()
   const searchStore = useSearchStore()
   const conversationStore = useConversationStore()
+  const uiStore = useUIStore()
   const conversationScrollContainer = ref<HTMLElement | null>(null)
   const searchQuery = ref('')
 
@@ -87,6 +98,7 @@
   const canScrollDownConversation = ref(false)
   const hasScrollableContentConversation = ref(false)
   const isAutoScrolling = ref(false)
+  const isRestoringPosition = ref(false)
 
   // Auto-scroll to bottom function with 1-second smooth animation
   const scrollToBottom = async () => {
@@ -136,6 +148,11 @@
       canScrollUpConversation.value = scrollTop > 0
       canScrollDownConversation.value = scrollTop < scrollHeight - clientHeight
       hasScrollableContentConversation.value = scrollHeight > clientHeight
+
+      // Save scroll position to store (but not during restoration)
+      if (!isRestoringPosition.value) {
+        uiStore.saveConversationScrollPosition(scrollTop)
+      }
     }
   }
 
@@ -264,14 +281,8 @@
     return messages
   })
 
-  // Watch for changes in conversation messages and auto-scroll
-  watch(
-    conversationMessages,
-    () => {
-      scrollToBottom()
-    },
-    { deep: true }
-  )
+  // Auto-scroll is handled explicitly during search operations (handleSearch function)
+  // This preserves scroll position when navigating between screens
 
   // Watch for changes in conversation messages to update scroll state
   watch(
@@ -284,6 +295,74 @@
     },
     { deep: true, immediate: true }
   )
+
+  // Watch for route changes and restore scroll position
+  watch(
+    () => route?.path,
+    () => {
+      // Restore scroll position when route changes
+      isRestoringPosition.value = true
+      nextTick(() => {
+        setTimeout(() => {
+          if (conversationScrollContainer.value) {
+            const savedPosition = uiStore.getConversationScrollPosition()
+            const currentHeight = conversationScrollContainer.value.scrollHeight
+            const containerHeight =
+              conversationScrollContainer.value.clientHeight
+            if (savedPosition > 0 && currentHeight > containerHeight) {
+              conversationScrollContainer.value.scrollTop = savedPosition
+            }
+            // Restoration complete
+            isRestoringPosition.value = false
+            handleConversationScroll()
+          }
+        }, 200)
+      })
+    }
+  )
+
+  // Restore scroll position on mount
+  onMounted(async () => {
+    isRestoringPosition.value = true
+    await nextTick()
+
+    // Wait a bit longer for content to fully load
+    setTimeout(() => {
+      if (conversationScrollContainer.value) {
+        const savedPosition = uiStore.getConversationScrollPosition()
+        const currentHeight = conversationScrollContainer.value.scrollHeight
+        const containerHeight = conversationScrollContainer.value.clientHeight
+        if (savedPosition > 0 && currentHeight > containerHeight) {
+          conversationScrollContainer.value.scrollTop = savedPosition
+
+          // Double-check after a brief moment to ensure position sticks
+          setTimeout(() => {
+            if (conversationScrollContainer.value && savedPosition > 0) {
+              const finalScrollTop = conversationScrollContainer.value.scrollTop
+              if (finalScrollTop !== savedPosition) {
+                conversationScrollContainer.value.scrollTop = savedPosition
+              }
+            }
+            // Restoration complete
+            isRestoringPosition.value = false
+          }, 50)
+        } else {
+          // No restoration needed
+          isRestoringPosition.value = false
+        }
+        // Update scroll state after restoring position
+        handleConversationScroll()
+      }
+    }, 100)
+  })
+
+  // Save scroll position before unmount
+  onBeforeUnmount(() => {
+    if (conversationScrollContainer.value) {
+      const currentPosition = conversationScrollContainer.value.scrollTop
+      uiStore.saveConversationScrollPosition(currentPosition)
+    }
+  })
 
   // Expose scrollToBottom for parent components to use
   defineExpose({

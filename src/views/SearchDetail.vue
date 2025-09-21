@@ -93,6 +93,7 @@
   import { useConversationStore } from '@/stores/conversation'
   import { useSearchStore } from '@/stores/search'
   import { useSubscriptionStore } from '@/stores/subscription'
+  import { useUIStore } from '@/stores/ui'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
@@ -109,6 +110,7 @@
   const conversationStore = useConversationStore()
   const searchStore = useSearchStore()
   const subscriptionStore = useSubscriptionStore()
+  const uiStore = useUIStore()
   const detailScrollContainer = ref<HTMLElement | null>(null)
 
   // Detail panel scroll state
@@ -332,7 +334,11 @@
   }
 
   const handleShowUpsell = () => {
-    showUpsellPopup.value = true
+    // Only show upsell popup if it hasn't been shown before in this session
+    if (uiStore.canShowUpsellPopup()) {
+      showUpsellPopup.value = true
+      uiStore.markUpsellPopupShown()
+    }
   }
 
   function handlePiClick() {
@@ -421,10 +427,12 @@
 
     // Show upsell popup when user navigates to detail page
     // Only show if user is not already at maximum subscription level
+    // and hasn't seen the popup before in this session
     // Small delay to let the page render first
     setTimeout(() => {
-      if (subscriptionStore.currentLevel < 3) {
+      if (subscriptionStore.currentLevel < 3 && uiStore.canShowUpsellPopup()) {
         showUpsellPopup.value = true
+        uiStore.markUpsellPopupShown()
       }
     }, 1000)
 
