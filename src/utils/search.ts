@@ -170,7 +170,8 @@ export const validateSearchResult = (
     typeof obj.rating === 'number' &&
     typeof obj.references === 'number' &&
     typeof obj.companies === 'number' &&
-    typeof obj.contacts === 'number'
+    typeof obj.contacts === 'number' &&
+    (obj.image === undefined || typeof obj.image === 'string')
   )
 }
 

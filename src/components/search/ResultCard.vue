@@ -4,7 +4,13 @@
     @click="handlePersonSelect"
   >
     <div class="flex items-start gap-4 flex-1 md:min-w-80">
-      <div class="w-15 h-15 bg-border-lighter rounded-full flex-shrink-0"></div>
+      <div class="w-15 h-15 rounded-full flex-shrink-0 overflow-hidden">
+        <img
+          :src="result.image ?? 'https://picsum.photos/240/240?random=1'"
+          alt="Profile"
+          class="w-full h-full object-cover"
+        />
+      </div>
       <div class="flex-1 min-w-0">
         <h3 class="text-xl font-semibold mb-2 text-text-primary">
           {{ result.name }}
