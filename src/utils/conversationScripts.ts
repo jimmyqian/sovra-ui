@@ -8,6 +8,10 @@ export interface ConversationScript {
   resultStages: SearchResult[][]
 }
 
+export interface DetailScript {
+  responses: string[]
+}
+
 /**
  * Generate hardcoded search results for default fallback (kept for backwards compatibility)
  */
@@ -531,4 +535,60 @@ export function getScriptedResults(
 
   // If stage is out of bounds, return the last available stage
   return script.resultStages[script.resultStages.length - 1] ?? []
+}
+
+/**
+ * Get the appropriate detail script based on the search query
+ */
+export function getDetailScript(query: string): DetailScript {
+  const normalizedQuery = query.toLowerCase().trim()
+
+  // Check for John Caruso (case insensitive)
+  if (normalizedQuery.includes('john caruso')) {
+    return {
+      responses: [
+        'John Caruso search detail response 1',
+        'John Caruso search detail response 2',
+        'John Caruso search detail response 3'
+      ]
+    }
+  }
+
+  // Check for Von Miller (case insensitive)
+  if (normalizedQuery.includes('von miller')) {
+    return {
+      responses: [
+        'Von Miller search detail response 1',
+        'Von Miller search detail response 2',
+        'Von Miller search detail response 3'
+      ]
+    }
+  }
+
+  // Default fallback for unknown queries
+  return {
+    responses: [
+      'Search detail response 1',
+      'Search detail response 2',
+      'Search detail response 3'
+    ]
+  }
+}
+
+/**
+ * Get the next response from a detail script
+ */
+export function getDetailResponse(
+  script: DetailScript,
+  responseIndex: number
+): string {
+  if (responseIndex >= 0 && responseIndex < script.responses.length) {
+    return script.responses[responseIndex] ?? 'Default search detail response'
+  }
+
+  // If we've exceeded the script length, cycle back to the beginning
+  return (
+    script.responses[responseIndex % script.responses.length] ??
+    'Default search detail response'
+  )
 }

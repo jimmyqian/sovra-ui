@@ -229,12 +229,24 @@
       // Wait 3 seconds before performing search and replacing thinking placeholder
       setTimeout(async () => {
         // Advance to next result stage (for narrowing down results)
-        conversationStore.advanceResultStage()
+        // Use detail script if on search detail page, otherwise use main script
+        const isDetailPage =
+          route?.path?.startsWith('/search/') && route.path !== '/search'
+        if (isDetailPage) {
+          conversationStore.advanceDetailResultStage()
+        } else {
+          conversationStore.advanceResultStage()
+        }
 
         // Perform the search
         await searchStore.performSearch(queryToSearch)
 
         // Find and replace the thinking placeholder with scripted response
+        // Use detail script if on search detail page, otherwise use main script
+        const scriptedContent = isDetailPage
+          ? conversationStore.getDetailScriptedResponse()
+          : conversationStore.getScriptedResponse()
+
         conversationStore.updateMessage(thinkingPlaceholderId, {
           id: systemResponseId,
           sender: 'system',
@@ -243,7 +255,7 @@
             {
               id: `text-${Date.now()}`,
               type: 'text',
-              content: conversationStore.getScriptedResponse(),
+              content: scriptedContent,
               emphasis: 'normal'
             }
           ]

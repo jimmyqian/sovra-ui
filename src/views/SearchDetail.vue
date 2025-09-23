@@ -352,6 +352,12 @@
       onCreateFilter: handleCreateFilter
     })
 
+    // Initialize detail script using the original search query
+    // Only initialize if we have an original query and haven't initialized detail script yet
+    if (conversationStore.originalQuery && !conversationStore.detailScript) {
+      conversationStore.initializeDetailScript(conversationStore.originalQuery)
+    }
+
     // Load person data based on route params
     const personId = route.params.id as string
     if (personId) {
