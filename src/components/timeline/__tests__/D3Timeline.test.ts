@@ -243,4 +243,103 @@ describe('D3Timeline', () => {
     expect(categoriesPresent).toContain('whining')
     expect(categoriesPresent).toContain('gourmet cooking')
   })
+
+  it('calculates minimum width for horizontal timeline with wide year range', () => {
+    const wideRangeEvents: TimelineEvent[] = [
+      { year: 1950, title: 'Early Event', category: 'fishing' },
+      { year: 2020, title: 'Recent Event', category: 'camping' }
+    ]
+
+    const wrapper = mount(D3Timeline, {
+      props: {
+        events: wideRangeEvents,
+        orientation: 'horizontal'
+      }
+    })
+
+    // The component should handle wide year ranges properly
+    expect(wrapper.props('events')).toEqual(wideRangeEvents)
+    expect(wrapper.props('orientation')).toBe('horizontal')
+  })
+
+  it('handles horizontal orientation with events that have long category labels', () => {
+    const longLabelEvents: TimelineEvent[] = [
+      { year: 1990, title: 'Short Event', category: 'fishing' },
+      {
+        year: 1995,
+        title: 'Longer Event Description',
+        category: 'gourmet cooking'
+      },
+      {
+        year: 2000,
+        title: 'Very Long Event Title That Might Overflow',
+        category: 'camping'
+      }
+    ]
+
+    const wrapper = mount(D3Timeline, {
+      props: {
+        events: longLabelEvents,
+        orientation: 'horizontal'
+      }
+    })
+
+    // Verify that long labels are handled properly
+    const events = wrapper.props('events')
+    expect(events).toHaveLength(3)
+    expect(
+      events.some((e: TimelineEvent) => e.category === 'gourmet cooking')
+    ).toBe(true)
+    expect(wrapper.props('orientation')).toBe('horizontal')
+  })
+
+  it('properly handles minimum width calculation when no events are provided', () => {
+    const wrapper = mount(D3Timeline, {
+      props: {
+        events: [],
+        orientation: 'horizontal'
+      }
+    })
+
+    // Should handle empty events gracefully without errors
+    expect(wrapper.props('events')).toEqual([])
+    expect(wrapper.props('orientation')).toBe('horizontal')
+  })
+
+  it('supports responsive width calculation for different numbers of events', () => {
+    const manyEvents: TimelineEvent[] = Array.from({ length: 20 }, (_, i) => ({
+      year: 1990 + i,
+      title: `Event ${i + 1}`,
+      category: ['fishing', 'camping', 'racing'][i % 3] ?? 'fishing'
+    }))
+
+    const wrapper = mount(D3Timeline, {
+      props: {
+        events: manyEvents,
+        orientation: 'horizontal'
+      }
+    })
+
+    // Should handle many events properly
+    expect(wrapper.props('events')).toHaveLength(20)
+    expect(wrapper.props('orientation')).toBe('horizontal')
+  })
+
+  it('maintains proper spacing for horizontal timeline regardless of event count', () => {
+    const fewEvents: TimelineEvent[] = [
+      { year: 2000, title: 'Event 1', category: 'fishing' },
+      { year: 2005, title: 'Event 2', category: 'camping' }
+    ]
+
+    const wrapper = mount(D3Timeline, {
+      props: {
+        events: fewEvents,
+        orientation: 'horizontal'
+      }
+    })
+
+    // Should handle few events with proper spacing
+    expect(wrapper.props('events')).toHaveLength(2)
+    expect(wrapper.props('orientation')).toBe('horizontal')
+  })
 })

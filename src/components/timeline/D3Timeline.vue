@@ -39,10 +39,39 @@
 
     const margin = isVertical
       ? { top: 60, right: 120, bottom: 40, left: 80 }
-      : { top: 80, right: 40, bottom: 60, left: 120 }
+      : { top: 80, right: 40, bottom: 60, left: 160 }
 
-    const width = container.clientWidth - margin.left - margin.right
-    const height = container.clientHeight - margin.top - margin.bottom
+    // Calculate dimensions
+    let containerWidth = container.clientWidth
+    const containerHeight = container.clientHeight
+
+    if (!isVertical && props.events.length > 0) {
+      // For horizontal timeline, calculate minimum width based on events and spacing
+      const yearExtent = d3.extent(props.events, d => d.year) as [
+        number,
+        number
+      ]
+      const yearRange = yearExtent[1] - yearExtent[0]
+
+      // Calculate reasonable spacing - reduce excessive gaps
+      const minSpacingPerYear = Math.max(
+        30,
+        60 / Math.sqrt(props.events.length)
+      )
+      const labelPadding = 160 // Adequate space for category labels on sides
+      const minRequiredWidth =
+        yearRange * minSpacingPerYear +
+        margin.left +
+        margin.right +
+        labelPadding
+
+      // Use minimum required width to ensure all content is visible
+      // The parent TimelinePanel will handle horizontal scrolling
+      containerWidth = Math.max(containerWidth, minRequiredWidth)
+    }
+
+    const width = containerWidth - margin.left - margin.right
+    const height = containerHeight - margin.top - margin.bottom
 
     if (width <= 0 || height <= 0) return
 
@@ -50,8 +79,8 @@
     svg = d3
       .select(container)
       .append('svg')
-      .attr('width', container.clientWidth)
-      .attr('height', container.clientHeight)
+      .attr('width', containerWidth)
+      .attr('height', containerHeight)
 
     if (!svg) return
 
@@ -132,9 +161,9 @@
           .attr('stroke-width', 2)
           .attr('opacity', 0.6)
 
-        // Add category label on the left
+        // Add category label on the left with more space to prevent truncation
         g.append('text')
-          .attr('x', -20)
+          .attr('x', -10)
           .attr('y', categoryPos)
           .attr('dy', '0.35em')
           .attr('text-anchor', 'end')
@@ -190,71 +219,143 @@
           'y2',
           isVertical
             ? 0
-            : (_: TimelineEvent, i: number) => (i % 2 === 0 ? -40 : 40)
+            : (_: TimelineEvent, i: number) => {
+                // Stagger labels more intelligently to reduce overlaps
+                const direction = i % 2 === 0 ? -1 : 1
+                const stagger = Math.floor(i / 2) % 3 // 3 levels of staggering
+                const distance = 30 + stagger * 10 // 30px, 40px, or 50px
+                return direction * distance
+              }
         )
         .attr('stroke', colorScale(category))
         .attr('stroke-width', 1)
         .attr('opacity', 0.7)
 
-      // Add event labels
-      const labels = events
-        .append('text')
-        .attr(
-          'x',
-          isVertical
-            ? (_: TimelineEvent, i: number) => (i % 2 === 0 ? -50 : 55)
-            : 0
-        )
-        .attr(
-          'y',
-          isVertical
-            ? 0
-            : (_: TimelineEvent, i: number) => (i % 2 === 0 ? -50 : 55)
-        )
-        .attr(
-          'text-anchor',
-          isVertical
-            ? (_: TimelineEvent, i: number) => (i % 2 === 0 ? 'end' : 'start')
-            : 'middle'
-        )
-        .style('fill', 'rgb(0 0 0)')
-        .style('font-size', '10px')
-        .style('font-weight', '500')
+      // Add event label containers with oval backgrounds
+      const labelGroups = events
+        .append('g')
+        .attr('class', 'event-label-group')
+        .attr('transform', (_: TimelineEvent, i: number) => {
+          const direction = i % 2 === 0 ? -1 : 1
+          const stagger = Math.floor(i / 2) % 3
+          const distance = 35 + stagger * 8 // Reduced distances: 35px, 43px, 51px
+
+          if (isVertical) {
+            const xOffset = direction === -1 ? -60 : 60
+            return `translate(${xOffset}, 0)`
+          }
+          const yOffset = direction * distance
+          return `translate(0, ${yOffset})`
+        })
         .style('cursor', 'pointer')
 
-      // Split long titles into multiple lines
+      // Add background button-shaped containers for labels
+      labelGroups
+        .append('rect')
+        .attr('class', 'label-background')
+        .attr('width', 0) // Will be set dynamically based on text
+        .attr('height', 24)
+        .attr('x', 0) // Will be adjusted based on width
+        .attr('y', -12) // Center vertically
+        .attr('rx', 12) // Rounded ends (half of height for pill shape)
+        .attr('ry', 12)
+        .attr('fill', 'var(--color-bg-card)') // Using CSS custom property
+        .attr('stroke', (d: TimelineEvent) => colorScale(d.category))
+        .attr('stroke-width', 1.5)
+        .attr('opacity', 0.95)
+        .style('filter', 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))')
+
+      // Add event labels text
+      const labels = labelGroups
+        .append('text')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('text-anchor', 'middle')
+        .attr('dy', '0.35em')
+        .style('fill', 'rgb(0 0 0)') // Dark text color for white background
+        .style('font-size', '10px')
+        .style('font-weight', '500')
+        .style('pointer-events', 'none') // Allow background to handle events
+
+      // Set text content and adjust background size
       labels.each(function (d: TimelineEvent) {
         const text = d3.select(this as SVGTextElement)
         const words = d.title.split(/\s+/)
-        const lineHeight = 1.1
-        const maxWidth = isVertical ? 80 : 100
+        const maxWidth = isVertical ? 90 : 120
 
-        text.text(null)
+        // Try to fit text in one line first
+        let displayText = d.title
+        text.text(displayText)
 
-        let line: string[] = []
-        let tspan = text.append('tspan').attr('x', text.attr('x')).attr('dy', 0)
-
-        words.forEach((word: string) => {
-          line.push(word)
-          tspan.text(line.join(' '))
-
-          if (
-            (tspan.node()?.getComputedTextLength() ?? 0) > maxWidth &&
-            line.length > 1
+        // If text is too long, truncate and add ellipsis
+        if ((text.node()?.getComputedTextLength() ?? 0) > maxWidth) {
+          while (
+            words.length > 1 &&
+            (text.node()?.getComputedTextLength() ?? 0) > maxWidth - 20
           ) {
-            line.pop()
-            tspan.text(line.join(' '))
-            line = [word]
-            tspan = text
-              .append('tspan')
-              .attr('x', text.attr('x'))
-              .attr('dy', `${lineHeight}em`)
-              .text(word)
+            words.pop()
+            displayText = `${words.join(' ')}...`
+            text.text(displayText)
           }
-        })
+        }
+
+        // Adjust background button size based on text width
+        const textWidth = text.node()?.getComputedTextLength() ?? 0
+        const backgroundWidth = Math.max(textWidth + 16, 40) // Minimum width with padding
+
+        d3.select(this.parentNode as SVGGElement)
+          .select('.label-background')
+          .attr('width', backgroundWidth)
+          .attr('x', -backgroundWidth / 2) // Center horizontally
       })
 
-      // Add hover effects for this category's events
+      // Add hover effects for labels - make them pop to top
+      labelGroups.on('mouseenter', function () {
+        // Bring this label to the front by re-appending it
+        const currentGroup = d3.select(this as SVGGElement)
+        const parentNode = this.parentNode as SVGGElement
+        parentNode.appendChild(this)
+
+        // Enhance the label appearance on hover
+        currentGroup
+          .select('.label-background')
+          .transition()
+          .duration(150)
+          .attr('stroke-width', 2.5)
+          .attr('opacity', 1)
+          .style('filter', 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3))')
+
+        // Scale up the text slightly
+        currentGroup
+          .select('text')
+          .transition()
+          .duration(150)
+          .style('font-weight', '600')
+          .attr('transform', 'scale(1.05)')
+      })
+
+      labelGroups.on('mouseleave', function () {
+        const currentGroup = d3.select(this as SVGGElement)
+
+        // Reset label appearance
+        currentGroup
+          .select('.label-background')
+          .transition()
+          .duration(150)
+          .attr('stroke-width', 1.5)
+          .attr('opacity', 0.95)
+          .style('filter', 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2))')
+
+        // Reset text scale
+        currentGroup
+          .select('text')
+          .transition()
+          .duration(150)
+          .style('font-weight', '500')
+          .attr('transform', 'scale(1)')
+      })
+
+      // Add hover effects for circle dots
       events.on('mouseenter', function (_: unknown, d: TimelineEvent) {
         d3.select(this as SVGGElement)
           .select('circle')
@@ -376,7 +477,7 @@
     // Add main title
     svg
       ?.append('text')
-      .attr('x', container.clientWidth / 2)
+      .attr('x', containerWidth / 2)
       .attr('y', 30)
       .attr('text-anchor', 'middle')
       .style('fill', 'rgb(229 231 235)')

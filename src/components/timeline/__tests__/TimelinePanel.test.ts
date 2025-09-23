@@ -148,4 +148,39 @@ describe('TimelinePanel', () => {
       }
     )
   })
+
+  it('applies horizontal scrolling classes for horizontal orientation', () => {
+    const wrapper = mount(TimelinePanel, {
+      props: {
+        orientation: 'horizontal'
+      }
+    })
+
+    const innerDiv = wrapper.find('.flex-1.p-4')
+    expect(innerDiv.exists()).toBe(true)
+    expect(innerDiv.classes()).toContain('overflow-x-auto')
+    expect(innerDiv.classes()).toContain('overflow-y-hidden')
+  })
+
+  it('does not apply horizontal scrolling classes for vertical orientation', () => {
+    const wrapper = mount(TimelinePanel, {
+      props: {
+        orientation: 'vertical'
+      }
+    })
+
+    const innerDiv = wrapper.find('.flex-1.p-4')
+    expect(innerDiv.exists()).toBe(true)
+    expect(innerDiv.classes()).not.toContain('overflow-x-auto')
+    expect(innerDiv.classes()).not.toContain('overflow-y-hidden')
+  })
+
+  it('defaults to horizontal orientation', () => {
+    const wrapper = mount(TimelinePanel)
+
+    const innerDiv = wrapper.find('.flex-1.p-4')
+    expect(innerDiv.exists()).toBe(true)
+    expect(innerDiv.classes()).toContain('overflow-x-auto')
+    expect(innerDiv.classes()).toContain('overflow-y-hidden')
+  })
 })
