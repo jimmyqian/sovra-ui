@@ -1,6 +1,13 @@
 <template>
   <div class="flex-1 flex flex-col max-h-full overflow-hidden bg-bg-primary">
-    <div class="flex-1 p-4">
+    <div
+      class="flex-1 p-4"
+      :class="
+        props.orientation === 'horizontal'
+          ? 'overflow-x-auto overflow-y-hidden'
+          : ''
+      "
+    >
       <D3Timeline :events="timelineEvents" :orientation="props.orientation" />
     </div>
   </div>
