@@ -15,7 +15,8 @@ describe('ResultCard', () => {
     rating: 4.2,
     references: 25,
     companies: 5,
-    contacts: 10
+    contacts: 10,
+    image: 'https://picsum.photos/240/240?random=test123'
   }
 
   const router = createRouter({
@@ -71,7 +72,7 @@ describe('ResultCard', () => {
     expect(statLabels[2]!.text()).toContain('Contacts')
   })
 
-  it('renders avatar placeholder', () => {
+  it('renders avatar image with correct styling', () => {
     const wrapper = mount(ResultCard, {
       props: {
         result: mockResult
@@ -81,8 +82,51 @@ describe('ResultCard', () => {
       }
     })
 
-    const avatar = wrapper.find('.w-15.h-15.bg-border-lighter.rounded-full')
-    expect(avatar.exists()).toBe(true)
+    const avatarContainer = wrapper.find(
+      '.w-15.h-15.rounded-full.overflow-hidden'
+    )
+    expect(avatarContainer.exists()).toBe(true)
+
+    const avatarImage = wrapper.find('img')
+    expect(avatarImage.exists()).toBe(true)
+    expect(avatarImage.attributes('alt')).toBe('Profile')
+    expect(avatarImage.classes()).toContain('w-full')
+    expect(avatarImage.classes()).toContain('h-full')
+    expect(avatarImage.classes()).toContain('object-cover')
+  })
+
+  it('displays image from result data', () => {
+    const wrapper = mount(ResultCard, {
+      props: {
+        result: mockResult
+      },
+      global: {
+        plugins: [router]
+      }
+    })
+
+    const avatarImage = wrapper.find('img')
+    expect(avatarImage.attributes('src')).toBe(mockResult.image)
+    expect(avatarImage.attributes('src')).toContain('test123')
+  })
+
+  it('falls back to default image when result has no image', () => {
+    const resultWithoutImage = { ...mockResult }
+    delete resultWithoutImage.image
+
+    const wrapper = mount(ResultCard, {
+      props: {
+        result: resultWithoutImage
+      },
+      global: {
+        plugins: [router]
+      }
+    })
+
+    const avatarImage = wrapper.find('img')
+    expect(avatarImage.attributes('src')).toBe(
+      'https://picsum.photos/240/240?random=1'
+    )
   })
 
   it('displays Sovra Rating label and score', () => {

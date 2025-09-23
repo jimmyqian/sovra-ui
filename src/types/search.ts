@@ -9,6 +9,7 @@ export interface SearchResult {
   references: number
   companies: number
   contacts: number
+  image?: string
 }
 
 export interface FilterItem {

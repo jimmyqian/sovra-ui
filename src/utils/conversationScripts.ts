@@ -44,7 +44,8 @@ function generateScriptedResults(
       rating: Math.round((3.5 + i * 0.3) * 10) / 10, // Ratings 3.5-5.0
       references: 15 + i * 5, // References 15-50+
       companies: 2 + (i % 8), // Companies 2-9
-      contacts: 10 + i * 3 // Contacts 10-30+
+      contacts: 10 + i * 3, // Contacts 10-30+
+      image: `https://picsum.photos/240/240?random=${400 + startId + i}`
     })
   }
 
@@ -78,7 +79,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.2,
             references: 23,
             companies: 3,
-            contacts: 15
+            contacts: 15,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc1.webp'
           },
           {
             id: 2,
@@ -90,7 +93,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.5,
             references: 31,
             companies: 2,
-            contacts: 22
+            contacts: 22,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc2.jpg'
           },
           {
             id: 3,
@@ -102,7 +107,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 3.8,
             references: 18,
             companies: 4,
-            contacts: 12
+            contacts: 12,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc3.jpg'
           },
           {
             id: 4,
@@ -114,7 +121,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.7,
             references: 45,
             companies: 5,
-            contacts: 28
+            contacts: 28,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc4.webp'
           },
           {
             id: 5,
@@ -126,7 +135,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.1,
             references: 27,
             companies: 3,
-            contacts: 19
+            contacts: 19,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc5.jpg'
           },
           {
             id: 6,
@@ -138,7 +149,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.3,
             references: 36,
             companies: 6,
-            contacts: 25
+            contacts: 25,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc6.jpeg'
           },
           {
             id: 7,
@@ -150,7 +163,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 3.9,
             references: 21,
             companies: 2,
-            contacts: 14
+            contacts: 14,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc7.jpg'
           },
           {
             id: 8,
@@ -162,7 +177,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.6,
             references: 39,
             companies: 4,
-            contacts: 26
+            contacts: 26,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc8.jpg'
           }
         ],
         // Stage 1: 4 results (subset of initial 8)
@@ -177,7 +194,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.2,
             references: 23,
             companies: 3,
-            contacts: 15
+            contacts: 15,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc1.webp'
           },
           {
             id: 2,
@@ -189,7 +208,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.5,
             references: 31,
             companies: 2,
-            contacts: 22
+            contacts: 22,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc2.jpg'
           },
           {
             id: 4,
@@ -201,7 +222,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.7,
             references: 45,
             companies: 5,
-            contacts: 28
+            contacts: 28,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc4.webp'
           },
           {
             id: 6,
@@ -213,7 +236,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.3,
             references: 36,
             companies: 6,
-            contacts: 25
+            contacts: 25,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc6.jpeg'
           }
         ],
         // Stage 2: 3 results (subset of stage 1)
@@ -228,7 +253,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.2,
             references: 23,
             companies: 3,
-            contacts: 15
+            contacts: 15,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc1.webp'
           },
           {
             id: 2,
@@ -240,7 +267,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.5,
             references: 31,
             companies: 2,
-            contacts: 22
+            contacts: 22,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc2.jpg'
           },
           {
             id: 4,
@@ -252,7 +281,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.7,
             references: 45,
             companies: 5,
-            contacts: 28
+            contacts: 28,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc4.webp'
           }
         ],
         // Stage 3: 1 result (subset of stage 2)
@@ -267,7 +298,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.5,
             references: 31,
             companies: 2,
-            contacts: 22
+            contacts: 22,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc2.jpg'
           }
         ]
       ]
@@ -295,7 +328,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.6,
             references: 28,
             companies: 4,
-            contacts: 19
+            contacts: 19,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm1.jpeg'
           },
           {
             id: 2,
@@ -307,7 +342,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.3,
             references: 35,
             companies: 3,
-            contacts: 24
+            contacts: 24,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm2.jpg'
           },
           {
             id: 3,
@@ -319,7 +356,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.0,
             references: 22,
             companies: 5,
-            contacts: 16
+            contacts: 16,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm3.jpg'
           },
           {
             id: 4,
@@ -331,7 +370,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.8,
             references: 41,
             companies: 6,
-            contacts: 31
+            contacts: 31,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm4.jpg'
           },
           {
             id: 5,
@@ -343,7 +384,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 3.9,
             references: 19,
             companies: 2,
-            contacts: 13
+            contacts: 13,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm5.jpg'
           },
           {
             id: 6,
@@ -355,7 +398,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.5,
             references: 38,
             companies: 7,
-            contacts: 27
+            contacts: 27,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm6.webp'
           },
           {
             id: 7,
@@ -367,7 +412,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.1,
             references: 25,
             companies: 3,
-            contacts: 18
+            contacts: 18,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm7.webp'
           },
           {
             id: 8,
@@ -379,7 +426,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.7,
             references: 43,
             companies: 5,
-            contacts: 29
+            contacts: 29,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm8.jpg'
           }
         ],
         // Stage 1: 4 results (subset of initial 8)
@@ -394,7 +443,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.6,
             references: 28,
             companies: 4,
-            contacts: 19
+            contacts: 19,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm1.jpeg'
           },
           {
             id: 2,
@@ -406,7 +457,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.3,
             references: 35,
             companies: 3,
-            contacts: 24
+            contacts: 24,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm2.jpg'
           },
           {
             id: 4,
@@ -418,7 +471,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.8,
             references: 41,
             companies: 6,
-            contacts: 31
+            contacts: 31,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm4.jpg'
           },
           {
             id: 8,
@@ -430,7 +485,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.7,
             references: 43,
             companies: 5,
-            contacts: 29
+            contacts: 29,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm8.jpg'
           }
         ],
         // Stage 2: 3 results (subset of stage 1)
@@ -445,7 +502,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.6,
             references: 28,
             companies: 4,
-            contacts: 19
+            contacts: 19,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm1.jpeg'
           },
           {
             id: 4,
@@ -457,7 +516,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.8,
             references: 41,
             companies: 6,
-            contacts: 31
+            contacts: 31,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm4.jpg'
           },
           {
             id: 8,
@@ -469,7 +530,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.7,
             references: 43,
             companies: 5,
-            contacts: 29
+            contacts: 29,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm8.jpg'
           }
         ],
         // Stage 3: 1 result (subset of stage 2)
@@ -484,7 +547,9 @@ export function getConversationScript(query: string): ConversationScript {
             rating: 4.8,
             references: 41,
             companies: 6,
-            contacts: 31
+            contacts: 31,
+            image:
+              'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm4.jpg'
           }
         ]
       ]

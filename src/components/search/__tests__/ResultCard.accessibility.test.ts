@@ -304,6 +304,21 @@ describe('ResultCard Accessibility', () => {
       const scoreBar = wrapper.findComponent({ name: 'ScoreBar' })
       expect(scoreBar.exists()).toBe(true)
     })
+
+    it('should make profile image accessible', () => {
+      wrapper = createWrapper()
+
+      // Profile image should have proper accessibility attributes
+      const profileImage = wrapper.find('img')
+      expect(profileImage.exists()).toBe(true)
+      expect(profileImage.attributes('alt')).toBe('Profile')
+
+      // Image container should have proper structure for screen readers
+      const imageContainer = wrapper.find(
+        '.w-15.h-15.rounded-full.overflow-hidden'
+      )
+      expect(imageContainer.exists()).toBe(true)
+    })
   })
 
   describe('Integration Accessibility Tests', () => {

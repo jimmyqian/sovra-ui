@@ -9,6 +9,7 @@ export interface SearchResult {
   references: number
   companies: number
   contacts: number
+  image?: string
 }
 
 export interface SearchResponse {
@@ -28,7 +29,8 @@ const mockResults: SearchResult[] = [
     rating: 3.2,
     references: 26,
     companies: 10,
-    contacts: 7
+    contacts: 7,
+    image: 'https://picsum.photos/240/240?random=101'
   },
   {
     id: 2,
@@ -40,7 +42,8 @@ const mockResults: SearchResult[] = [
     rating: 4.1,
     references: 34,
     companies: 8,
-    contacts: 12
+    contacts: 12,
+    image: 'https://picsum.photos/240/240?random=102'
   },
   {
     id: 3,
@@ -52,7 +55,8 @@ const mockResults: SearchResult[] = [
     rating: 2.8,
     references: 18,
     companies: 5,
-    contacts: 3
+    contacts: 3,
+    image: 'https://picsum.photos/240/240?random=103'
   },
   {
     id: 4,
@@ -64,7 +68,8 @@ const mockResults: SearchResult[] = [
     rating: 3.7,
     references: 42,
     companies: 15,
-    contacts: 9
+    contacts: 9,
+    image: 'https://picsum.photos/240/240?random=104'
   },
   {
     id: 5,
@@ -76,7 +81,8 @@ const mockResults: SearchResult[] = [
     rating: 4.2,
     references: 31,
     companies: 12,
-    contacts: 8
+    contacts: 8,
+    image: 'https://picsum.photos/240/240?random=105'
   }
 ]
 
