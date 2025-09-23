@@ -85,7 +85,6 @@ describe('SearchConversation', () => {
     })
   }
 
-  // @ts-ignore - keeping for future use
   const _createWrapperWithMessages = (messages: ConversationMessage[]) => {
     return mount(SearchConversation, {
       props: {

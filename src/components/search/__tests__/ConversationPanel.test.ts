@@ -249,7 +249,7 @@ describe('ConversationPanel', () => {
       })
 
       expect(wrapper.vm.conversationMessages).toHaveLength(1)
-      expect(wrapper.vm.conversationMessages[0].content).toBe('Test message')
+      expect(wrapper.vm.conversationMessages[0]?.content).toBe('Test message')
     })
 
     it('updates result count in system messages', () => {

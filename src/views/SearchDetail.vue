@@ -324,12 +324,10 @@
   // Upsell popup handlers
   const handleUpgrade = () => {
     // TODO: Implement actual upgrade flow
-    // TODO: Mr. T says: "Smart choice, fool! Upgrading to premium!"
     // In real app, navigate to subscription/payment page
   }
 
   const handleMaybeLater = () => {
-    // TODO: Mr. T says: "Your loss, jibber-jabber! But I'll be waiting..."
     // Maybe track this for remarketing/follow-up
   }
 
@@ -459,6 +457,11 @@
     },
     { deep: true, immediate: true }
   )
+
+  // Expose methods for testing
+  defineExpose({
+    handleShowUpsell
+  })
 </script>
 
 <style scoped>

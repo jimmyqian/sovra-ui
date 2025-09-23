@@ -18,13 +18,17 @@ describe('UpsellPopup', () => {
   }
 
   describe('Component Structure', () => {
-    it('renders with correct Mr. T themed content', () => {
+    it('renders with correct upsell content', () => {
       const wrapper = createWrapper({ modelValue: true })
 
-      expect(wrapper.text()).toContain('Hold Up There, Fool!')
-      expect(wrapper.text()).toContain('PAY SOME MONEY, FOOL!')
-      expect(wrapper.text()).toContain('I pity the fool')
-      expect(wrapper.text()).toContain('jibber-jabber cheapskate')
+      expect(wrapper.text()).toContain('Unlock Premium Access')
+      expect(wrapper.text()).toContain(
+        'Access comprehensive data and detailed insights'
+      )
+      expect(wrapper.text()).toContain('Premium features include')
+      expect(wrapper.text()).toContain(
+        'Upgrade today to unlock comprehensive data'
+      )
     })
 
     it('shows premium features list', () => {
@@ -148,9 +152,9 @@ describe('UpsellPopup', () => {
       expect(closeButton.attributes('aria-label')).toBe('Close popup')
     })
 
-    it('includes boxing glove emoji for Mr. T theme', () => {
+    it('includes unlock emoji for premium theme', () => {
       const wrapper = createWrapper({ modelValue: true })
-      expect(wrapper.text()).toContain('🥊')
+      expect(wrapper.text()).toContain('🔓')
     })
   })
 })

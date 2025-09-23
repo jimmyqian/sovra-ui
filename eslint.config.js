@@ -156,7 +156,12 @@ export default [
         Event: 'readonly',
         MouseEvent: 'readonly',
         KeyboardEvent: 'readonly',
-        URLSearchParams: 'readonly'
+        URLSearchParams: 'readonly',
+        // SVG DOM types
+        SVGElement: 'readonly',
+        SVGSVGElement: 'readonly',
+        SVGGElement: 'readonly',
+        SVGTextElement: 'readonly'
       }
     },
     plugins: {
