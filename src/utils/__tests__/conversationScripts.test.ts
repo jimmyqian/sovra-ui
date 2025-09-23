@@ -2,7 +2,9 @@ import { describe, it, expect } from 'vitest'
 import {
   getConversationScript,
   getNextResponse,
-  getScriptedResults
+  getScriptedResults,
+  getDetailScript,
+  getDetailResponse
 } from '../conversationScripts'
 
 describe('conversationScripts', () => {
@@ -190,6 +192,66 @@ describe('conversationScripts', () => {
       expect(response).toBe(
         "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?"
       )
+    })
+  })
+
+  describe('Detail Scripts', () => {
+    describe('getDetailScript', () => {
+      it('should return John Caruso detail script for john caruso query', () => {
+        const script = getDetailScript('john caruso')
+        expect(script.responses).toEqual([
+          'John Caruso search detail response 1',
+          'John Caruso search detail response 2',
+          'John Caruso search detail response 3'
+        ])
+      })
+
+      it('should return Von Miller detail script for von miller query', () => {
+        const script = getDetailScript('von miller')
+        expect(script.responses).toEqual([
+          'Von Miller search detail response 1',
+          'Von Miller search detail response 2',
+          'Von Miller search detail response 3'
+        ])
+      })
+
+      it('should return default detail script for unknown query', () => {
+        const script = getDetailScript('unknown person')
+        expect(script.responses).toEqual([
+          'Search detail response 1',
+          'Search detail response 2',
+          'Search detail response 3'
+        ])
+      })
+
+      it('should handle case insensitive queries', () => {
+        const script1 = getDetailScript('JOHN CARUSO')
+        const script2 = getDetailScript('John Caruso')
+        const script3 = getDetailScript('john caruso')
+
+        expect(script1.responses).toEqual(script2.responses)
+        expect(script2.responses).toEqual(script3.responses)
+      })
+    })
+
+    describe('getDetailResponse', () => {
+      it('should return correct response for valid index', () => {
+        const script = getDetailScript('john caruso')
+        const response = getDetailResponse(script, 0)
+        expect(response).toBe('John Caruso search detail response 1')
+      })
+
+      it('should cycle responses when index exceeds array length', () => {
+        const script = getDetailScript('john caruso')
+        const response = getDetailResponse(script, 3) // Index 3 should cycle to index 0
+        expect(response).toBe('John Caruso search detail response 1')
+      })
+
+      it('should handle large indices by cycling', () => {
+        const script = getDetailScript('john caruso')
+        const response = getDetailResponse(script, 7) // Index 7 should cycle to index 1
+        expect(response).toBe('John Caruso search detail response 2')
+      })
     })
   })
 })

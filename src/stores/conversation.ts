@@ -4,18 +4,26 @@ import type { ConversationMessage } from '@/types/conversation'
 import {
   getConversationScript,
   getNextResponse,
-  getScriptedResults
+  getScriptedResults,
+  getDetailScript,
+  getDetailResponse
 } from '@/utils/conversationScripts'
+import type { DetailScript } from '@/utils/conversationScripts'
 import type { SearchResult } from '@/types/search'
 
 export const useConversationStore = defineStore('conversation', () => {
-  // Response tracking for script-based conversations
+  // Response tracking for script-based conversations (search screen)
   const currentScript = ref<ReturnType<typeof getConversationScript> | null>(
     null
   )
   const responseIndex = ref(0)
   const resultStage = ref(0) // Track which result stage we're on (0-3)
   const originalQuery = ref('')
+
+  // Response tracking for search detail script (separate from search screen)
+  const detailScript = ref<DetailScript | null>(null)
+  const detailResponseIndex = ref(0)
+  const detailResultStage = ref(0) // Track detail screen script stage
 
   // Conversation history that persists across navigation
   const conversationHistory = ref<ConversationMessage[]>([
@@ -178,6 +186,33 @@ export const useConversationStore = defineStore('conversation', () => {
     return getScriptedResults(currentScript.value, resultStage.value)
   }
 
+  // Initialize detail script based on search query
+  const initializeDetailScript = (searchQuery: string) => {
+    detailScript.value = getDetailScript(searchQuery)
+    detailResponseIndex.value = 0
+    detailResultStage.value = 0
+  }
+
+  // Get the next scripted response for detail screen
+  const getDetailScriptedResponse = (): string => {
+    if (!detailScript.value) {
+      // Fallback if no detail script is initialized
+      return 'Search detail response 1'
+    }
+
+    const response = getDetailResponse(
+      detailScript.value,
+      detailResponseIndex.value
+    )
+    detailResponseIndex.value++
+    return response
+  }
+
+  // Advance to the next detail result stage
+  const advanceDetailResultStage = (): void => {
+    detailResultStage.value++
+  }
+
   // Reset script state
   const resetScript = () => {
     currentScript.value = null
@@ -186,10 +221,18 @@ export const useConversationStore = defineStore('conversation', () => {
     originalQuery.value = ''
   }
 
+  // Reset detail script state
+  const resetDetailScript = () => {
+    detailScript.value = null
+    detailResponseIndex.value = 0
+    detailResultStage.value = 0
+  }
+
   // Clear all conversation history
   const clearConversation = () => {
     conversationHistory.value = []
     resetScript()
+    resetDetailScript()
   }
 
   return {
@@ -204,10 +247,19 @@ export const useConversationStore = defineStore('conversation', () => {
     getCurrentScriptedResults,
     advanceResultStage,
     resetScript,
+    // Detail script functions
+    initializeDetailScript,
+    getDetailScriptedResponse,
+    advanceDetailResultStage,
+    resetDetailScript,
     // Expose read-only state
     currentScript: computed(() => currentScript.value),
     responseIndex: computed(() => responseIndex.value),
     resultStage: computed(() => resultStage.value),
-    originalQuery: computed(() => originalQuery.value)
+    originalQuery: computed(() => originalQuery.value),
+    // Detail script state
+    detailScript: computed(() => detailScript.value),
+    detailResponseIndex: computed(() => detailResponseIndex.value),
+    detailResultStage: computed(() => detailResultStage.value)
   }
 })
