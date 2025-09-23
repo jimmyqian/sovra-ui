@@ -22,7 +22,7 @@
   })
 
   const timelineContainer = ref<HTMLElement | null>(null)
-  let svg: d3.Selection<d3.BaseType, unknown, null, undefined> | null = null
+  let svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | null = null
   let resizeObserver: globalThis.ResizeObserver | null = null
 
   /**
@@ -52,6 +52,8 @@
       .append('svg')
       .attr('width', container.clientWidth)
       .attr('height', container.clientHeight)
+
+    if (!svg) return
 
     const g = svg
       .append('g')
@@ -158,7 +160,7 @@
         .enter()
         .append('g')
         .attr('class', `event event-${category}`)
-        .attr('transform', d =>
+        .attr('transform', (d: TimelineEvent) =>
           isVertical
             ? `translate(${categoryPos},${primaryScale(d.year)})`
             : `translate(${primaryScale(d.year)},${categoryPos})`
@@ -177,9 +179,19 @@
       events
         .append('line')
         .attr('x1', 0)
-        .attr('x2', isVertical ? (_, i) => (i % 2 === 0 ? -40 : 40) : 0)
+        .attr(
+          'x2',
+          isVertical
+            ? (_: TimelineEvent, i: number) => (i % 2 === 0 ? -40 : 40)
+            : 0
+        )
         .attr('y1', 0)
-        .attr('y2', isVertical ? 0 : (_, i) => (i % 2 === 0 ? -40 : 40))
+        .attr(
+          'y2',
+          isVertical
+            ? 0
+            : (_: TimelineEvent, i: number) => (i % 2 === 0 ? -40 : 40)
+        )
         .attr('stroke', colorScale(category))
         .attr('stroke-width', 1)
         .attr('opacity', 0.7)
@@ -187,11 +199,23 @@
       // Add event labels
       const labels = events
         .append('text')
-        .attr('x', isVertical ? (_, i) => (i % 2 === 0 ? -50 : 55) : 0)
-        .attr('y', isVertical ? 0 : (_, i) => (i % 2 === 0 ? -50 : 55))
+        .attr(
+          'x',
+          isVertical
+            ? (_: TimelineEvent, i: number) => (i % 2 === 0 ? -50 : 55)
+            : 0
+        )
+        .attr(
+          'y',
+          isVertical
+            ? 0
+            : (_: TimelineEvent, i: number) => (i % 2 === 0 ? -50 : 55)
+        )
         .attr(
           'text-anchor',
-          isVertical ? (_, i) => (i % 2 === 0 ? 'end' : 'start') : 'middle'
+          isVertical
+            ? (_: TimelineEvent, i: number) => (i % 2 === 0 ? 'end' : 'start')
+            : 'middle'
         )
         .style('fill', 'rgb(0 0 0)')
         .style('font-size', '10px')
@@ -199,8 +223,8 @@
         .style('cursor', 'pointer')
 
       // Split long titles into multiple lines
-      labels.each(function (d) {
-        const text = d3.select(this)
+      labels.each(function (d: TimelineEvent) {
+        const text = d3.select(this as SVGTextElement)
         const words = d.title.split(/\s+/)
         const lineHeight = 1.1
         const maxWidth = isVertical ? 80 : 100
@@ -210,7 +234,7 @@
         let line: string[] = []
         let tspan = text.append('tspan').attr('x', text.attr('x')).attr('dy', 0)
 
-        words.forEach(word => {
+        words.forEach((word: string) => {
           line.push(word)
           tspan.text(line.join(' '))
 
@@ -231,8 +255,12 @@
       })
 
       // Add hover effects for this category's events
-      events.on('mouseenter', function (_, d) {
-        d3.select(this).select('circle').transition().duration(200).attr('r', 8)
+      events.on('mouseenter', function (_: unknown, d: TimelineEvent) {
+        d3.select(this as SVGGElement)
+          .select('circle')
+          .transition()
+          .duration(200)
+          .attr('r', 8)
 
         // Show tooltip with description
         const tooltipX = isVertical ? categoryPos : primaryScale(d.year)
@@ -267,7 +295,7 @@
         let line: string[] = []
         let lineNumber = 1
 
-        words.forEach(word => {
+        words.forEach((word: string) => {
           line.push(word)
           const testLine = line.join(' ')
 
@@ -335,7 +363,11 @@
       })
 
       events.on('mouseleave', function () {
-        d3.select(this).select('circle').transition().duration(200).attr('r', 6)
+        d3.select(this as SVGGElement)
+          .select('circle')
+          .transition()
+          .duration(200)
+          .attr('r', 6)
 
         g.select('.tooltip').remove()
       })

@@ -30,7 +30,7 @@
   })
 
   const starContainer = ref<HTMLElement | null>(null)
-  let svg: d3.Selection<d3.BaseType, unknown, null, undefined> | null = null
+  let svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | null = null
   let simulation: d3.Simulation<StarNode, StarLink> | null = null
   let resizeObserver: globalThis.ResizeObserver | null = null
 
@@ -93,6 +93,8 @@
       .attr('width', width)
       .attr('height', height)
 
+    if (!svg) return
+
     const g = svg.append('g')
 
     // Create force simulation
@@ -143,8 +145,8 @@
     // Add circles for nodes
     node
       .append('circle')
-      .attr('r', d => (d.isHub ? 40 : 30))
-      .attr('fill', d => (d.isHub ? '#EF4444' : '#3B82F6'))
+      .attr('r', (d: StarNode) => (d.isHub ? 40 : 30))
+      .attr('fill', (d: StarNode) => (d.isHub ? '#EF4444' : '#3B82F6'))
       .attr('stroke', '#fff')
       .attr('stroke-width', 2)
 
@@ -154,14 +156,14 @@
       .attr('dy', '.35em')
       .attr('text-anchor', 'middle')
       .style('fill', '#fff')
-      .style('font-size', d => (d.isHub ? '16px' : '14px'))
+      .style('font-size', (d: StarNode) => (d.isHub ? '16px' : '14px'))
       .style('font-weight', '600')
       .style('pointer-events', 'none')
-      .text(d => d.label)
+      .text((d: StarNode) => d.label)
 
     // Add hover effects
-    node.on('mouseenter', function (_, d) {
-      d3.select(this)
+    node.on('mouseenter', function (_: unknown, d: StarNode) {
+      d3.select(this as SVGGElement)
         .select('circle')
         .transition()
         .duration(200)
@@ -169,8 +171,8 @@
         .attr('fill', d.isHub ? '#DC2626' : '#2563EB')
     })
 
-    node.on('mouseleave', function (_, d) {
-      d3.select(this)
+    node.on('mouseleave', function (_: unknown, d: StarNode) {
+      d3.select(this as SVGGElement)
         .select('circle')
         .transition()
         .duration(200)
@@ -180,37 +182,58 @@
 
     // Add drag behavior (only for non-hub nodes)
     const drag = d3
-      .drag<d3.BaseType, StarNode>()
-      .on('start', (event, d) => {
-        if (!event.active && simulation) simulation.alphaTarget(0.3).restart()
-        d.fx = d.x
-        d.fy = d.y
-      })
-      .on('drag', (event, d) => {
-        if (!d.isHub) {
-          d.fx = event.x
-          d.fy = event.y
+      .drag<SVGGElement, StarNode>()
+      .on(
+        'start',
+        (
+          event: d3.D3DragEvent<SVGGElement, StarNode, StarNode>,
+          d: StarNode
+        ) => {
+          if (!event.active && simulation) simulation.alphaTarget(0.3).restart()
+          d.fx = d.x
+          d.fy = d.y
         }
-      })
-      .on('end', (event, d) => {
-        if (!event.active && simulation) simulation.alphaTarget(0)
-        if (!d.isHub) {
-          d.fx = null
-          d.fy = null
+      )
+      .on(
+        'drag',
+        (
+          event: d3.D3DragEvent<SVGGElement, StarNode, StarNode>,
+          d: StarNode
+        ) => {
+          if (!d.isHub) {
+            d.fx = event.x
+            d.fy = event.y
+          }
         }
-      })
+      )
+      .on(
+        'end',
+        (
+          event: d3.D3DragEvent<SVGGElement, StarNode, StarNode>,
+          d: StarNode
+        ) => {
+          if (!event.active && simulation) simulation.alphaTarget(0)
+          if (!d.isHub) {
+            d.fx = undefined
+            d.fy = undefined
+          }
+        }
+      )
 
     node.call(drag)
 
     // Update positions on tick
     simulation.on('tick', () => {
       link
-        .attr('x1', d => (d.source as StarNode).x ?? 0)
-        .attr('y1', d => (d.source as StarNode).y ?? 0)
-        .attr('x2', d => (d.target as StarNode).x ?? 0)
-        .attr('y2', d => (d.target as StarNode).y ?? 0)
+        .attr('x1', (d: StarLink) => (d.source as StarNode).x ?? 0)
+        .attr('y1', (d: StarLink) => (d.source as StarNode).y ?? 0)
+        .attr('x2', (d: StarLink) => (d.target as StarNode).x ?? 0)
+        .attr('y2', (d: StarLink) => (d.target as StarNode).y ?? 0)
 
-      node.attr('transform', d => `translate(${d.x ?? 0},${d.y ?? 0})`)
+      node.attr(
+        'transform',
+        (d: StarNode) => `translate(${d.x ?? 0},${d.y ?? 0})`
+      )
     })
 
     // Add title

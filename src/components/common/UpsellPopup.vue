@@ -8,29 +8,28 @@
       class="bg-bg-card border border-border-light rounded-xl p-8 mx-4 max-w-md w-full shadow-2xl transform transition-all duration-300"
       @click.stop
     >
-      <!-- Header with Mr. T attitude -->
+      <!-- Header -->
       <div class="text-center mb-6">
-        <div class="text-4xl mb-2">🥊</div>
+        <div class="text-4xl mb-2">🔓</div>
         <h2 class="text-2xl font-bold text-text-primary mb-2">
-          Hold Up There, Fool!
+          Unlock Premium Access
         </h2>
         <p class="text-text-secondary text-sm">
-          You're about to access some serious intel
+          Get complete information with our premium subscription
         </p>
       </div>
 
-      <!-- Mr. T themed content -->
+      <!-- Content -->
       <div class="space-y-4 mb-6">
         <p class="text-text-primary leading-relaxed">
-          "I pity the fool who thinks premium data comes free! You want the REAL
-          details? The financial dirt? The family secrets? Then you better step
-          up and
-          <strong>PAY SOME MONEY, FOOL!</strong>"
+          Access comprehensive data and detailed insights with our premium
+          subscription. Get complete background information, financial details,
+          and professional history to make informed decisions.
         </p>
 
         <div class="bg-bg-muted rounded-lg p-4">
           <h3 class="font-semibold text-text-primary mb-2">
-            What you're missing out on:
+            Premium features include:
           </h3>
           <ul class="text-sm text-text-secondary space-y-1">
             <li>💰 Full financial breakdowns</li>
@@ -42,8 +41,8 @@
         </div>
 
         <p class="text-text-primary text-sm italic">
-          "Don't be a jibber-jabber cheapskate! Upgrade now and get the WHOLE
-          truth, not just the appetizer!"
+          Upgrade today to unlock comprehensive data and advanced search
+          capabilities.
         </p>
       </div>
 
@@ -53,14 +52,14 @@
           class="w-full bg-brand-orange hover:bg-brand-orange-dark text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
           @click="handleUpgrade"
         >
-          Upgrade to Premium - Mr. T Approved! 💪
+          Upgrade to Premium
         </button>
 
         <button
           class="w-full bg-transparent border border-border-light text-text-secondary hover:text-text-primary hover:border-text-primary py-2 px-4 rounded-lg transition-colors duration-200"
           @click="handleMaybeLater"
         >
-          Maybe later (but Mr. T won't be happy)
+          Maybe later
         </button>
       </div>
 

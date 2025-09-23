@@ -376,9 +376,22 @@
     }
   })
 
-  // Expose scrollToBottom for parent components to use
+  // Expose properties for parent components and testing
   defineExpose({
-    scrollToBottom
+    scrollToBottom,
+    conversationScrollContainer,
+    handleConversationScroll,
+    scrollConversationToTop,
+    scrollConversationToBottom,
+    canScrollUpConversation,
+    canScrollDownConversation,
+    hasScrollableContentConversation,
+    searchQuery,
+    handleSearch,
+    handleFileUpload,
+    handleSpeechError,
+    conversationMessages,
+    isAutoScrolling
   })
 </script>
 
