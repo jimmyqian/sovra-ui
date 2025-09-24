@@ -7,16 +7,14 @@
   import * as d3 from 'd3'
   import * as topojson from 'topojson-client'
 
-  interface SpikeData {
-    id: string
-    latitude: number
-    longitude: number
-    height: number
-    coordinates: [number, number]
+  interface TopologyData {
+    objects: {
+      countries: unknown
+    }
   }
 
   interface WorldData {
-    world: unknown | null
+    world: TopologyData | null
     countries: unknown | null
     land: unknown | null
     outline: { type: string }
@@ -29,780 +27,379 @@
   let path: d3.GeoPath | null = null
   let resizeObserver: globalThis.ResizeObserver | null = null
 
-  // Cache data to prevent re-fetching
+  // Cache data to prevent re-fetching (component-level cache)
   let cachedWorldData: WorldData | null = null
-  let cachedSpikeData: SpikeData[] | null = null
+
+  // Browser-level cache key for persistent storage
+  const WORLD_DATA_CACHE_KEY = 'sovra-world-atlas-data'
+  const CACHE_VERSION = '1.0'
+  const CACHE_EXPIRY_DAYS = 7
 
   // Performance optimization: separate groups for different elements
   let baseGroup: d3.Selection<SVGGElement, unknown, null, undefined> | null =
-    null
-  let spikesGroup: d3.Selection<SVGGElement, unknown, null, undefined> | null =
     null
 
   // Throttling for drag events
   let dragAnimationFrame: number | null = null
   let lastUpdateTime = 0
-  let frameCounter = 0
+
+  // Auto-rotation functionality
+  let autoRotationFrame: number | null = null
+  let isUserInteracting = false
+  const autoRotationSpeed = 0.2 // degrees per frame
 
   /**
-   * 3D spike calculation utilities for realistic globe protrusion
+   * Check if cached data exists and is still valid
    */
-  const spike3D = {
-    /**
-     * Calculate the 3D depth/distance from viewer for a point on the globe
-     */
-    calculateDepth: (longitude: number, latitude: number, rotation: [number, number, number]): number => {
-      const [rotLong, rotLat] = rotation
+  const getCachedWorldData = (): WorldData | null => {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return null
 
-      // Convert to radians
-      const lon = (longitude * Math.PI) / 180
-      const lat = (latitude * Math.PI) / 180
-      const rLon = (rotLong * Math.PI) / 180
-      const rLat = (rotLat * Math.PI) / 180
+      const cached = window.localStorage.getItem(WORLD_DATA_CACHE_KEY)
+      if (!cached) return null
 
-      // Calculate 3D position on unit sphere
-      const x = Math.cos(lat) * Math.cos(lon)
-      const y = Math.cos(lat) * Math.sin(lon)
-      const z = Math.sin(lat)
+      const parsedCache = JSON.parse(cached)
+      const cacheAge = Date.now() - parsedCache.timestamp
+      const maxAge = CACHE_EXPIRY_DAYS * 24 * 60 * 60 * 1000
 
-      // Apply rotation to find depth relative to viewer
-      // Positive z is toward viewer, negative z is away
-      const rotatedZ = x * Math.sin(rLon) * Math.cos(rLat) +
-                      y * Math.cos(rLon) * Math.cos(rLat) +
-                      z * Math.sin(rLat)
+      if (parsedCache.version !== CACHE_VERSION || cacheAge > maxAge) {
+        window.localStorage.removeItem(WORLD_DATA_CACHE_KEY)
+        return null
+      }
 
-      return rotatedZ
-    },
-
-    /**
-     * Calculate perspective scale factor based on depth
-     */
-    getPerspectiveScale: (depth: number): number => {
-      // Scale from 0.3 to 1.2 based on depth (-1 to 1)
-      // Points closer to viewer appear larger
-      return 0.3 + (depth + 1) * 0.45
-    },
-
-    /**
-     * Calculate opacity based on depth (back face culling effect)
-     */
-    getDepthOpacity: (depth: number): number => {
-      // Points on back hemisphere are more transparent
-      return Math.max(0.2, 0.5 + depth * 0.5)
-    },
-
-    /**
-     * Calculate the normal vector direction for spike orientation
-     */
-    getNormalVector: (longitude: number, latitude: number): [number, number, number] => {
-      const lon = (longitude * Math.PI) / 180
-      const lat = (latitude * Math.PI) / 180
-
-      return [
-        Math.cos(lat) * Math.cos(lon),
-        Math.cos(lat) * Math.sin(lon),
-        Math.sin(lat)
-      ]
-    },
-
-    /**
-     * Project 3D normal to 2D screen space for spike direction
-     */
-    projectNormal: (normal: [number, number, number], projection: d3.GeoProjection): [number, number] => {
-      // Use projection to convert the tip of the normal vector
-      const tipCoords = projection([
-        Math.atan2(normal[1], normal[0]) * 180 / Math.PI,
-        Math.asin(normal[2]) * 180 / Math.PI
-      ])
-
-      // Calculate direction vector in screen space
-      return tipCoords ? [tipCoords[0], tipCoords[1]] : [0, 0]
+      return parsedCache.data
+    } catch (error) {
+      // TODO: Add proper error handling for cache failures
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.removeItem(WORLD_DATA_CACHE_KEY)
+      }
+      return null
     }
   }
 
-
   /**
-   * Generates 12 spikes with varying heights placed at major world cities
-   * Uses caching to prevent regeneration on every render
+   * Save world data to browser cache
    */
-  const generateSpikeData = (): SpikeData[] => {
-    if (cachedSpikeData) {
-      return cachedSpikeData
+  const setCachedWorldData = (data: WorldData): void => {
+    try {
+      if (typeof window === 'undefined' || !window.localStorage) return
+
+      const cacheData = {
+        version: CACHE_VERSION,
+        timestamp: Date.now(),
+        data
+      }
+      window.localStorage.setItem(
+        WORLD_DATA_CACHE_KEY,
+        JSON.stringify(cacheData)
+      )
+    } catch (error) {
+      // TODO: Add proper error handling for cache storage failures
     }
-
-    const locations = [
-      { name: 'New York', coordinates: [-74.0, 40.7] as [number, number] },
-      { name: 'London', coordinates: [0.1, 51.5] as [number, number] },
-      { name: 'Tokyo', coordinates: [139.7, 35.7] as [number, number] },
-      { name: 'Sydney', coordinates: [151.2, -33.9] as [number, number] },
-      { name: 'São Paulo', coordinates: [-46.6, -23.5] as [number, number] },
-      { name: 'Cairo', coordinates: [31.2, 30.0] as [number, number] },
-      { name: 'Mumbai', coordinates: [72.8, 19.1] as [number, number] },
-      { name: 'Beijing', coordinates: [116.4, 39.9] as [number, number] },
-      { name: 'Los Angeles', coordinates: [-118.2, 34.1] as [number, number] },
-      { name: 'Lagos', coordinates: [3.4, 6.5] as [number, number] },
-      { name: 'Moscow', coordinates: [37.6, 55.8] as [number, number] },
-      { name: 'Buenos Aires', coordinates: [-58.4, -34.6] as [number, number] }
-    ]
-
-    cachedSpikeData = locations.map((location, i) => ({
-      id: `spike-${i}`,
-      latitude: location.coordinates[1],
-      longitude: location.coordinates[0],
-      height: Math.random() * 40 + 10, // 10 to 50 pixel height
-      coordinates: location.coordinates
-    }))
-
-    return cachedSpikeData
   }
 
   /**
-   * Loads real world topology data and creates graticule
-   * Uses caching to prevent re-fetching on every render
+   * Loads world topology data with persistent browser caching
    */
-  const loadWorldTopology = async (): Promise<WorldData> => {
+  const loadWorldData = async (): Promise<WorldData> => {
+    // Check component-level cache first
     if (cachedWorldData) {
       return cachedWorldData
     }
 
+    // Check browser-level cache
+    const browserCached = getCachedWorldData()
+    if (browserCached) {
+      cachedWorldData = browserCached
+      return browserCached
+    }
     try {
-      const world = await d3.json(
-        'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json'
+      // Use locally cached world atlas data (raw GitHub URL to avoid CORS)
+      const world = await d3.json<TopologyData>(
+        'https://raw.githubusercontent.com/imcnaney/donkey/main/assets/countries-110m.json'
       )
-      const graticule = d3.geoGraticule()
+
+      if (!world) {
+        throw new Error('Failed to load world data')
+      }
+
+      const countries = topojson.feature(world, world.objects.countries)
+      // Note: countries-110m.json doesn't have land objects, countries serve as both
 
       cachedWorldData = {
         world,
-        countries: world
-          ? (topojson as any).feature(world, (world as any).objects.countries)
-          : null,
-        land: world
-          ? (topojson as any).feature(world, (world as any).objects.land)
-          : null,
+        countries,
+        land: countries, // Use countries as land masses too
         outline: { type: 'Sphere' },
-        graticule: graticule()
+        graticule: d3.geoGraticule10()
       }
+
+      // Cache in browser for future visits
+      setCachedWorldData(cachedWorldData)
 
       return cachedWorldData
     } catch (error) {
-      const graticule = d3.geoGraticule()
-      cachedWorldData = {
-        world: null,
-        countries: null,
-        land: null,
-        outline: { type: 'Sphere' },
-        graticule: graticule()
+      // Handle specific error cases
+      if (error instanceof Error) {
+        throw new Error(`Failed to load world atlas data: ${error.message}`)
       }
-      return cachedWorldData
+      throw new Error('Failed to load world atlas data: Unknown error')
     }
   }
 
   /**
-   * Ultra-lightweight rotation update - minimum DOM manipulation
+   * Throttled update function for optimized drag performance
+   * Only updates every frame instead of on every drag event
    */
-  const updateRotation = () => {
+  const throttledUpdate = () => {
     if (!projection || !path || !baseGroup) return
 
-    try {
-      // Only update the most essential elements to prevent flashing
-      // Update sphere and land only (skip borders and graticule during drag)
-      const sphere = baseGroup.select('.sphere')
-      const land = baseGroup.select('.land')
-
-      if (!sphere.empty()) {
-        sphere.attr('d', path as unknown as string)
-      }
-      if (!land.empty()) {
-        land.attr('d', path as unknown as string)
-      }
-
-      // Skip country borders and graticule during active drag to reduce flashing
-      // These will be updated in dragended
-
-      // Only update visible spikes (performance optimization)
-      if (spikesGroup && cachedSpikeData) {
-        spikesGroup.selectAll('.spike').each(function(_, i) {
-          const spike = cachedSpikeData![i]
-          if (!spike || !projection) return
-
-          const coords = projection([spike.longitude, spike.latitude])
-          if (!coords) {
-            // Coordinates are behind the horizon - hide the spike
-            d3.select(this as SVGGElement).style('display', 'none')
-            return
-          }
-
-          // Calculate 3D properties for real-time updates
-          const currentRotation = projection.rotate() as [number, number, number]
-          const depth = spike3D.calculateDepth(spike.longitude, spike.latitude, currentRotation)
-          const scale = spike3D.getPerspectiveScale(depth)
-          const opacity = spike3D.getDepthOpacity(depth)
-          const normal = spike3D.getNormalVector(spike.longitude, spike.latitude)
-
-          const element = d3.select(this as SVGGElement)
-
-          // Pin is visible since D3 could project its coordinates
-          element.style('display', 'block')
-
-          const [x, y] = coords
-
-          // Simple radial projection from globe center
-          // This works because orthographic projection shows the globe as a circle
-          const baseHeight = spike.height * scale
-
-          // Find the center of the globe in screen coordinates
-          const globeCenter = projection([0, 0])
-          if (!globeCenter) return
-
-          const [centerX, centerY] = globeCenter
-
-          // Calculate direction from center to spike base
-          const dirX = x - centerX
-          const dirY = y - centerY
-          const distance = Math.sqrt(dirX * dirX + dirY * dirY)
-
-          if (distance === 0) return
-
-          // Normalize direction and apply perspective based on depth
-          const perspectiveScale = Math.max(0.3, 1.0 + depth * 0.5)
-          const effectiveHeight = baseHeight * perspectiveScale
-
-          const normX = dirX / distance
-          const normY = dirY / distance
-
-          const tipX = x + normX * effectiveHeight
-          const tipY = y + normY * effectiveHeight
-
-          // Update spike elements with 3D properties
-          element.select('line')
-            .attr('x1', x).attr('y1', y)
-            .attr('x2', tipX).attr('y2', tipY)
-            .attr('stroke-width', Math.max(1, 2 * scale))
-            .attr('opacity', opacity)
-
-          element.select('.spike-base')
-            .attr('cx', x).attr('cy', y)
-            .attr('r', 2 * scale)
-            .attr('fill', depth < 0 ? 'var(--color-brand-orange)' : 'var(--brand-color-dark)')
-            .attr('opacity', opacity * 0.9)
-
-          element.select('.spike-top')
-            .attr('cx', tipX).attr('cy', tipY)
-            .attr('r', Math.max(1, 3 * scale))
-            .attr('fill', depth < 0 ? '#ffaa66' : 'var(--brand-color-dark)')
-            .attr('stroke-width', scale * 0.5)
-            .attr('opacity', opacity)
-
-          // Update glow effect if it exists
-          const glow = element.select('.spike-glow')
-          if (!glow.empty()) {
-            if (depth < -0.2) {
-              glow.attr('cx', tipX).attr('cy', tipY)
-                  .attr('r', Math.max(1, 3 * scale) * 1.5)
-                  .attr('opacity', Math.min(0.3, scale * 0.2))
-                  .style('display', 'block')
-            } else {
-              glow.style('display', 'none')
-            }
-          }
-        })
-      }
-    } catch (error) {
-      // Silently handle any rendering errors to prevent crashes during drag
+    const currentTime = Date.now()
+    if (currentTime - lastUpdateTime > 16) {
+      // ~60 FPS
+      // Update all elements including borders and graticule
+      baseGroup.selectAll('path').attr('d', path as unknown as string)
+      lastUpdateTime = currentTime
     }
   }
 
   /**
-   * Complete update including all elements - used when drag ends
+   * Full rotation update for comprehensive element updates
+   * Used when rotation changes significantly
    */
   const fullRotationUpdate = () => {
     if (!projection || !path || !baseGroup) return
 
     // Update all elements including borders and graticule
     baseGroup.selectAll('path').attr('d', path as unknown as string)
+  }
 
-    // Update all spikes with full 3D calculations
-    if (spikesGroup && cachedSpikeData) {
-      spikesGroup.selectAll('.spike').each(function(_, i) {
-        const spike = cachedSpikeData![i]
-        if (!spike || !projection) return
+  /**
+   * Auto-rotation function that slowly rotates the globe from right to left
+   */
+  const autoRotate = () => {
+    if (!projection || !path || !baseGroup || isUserInteracting) return
+    if (typeof window === 'undefined') return
 
-        const coords = projection([spike.longitude, spike.latitude])
-        if (!coords) {
-          // Coordinates are behind the horizon - hide the spike
-          d3.select(this as SVGGElement).style('display', 'none')
-          return
-        }
+    // Get current rotation and decrement longitude (rotate left to right visually)
+    const currentRotation = projection.rotate()
+    const newLongitude = currentRotation[0] - autoRotationSpeed
 
-        const currentRotation = projection.rotate() as [number, number, number]
-        const depth = spike3D.calculateDepth(spike.longitude, spike.latitude, currentRotation)
-        const scale = spike3D.getPerspectiveScale(depth)
-        const opacity = spike3D.getDepthOpacity(depth)
-        const normal = spike3D.getNormalVector(spike.longitude, spike.latitude)
+    // Update rotation
+    projection.rotate([newLongitude, currentRotation[1], currentRotation[2]])
 
-        const element = d3.select(this as SVGGElement)
+    // Update all paths
+    baseGroup.selectAll('path').attr('d', path as unknown as string)
 
-        // Simple visibility check based on depth
-        if (depth < 0) {
-          element.style('display', 'none')
-          return
-        } else {
-          element.style('display', 'block')
-        }
+    // Continue auto-rotation
+    autoRotationFrame = window.requestAnimationFrame(autoRotate)
+  }
 
-        const [x, y] = coords
-        const scaledHeight = spike.height * scale
+  /**
+   * Start auto-rotation
+   */
+  const startAutoRotation = () => {
+    if (typeof window === 'undefined') return
 
-        // Simple radial projection from globe center
-        const baseHeight = spike.height * scale
+    if (autoRotationFrame) {
+      window.cancelAnimationFrame(autoRotationFrame)
+    }
+    isUserInteracting = false
+    autoRotationFrame = window.requestAnimationFrame(autoRotate)
+  }
 
-        // Find the center of the globe in screen coordinates
-        const globeCenter = projection([0, 0])
-        if (!globeCenter) return
-
-        const [centerX, centerY] = globeCenter
-
-        // Calculate direction from center to spike base
-        const dirX = x - centerX
-        const dirY = y - centerY
-        const distance = Math.sqrt(dirX * dirX + dirY * dirY)
-
-        if (distance === 0) return
-
-        // Normalize direction and apply perspective based on depth
-        const perspectiveScale = Math.max(0.3, 1.0 + depth * 0.5)
-        const effectiveHeight = baseHeight * perspectiveScale
-
-        const normX = dirX / distance
-        const normY = dirY / distance
-
-        const tipX = x + normX * effectiveHeight
-        const tipY = y + normY * effectiveHeight
-
-        // Update all spike elements with full 3D properties
-        element.select('line')
-          .attr('x1', x).attr('y1', y)
-          .attr('x2', tipX).attr('y2', tipY)
-          .attr('stroke-width', Math.max(1, 2 * scale))
-          .attr('opacity', opacity)
-
-        element.select('.spike-base')
-          .attr('cx', x).attr('cy', y)
-          .attr('r', 2 * scale)
-          .attr('fill', depth < 0 ? 'var(--color-brand-orange)' : 'var(--brand-color-dark)')
-          .attr('opacity', opacity * 0.9)
-
-        element.select('.spike-top')
-          .attr('cx', tipX).attr('cy', tipY)
-          .attr('r', Math.max(1, 3 * scale))
-          .attr('fill', depth < 0 ? '#ffaa66' : 'var(--brand-color-dark)')
-          .attr('stroke-width', scale * 0.5)
-          .attr('opacity', opacity)
-
-        // Update glow effects
-        const glow = element.select('.spike-glow')
-        if (!glow.empty()) {
-          if (depth > 0.2) {
-            glow.attr('cx', tipX).attr('cy', tipY)
-                .attr('r', Math.max(1, 3 * scale) * 1.5)
-                .attr('opacity', Math.min(0.3, scale * 0.2))
-                .style('display', 'block')
-          } else {
-            glow.style('display', 'none')
-          }
-        }
-      })
+  /**
+   * Stop auto-rotation
+   */
+  const stopAutoRotation = () => {
+    if (autoRotationFrame && typeof window !== 'undefined') {
+      window.cancelAnimationFrame(autoRotationFrame)
+      autoRotationFrame = null
     }
   }
 
   /**
-   * Creates robust drag behavior with simplified rotation calculations
-   * Avoids gimbal lock and pole singularities
+   * Initialize the 3D globe with optimized rendering
    */
-  const createDragBehavior = () => {
-    if (!projection) return null
-
-    let startX = 0, startY = 0
-    let startRotation: [number, number, number] = [0, 0, 0]
-
-    const dragstarted = (
-      event: d3.D3DragEvent<SVGSVGElement, unknown, unknown>
-    ) => {
-      startX = event.x
-      startY = event.y
-      if (projection) {
-        startRotation = projection.rotate() as [number, number, number]
-      }
-    }
-
-    const dragged = (
-      event: d3.D3DragEvent<SVGSVGElement, unknown, unknown>
-    ) => {
-      if (!projection) return
-
-      // Calculate mouse movement
-      const dx = event.x - startX
-      const dy = event.y - startY
-
-      // Convert mouse movement to rotation angles
-      // Scale factor to make rotation feel natural
-      const scale = 0.5
-
-      // Calculate new rotation based on mouse movement
-      const rotationX = startRotation[1] - dy * scale  // Latitude (pitch) - inverted for intuitive controls
-      const rotationY = startRotation[0] + dx * scale  // Longitude (yaw) - inverted for intuitive controls
-
-      // Constrain latitude to avoid pole lock
-      const constrainedRotationX = Math.max(-85, Math.min(85, rotationX))
-
-      // Update projection with new rotation
-      projection.rotate([rotationY, constrainedRotationX, startRotation[2]])
-
-      // Throttle expensive DOM updates to reduce flashing
-      const now = performance.now()
-      frameCounter++
-
-      // Cancel any pending frame
-      if (dragAnimationFrame) {
-        globalThis.cancelAnimationFrame(dragAnimationFrame)
-      }
-
-      // Update DOM every frame for smooth pin visibility transitions
-      dragAnimationFrame = globalThis.requestAnimationFrame(() => {
-        updateRotation()
-        lastUpdateTime = now
-      })
-    }
-
-    const dragended = () => {
-      // Clean up and do final update
-      if (dragAnimationFrame) {
-        globalThis.cancelAnimationFrame(dragAnimationFrame)
-        dragAnimationFrame = null
-      }
-
-      // Reset counters and do final complete update to ensure consistency
-      frameCounter = 0
-      lastUpdateTime = 0
-      fullRotationUpdate() // Complete update including all elements
-    }
-
-    return d3
-      .drag<SVGSVGElement, unknown>()
-      .on('start', dragstarted)
-      .on('drag', dragged)
-      .on('end', dragended)
-  }
-
-  /**
-   * Initial render - creates all DOM elements once
-   * This replaces the old render function that was clearing everything
-   */
-  const initialRender = async () => {
-    if (!svg || !projection || !path) return
-
-    // Clear any existing content
-    svg.selectAll('*').remove()
-
-    const spikeData = generateSpikeData()
-    const worldData = await loadWorldTopology()
-
-    // Create base group for geography (gets updated on rotation)
-    baseGroup = svg.append('g').attr('class', 'base-geography')
-
-    // Draw globe outline (ocean) - this rotates with the globe
-    baseGroup
-      .append('path')
-      .datum(worldData.outline)
-      .attr('class', 'sphere')
-      .attr('d', path as unknown as string)
-      .attr('fill', '#1e3a8a') // Deep blue ocean
-      .attr('stroke', '#3b82f6')
-      .attr('stroke-width', 2)
-
-    // Draw land/countries if available
-    if (worldData.land) {
-      baseGroup
-        .selectAll('.land')
-        .data([worldData.land])
-        .enter()
-        .append('path')
-        .attr('class', 'land')
-        .attr('d', path as unknown as string)
-        .attr('fill', '#4B5563') // Dark gray land
-        .attr('stroke', 'none')
-    }
-
-    // Draw country borders if available
-    if (worldData.countries) {
-      baseGroup
-        .selectAll('.country')
-        .data((worldData.countries as { features: unknown[] }).features)
-        .enter()
-        .append('path')
-        .attr('class', 'country')
-        .attr('d', path as unknown as string)
-        .attr('fill', 'none')
-        .attr('stroke', '#6B7280') // Light gray borders
-        .attr('stroke-width', 0.5)
-        .attr('opacity', 0.7)
-    }
-
-    // Draw graticule (grid lines) - more subtle
-    baseGroup
-      .append('path')
-      .datum(worldData.graticule)
-      .attr('class', 'graticule')
-      .attr('d', path as unknown as string)
-      .attr('fill', 'none')
-      .attr('stroke', '#60a5fa')
-      .attr('stroke-width', 0.25)
-      .attr('opacity', 0.2)
-
-    // Create spikes group (separate from base geography)
-    spikesGroup = svg.append('g').attr('class', 'spikes')
-
-    // Create 3D spike elements with perspective and depth
-    if (spikesGroup && projection) {
-      spikeData.forEach(spike => {
-        if (!projection) return
-        const coords = projection([spike.longitude, spike.latitude])
-        if (!coords) return
-
-        const [x, y] = coords
-        const currentRotation = projection.rotate() as [number, number, number]
-
-        // Calculate 3D properties
-        const depth = spike3D.calculateDepth(spike.longitude, spike.latitude, currentRotation)
-        const scale = spike3D.getPerspectiveScale(depth)
-        const opacity = spike3D.getDepthOpacity(depth)
-        const normal = spike3D.getNormalVector(spike.longitude, spike.latitude)
-
-        // Skip spikes that are on the back side (negative depth)
-        // No depth filtering - if D3 projected the coordinates, they're visible
-
-        const spikeGroup = spikesGroup!.append('g').attr('class', 'spike')
-
-        // Calculate spike dimensions with 3D scaling
-        const scaledHeight = spike.height * scale
-        const baseRadius = 2 * scale
-        const topRadius = Math.max(1, 3 * scale)
-        const strokeWidth = Math.max(1, 2 * scale)
-
-        // Simple radial projection from globe center
-        const baseHeight = spike.height * scale
-
-        // Find the center of the globe in screen coordinates
-        const globeCenter = projection([0, 0])
-        if (!globeCenter) return
-
-        const [centerX, centerY] = globeCenter
-
-        // Calculate direction from center to spike base
-        const dirX = x - centerX
-        const dirY = y - centerY
-        const distance = Math.sqrt(dirX * dirX + dirY * dirY)
-
-        if (distance === 0) return
-
-        // Normalize direction and apply perspective based on depth
-        const perspectiveScale = Math.max(0.3, 1.0 + depth * 0.5)
-        const effectiveHeight = baseHeight * perspectiveScale
-
-        const normX = dirX / distance
-        const normY = dirY / distance
-
-        const tipX = x + normX * effectiveHeight
-        const tipY = y + normY * effectiveHeight
-
-        // Create gradient definition for 3D appearance
-        const gradientId = `spike-gradient-${spike.id}`
-        if (!svg) return
-        const defs = svg.select('defs').empty() ? svg.append('defs') : svg.select('defs')
-
-        const gradient = defs.append('linearGradient')
-          .attr('id', gradientId)
-          .attr('gradientUnits', 'objectBoundingBox')
-          .attr('x1', '0%').attr('y1', '0%')
-          .attr('x2', '100%').attr('y2', '100%')
-
-        gradient.append('stop')
-          .attr('offset', '0%')
-          .attr('stop-color', depth > 0 ? '#ff8c42' : '#cc6633')  // Brighter when facing viewer
-          .attr('stop-opacity', opacity)
-
-        gradient.append('stop')
-          .attr('offset', '100%')
-          .attr('stop-color', depth > 0 ? '#e67829' : '#994d1a')  // Darker at tip
-          .attr('stop-opacity', opacity * 0.8)
-
-        // Draw 3D spike body as a tapered line with variable width
-        spikeGroup
-          .append('line')
-          .attr('x1', x)
-          .attr('y1', y)
-          .attr('x2', tipX)
-          .attr('y2', tipY)
-          .attr('stroke', `url(#${gradientId})`)
-          .attr('stroke-width', strokeWidth)
-          .attr('stroke-linecap', 'round')
-          .attr('opacity', opacity)
-
-        // Draw spike base with depth-appropriate size
-        spikeGroup
-          .append('circle')
-          .attr('class', 'spike-base')
-          .attr('cx', x)
-          .attr('cy', y)
-          .attr('r', baseRadius)
-          .attr('fill', depth < 0 ? 'var(--color-brand-orange)' : 'var(--brand-color-dark)')
-          .attr('opacity', opacity * 0.9)
-
-        // Draw spike tip with enhanced 3D appearance
-        spikeGroup
-          .append('circle')
-          .attr('class', 'spike-top')
-          .attr('cx', tipX)
-          .attr('cy', tipY)
-          .attr('r', topRadius)
-          .attr('fill', depth < 0 ? '#ffaa66' : 'var(--brand-color-dark)')  // Highlight tip
-          .attr('stroke', depth > 0 ? '#ffffff' : '#888888')
-          .attr('stroke-width', scale * 0.5)
-          .attr('opacity', opacity)
-
-        // Add a subtle shadow/glow effect for depth
-        if (depth < -0.2) {  // Only for forward-facing spikes
-          spikeGroup
-            .append('circle')
-            .attr('class', 'spike-glow')
-            .attr('cx', tipX)
-            .attr('cy', tipY)
-            .attr('r', topRadius * 1.5)
-            .attr('fill', '#ffaa66')
-            .attr('opacity', Math.min(0.3, scale * 0.2))
-            .style('filter', 'blur(2px)')
-        }
-      })
-    }
-
-    // Add static UI elements that don't rotate
-    const uiGroup = svg.append('g').attr('class', 'ui-elements')
-
-    // Add title
-    uiGroup
-      .append('text')
-      .attr('x', (svg.node() as SVGSVGElement).clientWidth / 2)
-      .attr('y', 30)
-      .attr('text-anchor', 'middle')
-      .style('fill', 'rgb(229 231 235)')
-      .style('font-size', '18px')
-      .style('font-weight', '600')
-      .text('Interactive 3D Globe')
-
-    // Add drag instructions
-    uiGroup
-      .append('text')
-      .attr('x', (svg.node() as SVGSVGElement).clientWidth / 2)
-      .attr('y', (svg.node() as SVGSVGElement).clientHeight - 20)
-      .attr('text-anchor', 'middle')
-      .style('fill', 'rgb(156 163 175)')
-      .style('font-size', '14px')
-      .text('Drag to rotate globe')
-  }
-
-  /**
-   * Creates and initializes the 3D globe visualization with optimized rendering
-   */
-  const createGlobe3D = (): void => {
+  const initializeGlobe = async () => {
     if (!globeContainer.value) return
 
-    // Clear any existing content
-    d3.select(globeContainer.value).selectAll('*').remove()
+    try {
+      const container = globeContainer.value
+      const { clientWidth: width, clientHeight: height } = container
 
-    const container = globeContainer.value
-    const width = container.clientWidth
-    const height = container.clientHeight
+      // Clear any existing content
+      d3.select(container).selectAll('*').remove()
 
-    if (width <= 0 || height <= 0) return
+      // Create SVG with proper sizing
+      svg = d3
+        .select(container)
+        .append('svg')
+        .attr('width', width)
+        .attr('height', height)
+        .style('background-color', 'transparent')
 
-    // Create orthographic projection for 3D effect
-    projection = d3
-      .geoOrthographic()
-      .scale(Math.min(width, height) / 3)
-      .translate([width / 2, height / 2])
-      .clipAngle(90)
+      const worldData = await loadWorldData()
 
-    path = d3.geoPath().projection(projection)
+      // Configure orthographic projection for 3D globe effect
+      projection = d3
+        .geoOrthographic()
+        .scale(Math.min(width, height) / 2.2)
+        .translate([width / 2, height / 2])
+        .rotate([0, -10, 0]) // Start with slight tilt
+        .clipAngle(90) // Only show front hemisphere
 
-    // Create SVG with improved performance settings
-    svg = d3
-      .select(container)
-      .append('svg')
-      .attr('width', width)
-      .attr('height', height)
-      .style('shape-rendering', 'geometricPrecision') // Better rendering quality
-      .style('cursor', 'grab') // Visual feedback
+      path = d3.geoPath().projection(projection)
 
-    if (!svg) return
+      // Create performance-optimized groups
+      baseGroup = svg.append('g').attr('class', 'base-geography')
 
-    // Add drag behavior with optimized performance
-    const drag = createDragBehavior()
-    if (drag) {
+      // Add world elements in render order
+      // 1. Ocean/sphere background
+      baseGroup
+        .append('path')
+        .datum(worldData.outline)
+        .attr('class', 'sphere')
+        .attr('d', path as unknown as string)
+        .attr('fill', 'var(--color-globe-ocean)')
+        .attr('stroke', 'none')
+
+      // 2. Graticule (grid lines)
+      baseGroup
+        .append('path')
+        .datum(worldData.graticule)
+        .attr('class', 'graticule')
+        .attr('d', path as unknown as string)
+        .attr('fill', 'none')
+        .attr('stroke', 'var(--color-globe-grid)')
+        .attr('stroke-width', 0.5)
+        .attr('opacity', 0.3)
+
+      // 3. Land masses (countries)
+      if (worldData.countries) {
+        baseGroup
+          .append('path')
+          .datum(worldData.countries)
+          .attr('class', 'countries')
+          .attr('d', path as unknown as string)
+          .attr('fill', 'var(--color-globe-land)')
+          .attr('stroke', 'var(--color-globe-land-border)')
+          .attr('stroke-width', 0.3)
+          .attr('opacity', 0.9)
+      }
+
+      // Add drag behavior for smooth globe rotation
+      const drag = d3
+        .drag<SVGSVGElement, unknown>()
+        .on('start', function () {
+          // Stop auto-rotation when user starts interacting
+          isUserInteracting = true
+          stopAutoRotation()
+
+          // Cancel any existing animation frames
+          if (dragAnimationFrame) {
+            window.cancelAnimationFrame(dragAnimationFrame)
+          }
+        })
+        .on('drag', function (event) {
+          if (!projection) return
+
+          // Get current rotation and apply drag delta
+          const currentRotation = projection.rotate()
+          const sensitivity = 0.25
+
+          // Update rotation based on drag movement
+          projection.rotate([
+            currentRotation[0] + event.dx * sensitivity,
+            Math.max(
+              -90,
+              Math.min(90, currentRotation[1] - event.dy * sensitivity)
+            ),
+            currentRotation[2]
+          ])
+
+          // Throttled update for smooth performance
+          if (dragAnimationFrame) {
+            window.cancelAnimationFrame(dragAnimationFrame)
+          }
+          dragAnimationFrame = window.requestAnimationFrame(throttledUpdate)
+        })
+        .on('end', function () {
+          // Final update when drag ends
+          fullRotationUpdate()
+
+          // Resume auto-rotation after a longer delay
+          setTimeout(() => {
+            startAutoRotation()
+          }, 10000) // 10 second delay before resuming auto-rotation
+        })
+
       svg.call(drag)
 
-      // Update cursor during drag
-      svg.on('mousedown', function () {
-        d3.select(this).style('cursor', 'grabbing')
-      })
+      // Start auto-rotation
+      startAutoRotation()
+    } catch (error) {
+      // TODO: Add proper error handling for globe initialization failures
 
-      svg.on('mouseup', function () {
-        d3.select(this).style('cursor', 'grab')
-      })
+      // Show error message in the container
+      if (globeContainer.value) {
+        const container = globeContainer.value
+        d3.select(container).selectAll('*').remove()
+
+        d3.select(container)
+          .append('div')
+          .style('color', 'red')
+          .style('padding', '20px')
+          .style('font-family', 'monospace')
+          .text(`Globe initialization failed: ${error}`)
+      }
     }
-
-    // Use optimized initial render
-    initialRender().catch(error => {
-      // TODO: Add proper error handling for globe rendering
-      throw error
-    })
   }
 
   /**
-   * Handles window resize to redraw globe
+   * Handle container resize with debouncing
    */
-  const handleResize = (): void => {
-    createGlobe3D()
+  const handleResize = () => {
+    if (!globeContainer.value || !svg || !projection) return
+
+    const { clientWidth: width, clientHeight: height } = globeContainer.value
+
+    // Update SVG dimensions
+    svg.attr('width', width).attr('height', height)
+
+    // Update projection scale and translation
+    projection
+      .scale(Math.min(width, height) / 2.2)
+      .translate([width / 2, height / 2])
+
+    // Update all paths
+    fullRotationUpdate()
   }
 
+  // Component lifecycle
   onMounted(() => {
-    createGlobe3D()
+    initializeGlobe()
 
-    // Set up resize observer
-    if (globeContainer.value) {
-      resizeObserver = new globalThis.ResizeObserver(handleResize)
+    // Setup resize observer for responsive behavior
+    if (globeContainer.value && typeof window !== 'undefined') {
+      resizeObserver = new window.ResizeObserver(handleResize)
       resizeObserver.observe(globeContainer.value)
     }
   })
 
   onUnmounted(() => {
-    // Clean up resize observer
+    // Cleanup
     if (resizeObserver) {
       resizeObserver.disconnect()
     }
-
-    // Cancel any pending animation frames
-    if (dragAnimationFrame) {
-      globalThis.cancelAnimationFrame(dragAnimationFrame)
+    if (dragAnimationFrame && typeof window !== 'undefined') {
+      window.cancelAnimationFrame(dragAnimationFrame)
     }
+    // Stop auto-rotation
+    stopAutoRotation()
 
-    // Clear caches to free memory
-    cachedWorldData = null
-    cachedSpikeData = null
-    baseGroup = null
-    spikesGroup = null
-    svg = null
-    projection = null
-    path = null
+    // Keep cachedWorldData in memory for faster subsequent loads
+    // Browser cache also persists across sessions
   })
 </script>
 
