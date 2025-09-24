@@ -254,15 +254,20 @@ describe('SearchResults Component', () => {
       expect(performSearchSpy).not.toHaveBeenCalled()
     })
 
-    it.skip('should handle load more results', async () => {
+    it('should handle load more results', async () => {
       const wrapper = createWrapper()
       const store = useSearchStore()
 
       const loadMoreSpy = vi.spyOn(store, 'loadMoreResults')
       loadMoreSpy.mockResolvedValue()
 
-      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
-      await resultsList.vm.$emit('loadMore')
+      // Find the RightPanel component which contains the ResultsList
+      const rightPanel = wrapper.findComponent({ name: 'RightPanel' })
+      expect(rightPanel.exists()).toBe(true)
+
+      // Emit the loadMore event from RightPanel (which SearchResults listens to)
+      await rightPanel.vm.$emit('loadMore')
+      await wrapper.vm.$nextTick()
 
       expect(loadMoreSpy).toHaveBeenCalled()
     })
@@ -703,11 +708,19 @@ describe('SearchResults Component', () => {
   })
 
   describe('Conversation Scroll Control Buttons', () => {
-    it.skip('should show conversation scroll buttons when content is scrollable', async () => {
+    it('should show conversation scroll buttons when content is scrollable', async () => {
       const wrapper = createWrapper()
 
+      // Find the conversation panel within the search layout
+      const conversationPanel = wrapper.findComponent({
+        name: 'ConversationPanel'
+      })
+      expect(conversationPanel.exists()).toBe(true)
+
       // Mock scrollable conversation content
-      const conversationContainer = wrapper.find('.conversation-scroll')
+      const conversationContainer = conversationPanel.find(
+        '.conversation-scroll'
+      )
       expect(conversationContainer.exists()).toBe(true)
 
       // Mock scroll properties
@@ -757,10 +770,18 @@ describe('SearchResults Component', () => {
       expect(conversationScrollChevrons.length).toBe(0)
     })
 
-    it.skip('should scroll conversation incrementally when buttons are clicked', async () => {
+    it('should scroll conversation incrementally when buttons are clicked', async () => {
       const wrapper = createWrapper()
 
-      const conversationContainer = wrapper.find('.conversation-scroll')
+      // Find the conversation panel within the search layout
+      const conversationPanel = wrapper.findComponent({
+        name: 'ConversationPanel'
+      })
+      expect(conversationPanel.exists()).toBe(true)
+
+      const conversationContainer = conversationPanel.find(
+        '.conversation-scroll'
+      )
 
       // Mock scrollable conversation content in middle position
       Object.defineProperty(conversationContainer.element, 'scrollHeight', {
@@ -808,10 +829,18 @@ describe('SearchResults Component', () => {
       })
     })
 
-    it.skip('should position conversation scroll buttons differently from results buttons', async () => {
+    it('should position conversation scroll buttons differently from results buttons', async () => {
       const wrapper = createWrapper()
 
-      const conversationContainer = wrapper.find('.conversation-scroll')
+      // Find the conversation panel within the search layout
+      const conversationPanel = wrapper.findComponent({
+        name: 'ConversationPanel'
+      })
+      expect(conversationPanel.exists()).toBe(true)
+
+      const conversationContainer = conversationPanel.find(
+        '.conversation-scroll'
+      )
 
       // Mock scrollable conversation content to make buttons appear
       Object.defineProperty(conversationContainer.element, 'scrollHeight', {

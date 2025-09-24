@@ -13,18 +13,14 @@
       <div class="space-y-1">
         <div class="flex justify-between items-center gap-4">
           <span class="text-gray-300">Toggle view:</span>
-          <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
+          <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">V</kbd>
         </div>
         <div
           v-if="displayMode === 'timeline'"
           class="flex justify-between items-center gap-4"
         >
           <span class="text-gray-300">Rotate timeline:</span>
-          <div class="flex gap-1">
-            <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">Ctrl+V</kbd>
-            <span class="text-gray-500">or</span>
-            <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">T</kbd>
-          </div>
+          <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
         </div>
       </div>
     </div>
@@ -40,6 +36,7 @@
       ref="starPanelRef"
       :node-count="7"
     />
+    <GlobePanel v-else-if="displayMode === 'globe'" ref="globePanelRef" />
   </SearchLayout>
 </template>
 
@@ -48,11 +45,13 @@
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import TimelinePanel from '@/components/timeline/TimelinePanel.vue'
   import StarPanel from '@/components/star/StarPanel.vue'
+  import GlobePanel from '@/components/globe/GlobePanel.vue'
 
   const timelinePanelRef = ref<InstanceType<typeof TimelinePanel> | null>(null)
   const starPanelRef = ref<InstanceType<typeof StarPanel> | null>(null)
+  const globePanelRef = ref<InstanceType<typeof GlobePanel> | null>(null)
   const orientation = ref<'horizontal' | 'vertical'>('horizontal')
-  const displayMode = ref<'timeline' | 'star'>('timeline')
+  const displayMode = ref<'timeline' | 'star' | 'globe'>('timeline')
 
   const handleSearch = async (query: string) => {
     // Handle timeline search functionality
@@ -78,29 +77,27 @@
    * Handles keyboard shortcuts for timeline orientation toggle and display mode switching
    */
   const handleKeyDown = (event: KeyboardEvent): void => {
-    // Ctrl+V combination for timeline orientation
-    if (event.ctrlKey && (event.key === 'v' || event.key === 'V')) {
-      event.preventDefault()
-      event.stopPropagation()
-      orientation.value =
-        orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
-      return
-    }
-
-    // Simple 't' key for timeline orientation
-    if (event.key === 't' || event.key === 'T') {
-      event.preventDefault()
-      event.stopPropagation()
-      orientation.value =
-        orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
-      return
-    }
-
-    // 'r' key to toggle between timeline and star display
+    // 'r' key for timeline orientation
     if (event.key === 'r' || event.key === 'R') {
       event.preventDefault()
       event.stopPropagation()
-      displayMode.value = displayMode.value === 'timeline' ? 'star' : 'timeline'
+      orientation.value =
+        orientation.value === 'horizontal' ? 'vertical' : 'horizontal'
+      return
+    }
+
+    // 'v' key to cycle through timeline, star, and globe display modes
+    if (event.key === 'v' || event.key === 'V') {
+      event.preventDefault()
+      event.stopPropagation()
+      const modes: Array<'timeline' | 'star' | 'globe'> = [
+        'timeline',
+        'star',
+        'globe'
+      ]
+      const currentIndex = modes.indexOf(displayMode.value)
+      const nextIndex = (currentIndex + 1) % modes.length
+      displayMode.value = modes[nextIndex] ?? 'timeline'
     }
   }
 
