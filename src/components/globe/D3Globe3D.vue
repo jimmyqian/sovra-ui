@@ -21,6 +21,7 @@
     graticule: unknown
   }
 
+
   const globeContainer = ref<HTMLElement | null>(null)
   let svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | null = null
   let projection: d3.GeoProjection | null = null
@@ -47,6 +48,7 @@
   let autoRotationFrame: number | null = null
   let isUserInteracting = false
   const autoRotationSpeed = 0.2 // degrees per frame
+
 
   /**
    * Check if cached data exists and is still valid
@@ -181,15 +183,16 @@
     if (!projection || !path || !baseGroup || isUserInteracting) return
     if (typeof window === 'undefined') return
 
-    // Get current rotation and decrement longitude (rotate left to right visually)
+    // Get current rotation and increment longitude (rotate right to left visually)
     const currentRotation = projection.rotate()
-    const newLongitude = currentRotation[0] - autoRotationSpeed
+    const newLongitude = currentRotation[0] + autoRotationSpeed
 
     // Update rotation
     projection.rotate([newLongitude, currentRotation[1], currentRotation[2]])
 
     // Update all paths
     baseGroup.selectAll('path').attr('d', path as unknown as string)
+
 
     // Continue auto-rotation
     autoRotationFrame = window.requestAnimationFrame(autoRotate)
@@ -217,6 +220,9 @@
       autoRotationFrame = null
     }
   }
+
+
+
 
   /**
    * Initialize the 3D globe with optimized rendering
@@ -335,6 +341,7 @@
         })
 
       svg.call(drag)
+
 
       // Start auto-rotation
       startAutoRotation()
