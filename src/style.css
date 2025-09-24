@@ -23,6 +23,12 @@
     --color-logo-gray: #898989;
     --color-border-dashed: #e29f9f;
     --color-bg-button: #fff8f8;
+
+    /* Globe colors */
+    --color-globe-ocean: #1e293b;
+    --color-globe-land: #22c55e;
+    --color-globe-land-border: #16a34a;
+    --color-globe-grid: #475569;
   }
 
   * {
