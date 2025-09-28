@@ -6,12 +6,9 @@
   import { ref, onMounted, onUnmounted } from 'vue'
   import * as d3 from 'd3'
   import * as topojson from 'topojson-client'
+  import type { Topology, Objects } from 'topojson-specification'
 
-  interface TopologyData {
-    objects: {
-      countries: unknown
-    }
-  }
+  type TopologyData = Topology<Objects>
 
   interface WorldData {
     world: TopologyData | null
@@ -20,7 +17,6 @@
     outline: { type: string }
     graticule: unknown
   }
-
 
   const globeContainer = ref<HTMLElement | null>(null)
   let svg: d3.Selection<SVGSVGElement, unknown, null, undefined> | null = null
@@ -48,7 +44,6 @@
   let autoRotationFrame: number | null = null
   let isUserInteracting = false
   const autoRotationSpeed = 0.2 // degrees per frame
-
 
   /**
    * Check if cached data exists and is still valid
@@ -121,7 +116,7 @@
         'https://raw.githubusercontent.com/imcnaney/donkey/main/assets/countries-110m.json'
       )
 
-      if (!world) {
+      if (!world || !world.objects.countries) {
         throw new Error('Failed to load world data')
       }
 
@@ -193,7 +188,6 @@
     // Update all paths
     baseGroup.selectAll('path').attr('d', path as unknown as string)
 
-
     // Continue auto-rotation
     autoRotationFrame = window.requestAnimationFrame(autoRotate)
   }
@@ -220,9 +214,6 @@
       autoRotationFrame = null
     }
   }
-
-
-
 
   /**
    * Initialize the 3D globe with optimized rendering
@@ -341,7 +332,6 @@
         })
 
       svg.call(drag)
-
 
       // Start auto-rotation
       startAutoRotation()
