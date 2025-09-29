@@ -10,7 +10,7 @@ import LogoIcon from '@/components/icons/LogoIcon.vue'
 import type { ConversationMessage } from '@/types/conversation'
 
 describe('SearchConversation Accessibility', () => {
-  const mockSearchQuery = 'Hello Dave.'
+  const mockSearchQuery = 'Good morning, Dave. How may I assist you today?'
 
   const createTestMessages = (resultCount = 56): ConversationMessage[] => [
     {

@@ -251,19 +251,21 @@ describe('SearchResultsList Component', () => {
   })
 
   describe('Conversation Integration', () => {
-    it('should show default "Hello Dave" message from system in conversation', async () => {
+    it('should show default HAL 9000 greeting from system in conversation', async () => {
       const wrapper = createWrapper()
       await wrapper.vm.$nextTick()
 
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
 
-      // Check that conversation has default "Hello Dave" message from system
+      // Check that conversation has default HAL 9000 greeting from system
       expect(messages).toBeDefined()
       expect(Array.isArray(messages)).toBe(true)
       expect(messages.length).toBeGreaterThan(0)
       expect(messages[0].sender).toBe('system')
-      expect(messages[0].items?.[0]?.content).toBe('Hello Dave')
+      expect(messages[0].items?.[0]?.content).toBe(
+        'Good morning, Dave. How may I assist you today?'
+      )
     })
 
     it('should generate conversation messages', async () => {

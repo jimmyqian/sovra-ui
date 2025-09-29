@@ -113,7 +113,7 @@
 
   // Initialize conversation script on component mount
   onMounted(() => {
-    // Ensure default "Hello Dave" message appears if conversation is empty
+    // Ensure default HAL 9000 greeting appears if conversation is empty
     if (conversationStore.conversationHistory.length === 0) {
       conversationStore.addMessage({
         id: 'system-message-1',
@@ -123,7 +123,7 @@
           {
             id: 'greeting-text',
             type: 'text',
-            content: 'Hello Dave',
+            content: 'Good morning, Dave. How may I assist you today?',
             emphasis: 'normal'
           }
         ]

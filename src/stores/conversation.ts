@@ -13,7 +13,7 @@ export const useConversationStore = defineStore('conversation', () => {
         {
           id: 'greeting-text',
           type: 'text',
-          content: 'Hello Dave',
+          content: 'Good morning, Dave. How may I assist you today?',
           emphasis: 'normal'
         }
       ]

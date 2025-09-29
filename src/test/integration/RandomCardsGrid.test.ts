@@ -239,7 +239,9 @@ describe('RandomCardsGrid Integration', () => {
       expect(firstItem).toBeDefined()
 
       if (firstItem && 'content' in firstItem) {
-        expect(firstItem.content).toBe('Hello Dave')
+        expect(firstItem.content).toBe(
+          'Good morning, Dave. How may I assist you today?'
+        )
       }
     })
 
