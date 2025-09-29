@@ -27,7 +27,7 @@
               :class="{ 'thinking-pulse': isThinkingMessage(message) }"
             />
           </div>
-          <div class="flex-1">
+          <div class="flex-1" style="margin-top: 3px;">
             <!-- Render conversation items dynamically -->
             <template v-for="item in message.items" :key="item.id">
               <TextParagraph v-if="item.type === 'text'" :item="item" />

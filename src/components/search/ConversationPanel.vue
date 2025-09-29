@@ -183,40 +183,6 @@
 
   const handleSearch = async () => {
     if (searchQuery.value.trim()) {
-      // Add user message to conversation
-      const userMessageId = `user-message-${Date.now()}`
-      const systemResponseId = `system-response-${Date.now()}`
-      const thinkingPlaceholderId = `thinking-${Date.now()}`
-
-      conversationStore.addMessage({
-        id: userMessageId,
-        sender: 'user',
-        timestamp: new Date(),
-        content: searchQuery.value
-      })
-
-      // Scroll to show new user message
-      scrollToBottom()
-
-      // Add thinking placeholder immediately
-      conversationStore.addMessage({
-        id: thinkingPlaceholderId,
-        sender: 'system',
-        timestamp: new Date(),
-        items: [
-          {
-            id: `thinking-text-${Date.now()}`,
-            type: 'text',
-            content: 'thinking...',
-            emphasis: 'normal',
-            isThinking: true
-          }
-        ]
-      })
-
-      // Scroll to show thinking placeholder
-      scrollToBottom()
-
       // Store the query before clearing input
       const queryToSearch = searchQuery.value
 
@@ -226,31 +192,8 @@
       // Emit search event for parent to handle
       emit('search', queryToSearch)
 
-      // Wait 3 seconds before performing search and replacing thinking placeholder
-      setTimeout(async () => {
-        // Perform the search
-        await searchStore.performSearch(queryToSearch)
-
-        // Find and replace the thinking placeholder with a standard response
-        const scriptedContent =
-          "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?"
-
-        conversationStore.updateMessage(thinkingPlaceholderId, {
-          id: systemResponseId,
-          sender: 'system',
-          timestamp: new Date(),
-          items: [
-            {
-              id: `text-${Date.now()}`,
-              type: 'text',
-              content: scriptedContent,
-              emphasis: 'normal'
-            }
-          ]
-        })
-        // Scroll to show new system response
-        scrollToBottom()
-      }, 3000)
+      // Perform the search without conversation additions
+      await searchStore.performSearch(queryToSearch)
     }
   }
 
@@ -264,21 +207,8 @@
 
   // Generate conversation data based on search state
   const conversationMessages = computed<ConversationMessage[]>(() => {
-    const totalResults = searchStore.displayTotalResults
-    const messages = [...conversationStore.conversationHistory]
-
-    // Update the result count in the initial system response if it exists
-    if (messages.length >= 2 && messages[1]?.sender === 'system') {
-      const systemMessage = messages[1]
-      const resultsSummaryItem = systemMessage.items?.find(
-        item => item.type === 'results-summary'
-      )
-      if (resultsSummaryItem && 'resultCount' in resultsSummaryItem) {
-        resultsSummaryItem.resultCount = totalResults
-      }
-    }
-
-    return messages
+    // Return empty conversation history (no unscripted conversation)
+    return [...conversationStore.conversationHistory]
   })
 
   // Auto-scroll is handled explicitly during search operations (handleSearch function)

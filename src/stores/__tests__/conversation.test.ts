@@ -8,12 +8,15 @@ describe('useConversationStore', () => {
   })
 
   describe('basic conversation management', () => {
-    it('should initialize with default conversation history', () => {
+    it('should initialize with default "Hello Dave" message from system', () => {
       const store = useConversationStore()
 
-      expect(store.conversationHistory).toHaveLength(2)
-      expect(store.conversationHistory[0]?.sender).toBe('user')
-      expect(store.conversationHistory[1]?.sender).toBe('system')
+      expect(store.conversationHistory).toHaveLength(1)
+      expect(store.conversationHistory[0]?.sender).toBe('system')
+      expect(store.conversationHistory[0]?.items?.[0]?.type).toBe('text')
+      expect(store.conversationHistory[0]?.items?.[0]?.content).toBe(
+        'Hello Dave'
+      )
     })
 
     it('should add new messages to conversation history', () => {
@@ -38,6 +41,15 @@ describe('useConversationStore', () => {
     it('should update existing messages by ID', () => {
       const store = useConversationStore()
 
+      // Add a message first
+      const originalMessage = {
+        id: 'user-message-1',
+        sender: 'user' as const,
+        timestamp: new Date(),
+        content: 'Original content'
+      }
+      store.addMessage(originalMessage)
+
       const updatedMessage = {
         id: 'user-message-1',
         sender: 'user' as const,
@@ -55,6 +67,16 @@ describe('useConversationStore', () => {
 
     it('should remove messages by ID', () => {
       const store = useConversationStore()
+
+      // Add a message first
+      const testMessage = {
+        id: 'user-message-1',
+        sender: 'user' as const,
+        timestamp: new Date(),
+        content: 'Test content'
+      }
+      store.addMessage(testMessage)
+
       const initialLength = store.conversationHistory.length
 
       store.removeMessage('user-message-1')
@@ -75,41 +97,24 @@ describe('useConversationStore', () => {
   })
 
   describe('hint handlers', () => {
-    it('should update hint handlers for system messages', () => {
+    it('should handle hint handlers with no unscripted conversation', () => {
       const store = useConversationStore()
       const mockHintClick = vi.fn()
       const mockCreateFilter = vi.fn()
 
-      store.updateHintHandlers({
-        onHintClick: mockHintClick,
-        onCreateFilter: mockCreateFilter
-      })
+      // Should not throw an error when called with empty conversation
+      expect(() => {
+        store.updateHintHandlers({
+          onHintClick: mockHintClick,
+          onCreateFilter: mockCreateFilter
+        })
+      }).not.toThrow()
 
-      // Find the system message and test hint interactions
+      // No system message should exist in empty conversation
       const systemMessage = store.conversationHistory.find(
         msg => msg.id === 'system-response-1' && msg.sender === 'system'
       )
-
-      expect(systemMessage).toBeTruthy()
-
-      if (systemMessage?.items) {
-        const hintsGroup = systemMessage.items.find(
-          item => item.type === 'hints-group'
-        )
-        const actionButton = systemMessage.items.find(
-          item => item.type === 'action-button'
-        )
-
-        if (hintsGroup && 'hints' in hintsGroup) {
-          hintsGroup.hints[0]?.onClick?.()
-          expect(mockHintClick).toHaveBeenCalledWith('software role')
-        }
-
-        if (actionButton && 'onClick' in actionButton) {
-          actionButton.onClick?.()
-          expect(mockCreateFilter).toHaveBeenCalled()
-        }
-      }
+      expect(systemMessage).toBeUndefined()
     })
   })
 
