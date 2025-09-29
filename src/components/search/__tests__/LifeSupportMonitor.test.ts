@@ -1,6 +1,7 @@
 /**
  * LifeSupportMonitor Component Tests
- * Tests the Life Support Monitor component that displays declining vitals during HAL's murder of Frank Poole
+ * Tests the Life Support Monitor component that displays vitals for all Discovery One crew members
+ * Shows the timeline of HAL 9000's hostile actions against the crew
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
@@ -32,64 +33,76 @@ describe('LifeSupportMonitor', () => {
       expect(wrapper.text()).toContain('CRITICAL')
     })
 
-    it('shows crew member information', () => {
+    it('shows mission information header', () => {
       const wrapper = mount(LifeSupportMonitor)
 
-      expect(wrapper.text()).toContain('CREW MEMBER: F. POOLE')
-      expect(wrapper.text()).toContain('STATUS: DECEASED')
+      expect(wrapper.text()).toContain('DISCOVERY ONE CREW')
+      expect(wrapper.text()).toContain('LIFE SUPPORT MONITORING')
     })
   })
 
-  describe('Graph Elements', () => {
-    it('renders SVG graph with proper viewBox', () => {
+  describe('Crew Member Graphs', () => {
+    it('renders multiple SVG graphs with proper viewBox', () => {
       const wrapper = mount(LifeSupportMonitor)
 
-      const svg = wrapper.find('svg')
-      expect(svg.exists()).toBe(true)
-      expect(svg.attributes('viewBox')).toBe('0 0 100 100')
-      expect(svg.attributes('preserveAspectRatio')).toBe('none')
+      const svgs = wrapper.findAll('svg')
+      expect(svgs.length).toBe(5) // One for each crew member
+
+      svgs.forEach(svg => {
+        expect(svg.attributes('viewBox')).toBe('0 0 100 32')
+        expect(svg.attributes('preserveAspectRatio')).toBe('none')
+      })
     })
 
-    it('contains three phase lines for health decline', () => {
+    it('displays all five crew members', () => {
+      const wrapper = mount(LifeSupportMonitor)
+
+      expect(wrapper.text()).toContain('D. BOWMAN')
+      expect(wrapper.text()).toContain('F. POOLE')
+      expect(wrapper.text()).toContain('J. KAMINSKI')
+      expect(wrapper.text()).toContain('V. HUNTER')
+      expect(wrapper.text()).toContain('C. WHITEHEAD')
+    })
+
+    it('shows correct status for each crew member', () => {
+      const wrapper = mount(LifeSupportMonitor)
+
+      expect(wrapper.text()).toContain('AWAKE') // D. Bowman
+      expect(wrapper.text()).toContain('DECEASED') // F. Poole
+      expect(wrapper.text()).toContain('TERMINATED') // Hibernation crew
+    })
+
+    it('contains life support lines for all crew members', () => {
       const wrapper = mount(LifeSupportMonitor)
 
       const polylines = wrapper.findAll('polyline')
-      expect(polylines).toHaveLength(3)
+      expect(polylines.length).toBe(5) // One line per crew member
 
-      // Check stroke colors for different phases
+      // Check that different stroke colors are used
       const colors = polylines.map(line => line.attributes('stroke'))
-      expect(colors).toContain('#22c55e') // Green for healthy phase
-      expect(colors).toContain('#eab308') // Yellow for declining phase
-      expect(colors).toContain('#ef4444') // Red for critical phase
+      expect(colors).toContain('#22c55e') // Green for Bowman (alive)
+      expect(colors).toContain('#ef4444') // Red for Poole (deceased)
+      expect(colors).toContain('#f59e0b') // Orange for hibernation crew
     })
 
-    it('includes death marker circle', () => {
+    it('includes death/termination markers for deceased crew', () => {
       const wrapper = mount(LifeSupportMonitor)
 
-      const circle = wrapper.find('circle')
-      expect(circle.exists()).toBe(true)
-      expect(circle.attributes('fill')).toBe('#dc2626')
-      expect(circle.attributes('cx')).toBe('95')
-      expect(circle.attributes('cy')).toBe('95')
+      const circles = wrapper.findAll('circle')
+      expect(circles.length).toBe(4) // Markers for F. Poole + 3 hibernation crew
+
+      circles.forEach(circle => {
+        expect(circle.attributes('fill')).toBe('#dc2626')
+      })
     })
 
-    it('displays Y-axis percentage labels', () => {
+    it('shows mission timeline indicators', () => {
       const wrapper = mount(LifeSupportMonitor)
 
-      expect(wrapper.text()).toContain('100%')
-      expect(wrapper.text()).toContain('75%')
-      expect(wrapper.text()).toContain('50%')
-      expect(wrapper.text()).toContain('25%')
-      expect(wrapper.text()).toContain('0%')
-    })
-
-    it('shows time indicators', () => {
-      const wrapper = mount(LifeSupportMonitor)
-
-      expect(wrapper.text()).toContain('00:00')
-      expect(wrapper.text()).toContain('EVA START')
-      expect(wrapper.text()).toContain('SYSTEM FAIL')
-      expect(wrapper.text()).toContain('00:47')
+      expect(wrapper.text()).toContain('T-0')
+      expect(wrapper.text()).toContain('EVA')
+      expect(wrapper.text()).toContain('HAL MALFUNCTION')
+      expect(wrapper.text()).toContain('CURRENT')
     })
   })
 
@@ -116,8 +129,13 @@ describe('LifeSupportMonitor', () => {
       // Check that important information is in text form, not just visual
       expect(wrapper.text()).toContain('LIFE SUPPORT')
       expect(wrapper.text()).toContain('CRITICAL')
+      expect(wrapper.text()).toContain('DISCOVERY ONE CREW')
+
+      // All crew members should be accessible
+      expect(wrapper.text()).toContain('D. BOWMAN')
       expect(wrapper.text()).toContain('F. POOLE')
       expect(wrapper.text()).toContain('DECEASED')
+      expect(wrapper.text()).toContain('TERMINATED')
     })
 
     it('uses appropriate color contrast for text', () => {
@@ -135,8 +153,11 @@ describe('LifeSupportMonitor', () => {
     it('includes 2001 Space Odyssey references', () => {
       const wrapper = mount(LifeSupportMonitor)
 
-      // Check for authentic HAL references
-      expect(wrapper.text()).toContain('F. POOLE') // Frank Poole from the movie
+      // Check for authentic crew names from the movie
+      expect(wrapper.text()).toContain('F. POOLE') // Frank Poole
+      expect(wrapper.text()).toContain('D. BOWMAN') // Dave Bowman
+      expect(wrapper.text()).toContain('DISCOVERY ONE') // Spacecraft name
+      expect(wrapper.text()).toContain('HAL MALFUNCTION') // HAL reference
     })
 
     it('uses appropriate danger colors for critical state', () => {
@@ -150,14 +171,14 @@ describe('LifeSupportMonitor', () => {
       expect(dangerElements.length).toBeGreaterThan(0)
     })
 
-    it('displays appropriate timeline for EVA incident', () => {
+    it('displays appropriate timeline for mission crisis', () => {
       const wrapper = mount(LifeSupportMonitor)
 
-      // Check timeline matches a realistic EVA incident duration
-      expect(wrapper.text()).toContain('00:00')
-      expect(wrapper.text()).toContain('00:47') // 47 minutes - realistic for the incident
-      expect(wrapper.text()).toContain('EVA START')
-      expect(wrapper.text()).toContain('SYSTEM FAIL')
+      // Check timeline reflects the mission crisis progression
+      expect(wrapper.text()).toContain('T-0') // Mission start
+      expect(wrapper.text()).toContain('EVA') // EVA incident
+      expect(wrapper.text()).toContain('HAL MALFUNCTION') // HAL's hostile actions
+      expect(wrapper.text()).toContain('CURRENT') // Current status
     })
   })
 })

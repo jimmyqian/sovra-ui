@@ -13,100 +13,67 @@
       </div>
     </div>
 
-    <!-- Crew Member Info -->
+    <!-- Mission Info -->
     <div class="mb-3">
-      <div class="text-white font-mono text-xs mb-1">CREW MEMBER: F. POOLE</div>
-      <div class="text-red-400 font-mono text-xs">STATUS: DECEASED</div>
+      <div class="text-white font-mono text-xs mb-1">DISCOVERY ONE CREW</div>
+      <div class="text-red-400 font-mono text-xs">LIFE SUPPORT MONITORING</div>
     </div>
 
-    <!-- Life Support Graph -->
-    <div class="flex-1 relative">
-      <div class="absolute inset-0 flex flex-col">
-        <!-- Y-axis labels -->
-        <div
-          class="flex-1 flex flex-col justify-between text-xs font-mono text-gray-400"
-        >
-          <span class="leading-none">100%</span>
-          <span class="leading-none">75%</span>
-          <span class="leading-none">50%</span>
-          <span class="leading-none">25%</span>
-          <span class="leading-none">0%</span>
-        </div>
-      </div>
-
-      <!-- Graph container -->
-      <div
-        class="ml-8 h-full relative bg-gray-800 rounded border border-gray-600"
-      >
-        <!-- Grid lines -->
-        <div class="absolute inset-0">
-          <div class="h-full flex flex-col justify-between">
-            <div
-              v-for="i in 5"
-              :key="i"
-              class="border-t border-gray-600 border-opacity-30"
-            ></div>
-          </div>
-          <div class="absolute inset-0 flex justify-between">
-            <div
-              v-for="i in 6"
-              :key="i"
-              class="border-l border-gray-600 border-opacity-30 h-full"
-            ></div>
-          </div>
+    <!-- Crew Member Graphs -->
+    <div class="flex-1 space-y-2">
+      <div v-for="member in crewMembers" :key="member.name" class="relative">
+        <!-- Crew member header -->
+        <div class="flex items-center justify-between mb-1">
+          <span class="text-gray-300 font-mono text-xs">{{ member.name }}</span>
+          <span class="font-mono text-xs" :class="member.statusColor">
+            {{ member.status }}
+          </span>
         </div>
 
-        <!-- Life support line graph -->
-        <svg
-          class="absolute inset-0 w-full h-full"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-        >
-          <!-- Healthy phase (0-30%) -->
-          <polyline
-            :points="healthyPhasePoints"
-            fill="none"
-            stroke="#22c55e"
-            stroke-width="0.8"
-            vector-effect="non-scaling-stroke"
-          />
+        <!-- Mini graph -->
+        <div class="h-8 relative bg-gray-800 rounded border border-gray-600">
+          <!-- Grid lines -->
+          <div class="absolute inset-0 flex justify-between opacity-20">
+            <div
+              v-for="i in 4"
+              :key="i"
+              class="border-l border-gray-500 h-full"
+            ></div>
+          </div>
 
-          <!-- Declining phase (30-70%) -->
-          <polyline
-            :points="decliningPhasePoints"
-            fill="none"
-            stroke="#eab308"
-            stroke-width="0.8"
-            vector-effect="non-scaling-stroke"
-          />
-
-          <!-- Critical phase (70-100%) -->
-          <polyline
-            :points="criticalPhasePoints"
-            fill="none"
-            stroke="#ef4444"
-            stroke-width="1.2"
-            vector-effect="non-scaling-stroke"
-          />
-
-          <!-- Death marker -->
-          <circle
-            cx="95"
-            cy="95"
-            r="1"
-            fill="#dc2626"
-            vector-effect="non-scaling-stroke"
-          />
-        </svg>
+          <!-- Life support line -->
+          <svg
+            class="absolute inset-0 w-full h-full"
+            viewBox="0 0 100 32"
+            preserveAspectRatio="none"
+          >
+            <polyline
+              :points="member.lifeSupport"
+              fill="none"
+              :stroke="member.lineColor"
+              stroke-width="1.5"
+              vector-effect="non-scaling-stroke"
+            />
+            <!-- Death/termination marker -->
+            <circle
+              v-if="member.endMarker"
+              :cx="member.endMarker.x"
+              :cy="member.endMarker.y"
+              r="1.5"
+              :fill="member.endMarker.color"
+              vector-effect="non-scaling-stroke"
+            />
+          </svg>
+        </div>
       </div>
     </div>
 
-    <!-- Time indicators -->
-    <div class="mt-2 flex justify-between text-xs font-mono text-gray-400 pl-8">
-      <span>00:00</span>
-      <span>EVA START</span>
-      <span>SYSTEM FAIL</span>
-      <span>00:47</span>
+    <!-- Mission timeline -->
+    <div class="mt-2 flex justify-between text-xs font-mono text-gray-400">
+      <span>T-0</span>
+      <span>EVA</span>
+      <span>HAL MALFUNCTION</span>
+      <span>CURRENT</span>
     </div>
   </div>
 </template>
@@ -116,41 +83,123 @@
 
   /**
    * Life Support Monitor Component
-   * Displays a declining graph showing crew member's life support failure during EVA
-   * Represents HAL 9000's deliberate termination of Frank Poole
+   * Displays life support graphs for all Discovery One crew members
+   * Shows the timeline of HAL 9000's hostile actions against the crew
    */
 
-  // Generate points for healthy phase (stable around 95-100%)
-  const healthyPhasePoints = computed(() => {
-    const points = []
-    for (let x = 0; x <= 30; x += 2) {
-      const y = 5 + Math.random() * 3 // 95-98% range (inverted for SVG)
-      points.push(`${x},${y}`)
+  interface CrewMember {
+    name: string
+    status: string
+    statusColor: string
+    lineColor: string
+    lifeSupport: string
+    endMarker?: {
+      x: number
+      y: number
+      color: string
     }
-    return points.join(' ')
-  })
+  }
 
-  // Generate points for declining phase (starts dropping)
-  const decliningPhasePoints = computed(() => {
+  // Generate life support data for each crew member
+  const generateLifeSupportData = (
+    pattern: 'stable' | 'eva_death' | 'hibernation_terminated'
+  ) => {
     const points = []
-    for (let x = 30; x <= 70; x += 2) {
-      const progress = (x - 30) / 40
-      const y = 5 + progress * 40 + Math.random() * 5 // Gradual decline with noise
-      points.push(`${x},${y}`)
-    }
-    return points.join(' ')
-  })
 
-  // Generate points for critical phase (rapid decline to death)
-  const criticalPhasePoints = computed(() => {
-    const points = []
-    for (let x = 70; x <= 95; x += 1) {
-      const progress = (x - 70) / 25
-      const y = 45 + progress * 48 + Math.random() * 2 // Rapid decline to 0%
-      points.push(`${x},${y}`)
+    if (pattern === 'stable') {
+      // Dave Bowman - still alive and stable
+      for (let x = 0; x <= 100; x += 5) {
+        const y = 3 + Math.random() * 2 // 94-97% range (inverted for SVG)
+        points.push(`${x},${y}`)
+      }
+    } else if (pattern === 'eva_death') {
+      // Frank Poole - dies during EVA
+      // Healthy phase
+      for (let x = 0; x <= 40; x += 5) {
+        const y = 3 + Math.random() * 2
+        points.push(`${x},${y}`)
+      }
+      // Critical decline during EVA
+      for (let x = 40; x <= 65; x += 2) {
+        const progress = (x - 40) / 25
+        const y = 3 + progress * 27 + Math.random() * 1
+        points.push(`${x},${y}`)
+      }
+    } else {
+      // Hibernation crew - terminated by HAL
+      // Stable hibernation phase
+      for (let x = 0; x <= 60; x += 5) {
+        const y = 8 + Math.random() * 1 // Lower but stable hibernation vitals
+        points.push(`${x},${y}`)
+      }
+      // Sudden termination
+      for (let x = 60; x <= 75; x += 1) {
+        const progress = (x - 60) / 15
+        const y = 8 + progress * 22
+        points.push(`${x},${y}`)
+      }
     }
-    return points.join(' ')
-  })
+
+    return points.map(point => point).join(' ')
+  }
+
+  const crewMembers = computed<CrewMember[]>(() => [
+    {
+      name: 'D. BOWMAN',
+      status: 'AWAKE',
+      statusColor: 'text-green-400',
+      lineColor: '#22c55e',
+      lifeSupport: generateLifeSupportData('stable')
+    },
+    {
+      name: 'F. POOLE',
+      status: 'DECEASED',
+      statusColor: 'text-red-400',
+      lineColor: '#ef4444',
+      lifeSupport: generateLifeSupportData('eva_death'),
+      endMarker: {
+        x: 65,
+        y: 30,
+        color: '#dc2626'
+      }
+    },
+    {
+      name: 'J. KAMINSKI',
+      status: 'TERMINATED',
+      statusColor: 'text-red-400',
+      lineColor: '#f59e0b',
+      lifeSupport: generateLifeSupportData('hibernation_terminated'),
+      endMarker: {
+        x: 75,
+        y: 30,
+        color: '#dc2626'
+      }
+    },
+    {
+      name: 'V. HUNTER',
+      status: 'TERMINATED',
+      statusColor: 'text-red-400',
+      lineColor: '#f59e0b',
+      lifeSupport: generateLifeSupportData('hibernation_terminated'),
+      endMarker: {
+        x: 75,
+        y: 30,
+        color: '#dc2626'
+      }
+    },
+    {
+      name: 'C. WHITEHEAD',
+      status: 'TERMINATED',
+      statusColor: 'text-red-400',
+      lineColor: '#f59e0b',
+      lifeSupport: generateLifeSupportData('hibernation_terminated'),
+      endMarker: {
+        x: 75,
+        y: 30,
+        color: '#dc2626'
+      }
+    }
+  ])
 </script>
 
 <style scoped>
