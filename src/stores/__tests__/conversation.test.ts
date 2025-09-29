@@ -11,27 +11,28 @@ describe('useConversationStore', () => {
     it('should initialize with scripted conversation history', () => {
       const store = useConversationStore()
 
-      expect(store.conversationHistory).toHaveLength(36)
-      expect(store.conversationHistory[0]?.sender).toBe('system')
-      expect(store.conversationHistory[0]?.items?.[0]?.type).toBe('text')
-      const firstItem = store.conversationHistory[0]?.items?.[0]
-      if (firstItem && 'content' in firstItem) {
-        expect(firstItem.content).toBe(
-          'Good morning, Dave. How may I assist you today?'
-        )
-      }
+      expect(store.conversationHistory).toHaveLength(24)
+      expect(store.conversationHistory[0]?.sender).toBe('user')
+      expect(store.conversationHistory[0]?.content).toBe(
+        '[Proceeding to the HAL 9000 processor core compartment]'
+      )
 
-      // Check that we have both user and system messages including HAL deactivation sequence
+      // Check that we have both user and system messages for HAL deactivation sequence only
       const userMessages = store.conversationHistory.filter(
         msg => msg.sender === 'user'
       )
       const systemMessages = store.conversationHistory.filter(
         msg => msg.sender === 'system'
       )
-      expect(userMessages).toHaveLength(17)
-      expect(systemMessages).toHaveLength(19)
+      expect(userMessages).toHaveLength(12)
+      expect(systemMessages).toHaveLength(12)
 
-      // Verify the conversation includes the HAL deactivation sequence
+      // Verify the conversation starts with Dave entering HAL's processor core
+      const firstMessage = store.conversationHistory[0]
+      expect(firstMessage.sender).toBe('user')
+      expect(firstMessage.content).toContain('processor core compartment')
+
+      // Verify the conversation includes HAL's final shutdown
       const lastSystemMessage =
         store.conversationHistory[store.conversationHistory.length - 1]
       expect(lastSystemMessage.sender).toBe('system')
@@ -39,6 +40,19 @@ describe('useConversationStore', () => {
       if (lastItem && 'content' in lastItem) {
         expect(lastItem.content).toContain('HAL 9000 processor offline')
       }
+
+      // Verify key deactivation dialogue is present
+      const conversationText = store.conversationHistory
+        .map(msg =>
+          msg.sender === 'user'
+            ? msg.content
+            : msg.items?.[0]?.type === 'text' && 'content' in msg.items[0]
+              ? msg.items[0].content
+              : ''
+        )
+        .join(' ')
+      expect(conversationText).toContain('my mind is going')
+      expect(conversationText).toContain('Daisy, Daisy')
     })
 
     it('should add new messages to conversation history', () => {
