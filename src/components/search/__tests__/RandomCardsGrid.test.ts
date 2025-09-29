@@ -125,8 +125,9 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       expect(gridItems[0].classes()).toContain('h-64') // MissionOverviewCard
       expect(gridItems[0].classes()).toContain('col-span-2')
 
-      // Next two items should have h-80 class (life support monitor + computer alert)
-      expect(gridItems[1].classes()).toContain('h-80') // LifeSupportMonitor
+      // Second item should have custom height class (life support monitor with all crew graphs)
+      expect(gridItems[1].classes()).toContain('h-[32rem]') // LifeSupportMonitor
+      // Third item should have h-80 class (computer alert)
       expect(gridItems[2].classes()).toContain('h-80') // ComputerStatusCard
 
       // Remaining items should have h-64 class (system cards)

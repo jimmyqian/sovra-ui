@@ -8,8 +8,8 @@
           <MissionOverviewCard />
         </div>
 
-        <!-- Life Support Monitor (top left of second row - critical declining vitals) -->
-        <div class="h-80">
+        <!-- Life Support Monitor (top left of second row - all crew member graphs) -->
+        <div class="h-[32rem]">
           <LifeSupportMonitor />
         </div>
 
