@@ -14,7 +14,7 @@
         </div>
 
         <!-- Computer System Status (top right of second row - ALERT with flashing red border) -->
-        <div class="h-64">
+        <div class="h-56">
           <ComputerStatusCard />
         </div>
 
