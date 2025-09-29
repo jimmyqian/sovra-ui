@@ -211,39 +211,4 @@ describe('CategoryTabs', () => {
     expect(wrapper.text()).toContain('Years Experience')
     expect(wrapper.text()).toContain('Previous Companies')
   })
-
-  it('emits showUpsell event when redacted content is clicked', async () => {
-    // Set subscription level to Basic (1) so professional content is redacted
-    const subscriptionStore = useSubscriptionStore()
-    subscriptionStore.setLevel(1)
-
-    const wrapper = mount(CategoryTabs, { props: mockProps })
-
-    // Switch to Professional tab to see redacted content
-    const professionalTab = wrapper
-      .findAll('button')
-      .find(btn => btn.text() === 'Professional')
-    await professionalTab?.trigger('click')
-
-    // Professional content should be redacted at level 1
-    expect(wrapper.text()).toContain('████████')
-
-    // Find redacted content by text content and clickable class
-    const redactedElements = wrapper
-      .findAll('span')
-      .filter(
-        el =>
-          el.text().includes('████████') &&
-          el.classes().includes('cursor-pointer')
-      )
-
-    expect(redactedElements.length).toBeGreaterThan(0)
-
-    // Click on the first redacted element
-    await redactedElements[0]!.trigger('click')
-
-    // Should emit showUpsell event
-    expect(wrapper.emitted('showUpsell')).toBeDefined()
-    expect(wrapper.emitted('showUpsell')).toHaveLength(1)
-  })
 })

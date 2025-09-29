@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia, type Pinia } from 'pinia'
 import { createRouter, createWebHistory, type Router } from 'vue-router'
-import SearchResults from '@/views/SearchResults.vue'
+import SearchResults from '@/views/SearchResultsList.vue'
 import { useSearchStore } from '@/stores/search'
 
 describe('Search Conversation Integration Tests', () => {

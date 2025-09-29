@@ -3,14 +3,46 @@
  * Tests sidebar rendering, navigation icons, layout, and hover states
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createPinia, setActivePinia } from 'pinia'
+import { createRouter, createWebHistory } from 'vue-router'
 import AppSidebar from '../AppSidebar.vue'
 
+// Mock SearchPopout component
+vi.mock('../SearchPopout.vue', () => ({
+  default: {
+    name: 'SearchPopout',
+    props: ['isVisible'],
+    emits: ['close', 'search', 'fileUpload'],
+    template: '<div data-testid="search-popout">Search Popout</div>'
+  }
+}))
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: { template: '<div>Home</div>' } },
+    { path: '/search', component: { template: '<div>Search</div>' } }
+  ]
+})
+
 describe('AppSidebar', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  const createWrapper = () => {
+    return mount(AppSidebar, {
+      global: {
+        plugins: [createPinia(), router]
+      }
+    })
+  }
+
   describe('Basic Rendering', () => {
     it('renders sidebar container with correct structure', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const sidebar = wrapper.find('div')
       expect(sidebar.exists()).toBe(true)
@@ -18,14 +50,14 @@ describe('AppSidebar', () => {
     })
 
     it('renders all navigation icons', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const icons = wrapper.findAll('svg')
       expect(icons).toHaveLength(5)
     })
 
     it('renders all navigation icon containers', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -41,7 +73,7 @@ describe('AppSidebar', () => {
 
   describe('Layout Styling', () => {
     it('applies correct container layout classes', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       const expectedClasses = [
@@ -63,7 +95,7 @@ describe('AppSidebar', () => {
     })
 
     it('creates vertical layout with correct spacing', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       expect(container.classes()).toContain('flex-col')
@@ -72,7 +104,7 @@ describe('AppSidebar', () => {
     })
 
     it('maintains fixed width and prevents shrinking', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       expect(container.classes()).toContain('w-15')
@@ -80,7 +112,7 @@ describe('AppSidebar', () => {
     })
 
     it('applies border styling for visual separation', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       expect(container.classes()).toContain('border-r')
@@ -90,7 +122,7 @@ describe('AppSidebar', () => {
 
   describe('Navigation Icons', () => {
     it('renders search icon (first icon) with active state', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -109,7 +141,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders inactive navigation icons with hover states', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -132,7 +164,7 @@ describe('AppSidebar', () => {
     })
 
     it('applies consistent icon container styling', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -162,7 +194,7 @@ describe('AppSidebar', () => {
 
   describe('SVG Icons', () => {
     it('renders search icon SVG with correct attributes', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const searchIcon = svgs[0]
@@ -177,7 +209,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders menu icon SVG with correct paths', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const menuIcon = svgs[1]
@@ -192,7 +224,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders all SVG icons with consistent dimensions', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
 
@@ -205,7 +237,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders edit icon SVG with correct path', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const editIcon = svgs[2]
@@ -220,7 +252,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders settings icon SVG with circle and paths', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const settingsIcon = svgs[3]
@@ -238,7 +270,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders user icon SVG with path and circle', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const userIcon = svgs[4]
@@ -258,7 +290,7 @@ describe('AppSidebar', () => {
 
   describe('Interactive States', () => {
     it('applies cursor pointer to all icon containers', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -273,7 +305,7 @@ describe('AppSidebar', () => {
     })
 
     it('applies transition effects to all icon containers', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -290,7 +322,7 @@ describe('AppSidebar', () => {
 
   describe('Visual Hierarchy', () => {
     it('distinguishes active search icon from other icons', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -318,7 +350,7 @@ describe('AppSidebar', () => {
     })
 
     it('provides visual feedback through hover states', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')

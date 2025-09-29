@@ -228,24 +228,12 @@
 
       // Wait 3 seconds before performing search and replacing thinking placeholder
       setTimeout(async () => {
-        // Advance to next result stage (for narrowing down results)
-        // Use detail script if on search detail page, otherwise use main script
-        const isDetailPage =
-          route?.path?.startsWith('/search/') && route.path !== '/search'
-        if (isDetailPage) {
-          conversationStore.advanceDetailResultStage()
-        } else {
-          conversationStore.advanceResultStage()
-        }
-
         // Perform the search
         await searchStore.performSearch(queryToSearch)
 
-        // Find and replace the thinking placeholder with scripted response
-        // Use detail script if on search detail page, otherwise use main script
-        const scriptedContent = isDetailPage
-          ? conversationStore.getDetailScriptedResponse()
-          : conversationStore.getScriptedResponse()
+        // Find and replace the thinking placeholder with a standard response
+        const scriptedContent =
+          "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?"
 
         conversationStore.updateMessage(thinkingPlaceholderId, {
           id: systemResponseId,

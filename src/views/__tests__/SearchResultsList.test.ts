@@ -6,7 +6,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
-import SearchResults from '../SearchResults.vue'
+import SearchResultsList from '../SearchResultsList.vue'
 import { useSearchStore } from '@/stores/search'
 import { useConversationStore } from '@/stores/conversation'
 import type { SearchResult } from '@/types/search'
@@ -81,7 +81,7 @@ const router = createRouter({
   ]
 })
 
-describe('SearchResults Component', () => {
+describe('SearchResultsList Component', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
@@ -98,7 +98,7 @@ describe('SearchResults Component', () => {
       onCreateFilter: () => {}
     })
 
-    return mount(SearchResults, {
+    return mount(SearchResultsList, {
       global: {
         plugins: [pinia, router]
       }

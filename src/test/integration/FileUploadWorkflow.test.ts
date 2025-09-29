@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
 import { createPinia, setActivePinia } from 'pinia'
-import Landing from '@/views/Landing.vue'
-import SearchResults from '@/views/SearchResults.vue'
+import Landing from '@/views/Search.vue'
+import SearchResults from '@/views/SearchResultsList.vue'
 
 const createMockRouter = () => {
   const router = createRouter({

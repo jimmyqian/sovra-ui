@@ -1,30 +1,8 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import type { ConversationMessage } from '@/types/conversation'
-import {
-  getConversationScript,
-  getNextResponse,
-  getScriptedResults,
-  getDetailScript,
-  getDetailResponse
-} from '@/utils/conversationScripts'
-import type { DetailScript } from '@/utils/conversationScripts'
-import type { SearchResult } from '@/types/search'
 
 export const useConversationStore = defineStore('conversation', () => {
-  // Response tracking for script-based conversations (search screen)
-  const currentScript = ref<ReturnType<typeof getConversationScript> | null>(
-    null
-  )
-  const responseIndex = ref(0)
-  const resultStage = ref(0) // Track which result stage we're on (0-3)
-  const originalQuery = ref('')
-
-  // Response tracking for search detail script (separate from search screen)
-  const detailScript = ref<DetailScript | null>(null)
-  const detailResponseIndex = ref(0)
-  const detailResultStage = ref(0) // Track detail screen script stage
-
   // Conversation history that persists across navigation
   const conversationHistory = ref<ConversationMessage[]>([
     {
@@ -42,7 +20,7 @@ export const useConversationStore = defineStore('conversation', () => {
         {
           id: 'results-summary',
           type: 'results-summary',
-          resultCount: 0 // Will be updated by computed property
+          resultCount: 0 // Will be updated by components
         },
         {
           id: 'text-1',
@@ -151,88 +129,9 @@ export const useConversationStore = defineStore('conversation', () => {
     }
   }
 
-  // Initialize conversation script based on search query
-  const initializeScript = (searchQuery: string) => {
-    originalQuery.value = searchQuery
-    currentScript.value = getConversationScript(searchQuery)
-    responseIndex.value = 0
-    resultStage.value = 0 // Start with initial results
-  }
-
-  // Get the next scripted response (without advancing result stage)
-  const getScriptedResponse = (): string => {
-    if (!currentScript.value) {
-      // Fallback to default if no script is initialized
-      return "Based on the additional information you provided I have narrowed the list of potential matches. Would you like to provide additional details, or do you see the person you're looking for?"
-    }
-
-    const response = getNextResponse(currentScript.value, responseIndex.value)
-    responseIndex.value++
-    // Note: resultStage advancement is now handled separately
-    return response
-  }
-
-  // Advance to the next result stage (called when user provides new information)
-  const advanceResultStage = (): void => {
-    resultStage.value++
-  }
-
-  // Get the current scripted results for the current stage
-  const getCurrentScriptedResults = (): SearchResult[] => {
-    if (!currentScript.value) {
-      return []
-    }
-
-    return getScriptedResults(currentScript.value, resultStage.value)
-  }
-
-  // Initialize detail script based on search query
-  const initializeDetailScript = (searchQuery: string) => {
-    detailScript.value = getDetailScript(searchQuery)
-    detailResponseIndex.value = 0
-    detailResultStage.value = 0
-  }
-
-  // Get the next scripted response for detail screen
-  const getDetailScriptedResponse = (): string => {
-    if (!detailScript.value) {
-      // Fallback if no detail script is initialized
-      return 'Search detail response 1'
-    }
-
-    const response = getDetailResponse(
-      detailScript.value,
-      detailResponseIndex.value
-    )
-    detailResponseIndex.value++
-    return response
-  }
-
-  // Advance to the next detail result stage
-  const advanceDetailResultStage = (): void => {
-    detailResultStage.value++
-  }
-
-  // Reset script state
-  const resetScript = () => {
-    currentScript.value = null
-    responseIndex.value = 0
-    resultStage.value = 0
-    originalQuery.value = ''
-  }
-
-  // Reset detail script state
-  const resetDetailScript = () => {
-    detailScript.value = null
-    detailResponseIndex.value = 0
-    detailResultStage.value = 0
-  }
-
   // Clear all conversation history
   const clearConversation = () => {
     conversationHistory.value = []
-    resetScript()
-    resetDetailScript()
   }
 
   return {
@@ -241,25 +140,6 @@ export const useConversationStore = defineStore('conversation', () => {
     updateMessage,
     removeMessage,
     updateHintHandlers,
-    clearConversation,
-    initializeScript,
-    getScriptedResponse,
-    getCurrentScriptedResults,
-    advanceResultStage,
-    resetScript,
-    // Detail script functions
-    initializeDetailScript,
-    getDetailScriptedResponse,
-    advanceDetailResultStage,
-    resetDetailScript,
-    // Expose read-only state
-    currentScript: computed(() => currentScript.value),
-    responseIndex: computed(() => responseIndex.value),
-    resultStage: computed(() => resultStage.value),
-    originalQuery: computed(() => originalQuery.value),
-    // Detail script state
-    detailScript: computed(() => detailScript.value),
-    detailResponseIndex: computed(() => detailResponseIndex.value),
-    detailResultStage: computed(() => detailResultStage.value)
+    clearConversation
   }
 })
