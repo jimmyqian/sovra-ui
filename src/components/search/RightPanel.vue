@@ -77,23 +77,6 @@
       @click="scrollResultsToBottom"
     />
 
-    <!-- Load More Button - Always visible outside scroll area -->
-    <div
-      v-if="!selectedPerson"
-      class="px-8 py-4 text-center md:px-4 bg-bg-primary border-t border-border-light"
-    >
-      <Button
-        variant="outline"
-        size="lg"
-        :disabled="isLoading"
-        class="mx-auto"
-        @click="handleLoadMore"
-      >
-        {{ isLoading ? 'Loading...' : 'Load More Results' }}
-        <MoreIcon v-if="!isLoading" />
-      </Button>
-    </div>
-
     <!-- Page Footer -->
     <CopyrightFooter @pi-click="handlePiClick" />
   </div>
@@ -107,8 +90,6 @@
   import CategoryTabs from './CategoryTabs.vue'
   import ActivityFooter from './ActivityFooter.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
-  import Button from '@/components/ui/Button.vue'
-  import MoreIcon from '@/components/icons/MoreIcon.vue'
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
@@ -117,13 +98,11 @@
   interface Props {
     results: SearchResult[]
     isLoading: boolean
-    hasMore: boolean
     error: string | null
     selectedPerson: SearchResult | null
   }
 
   interface Emits {
-    (_e: 'loadMore'): void
     (_e: 'personSelected', _person: SearchResult): void
     (_e: 'backToResults'): void
     (_e: 'piClick'): void
@@ -182,10 +161,6 @@
       licenses: 'Professional Engineer License'
     }
   })
-
-  const handleLoadMore = () => {
-    emit('loadMore')
-  }
 
   // Generate detailed person data from search result
   const getDetailedPersonData = (person: SearchResult) => {
@@ -397,13 +372,13 @@
     transform: translateX(-50%);
     width: 24px;
     height: 24px;
-    color: var(--color-brand-orange);
+    color: var(--color-text-secondary);
     transition: all 0.2s ease;
     z-index: 20;
   }
 
   .scroll-chevron:hover {
-    color: #e55a2e; /* darker orange on hover */
+    color: var(--color-text-primary);
     transform: translateX(-50%) scale(1.1);
   }
 

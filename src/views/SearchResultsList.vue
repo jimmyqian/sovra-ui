@@ -9,10 +9,8 @@
     <RightPanel
       :results="results"
       :is-loading="isLoading"
-      :has-more="hasMore"
       :error="error"
       :selected-person="selectedPerson"
-      @load-more="handleLoadMore"
       @person-selected="handlePersonSelected"
       @back-to-results="handleBackToResults"
       @pi-click="handlePiClick"
@@ -39,16 +37,11 @@
   // Use search store data instead of local state
   const results = computed(() => searchStore.results)
   const isLoading = computed(() => searchStore.isLoading)
-  const hasMore = computed(() => searchStore.pagination.hasMore)
   const error = computed(() => searchStore.error)
 
   const handleSearch = async (_query: string) => {
     // Search handling is now done by ConversationPanel component
     // This is just for any additional logic specific to SearchResults
-  }
-
-  const handleLoadMore = async () => {
-    await searchStore.loadMoreResults()
   }
 
   const handlePersonSelected = (person: SearchResult) => {

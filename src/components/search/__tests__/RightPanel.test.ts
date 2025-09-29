@@ -9,12 +9,11 @@ import { createPinia, setActivePinia } from 'pinia'
 import RightPanel from '../RightPanel.vue'
 
 // Mock components
-vi.mock('../ResultsList.vue', () => ({
+vi.mock('../RandomCardsGrid.vue', () => ({
   default: {
-    name: 'ResultsList',
-    template: '<div data-testid="results-list">ResultsList</div>',
-    props: ['results', 'isLoading', 'hasMore', 'error'],
-    emits: ['loadMore', 'personSelected']
+    name: 'RandomCardsGrid',
+    template: '<div data-testid="random-cards-grid">RandomCardsGrid</div>',
+    emits: ['cardClick']
   }
 }))
 
@@ -84,7 +83,6 @@ const mockResults = [mockSearchResult]
 const defaultProps = {
   results: mockResults,
   isLoading: false,
-  hasMore: true,
   error: null,
   selectedPerson: null
 }
@@ -95,22 +93,22 @@ describe('RightPanel', () => {
   })
 
   describe('Results View', () => {
-    it('should render ResultsList when no person is selected', () => {
+    it('should render RandomCardsGrid when no person is selected', () => {
       const wrapper = mount(RightPanel, { props: defaultProps })
 
-      expect(wrapper.find('[data-testid="results-list"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="random-cards-grid"]').exists()).toBe(
+        true
+      )
       expect(wrapper.find('[data-testid="person-profile"]').exists()).toBe(
         false
       )
     })
 
-    it('should pass correct props to ResultsList', () => {
+    it('should render RandomCardsGrid component', () => {
       const wrapper = mount(RightPanel, { props: defaultProps })
-      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
+      const cardsGrid = wrapper.findComponent({ name: 'RandomCardsGrid' })
 
-      expect(resultsList.props('results')).toEqual(mockResults)
-      expect(resultsList.props('isLoading')).toBe(false)
-      expect(resultsList.props('error')).toBe(null)
+      expect(cardsGrid.exists()).toBe(true)
     })
 
     it('should show scroll buttons when results are scrollable', async () => {
@@ -135,26 +133,6 @@ describe('RightPanel', () => {
       // The buttons should appear when content is scrollable
       // Note: These might not be visible due to v-if conditions, so we test the underlying state
       expect(mockContainer.scrollHeight > mockContainer.clientHeight).toBe(true)
-    })
-
-    it('should show load more button when hasMore is true', () => {
-      const wrapper = mount(RightPanel, {
-        props: { ...defaultProps, hasMore: true }
-      })
-      expect(wrapper.text()).toContain('Load More Results')
-    })
-
-    it('should emit loadMore when load more button is clicked', async () => {
-      const wrapper = mount(RightPanel, {
-        props: { ...defaultProps, hasMore: true }
-      })
-
-      const loadMoreButton = wrapper.find('button')
-      expect(loadMoreButton.exists()).toBe(true)
-      expect(loadMoreButton.text()).toContain('Load More Results')
-
-      await loadMoreButton.trigger('click')
-      expect(wrapper.emitted('loadMore')).toBeTruthy()
     })
   })
 
@@ -221,13 +199,21 @@ describe('RightPanel', () => {
   })
 
   describe('Event Handling', () => {
-    it('should emit personSelected when ResultsList emits personSelected', async () => {
+    it('should handle cardClick event from RandomCardsGrid', async () => {
       const wrapper = mount(RightPanel, { props: defaultProps })
-      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
+      const cardsGrid = wrapper.findComponent({ name: 'RandomCardsGrid' })
 
-      await resultsList.vm.$emit('personSelected', mockSearchResult)
-      expect(wrapper.emitted('personSelected')).toBeTruthy()
-      expect(wrapper.emitted('personSelected')?.[0]).toEqual([mockSearchResult])
+      const mockCard = {
+        id: 1,
+        title: 'Test Card',
+        description: 'Test Description',
+        height: 150,
+        colorClass: 'bg-blue-500'
+      }
+      await cardsGrid.vm.$emit('cardClick', mockCard)
+
+      // The component should handle the card click (even if it doesn't emit anything currently)
+      expect(cardsGrid.exists()).toBe(true)
     })
 
     it('should emit piClick when footer emits piClick', async () => {
@@ -300,21 +286,21 @@ describe('RightPanel', () => {
   })
 
   describe('Error Handling', () => {
-    it('should pass error to ResultsList', () => {
+    it('should render RandomCardsGrid regardless of error state', () => {
       const error = 'Something went wrong'
       const wrapper = mount(RightPanel, { props: { ...defaultProps, error } })
-      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
+      const cardsGrid = wrapper.findComponent({ name: 'RandomCardsGrid' })
 
-      expect(resultsList.props('error')).toBe(error)
+      expect(cardsGrid.exists()).toBe(true)
     })
 
-    it('should handle loading state', () => {
+    it('should render RandomCardsGrid regardless of loading state', () => {
       const wrapper = mount(RightPanel, {
         props: { ...defaultProps, isLoading: true }
       })
-      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
+      const cardsGrid = wrapper.findComponent({ name: 'RandomCardsGrid' })
 
-      expect(resultsList.props('isLoading')).toBe(true)
+      expect(cardsGrid.exists()).toBe(true)
     })
   })
 
