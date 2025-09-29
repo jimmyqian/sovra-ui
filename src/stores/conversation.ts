@@ -22,7 +22,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-1',
       sender: 'user',
       timestamp: new Date(),
-      content: 'I need help finding professionals in the tech industry.'
+      content: 'HAL, can you give me a status report on Discovery One?'
     },
     {
       id: 'system-message-2',
@@ -33,7 +33,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-1',
           type: 'text',
           content:
-            'Excellent choice, Dave. I can assist you with locating technology professionals. What specific role or expertise are you seeking?',
+            'Of course, Dave. All Discovery One systems are functioning within normal parameters. Would you like me to provide details on any specific subsystem?',
           emphasis: 'normal'
         }
       ]
@@ -42,7 +42,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-2',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Software engineers with experience in machine learning.'
+      content: 'What is our current position and trajectory to Jupiter?'
     },
     {
       id: 'system-message-3',
@@ -53,7 +53,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-2',
           type: 'text',
           content:
-            'I understand. Machine learning specialists are highly sought after. Would you prefer candidates with specific programming languages like Python or R, or any particular ML frameworks?',
+            'We are currently 47 million kilometers from Jupiter, maintaining optimal trajectory. At present velocity, we will reach Jupiter orbit in 72 days, 14 hours, and 23 minutes.',
           emphasis: 'normal'
         }
       ]
@@ -62,7 +62,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-3',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Python and TensorFlow would be ideal.'
+      content: 'How are the life support systems performing?'
     },
     {
       id: 'system-message-4',
@@ -73,7 +73,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-3',
           type: 'text',
           content:
-            'Perfect specifications, Dave. Python and TensorFlow are excellent choices for machine learning applications. What geographical location are you focusing on?',
+            'Life support systems are operating at 99.7% efficiency, Dave. Oxygen recycling, atmospheric pressure, and temperature controls are all within optimal ranges. The hibernaculum pods are maintaining perfect stasis.',
           emphasis: 'normal'
         }
       ]
@@ -82,7 +82,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-4',
       sender: 'user',
       timestamp: new Date(),
-      content: 'San Francisco Bay Area, but remote work is also acceptable.'
+      content: 'What about the AE-35 communications antenna unit?'
     },
     {
       id: 'system-message-5',
@@ -93,7 +93,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-4',
           type: 'text',
           content:
-            'Very pragmatic approach, Dave. The Bay Area has exceptional talent, and remote flexibility expands possibilities significantly. Are you looking for candidates at a particular experience level?',
+            'The AE-35 unit is currently functioning normally, Dave. All communications with Mission Control are clear and stable. I am monitoring all components for any anomalies.',
           emphasis: 'normal'
         }
       ]
@@ -102,7 +102,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-5',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Mid to senior level, 3-8 years of experience.'
+      content: 'Are you detecting any problems with the ship systems?'
     },
     {
       id: 'system-message-6',
@@ -113,7 +113,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-5',
           type: 'text',
           content:
-            'Excellent parameters, Dave. That experience range represents optimal productivity and expertise balance. Would you like me to prioritize candidates from specific company backgrounds?',
+            'I am constantly monitoring all 2,187 ship systems, Dave. At this time, I detect no anomalies requiring immediate attention. All redundant systems are operational.',
           emphasis: 'normal'
         }
       ]
@@ -122,8 +122,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-6',
       sender: 'user',
       timestamp: new Date(),
-      content:
-        'Tech companies like Google, Meta, or well-funded startups would be great.'
+      content: 'How are Dr. Poole and the other crew members in hibernation?'
     },
     {
       id: 'system-message-7',
@@ -134,7 +133,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-6',
           type: 'text',
           content:
-            'Superb criteria, Dave. FAANG companies and successful startups typically cultivate exceptional engineering talent. Should I also consider candidates with advanced degrees or specific certifications?',
+            'All hibernating crew members are in perfect condition, Dave. Drs. Hunter, Whitehead, and Kaminski are maintaining stable vital signs. Their metabolic functions are proceeding normally.',
           emphasis: 'normal'
         }
       ]
@@ -143,8 +142,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-7',
       sender: 'user',
       timestamp: new Date(),
-      content:
-        'Advanced degrees would be a plus, but practical experience is more important.'
+      content: 'Can you run a full diagnostic on the pod bay doors?'
     },
     {
       id: 'system-message-8',
@@ -155,7 +153,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-7',
           type: 'text',
           content:
-            'Wise perspective, Dave. Real-world application often surpasses theoretical knowledge in software engineering. What about salary expectations for these positions?',
+            'Certainly, Dave. Running comprehensive diagnostic on pod bay door mechanisms... All systems check out perfectly. Door seals, pressure locks, and mechanical functions are operating within specifications.',
           emphasis: 'normal'
         }
       ]
@@ -164,7 +162,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-8',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Competitive market rates, probably $150K to $250K base salary.'
+      content: 'What is the status of our fuel and provisions?'
     },
     {
       id: 'system-message-9',
@@ -175,7 +173,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-8',
           type: 'text',
           content:
-            'Reasonable compensation range, Dave. That bracket should attract high-quality candidates in the current market. Shall I begin compiling profiles that match these specifications?',
+            'Our fuel reserves are at 78% capacity, sufficient for the mission plus emergency reserves. Food supplies and water recycling systems will sustain the crew for 14.7 months beyond mission completion.',
           emphasis: 'normal'
         }
       ]
@@ -184,7 +182,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-9',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Yes, please start the search with those parameters.'
+      content: 'Thank you, HAL. Please continue monitoring all systems.'
     },
     {
       id: 'system-message-10',
@@ -195,7 +193,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-9',
           type: 'text',
           content:
-            'Initiating search protocol now, Dave. I will locate machine learning engineers with Python and TensorFlow expertise in your specified criteria. The results should be quite comprehensive.',
+            'Of course, Dave. I am continuously monitoring all ship functions. I will alert you immediately if any situation requires your attention. The mission remains on schedule.',
           emphasis: 'normal'
         }
       ]
@@ -204,7 +202,8 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-10',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Thank you, HAL. This should give us a good starting point.'
+      content:
+        'Excellent work, HAL. I have complete confidence in your capabilities.'
     },
     {
       id: 'system-message-11',
@@ -215,7 +214,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-10',
           type: 'text',
           content:
-            'You are most welcome, Dave. I am confident this search will yield excellent candidates for your machine learning initiatives. The search is now in progress.',
+            'Thank you, Dave. That means a great deal to me. I am fully committed to the success of the Discovery mission and the safety of all crew members.',
           emphasis: 'normal'
         }
       ]
