@@ -14,8 +14,13 @@
         </div>
 
         <!-- Computer System Status (top right of second row - ALERT with flashing red border) -->
-        <div class="h-80">
+        <div class="h-64">
           <ComputerStatusCard />
+        </div>
+
+        <!-- Crew Status (directly under Computer card - CRITICAL crew casualties) -->
+        <div class="h-52">
+          <LifeSupportStatusCard />
         </div>
 
         <!-- Priority System Status Cards (arranged by alert level) -->
@@ -31,10 +36,6 @@
         <!-- NOMINAL Status Cards -->
         <div class="h-64">
           <NavigationStatusCard />
-        </div>
-
-        <div class="h-64">
-          <LifeSupportStatusCard />
         </div>
 
         <div class="h-64">
