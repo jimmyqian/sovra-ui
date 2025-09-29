@@ -9,10 +9,8 @@
     <RightPanel
       :results="results"
       :is-loading="isLoading"
-      :has-more="hasMore"
       :error="error"
       :selected-person="selectedPerson"
-      @load-more="handleLoadMore"
       @person-selected="handlePersonSelected"
       @back-to-results="handleBackToResults"
       @pi-click="handlePiClick"
@@ -21,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, onMounted } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
   import { useConversationStore } from '@/stores/conversation'
@@ -39,16 +37,11 @@
   // Use search store data instead of local state
   const results = computed(() => searchStore.results)
   const isLoading = computed(() => searchStore.isLoading)
-  const hasMore = computed(() => searchStore.pagination.hasMore)
   const error = computed(() => searchStore.error)
 
   const handleSearch = async (_query: string) => {
     // Search handling is now done by ConversationPanel component
     // This is just for any additional logic specific to SearchResults
-  }
-
-  const handleLoadMore = async () => {
-    await searchStore.loadMoreResults()
   }
 
   const handlePersonSelected = (person: SearchResult) => {
@@ -118,23 +111,5 @@
     // This function is kept for event binding compatibility but not used
   }
 
-  // Initialize conversation script on component mount
-  onMounted(() => {
-    // Ensure default "Hello Dave" message appears if conversation is empty
-    if (conversationStore.conversationHistory.length === 0) {
-      conversationStore.addMessage({
-        id: 'system-message-1',
-        sender: 'system',
-        timestamp: new Date(),
-        items: [
-          {
-            id: 'greeting-text',
-            type: 'text',
-            content: 'Hello Dave',
-            emphasis: 'normal'
-          }
-        ]
-      })
-    }
-  })
+  // Note: Conversation is now pre-populated in the store with scripted dialogue
 </script>

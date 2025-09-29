@@ -56,8 +56,7 @@ vi.mock('@/components/search/SearchConversation.vue', () => ({
 vi.mock('@/components/search/ResultsList.vue', () => ({
   default: {
     name: 'ResultsList',
-    props: ['results', 'isLoading', 'hasMore', 'error'],
-    emits: ['loadMore'],
+    props: ['results', 'isLoading', 'error'],
     template: `
       <div data-testid="results-list">
         <div v-if="isLoading" data-testid="loading">Loading...</div>
@@ -65,9 +64,6 @@ vi.mock('@/components/search/ResultsList.vue', () => ({
         <div v-for="result in results" :key="result.id" data-testid="result-item">
           {{ result.name }}
         </div>
-        <button v-if="hasMore && !isLoading" @click="$emit('loadMore')" data-testid="load-more">
-          Load More
-        </button>
       </div>
     `
   }
@@ -142,7 +138,7 @@ describe('SearchResultsList Component', () => {
         true
       )
       expect(wrapper.find('[data-testid="search-bar"]').exists()).toBe(true)
-      expect(wrapper.find('[data-testid="results-list"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="right-panel"]').exists()).toBe(true)
     })
 
     it('should have correct layout structure', () => {
@@ -189,7 +185,6 @@ describe('SearchResultsList Component', () => {
       const rightPanel = wrapper.findComponent({ name: 'RightPanel' })
       expect(rightPanel.props('results')).toEqual(mockResults)
       expect(rightPanel.props('isLoading')).toBe(false)
-      expect(rightPanel.props('hasMore')).toBe(true) // Now passed through to RightPanel
       expect(rightPanel.props('error')).toBe(null)
     })
 
@@ -200,8 +195,8 @@ describe('SearchResultsList Component', () => {
       store.setLoading(true)
       await wrapper.vm.$nextTick()
 
-      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
-      expect(resultsList.props('isLoading')).toBe(true)
+      const rightPanel = wrapper.findComponent({ name: 'RightPanel' })
+      expect(rightPanel.props('isLoading')).toBe(true)
     })
 
     it('should show error state', async () => {
@@ -211,8 +206,8 @@ describe('SearchResultsList Component', () => {
       store.setError('Search failed')
       await wrapper.vm.$nextTick()
 
-      const resultsList = wrapper.findComponent({ name: 'ResultsList' })
-      expect(resultsList.props('error')).toBe('Search failed')
+      const rightPanel = wrapper.findComponent({ name: 'RightPanel' })
+      expect(rightPanel.props('error')).toBe('Search failed')
     })
   })
 
@@ -253,40 +248,24 @@ describe('SearchResultsList Component', () => {
 
       expect(performSearchSpy).not.toHaveBeenCalled()
     })
-
-    it('should handle load more results', async () => {
-      const wrapper = createWrapper()
-      const store = useSearchStore()
-
-      const loadMoreSpy = vi.spyOn(store, 'loadMoreResults')
-      loadMoreSpy.mockResolvedValue()
-
-      // Find the RightPanel component which contains the ResultsList
-      const rightPanel = wrapper.findComponent({ name: 'RightPanel' })
-      expect(rightPanel.exists()).toBe(true)
-
-      // Emit the loadMore event from RightPanel (which SearchResults listens to)
-      await rightPanel.vm.$emit('loadMore')
-      await wrapper.vm.$nextTick()
-
-      expect(loadMoreSpy).toHaveBeenCalled()
-    })
   })
 
   describe('Conversation Integration', () => {
-    it('should show default "Hello Dave" message from system in conversation', async () => {
+    it('should show default HAL 9000 greeting from system in conversation', async () => {
       const wrapper = createWrapper()
       await wrapper.vm.$nextTick()
 
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
 
-      // Check that conversation has default "Hello Dave" message from system
+      // Check that conversation has default HAL 9000 greeting from system
       expect(messages).toBeDefined()
       expect(Array.isArray(messages)).toBe(true)
       expect(messages.length).toBeGreaterThan(0)
       expect(messages[0].sender).toBe('system')
-      expect(messages[0].items?.[0]?.content).toBe('Hello Dave')
+      expect(messages[0].items?.[0]?.content).toBe(
+        'Good morning, Dave. How may I assist you today?'
+      )
     })
 
     it('should generate conversation messages', async () => {
