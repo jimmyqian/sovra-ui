@@ -1,6 +1,12 @@
 <template>
   <div
-    class="life-support-monitor bg-gray-900 rounded-lg border-2 border-red-500 p-4 h-full flex flex-col"
+    class="life-support-monitor bg-gray-900 rounded-lg border-2 border-red-500 p-4 h-full flex flex-col cursor-pointer hover:bg-gray-800 transition-colors duration-200"
+    role="button"
+    tabindex="0"
+    aria-label="Open timeline view with star graph"
+    @click="handleClick"
+    @keydown.enter="handleClick"
+    @keydown.space.prevent="handleClick"
   >
     <!-- Header -->
     <div class="flex items-center justify-between mb-3">
@@ -81,10 +87,21 @@
 <script setup lang="ts">
   import { computed } from 'vue'
 
+  interface LifeSupportMonitorEmits {
+    (_e: 'openTimelineView'): void
+  }
+
+  const emit = defineEmits<LifeSupportMonitorEmits>()
+
+  const handleClick = () => {
+    emit('openTimelineView')
+  }
+
   /**
    * Life Support Monitor Component
    * Displays life support graphs for all Discovery One crew members
    * Shows the timeline of HAL 9000's hostile actions against the crew
+   * Clickable to open timeline view with star graph
    */
 
   interface CrewMember {
