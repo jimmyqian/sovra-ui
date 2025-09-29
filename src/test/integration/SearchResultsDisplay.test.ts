@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
 import { createPinia, setActivePinia } from 'pinia'
-import SearchResults from '@/views/SearchResults.vue'
+import SearchResults from '@/views/SearchResultsList.vue'
 import type { SearchResult } from '@/types/search'
 
 const createMockRouter = () => {

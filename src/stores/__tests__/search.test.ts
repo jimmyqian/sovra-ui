@@ -7,14 +7,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { useSearchStore } from '../search'
 import type { SearchResult } from '@/types/search'
 
-// Mock the conversation store to return empty scripted results for unit tests
-vi.mock('../conversation', () => ({
-  useConversationStore: () => ({
-    initializeScript: vi.fn(),
-    getCurrentScriptedResults: vi.fn(() => []),
-    currentScript: null
-  })
-}))
+// No longer need to mock conversation store since search store is independent
 
 describe('Search Store', () => {
   beforeEach(() => {

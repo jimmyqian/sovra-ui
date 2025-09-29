@@ -6,7 +6,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
-import SearchResults from '../SearchResults.vue'
+import SearchResultsList from '../SearchResultsList.vue'
 import { useSearchStore } from '@/stores/search'
 import { useConversationStore } from '@/stores/conversation'
 import type { SearchResult } from '@/types/search'
@@ -81,7 +81,7 @@ const router = createRouter({
   ]
 })
 
-describe('SearchResults Component', () => {
+describe('SearchResultsList Component', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
@@ -98,7 +98,7 @@ describe('SearchResults Component', () => {
       onCreateFilter: () => {}
     })
 
-    return mount(SearchResults, {
+    return mount(SearchResultsList, {
       global: {
         plugins: [pinia, router]
       }
@@ -274,19 +274,19 @@ describe('SearchResults Component', () => {
   })
 
   describe('Conversation Integration', () => {
-    it('should include initial user query in conversation messages', async () => {
+    it('should show default "Hello Dave" message from system in conversation', async () => {
       const wrapper = createWrapper()
       await wrapper.vm.$nextTick()
 
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
 
-      // Check that the first message is a user message with the initial query
+      // Check that conversation has default "Hello Dave" message from system
       expect(messages).toBeDefined()
       expect(Array.isArray(messages)).toBe(true)
       expect(messages.length).toBeGreaterThan(0)
-      expect(messages[0].sender).toBe('user')
-      expect(messages[0].content).toContain('Johnson')
+      expect(messages[0].sender).toBe('system')
+      expect(messages[0].items?.[0]?.content).toBe('Hello Dave')
     })
 
     it('should generate conversation messages', async () => {

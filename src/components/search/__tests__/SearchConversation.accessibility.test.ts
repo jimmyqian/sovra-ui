@@ -10,7 +10,7 @@ import LogoIcon from '@/components/icons/LogoIcon.vue'
 import type { ConversationMessage } from '@/types/conversation'
 
 describe('SearchConversation Accessibility', () => {
-  const mockSearchQuery = 'Find Johnson who works in software in California'
+  const mockSearchQuery = 'Hello Dave.'
 
   const createTestMessages = (resultCount = 56): ConversationMessage[] => [
     {
@@ -94,7 +94,7 @@ describe('SearchConversation Accessibility', () => {
 
       // User query should appear before system response
       const queryIndex = text.indexOf(mockSearchQuery)
-      const responseIndex = text.indexOf('Fantastic!')
+      const responseIndex = text.indexOf('56 persons were found')
       expect(queryIndex).toBeLessThan(responseIndex)
 
       // Content should flow logically for screen readers
@@ -227,7 +227,7 @@ describe('SearchConversation Accessibility', () => {
       const text = wrapper.text()
 
       // Should contain clear, descriptive content
-      expect(text).toContain('Fantastic!')
+      expect(text).toContain('56 persons were found')
       expect(text).toContain('56 persons were found in the results')
       expect(text).toContain('Please provide additional information')
       expect(text).toContain('you can use the hints below')
@@ -253,7 +253,7 @@ describe('SearchConversation Accessibility', () => {
 
       // Content should flow in logical order for screen readers
       const searchQueryPosition = text.indexOf(mockSearchQuery)
-      const mainResponsePosition = text.indexOf('Fantastic!')
+      const mainResponsePosition = text.indexOf('56 persons were found')
       const hintsPosition = text.indexOf('What specific software role')
       const actionButtonPosition = text.indexOf('create a filter')
 
@@ -449,7 +449,7 @@ describe('SearchConversation Accessibility', () => {
 
       // Main response section should be grouped
       const responseText = wrapper.text()
-      expect(responseText).toContain('Fantastic!')
+      expect(responseText).toContain('56 persons were found')
       expect(responseText).toContain('Please provide additional information')
       expect(responseText).toContain('you can use the hints below')
 

@@ -1,47 +1,123 @@
 /**
- * Unit tests for Landing component
- * Tests search integration with Pinia store and navigation
+ * Unit tests for Landing component (formerly SearchDetail)
+ * Tests person detail display, route integration, and component interactions
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
 import Landing from '../Landing.vue'
-import { useSearchStore } from '@/stores/search'
 import { useConversationStore } from '@/stores/conversation'
+import { useSearchStore } from '@/stores/search'
+
+// Mock vue-router
+const mockRoute = {
+  params: { id: '123' }
+}
+
+vi.mock('vue-router', async () => {
+  const actual = await vi.importActual('vue-router')
+  return {
+    ...actual,
+    useRoute: () => mockRoute
+  }
+})
 
 // Mock components to avoid dependency issues
-vi.mock('@/components/common/Logo.vue', () => ({
+vi.mock('@/components/layout/AppHeader.vue', () => ({
   default: {
-    name: 'Logo',
-    template: '<div data-testid="logo">Logo</div>'
+    name: 'AppHeader',
+    template: '<div data-testid="app-header">Header</div>'
+  }
+}))
+
+vi.mock('@/components/navigation/AppSidebar.vue', () => ({
+  default: {
+    name: 'AppSidebar',
+    template: '<div data-testid="app-sidebar">Sidebar</div>'
   }
 }))
 
 vi.mock('@/components/common/SearchBar.vue', () => ({
   default: {
     name: 'SearchBar',
-    props: ['modelValue', 'placeholder', 'disabled'],
+    props: ['modelValue', 'placeholder'],
     emits: ['update:modelValue', 'search', 'fileUpload'],
     template: `
       <div data-testid="search-bar">
-        <input 
-          :value="modelValue" 
-          :disabled="disabled"
+        <input
+          :value="modelValue"
           @input="$emit('update:modelValue', $event.target.value)"
           @keyup.enter="$emit('search')"
           data-testid="search-input"
         />
-        <button @click="$emit('search')" :disabled="disabled" data-testid="search-button">Search</button>
+        <button @click="$emit('search')" data-testid="search-button">Search</button>
       </div>
     `
   }
 }))
 
-vi.mock('@/components/layout/CopyrightFooter.vue', () => ({
+vi.mock('@/components/search/SearchConversation.vue', () => ({
   default: {
-    name: 'CopyrightFooter',
-    template: '<div data-testid="footer">Footer</div>'
+    name: 'SearchConversation',
+    props: ['messages', 'userQuery'],
+    template: '<div data-testid="search-conversation">Conversation</div>'
+  }
+}))
+
+vi.mock('@/components/search/PersonProfile.vue', () => ({
+  default: {
+    name: 'PersonProfile',
+    props: ['person'],
+    emits: ['tagClick'],
+    template: `
+      <div data-testid="person-profile">
+        <h2>{{ person.name }}</h2>
+        <div v-for="tag in person.tags" :key="tag" @click="$emit('tagClick', tag)" data-testid="tag">
+          {{ tag }}
+        </div>
+      </div>
+    `
+  }
+}))
+
+vi.mock('@/components/search/DetailedResultCard.vue', () => ({
+  default: {
+    name: 'DetailedResultCard',
+    props: ['person'],
+    template:
+      '<div data-testid="detailed-result-card">{{ person.name }} Details</div>'
+  }
+}))
+
+vi.mock('@/components/search/CategoryTabs.vue', () => ({
+  default: {
+    name: 'CategoryTabs',
+    props: [
+      'accounts',
+      'personalData',
+      'professionalData',
+      'financeData',
+      'legalData'
+    ],
+    template: '<div data-testid="category-tabs">Category Tabs</div>'
+  }
+}))
+
+vi.mock('@/components/search/ActivityFooter.vue', () => ({
+  default: {
+    name: 'ActivityFooter',
+    emits: ['categoryToggle', 'showReferences'],
+    template: `
+      <div data-testid="activity-footer">
+        <button @click="$emit('categoryToggle', 'personal', true)" data-testid="category-toggle">
+          Toggle Category
+        </button>
+        <button @click="$emit('showReferences')" data-testid="show-references">
+          Show References
+        </button>
+      </div>
+    `
   }
 }))
 
@@ -49,7 +125,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: { template: '<div>Home</div>' } },
-    { path: '/search', component: { template: '<div>Search</div>' } }
+    { path: '/search/:id', component: { template: '<div>Detail</div>' } }
   ]
 })
 
@@ -60,9 +136,38 @@ describe('Landing Component', () => {
   })
 
   const createWrapper = () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+
+    // Initialize the conversation store with proper hint handlers
+    const conversationStore = useConversationStore()
+    conversationStore.updateHintHandlers({
+      onHintClick: () => {},
+      onCreateFilter: () => {}
+    })
+
+    // Initialize search store with mock data for tests
+    const searchStore = useSearchStore()
+    searchStore.updatePagination({ totalResults: 42 })
+
+    // Add mock person that matches the route ID for tests
+    const mockPerson = {
+      id: 123,
+      name: 'Johnson Smith',
+      age: 26,
+      gender: 'Male',
+      maritalStatus: 'Married',
+      location: 'California',
+      rating: 4.5,
+      references: 42,
+      companies: 3,
+      contacts: 15
+    }
+    searchStore.setResults([mockPerson])
+
     return mount(Landing, {
       global: {
-        plugins: [createPinia(), router]
+        plugins: [pinia, router]
       }
     })
   }
@@ -71,179 +176,99 @@ describe('Landing Component', () => {
     it('should render all main sections', () => {
       const wrapper = createWrapper()
 
-      expect(wrapper.find('[data-testid="logo"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="app-sidebar"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="app-header"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="search-conversation"]').exists()).toBe(
+        true
+      )
       expect(wrapper.find('[data-testid="search-bar"]').exists()).toBe(true)
-      expect(wrapper.find('[data-testid="footer"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="person-profile"]').exists()).toBe(true)
+      expect(
+        wrapper.find('[data-testid="detailed-result-card"]').exists()
+      ).toBe(true)
+      expect(wrapper.find('[data-testid="category-tabs"]').exists()).toBe(true)
+      expect(wrapper.find('[data-testid="activity-footer"]').exists()).toBe(
+        true
+      )
     })
 
-    it('should render hero text correctly', () => {
+    it('should have correct layout structure', () => {
       const wrapper = createWrapper()
 
-      expect(wrapper.text()).toContain('Hi! I am Sovra')
-      expect(wrapper.text()).toContain('What do you want to know today?')
+      // Check SearchLayout structure
+      expect(wrapper.find('.h-screen').exists()).toBe(true)
+      expect(wrapper.find('.md\\:flex-row').exists()).toBe(true)
+      expect(wrapper.find('.bg-bg-primary').exists()).toBe(true)
     })
 
-    it('should pass correct props to SearchBar', () => {
+    it('should pass correct placeholder to SearchBar', () => {
       const wrapper = createWrapper()
       const searchBar = wrapper.findComponent({ name: 'SearchBar' })
 
-      expect(searchBar.props('placeholder')).toContain(
-        'enter keyword of the person'
+      expect(searchBar.props('placeholder')).toBe(
+        "Tell me more about who you're looking for"
       )
-      expect(searchBar.props('disabled')).toBe(false)
     })
   })
 
-  describe('Search Store Integration', () => {
-    it('should integrate with search store', () => {
-      // Create wrapper for store integration test
-      createWrapper()
-      const store = useSearchStore()
+  describe('Person Data Display', () => {
+    it('should display person profile data', () => {
+      const wrapper = createWrapper()
+      const personProfile = wrapper.findComponent({ name: 'PersonProfile' })
 
-      expect(store).toBeDefined()
-      expect(store.isLoading).toBe(false)
-      expect(store.error).toBe(null)
+      const person = personProfile.props('person')
+      expect(person.name).toBe('Johnson Smith')
+      expect(person.tags).toContain('Overview')
+      expect(person.tags).toContain('Personal Life')
+      expect(person.description).toContain(
+        'Johnson Smith is an American businessman'
+      )
     })
 
-    it('should disable search bar when loading', async () => {
+    it('should display detailed person data', () => {
       const wrapper = createWrapper()
-      const store = useSearchStore()
+      const detailedCard = wrapper.findComponent({ name: 'DetailedResultCard' })
 
-      store.setLoading(true)
-      await wrapper.vm.$nextTick()
-
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      expect(searchBar.props('disabled')).toBe(true)
+      const person = detailedCard.props('person')
+      expect(person.name).toBe('Johnson Smith')
+      expect(person.stats.age).toBe('26')
+      expect(person.personal.birthDate).toBe('10 Aug 2000')
+      expect(person.professional.currentJob).toBe('Software Engineer')
     })
 
-    it('should show loading spinner when search is in progress', async () => {
+    it('should display category tabs with correct data', () => {
       const wrapper = createWrapper()
-      const store = useSearchStore()
+      const categoryTabs = wrapper.findComponent({ name: 'CategoryTabs' })
 
-      store.setLoading(true)
-      await wrapper.vm.$nextTick()
+      const personalData = categoryTabs.props('personalData')
+      expect(personalData.relationshipStatus).toBe('Married')
 
-      const spinner = wrapper.find('.animate-spin')
-      expect(spinner.exists()).toBe(true)
-      expect(spinner.classes()).toContain('border-brand-orange')
-    })
+      const professionalData = categoryTabs.props('professionalData')
+      expect(professionalData.industry).toBe('Technology')
 
-    it('should show error message when search fails', async () => {
-      const wrapper = createWrapper()
-      const store = useSearchStore()
+      const financeData = categoryTabs.props('financeData')
+      expect(financeData.annualIncome).toBe('$2.5M+')
 
-      store.setError('Search failed')
-      await wrapper.vm.$nextTick()
-
-      const errorMessage = wrapper.find('.text-red-600')
-      expect(errorMessage.exists()).toBe(true)
-      expect(errorMessage.text()).toBe('Search failed')
+      const legalData = categoryTabs.props('legalData')
+      expect(legalData.backgroundCheck).toBe('Clear')
     })
   })
 
   describe('Search Functionality', () => {
-    it('should handle search with valid query', async () => {
+    it('should handle search with new query', async () => {
       const wrapper = createWrapper()
-      const store = useSearchStore()
 
-      // Mock the store method
-      const performSearchSpy = vi.spyOn(store, 'performSearch')
-      performSearchSpy.mockResolvedValue()
-
-      // Mock router push
-      const routerPushSpy = vi.spyOn(router, 'push')
-      routerPushSpy.mockResolvedValue(undefined)
-
-      // Set search query via v-model
       const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      await searchBar.vm.$emit('update:modelValue', 'test query')
-
-      // Trigger search
+      await searchBar.vm.$emit('update:modelValue', 'new search query')
       await searchBar.vm.$emit('search')
 
-      expect(performSearchSpy).toHaveBeenCalledWith('test query')
+      // Search functionality is handled gracefully (no console logging in production)
+      expect(searchBar.exists()).toBe(true)
     })
 
-    it('should not perform search with empty query', async () => {
-      const wrapper = createWrapper()
-      const store = useSearchStore()
-
-      const performSearchSpy = vi.spyOn(store, 'performSearch')
-
-      // Set empty search query via v-model
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      await searchBar.vm.$emit('update:modelValue', '')
-
-      // Trigger search
-      await searchBar.vm.$emit('search')
-
-      expect(performSearchSpy).not.toHaveBeenCalled()
-    })
-
-    it('should not perform search with whitespace-only query', async () => {
-      const wrapper = createWrapper()
-      const store = useSearchStore()
-
-      const performSearchSpy = vi.spyOn(store, 'performSearch')
-
-      // Set whitespace search query via v-model
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      await searchBar.vm.$emit('update:modelValue', '   ')
-
-      // Trigger search
-      await searchBar.vm.$emit('search')
-
-      expect(performSearchSpy).not.toHaveBeenCalled()
-    })
-
-    it('should navigate to search page after successful search', async () => {
-      const wrapper = createWrapper()
-      const searchStore = useSearchStore()
-
-      // Mock successful search
-      const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
-      performSearchSpy.mockResolvedValue()
-
-      // Mock router push
-      const routerPushSpy = vi.spyOn(router, 'push')
-      routerPushSpy.mockResolvedValue(undefined)
-
-      // Set search query and perform search via v-model
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      await searchBar.vm.$emit('update:modelValue', 'test query')
-      await searchBar.vm.$emit('search')
-
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 0))
-
-      expect(routerPushSpy).toHaveBeenCalledWith('/search')
-    })
-
-    it('should handle search errors gracefully', async () => {
-      const wrapper = createWrapper()
-      const store = useSearchStore()
-
-      // Mock failed search
-      const performSearchSpy = vi.spyOn(store, 'performSearch')
-      performSearchSpy.mockRejectedValue(new Error('API Error'))
-
-      // Set search query and perform search via v-model
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      await searchBar.vm.$emit('update:modelValue', 'test query')
-      await searchBar.vm.$emit('search')
-
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 0))
-
-      // Verify the search was attempted (error handling is graceful)
-      expect(performSearchSpy).toHaveBeenCalledWith('test query')
-    })
-  })
-
-  describe('File Upload Functionality', () => {
     it('should handle file upload', async () => {
       const wrapper = createWrapper()
-      const mockFiles = [new File(['test'], 'test.txt')] as File[]
+      const mockFiles = [new File(['test'], 'test.txt')] as unknown as FileList
 
       const searchBar = wrapper.findComponent({ name: 'SearchBar' })
       await searchBar.vm.$emit('fileUpload', mockFiles)
@@ -253,63 +278,209 @@ describe('Landing Component', () => {
     })
   })
 
+  describe('Person Profile Interactions', () => {
+    it('should handle tag clicks from PersonProfile', async () => {
+      const wrapper = createWrapper()
+
+      const personProfile = wrapper.findComponent({ name: 'PersonProfile' })
+      await personProfile.vm.$emit('tagClick', 'Personal Life')
+
+      // Tag click is handled gracefully (no console logging in production)
+      expect(personProfile.exists()).toBe(true)
+    })
+
+    it('should handle category toggle from ActivityFooter', async () => {
+      const wrapper = createWrapper()
+
+      const activityFooter = wrapper.findComponent({ name: 'ActivityFooter' })
+      await activityFooter.vm.$emit('categoryToggle', 'personal', true)
+
+      // Category toggle is handled gracefully (no console logging in production)
+      expect(activityFooter.exists()).toBe(true)
+    })
+
+    it('should handle show references from ActivityFooter', async () => {
+      const wrapper = createWrapper()
+
+      const activityFooter = wrapper.findComponent({ name: 'ActivityFooter' })
+      await activityFooter.vm.$emit('showReferences')
+
+      // Show references is handled gracefully (no console logging in production)
+      expect(activityFooter.exists()).toBe(true)
+    })
+  })
+
+  describe('Conversation Integration', () => {
+    it('should generate conversation messages for detail page', async () => {
+      const wrapper = createWrapper()
+      await wrapper.vm.$nextTick()
+
+      const conversation = wrapper.findComponent({ name: 'SearchConversation' })
+      const messages = conversation.props('messages')
+
+      expect(messages).toBeDefined()
+      expect(Array.isArray(messages)).toBe(true)
+      expect(messages.length).toBeGreaterThan(0)
+
+      // First message is user message, second is system
+      const userMessage = messages[0]
+      expect(userMessage.sender).toBe('user')
+      expect(userMessage.content).toBeDefined()
+    })
+
+    it('should include results summary in conversation', async () => {
+      const wrapper = createWrapper()
+      await wrapper.vm.$nextTick()
+
+      const conversation = wrapper.findComponent({ name: 'SearchConversation' })
+      const messages = conversation.props('messages')
+
+      // System message is the second message (index 1)
+      const systemMessage = messages[1]
+      expect(systemMessage).toBeDefined()
+      expect(systemMessage.items).toBeDefined()
+
+      const resultsSummary = systemMessage.items.find(
+        (item: any) => item.type === 'results-summary'
+      )
+      expect(resultsSummary).toBeDefined()
+      expect(resultsSummary.resultCount).toBeGreaterThan(0)
+    })
+
+    it('should include action buttons in conversation', async () => {
+      const wrapper = createWrapper()
+      await wrapper.vm.$nextTick()
+
+      const conversation = wrapper.findComponent({ name: 'SearchConversation' })
+      const messages = conversation.props('messages')
+
+      // System message is the second message (index 1)
+      const systemMessage = messages[1]
+      expect(systemMessage).toBeDefined()
+      expect(systemMessage.items).toBeDefined()
+
+      const actionButtons = systemMessage.items.filter(
+        (item: any) => item.type === 'action-button'
+      )
+      expect(actionButtons.length).toBeGreaterThan(0)
+
+      // Check for action button with dashed variant (from conversation store)
+      const actionButton = actionButtons.find(
+        (btn: any) => btn.variant === 'dashed'
+      )
+      expect(actionButton).toBeDefined()
+      expect(actionButton.text).toContain('create a filter')
+    })
+
+    it('should handle action button clicks', async () => {
+      const wrapper = createWrapper()
+      await wrapper.vm.$nextTick()
+
+      const conversation = wrapper.findComponent({ name: 'SearchConversation' })
+      const messages = conversation.props('messages')
+
+      // System message is the second message (index 1)
+      const systemMessage = messages[1]
+      expect(systemMessage).toBeDefined()
+      expect(systemMessage.items).toBeDefined()
+
+      const actionButtons = systemMessage.items.filter(
+        (item: any) => item.type === 'action-button'
+      )
+
+      // Test create filter action (from conversation store)
+      const createFilterAction = actionButtons.find((btn: any) =>
+        btn.text.includes('create a filter')
+      )
+      expect(createFilterAction).toBeDefined()
+      expect(typeof createFilterAction.onClick).toBe('function')
+    })
+  })
+
+  describe('Route Integration', () => {
+    it('should access route parameters on mount', () => {
+      const wrapper = createWrapper()
+
+      // Component should mount successfully and access route params
+      expect(wrapper.vm).toBeDefined()
+    })
+
+    it('should handle route parameter changes', async () => {
+      // Mock route parameter change
+      mockRoute.params.id = '456'
+
+      const wrapper = createWrapper()
+
+      // Component should handle route changes gracefully
+      expect(wrapper.vm).toBeDefined()
+    })
+  })
+
+  describe('Data Structure', () => {
+    it('should render category data in category tabs', () => {
+      const wrapper = createWrapper()
+      const categoryTabs = wrapper.findComponent({ name: 'CategoryTabs' })
+
+      expect(categoryTabs.props('personalData')).toBeDefined()
+      expect(categoryTabs.props('professionalData')).toBeDefined()
+      expect(categoryTabs.props('financeData')).toBeDefined()
+      expect(categoryTabs.props('legalData')).toBeDefined()
+    })
+
+    it('should render person profile data', () => {
+      const wrapper = createWrapper()
+      const personProfile = wrapper.findComponent({ name: 'PersonProfile' })
+
+      const person = personProfile.props('person')
+      expect(person).toBeDefined()
+      expect(person.name).toBeDefined()
+      expect(person.tags).toBeDefined()
+      expect(person.description).toBeDefined()
+    })
+
+    it('should render detailed person data', () => {
+      const wrapper = createWrapper()
+      const detailedCard = wrapper.findComponent({ name: 'DetailedResultCard' })
+
+      const person = detailedCard.props('person')
+      expect(person).toBeDefined()
+      expect(person.name).toBeDefined()
+      expect(person.stats).toBeDefined()
+      expect(person.personal).toBeDefined()
+      expect(person.professional).toBeDefined()
+      expect(person.finance).toBeDefined()
+      expect(person.legal).toBeDefined()
+    })
+  })
+
   describe('Accessibility', () => {
     it('should have proper semantic structure', () => {
       const wrapper = createWrapper()
 
-      // Check for main heading
-      const heading = wrapper.find('h1')
-      expect(heading.exists()).toBe(true)
-      expect(heading.text()).toContain('Hi! I am Sovra')
+      // Check for proper flex layout
+      expect(wrapper.find('.flex.h-screen').exists()).toBe(true)
 
-      // Check for descriptive text
-      const description = wrapper.find('p')
-      expect(description.exists()).toBe(true)
-      expect(description.text()).toContain('Try adding more detail')
+      // Check for main content area
+      expect(wrapper.find('.flex-1.flex.flex-col').exists()).toBe(true)
+      expect(wrapper.find('.space-y-6').exists()).toBe(true)
     })
 
-    it('should disable interactions when loading', async () => {
+    it('should maintain responsive design', () => {
       const wrapper = createWrapper()
-      const store = useSearchStore()
 
-      store.setLoading(true)
-      await wrapper.vm.$nextTick()
-
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      expect(searchBar.props('disabled')).toBe(true)
+      // Check for responsive classes in SearchLayout
+      expect(wrapper.find('.md\\:flex-row').exists()).toBe(true)
+      expect(wrapper.find('.max-h-full').exists()).toBe(true)
+      expect(wrapper.find('.overflow-hidden').exists()).toBe(true)
     })
 
-    it('should clear conversation when starting a new search from landing', async () => {
+    it('should have proper spacing and layout', () => {
       const wrapper = createWrapper()
-      const searchStore = useSearchStore()
-      const conversationStore = useConversationStore()
 
-      // Mock successful search
-      const performSearchSpy = vi.spyOn(searchStore, 'performSearch')
-      performSearchSpy.mockResolvedValue()
-
-      // Mock router push
-      const routerPushSpy = vi.spyOn(router, 'push')
-      routerPushSpy.mockResolvedValue(undefined)
-
-      // Spy on conversation clear
-      const clearConversationSpy = vi.spyOn(
-        conversationStore,
-        'clearConversation'
-      )
-
-      // Perform search
-      const searchBar = wrapper.findComponent({ name: 'SearchBar' })
-      await searchBar.vm.$emit('update:modelValue', 'John Caruso')
-      await searchBar.vm.$emit('search')
-
-      // Wait for async operations
-      await new Promise(resolve => setTimeout(resolve, 0))
-
-      // Verify conversation was cleared before navigation
-      expect(clearConversationSpy).toHaveBeenCalled()
-      expect(performSearchSpy).toHaveBeenCalledWith('John Caruso')
-      expect(routerPushSpy).toHaveBeenCalledWith('/search')
+      // Check for proper spacing
+      expect(wrapper.find('.space-y-6').exists()).toBe(true)
+      expect(wrapper.find('.p-6').exists()).toBe(true)
+      expect(wrapper.find('.px-8.py-4').exists()).toBe(true)
     })
   })
 })

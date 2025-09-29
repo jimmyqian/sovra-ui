@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
 import { createPinia, setActivePinia } from 'pinia'
-import Landing from '@/views/Landing.vue'
-import SearchResults from '@/views/SearchResults.vue'
+import Landing from '@/views/Search.vue'
+import SearchResults from '@/views/SearchResultsList.vue'
 import { useSearchStore } from '@/stores/search'
 import { useConversationStore } from '@/stores/conversation'
 
@@ -204,7 +204,7 @@ describe('Search Workflow Integration', () => {
     // During loading, should still show initial results
     expect(store.isLoading).toBe(true)
     expect(wrapper.text()).toContain(`${initialResults} persons were found`)
-    expect(wrapper.text()).not.toContain('Fantastic! 0 persons were found')
+    expect(wrapper.text()).not.toContain('0 persons were found')
 
     // Complete the second search
     await vi.runAllTimersAsync()
@@ -228,7 +228,7 @@ describe('Search Workflow Integration', () => {
 
     // Set up search store with query and results
     const store = useSearchStore()
-    store.setQuery('Johnson who works in software in California')
+    store.setQuery('Hello Dave.')
     store.updatePagination({ totalResults: 56 })
 
     // Navigate to search results (no query parameter needed)
@@ -255,7 +255,7 @@ describe('Search Workflow Integration', () => {
     expect(
       wrapper.find('[data-testid="search-conversation"]').exists() ||
         wrapper.text()
-    ).toContain('Fantastic! 56 persons were found')
+    ).toContain('56 persons were found')
     expect(
       wrapper.find('[data-testid="results-list"]').exists() ||
         wrapper.findComponent({ name: 'ResultsList' }).exists()
