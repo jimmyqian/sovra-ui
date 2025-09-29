@@ -8,10 +8,10 @@ describe('useConversationStore', () => {
   })
 
   describe('basic conversation management', () => {
-    it('should initialize with default HAL 9000 greeting from system', () => {
+    it('should initialize with scripted conversation history', () => {
       const store = useConversationStore()
 
-      expect(store.conversationHistory).toHaveLength(1)
+      expect(store.conversationHistory).toHaveLength(21)
       expect(store.conversationHistory[0]?.sender).toBe('system')
       expect(store.conversationHistory[0]?.items?.[0]?.type).toBe('text')
       const firstItem = store.conversationHistory[0]?.items?.[0]
@@ -20,6 +20,16 @@ describe('useConversationStore', () => {
           'Good morning, Dave. How may I assist you today?'
         )
       }
+
+      // Check that we have both user and system messages
+      const userMessages = store.conversationHistory.filter(
+        msg => msg.sender === 'user'
+      )
+      const systemMessages = store.conversationHistory.filter(
+        msg => msg.sender === 'system'
+      )
+      expect(userMessages).toHaveLength(10)
+      expect(systemMessages).toHaveLength(11)
     })
 
     it('should add new messages to conversation history', () => {
@@ -44,9 +54,9 @@ describe('useConversationStore', () => {
     it('should update existing messages by ID', () => {
       const store = useConversationStore()
 
-      // Add a message first
+      // Add a message first with a unique ID
       const originalMessage = {
-        id: 'user-message-1',
+        id: 'test-update-message',
         sender: 'user' as const,
         timestamp: new Date(),
         content: 'Original content'
@@ -54,16 +64,16 @@ describe('useConversationStore', () => {
       store.addMessage(originalMessage)
 
       const updatedMessage = {
-        id: 'user-message-1',
+        id: 'test-update-message',
         sender: 'user' as const,
         timestamp: new Date(),
         content: 'Updated content'
       }
 
-      store.updateMessage('user-message-1', updatedMessage)
+      store.updateMessage('test-update-message', updatedMessage)
 
       const foundMessage = store.conversationHistory.find(
-        msg => msg.id === 'user-message-1'
+        msg => msg.id === 'test-update-message'
       )
       expect(foundMessage?.content).toBe('Updated content')
     })
@@ -71,9 +81,9 @@ describe('useConversationStore', () => {
     it('should remove messages by ID', () => {
       const store = useConversationStore()
 
-      // Add a message first
+      // Add a message first with a unique ID
       const testMessage = {
-        id: 'user-message-1',
+        id: 'test-remove-message',
         sender: 'user' as const,
         timestamp: new Date(),
         content: 'Test content'
@@ -82,11 +92,11 @@ describe('useConversationStore', () => {
 
       const initialLength = store.conversationHistory.length
 
-      store.removeMessage('user-message-1')
+      store.removeMessage('test-remove-message')
 
       expect(store.conversationHistory).toHaveLength(initialLength - 1)
       expect(
-        store.conversationHistory.find(msg => msg.id === 'user-message-1')
+        store.conversationHistory.find(msg => msg.id === 'test-remove-message')
       ).toBeUndefined()
     })
 

@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, onMounted } from 'vue'
+  import { ref, computed, watch } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
   import { useConversationStore } from '@/stores/conversation'
@@ -111,23 +111,5 @@
     // This function is kept for event binding compatibility but not used
   }
 
-  // Initialize conversation script on component mount
-  onMounted(() => {
-    // Ensure default HAL 9000 greeting appears if conversation is empty
-    if (conversationStore.conversationHistory.length === 0) {
-      conversationStore.addMessage({
-        id: 'system-message-1',
-        sender: 'system',
-        timestamp: new Date(),
-        items: [
-          {
-            id: 'greeting-text',
-            type: 'text',
-            content: 'Good morning, Dave. How may I assist you today?',
-            emphasis: 'normal'
-          }
-        ]
-      })
-    }
-  })
+  // Note: Conversation is now pre-populated in the store with scripted dialogue
 </script>
