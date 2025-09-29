@@ -38,15 +38,6 @@ describe('LifeSupportMonitor', () => {
       expect(wrapper.text()).toContain('CREW MEMBER: F. POOLE')
       expect(wrapper.text()).toContain('STATUS: DECEASED')
     })
-
-    it('displays HAL 9000 quote', () => {
-      const wrapper = mount(LifeSupportMonitor)
-
-      expect(wrapper.text()).toContain('HAL 9000:')
-      expect(wrapper.text()).toContain(
-        "I'm sorry, Dave. I'm afraid I can't do that."
-      )
-    })
   })
 
   describe('Graph Elements', () => {
@@ -146,8 +137,6 @@ describe('LifeSupportMonitor', () => {
 
       // Check for authentic HAL references
       expect(wrapper.text()).toContain('F. POOLE') // Frank Poole from the movie
-      expect(wrapper.text()).toContain('HAL 9000')
-      expect(wrapper.text()).toContain("I'm sorry, Dave") // Famous HAL quote
     })
 
     it('uses appropriate danger colors for critical state', () => {

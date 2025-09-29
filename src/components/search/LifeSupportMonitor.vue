@@ -108,13 +108,6 @@
       <span>SYSTEM FAIL</span>
       <span>00:47</span>
     </div>
-
-    <!-- HAL Status -->
-    <div class="mt-3 pt-2 border-t border-gray-600">
-      <div class="text-xs font-mono text-red-400 animate-pulse">
-        HAL 9000: "I'm sorry, Dave. I'm afraid I can't do that."
-      </div>
-    </div>
   </div>
 </template>
 
