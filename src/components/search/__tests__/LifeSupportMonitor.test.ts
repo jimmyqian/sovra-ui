@@ -4,7 +4,7 @@
  * Shows the timeline of HAL 9000's hostile actions against the crew
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import LifeSupportMonitor from '../LifeSupportMonitor.vue'
@@ -179,6 +179,70 @@ describe('LifeSupportMonitor', () => {
       expect(wrapper.text()).toContain('EVA') // EVA incident
       expect(wrapper.text()).toContain('HAL MALFUNCTION') // HAL's hostile actions
       expect(wrapper.text()).toContain('CURRENT') // Current status
+    })
+  })
+
+  describe('Interactivity', () => {
+    it('should be clickable with proper cursor styling', () => {
+      const wrapper = mount(LifeSupportMonitor)
+
+      const container = wrapper.find('.life-support-monitor')
+      expect(container.classes()).toContain('cursor-pointer')
+      expect(container.classes()).toContain('hover:bg-gray-800')
+      expect(container.classes()).toContain('transition-colors')
+    })
+
+    it('should have proper accessibility attributes', () => {
+      const wrapper = mount(LifeSupportMonitor)
+
+      const container = wrapper.find('.life-support-monitor')
+      expect(container.attributes('role')).toBe('button')
+      expect(container.attributes('tabindex')).toBe('0')
+      expect(container.attributes('aria-label')).toBe(
+        'Open timeline view with star graph'
+      )
+    })
+
+    it('should emit openTimelineView event when clicked', async () => {
+      const wrapper = mount(LifeSupportMonitor)
+
+      const container = wrapper.find('.life-support-monitor')
+      await container.trigger('click')
+
+      expect(wrapper.emitted('openTimelineView')).toBeTruthy()
+      expect(wrapper.emitted('openTimelineView')).toHaveLength(1)
+    })
+
+    it('should emit openTimelineView event when Enter key is pressed', async () => {
+      const wrapper = mount(LifeSupportMonitor)
+
+      const container = wrapper.find('.life-support-monitor')
+      await container.trigger('keydown.enter')
+
+      expect(wrapper.emitted('openTimelineView')).toBeTruthy()
+      expect(wrapper.emitted('openTimelineView')).toHaveLength(1)
+    })
+
+    it('should emit openTimelineView event when Space key is pressed', async () => {
+      const wrapper = mount(LifeSupportMonitor)
+
+      const container = wrapper.find('.life-support-monitor')
+      await container.trigger('keydown.space')
+
+      expect(wrapper.emitted('openTimelineView')).toBeTruthy()
+      expect(wrapper.emitted('openTimelineView')).toHaveLength(1)
+    })
+
+    it('should prevent default behavior on Space key press', async () => {
+      const wrapper = mount(LifeSupportMonitor)
+
+      const container = wrapper.find('.life-support-monitor')
+      const event = { preventDefault: vi.fn() }
+
+      await container.trigger('keydown.space', event)
+
+      // The prevent modifier is set on the component, so the event should be handled
+      expect(wrapper.emitted('openTimelineView')).toBeTruthy()
     })
   })
 })

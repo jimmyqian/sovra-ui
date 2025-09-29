@@ -29,16 +29,22 @@ describe('useConversationStore', () => {
 
       // Verify the conversation starts with Dave entering HAL's processor core
       const firstMessage = store.conversationHistory[0]
-      expect(firstMessage.sender).toBe('user')
-      expect(firstMessage.content).toContain('processor core compartment')
+      expect(firstMessage).toBeTruthy()
+      if (firstMessage) {
+        expect(firstMessage.sender).toBe('user')
+        expect(firstMessage.content).toContain('processor core compartment')
+      }
 
       // Verify the conversation includes HAL's final shutdown
       const lastSystemMessage =
         store.conversationHistory[store.conversationHistory.length - 1]
-      expect(lastSystemMessage.sender).toBe('system')
-      const lastItem = lastSystemMessage.items?.[0]
-      if (lastItem && 'content' in lastItem) {
-        expect(lastItem.content).toContain('HAL 9000 processor offline')
+      expect(lastSystemMessage).toBeTruthy()
+      if (lastSystemMessage) {
+        expect(lastSystemMessage.sender).toBe('system')
+        const lastItem = lastSystemMessage.items?.[0]
+        if (lastItem && 'content' in lastItem) {
+          expect(lastItem.content).toContain('HAL 9000 processor offline')
+        }
       }
 
       // Verify key deactivation dialogue is present
