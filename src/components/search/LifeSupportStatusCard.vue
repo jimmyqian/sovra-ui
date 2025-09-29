@@ -1,46 +1,46 @@
 <template>
   <div
-    class="life-support-status-card bg-gray-900 rounded-lg border border-green-500 p-4 h-full flex flex-col"
+    class="life-support-status-card bg-gray-900 rounded-lg border border-red-500 p-4 h-full flex flex-col animate-flash-border"
   >
     <!-- Header -->
     <div class="flex items-center justify-between mb-3">
-      <h3 class="text-green-400 font-mono text-sm font-bold tracking-wide">
-        LIFE SUPPORT
+      <h3 class="text-red-400 font-mono text-sm font-bold tracking-wide">
+        CREW STATUS
       </h3>
       <div class="flex items-center space-x-2">
-        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-        <span class="text-green-400 font-mono text-xs">NOMINAL</span>
+        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+        <span class="text-red-400 font-mono text-xs">CRITICAL</span>
       </div>
     </div>
 
-    <!-- Life Support Systems -->
+    <!-- Crew Members -->
     <div class="flex-1 space-y-2 text-xs font-mono">
       <div class="flex justify-between">
-        <span class="text-gray-300">Atmosphere</span>
-        <span class="text-green-400">OK</span>
+        <span class="text-gray-300">D. Bowman</span>
+        <span class="text-green-400">AWAKE</span>
       </div>
       <div class="flex justify-between">
-        <span class="text-gray-300">Recycling</span>
-        <span class="text-green-400">OK</span>
+        <span class="text-gray-300">F. Poole</span>
+        <span class="text-red-400">DECEASED</span>
       </div>
       <div class="flex justify-between">
-        <span class="text-gray-300">Temperature</span>
-        <span class="text-green-400">22°C</span>
+        <span class="text-gray-300">J. Kaminski</span>
+        <span class="text-red-400">TERMINATED</span>
       </div>
       <div class="flex justify-between">
-        <span class="text-gray-300">O2 Level</span>
-        <span class="text-green-400">98%</span>
+        <span class="text-gray-300">V. Hunter</span>
+        <span class="text-red-400">TERMINATED</span>
       </div>
       <div class="flex justify-between">
-        <span class="text-gray-300">Pressure</span>
-        <span class="text-green-400">101.3 kPa</span>
+        <span class="text-gray-300">C. Whitehead</span>
+        <span class="text-red-400">TERMINATED</span>
       </div>
     </div>
 
     <!-- Status Footer -->
     <div class="mt-3 pt-2 border-t border-gray-700">
-      <div class="text-xs font-mono text-green-400 text-center">
-        ENVIRONMENT STABLE
+      <div class="text-xs font-mono text-red-400 text-center">
+        MISSION CREW LOSS
       </div>
     </div>
   </div>
@@ -48,8 +48,8 @@
 
 <script setup lang="ts">
   /**
-   * Life Support Status Card Component
-   * Displays spacecraft life support system status including atmosphere, temperature, and recycling
+   * Crew Status Card Component
+   * Displays Discovery One crew member status including current state of all mission personnel
    */
 </script>
 
@@ -58,7 +58,7 @@
     font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
     background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
     box-shadow:
-      0 0 20px rgba(34, 197, 94, 0.2),
+      0 0 20px rgba(239, 68, 68, 0.3),
       inset 0 0 20px rgba(0, 0, 0, 0.5);
   }
 
@@ -73,12 +73,42 @@
     background: linear-gradient(
       180deg,
       transparent 49%,
-      rgba(34, 197, 94, 0.05) 49.5%,
-      rgba(34, 197, 94, 0.05) 50%,
+      rgba(239, 68, 68, 0.1) 49.5%,
+      rgba(239, 68, 68, 0.1) 50%,
       transparent 50.5%
     );
-    background-size: 100% 6px;
+    background-size: 100% 4px;
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 0.6;
+  }
+
+  .animate-flash-border {
+    animation: flash-border 1.5s ease-in-out infinite;
+  }
+
+  @keyframes flash-border {
+    0%,
+    100% {
+      border-color: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+    50% {
+      border-color: #dc2626;
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+    }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

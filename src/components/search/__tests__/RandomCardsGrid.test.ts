@@ -198,7 +198,7 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       // Check for all system categories
       expect(wrapper.text()).toContain('NAVIGATION')
       expect(wrapper.text()).toContain('PROPULSION')
-      expect(wrapper.text()).toContain('LIFE SUPPORT')
+      expect(wrapper.text()).toContain('CREW STATUS')
       expect(wrapper.text()).toContain('COMMUNICATIONS')
       expect(wrapper.text()).toContain('POWER')
       expect(wrapper.text()).toContain('COMPUTER')
@@ -311,6 +311,15 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       expect(content).toContain('COMPROMISED')
       expect(content).toContain('1 AWAKE') // Only Dave Bowman left
       expect(content).toContain('3 TERMINATED') // Hibernation crew terminated by HAL
+
+      // Crew member status
+      expect(content).toContain('D. Bowman')
+      expect(content).toContain('F. Poole')
+      expect(content).toContain('DECEASED') // Frank Poole killed during EVA
+      expect(content).toContain('J. Kaminski')
+      expect(content).toContain('V. Hunter')
+      expect(content).toContain('C. Whitehead')
+      expect(content).toContain('TERMINATED') // Hibernation crew terminated by HAL
     })
 
     it('should show various measurement units and values', () => {
@@ -320,7 +329,6 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
 
       // Check for realistic measurements
       expect(content).toMatch(/\d+%/) // Percentages
-      expect(content).toMatch(/\d+°C/) // Temperature
       expect(content).toMatch(/\d+\.\d+\s*(AU|KM\/S|MW|KB\/S)/) // Various units
     })
   })
