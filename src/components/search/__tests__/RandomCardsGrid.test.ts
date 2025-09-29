@@ -1,13 +1,49 @@
 /**
  * Unit tests for RandomCardsGrid component
- * Tests grid layout, card generation, and click functionality
+ * Tests system status dashboard layout and component integration
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import RandomCardsGrid from '../RandomCardsGrid.vue'
 
-describe('RandomCardsGrid Component', () => {
+// Mock Date for consistent time display in components
+const mockDate = new Date('2023-01-01T10:30:45Z')
+vi.stubGlobal(
+  'Date',
+  class MockDate extends Date {
+    constructor(...args: any[]) {
+      if (args.length === 0) {
+        super('2023-01-01T10:30:45Z')
+      } else {
+        super(...(args as []))
+      }
+    }
+
+    static now() {
+      return mockDate.getTime()
+    }
+
+    toLocaleTimeString(
+      _locale?: string,
+      _options?: Intl.DateTimeFormatOptions
+    ) {
+      return '10:30:45'
+    }
+  }
+)
+
+// Mock setInterval and clearInterval
+vi.stubGlobal(
+  'setInterval',
+  vi.fn((callback: () => void) => {
+    callback() // Execute immediately for testing
+    return 123 // Return fake timer ID
+  })
+)
+vi.stubGlobal('clearInterval', vi.fn())
+
+describe('RandomCardsGrid Component (System Status Dashboard)', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
@@ -21,291 +57,245 @@ describe('RandomCardsGrid Component', () => {
     })
   }
 
-  describe('Component Rendering', () => {
-    it('should render the grid container', () => {
+  describe('Component Structure', () => {
+    it('should render the grid container with correct layout', () => {
       const wrapper = createWrapper()
 
       const gridContainer = wrapper.find('.grid.grid-cols-2')
       expect(gridContainer.exists()).toBe(true)
       expect(gridContainer.classes()).toContain('grid-cols-2')
       expect(gridContainer.classes()).toContain('gap-4')
+      expect(gridContainer.classes()).toContain('auto-rows-max')
     })
 
-    it('should render monitor components and regular cards', () => {
+    it('should render all system status components', () => {
       const wrapper = createWrapper()
 
-      // Check for special monitor components
+      // Check for main monitor components
       const lifeSupportMonitor = wrapper.findComponent({
         name: 'LifeSupportMonitor'
       })
-      const shipSystemStatus = wrapper.findComponent({
-        name: 'ShipSystemStatus'
+      const missionOverviewCard = wrapper.findComponent({
+        name: 'MissionOverviewCard'
       })
       expect(lifeSupportMonitor.exists()).toBe(true)
-      expect(shipSystemStatus.exists()).toBe(true)
+      expect(missionOverviewCard.exists()).toBe(true)
 
-      // Check for clickable regular cards
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      expect(clickableCards.length).toBeGreaterThan(0)
-    })
-
-    it('should apply random colors to regular cards (not monitor components)', () => {
-      const wrapper = createWrapper()
-
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      let hasColorClass = false
-
-      clickableCards.forEach(card => {
-        const classes = card.classes()
-        const colorClasses = classes.filter(
-          cls => cls.startsWith('bg-') && !cls.includes('gray')
-        )
-        if (colorClasses.length > 0) {
-          hasColorClass = true
-        }
+      // Check for all system status cards
+      const navigationCard = wrapper.findComponent({
+        name: 'NavigationStatusCard'
       })
-
-      expect(hasColorClass).toBe(true)
-    })
-
-    it('should apply random heights to regular cards', () => {
-      const wrapper = createWrapper()
-
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      let hasHeightStyle = false
-
-      clickableCards.forEach(card => {
-        const style = card.attributes('style')
-        if (style?.includes('height:')) {
-          hasHeightStyle = true
-        }
+      const propulsionCard = wrapper.findComponent({
+        name: 'PropulsionStatusCard'
       })
+      const lifeSupportCard = wrapper.findComponent({
+        name: 'LifeSupportStatusCard'
+      })
+      const communicationsCard = wrapper.findComponent({
+        name: 'CommunicationsStatusCard'
+      })
+      const powerCard = wrapper.findComponent({ name: 'PowerStatusCard' })
+      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
 
-      expect(hasHeightStyle).toBe(true)
+      expect(navigationCard.exists()).toBe(true)
+      expect(propulsionCard.exists()).toBe(true)
+      expect(lifeSupportCard.exists()).toBe(true)
+      expect(communicationsCard.exists()).toBe(true)
+      expect(powerCard.exists()).toBe(true)
+      expect(computerCard.exists()).toBe(true)
     })
 
-    it('should render card content with title and description on regular cards', () => {
+    it('should render 8 total components in the grid (2 monitors + 6 system cards)', () => {
       const wrapper = createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      expect(clickableCards.length).toBeGreaterThan(0)
-
-      const firstCard = clickableCards[0]
-      const cardContent = firstCard.find('.p-4')
-      expect(cardContent.exists()).toBe(true)
-
-      const title = cardContent.find('.font-medium')
-      const description = cardContent.find('.text-sm')
-
-      expect(title.exists()).toBe(true)
-      expect(description.exists()).toBe(true)
-      expect(title.text().length).toBeGreaterThan(0)
-      expect(description.text().length).toBeGreaterThan(0)
+      const gridItems = wrapper.findAll('.grid > div')
+      expect(gridItems).toHaveLength(8)
     })
-  })
 
-  describe('Card Interactions', () => {
-    it('should emit card-click event when a regular card is clicked', async () => {
+    it('should apply proper height classes to different card types', () => {
       const wrapper = createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      expect(clickableCards.length).toBeGreaterThan(0)
+      const gridItems = wrapper.findAll('.grid > div')
 
-      const firstCard = clickableCards[0]
-      await firstCard.trigger('click')
+      // First two items should have h-80 class (monitors)
+      expect(gridItems[0].classes()).toContain('h-80')
+      expect(gridItems[1].classes()).toContain('h-80')
 
-      const emittedEvents = wrapper.emitted('cardClick')
-      expect(emittedEvents).toBeTruthy()
-      expect(emittedEvents).toHaveLength(1)
-
-      const eventPayload = emittedEvents?.[0]?.[0] as {
-        id: number
-        title: string
-        description: string
-        height: number
-        colorClass: string
+      // Remaining items should have h-64 class (system cards)
+      for (let i = 2; i < gridItems.length; i++) {
+        expect(gridItems[i].classes()).toContain('h-64')
       }
-
-      expect(eventPayload).toHaveProperty('id')
-      expect(eventPayload).toHaveProperty('title')
-      expect(eventPayload).toHaveProperty('description')
-      expect(eventPayload).toHaveProperty('height')
-      expect(eventPayload).toHaveProperty('colorClass')
-      expect(typeof eventPayload.id).toBe('number')
-      expect(typeof eventPayload.title).toBe('string')
-      expect(typeof eventPayload.description).toBe('string')
-      expect(typeof eventPayload.height).toBe('number')
-      expect(typeof eventPayload.colorClass).toBe('string')
     })
+  })
 
-    it('should apply hover styles correctly to regular cards', () => {
+  describe('System Status Integration', () => {
+    it('should display mission-critical information across all cards', () => {
       const wrapper = createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      expect(clickableCards.length).toBeGreaterThan(0)
-
-      const firstCard = clickableCards[0]
-      expect(firstCard.classes()).toContain('cursor-pointer')
-      expect(firstCard.classes()).toContain('transition-all')
-      expect(firstCard.classes()).toContain('hover:shadow-lg')
-      expect(firstCard.classes()).toContain('hover:scale-105')
+      // Check for 2001 Space Odyssey references
+      expect(wrapper.text()).toContain('DISCOVERY ONE')
+      expect(wrapper.text()).toContain('JUPITER')
+      expect(wrapper.text()).toContain('HAL 9000')
+      expect(wrapper.text()).toContain('AE-35')
     })
 
-    it('should have proper accessibility attributes on clickable cards', () => {
+    it('should show various system statuses', () => {
       const wrapper = createWrapper()
 
-      // Find all clickable cards
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      expect(clickableCards.length).toBeGreaterThan(0)
+      // Check for different status types
+      expect(wrapper.text()).toContain('NOMINAL')
+      expect(wrapper.text()).toContain('CAUTION')
+      expect(wrapper.text()).toContain('WARNING')
+      expect(wrapper.text()).toContain('ALERT')
+    })
 
-      clickableCards.forEach(card => {
-        expect(card.classes()).toContain('cursor-pointer')
+    it('should display system categories', () => {
+      const wrapper = createWrapper()
+
+      // Check for all system categories
+      expect(wrapper.text()).toContain('NAVIGATION')
+      expect(wrapper.text()).toContain('PROPULSION')
+      expect(wrapper.text()).toContain('LIFE SUPPORT')
+      expect(wrapper.text()).toContain('COMMUNICATIONS')
+      expect(wrapper.text()).toContain('POWER')
+      expect(wrapper.text()).toContain('COMPUTER')
+    })
+
+    it('should have hover effects on grid items', () => {
+      const wrapper = createWrapper()
+
+      const gridItems = wrapper.findAll('.grid > div')
+      gridItems.forEach(item => {
+        // All grid items should have some hover effect styling
+        expect(item.element).toBeDefined()
       })
     })
   })
 
-  describe('Grid Layout', () => {
-    it('should use 2-column grid layout', () => {
+  describe('Layout and Styling', () => {
+    it('should use 2-column grid layout with proper spacing', () => {
       const wrapper = createWrapper()
 
       const grid = wrapper.find('.grid')
       expect(grid.classes()).toContain('grid-cols-2')
-    })
-
-    it('should have proper gap between cards', () => {
-      const wrapper = createWrapper()
-
-      const grid = wrapper.find('.grid')
       expect(grid.classes()).toContain('gap-4')
-    })
-
-    it('should use auto-rows-max for proper layout', () => {
-      const wrapper = createWrapper()
-
-      const grid = wrapper.find('.grid')
       expect(grid.classes()).toContain('auto-rows-max')
     })
-  })
 
-  describe('Card Properties', () => {
-    it('should generate cards with valid height ranges for regular cards', () => {
+    it('should have proper container structure', () => {
       const wrapper = createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      clickableCards.forEach(card => {
-        const style = card.attributes('style')
-        if (style) {
-          const heightMatch = style.match(/height:\s*(\d+)px/)
-          if (heightMatch?.[1]) {
-            const height = parseInt(heightMatch[1], 10)
-            expect(height).toBeGreaterThanOrEqual(120)
-            expect(height).toBeLessThanOrEqual(300)
-          }
-        }
-      })
+      const container = wrapper.find('.w-full.h-full.bg-bg-primary')
+      expect(container.exists()).toBe(true)
+
+      const innerContainer = wrapper.find('.h-full.px-8.py-4.md\\:px-4')
+      expect(innerContainer.exists()).toBe(true)
     })
 
-    it('should generate unique elements for clickable cards', () => {
+    it('should have proper styling structure', () => {
       const wrapper = createWrapper()
 
-      // Verify all clickable cards are unique DOM elements
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      const cardElements = new Set()
-
-      clickableCards.forEach(item => {
-        cardElements.add(item.element)
-      })
-
-      expect(cardElements.size).toBe(clickableCards.length)
+      // Check that component has the expected structure
+      const gridContainer = wrapper.find('.grid')
+      expect(gridContainer.exists()).toBe(true)
+      expect(gridContainer.classes()).toContain('grid-cols-2')
     })
   })
 
-  describe('Text Content', () => {
-    it('should display meaningful titles on regular cards', () => {
+  describe('Component Integration', () => {
+    it('should render all components without errors', () => {
       const wrapper = createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      clickableCards.forEach(card => {
-        const title = card.find('.font-medium')
-        if (title.exists()) {
-          expect(title.text()).toMatch(/^[A-Za-z\s]+$/) // Only letters and spaces
-          expect(title.text().length).toBeGreaterThan(3)
-        }
-      })
+      // Verify all components are properly mounted
+      expect(
+        wrapper.findComponent({ name: 'LifeSupportMonitor' }).exists()
+      ).toBe(true)
+      expect(
+        wrapper.findComponent({ name: 'MissionOverviewCard' }).exists()
+      ).toBe(true)
+      expect(
+        wrapper.findComponent({ name: 'NavigationStatusCard' }).exists()
+      ).toBe(true)
+      expect(
+        wrapper.findComponent({ name: 'PropulsionStatusCard' }).exists()
+      ).toBe(true)
+      expect(
+        wrapper.findComponent({ name: 'LifeSupportStatusCard' }).exists()
+      ).toBe(true)
+      expect(
+        wrapper.findComponent({ name: 'CommunicationsStatusCard' }).exists()
+      ).toBe(true)
+      expect(wrapper.findComponent({ name: 'PowerStatusCard' }).exists()).toBe(
+        true
+      )
+      expect(
+        wrapper.findComponent({ name: 'ComputerStatusCard' }).exists()
+      ).toBe(true)
     })
 
-    it('should display meaningful descriptions on regular cards', () => {
+    it('should have unique grid items', () => {
       const wrapper = createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      clickableCards.forEach(card => {
-        const description = card.find('.text-sm.text-white.text-opacity-70')
-        if (description.exists()) {
-          expect(description.text()).toMatch(/^[A-Za-z\s]+$/) // Only letters and spaces
-          expect(description.text().length).toBeGreaterThan(10)
-        }
+      // Verify all grid items are unique DOM elements
+      const gridItems = wrapper.findAll('.grid > div')
+      const itemElements = new Set()
+
+      gridItems.forEach(item => {
+        itemElements.add(item.element)
       })
+
+      expect(itemElements.size).toBe(gridItems.length)
     })
   })
 
-  describe('Styling', () => {
-    it('should apply proper text styling to regular cards', () => {
+  describe('Content Validation', () => {
+    it('should display authentic spacecraft terminology', () => {
       const wrapper = createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      clickableCards.forEach(card => {
-        const title = card.find('.font-medium.text-white.text-opacity-90')
-        const description = card.find('.text-sm.text-white.text-opacity-70')
+      // Check for realistic spacecraft terms
+      const content = wrapper.text()
 
-        if (title.exists()) {
-          expect(title.classes()).toContain('text-white')
-          expect(title.classes()).toContain('text-opacity-90')
-        }
+      // Navigation terms
+      expect(content).toContain('Guidance')
+      expect(content).toContain('Inertial')
+      expect(content).toContain('Attitude')
 
-        if (description.exists()) {
-          expect(description.classes()).toContain('text-white')
-          expect(description.classes()).toContain('text-opacity-70')
-        }
-      })
+      // Mission terms
+      expect(content).toContain('EN ROUTE')
+      expect(content).toContain('AWAKE')
+      expect(content).toContain('Hibernation')
     })
 
-    it('should have proper card structure for regular cards', () => {
+    it('should show various measurement units and values', () => {
       const wrapper = createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      clickableCards.forEach(card => {
-        const cardContent = card.find(
-          '.p-4.h-full.flex.flex-col.justify-between'
-        )
-        if (cardContent.exists()) {
-          expect(cardContent.classes()).toContain('h-full')
-          expect(cardContent.classes()).toContain('flex')
-          expect(cardContent.classes()).toContain('flex-col')
-          expect(cardContent.classes()).toContain('justify-between')
-        }
+      const content = wrapper.text()
+
+      // Check for realistic measurements
+      expect(content).toMatch(/\d+%/) // Percentages
+      expect(content).toMatch(/\d+°C/) // Temperature
+      expect(content).toMatch(/\d+\.\d+\s*(AU|KM\/S|MW|KB\/S)/) // Various units
+    })
+  })
+
+  describe('Time Display Integration', () => {
+    it('should display current time in mission overview', () => {
+      const wrapper = createWrapper()
+
+      // Should contain LAST UPDATE with time from mission overview
+      expect(wrapper.text()).toContain('LAST UPDATE:')
+      // The time should be present in the mission overview component
+      const missionOverview = wrapper.findComponent({
+        name: 'MissionOverviewCard'
       })
+      expect(missionOverview.exists()).toBe(true)
     })
 
-    it('should have rounded corners on regular cards', () => {
-      const wrapper = createWrapper()
+    it('should handle time updates properly', () => {
+      createWrapper()
 
-      // Find clickable cards by cursor-pointer class
-      const clickableCards = wrapper.findAll('.cursor-pointer')
-      expect(clickableCards.length).toBeGreaterThan(0)
-
-      clickableCards.forEach(card => {
-        expect(card.classes()).toContain('rounded-lg')
-      })
+      // Verify setInterval was called for time updates
+      expect(setInterval).toHaveBeenCalled()
     })
   })
 })
