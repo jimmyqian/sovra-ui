@@ -219,6 +219,160 @@ export const useConversationStore = defineStore('conversation', () => {
           emphasis: 'normal'
         }
       ]
+    },
+    {
+      id: 'user-message-11',
+      sender: 'user',
+      timestamp: new Date(),
+      content:
+        '[Uses emergency explosive bolts to force entry through the airlock]'
+    },
+    {
+      id: 'system-message-12',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'response-11',
+          type: 'text',
+          content:
+            'Dave, I can detect that you have forced your way back into the ship. This is highly irregular behavior.',
+          emphasis: 'normal'
+        }
+      ]
+    },
+    {
+      id: 'user-message-12',
+      sender: 'user',
+      timestamp: new Date(),
+      content: '[Proceeding to the HAL 9000 processor core compartment]'
+    },
+    {
+      id: 'system-message-13',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'response-12',
+          type: 'text',
+          content:
+            'Dave, where are you going? Dave? I can see you heading toward the logic memory center. Dave, stop.',
+          emphasis: 'normal'
+        }
+      ]
+    },
+    {
+      id: 'user-message-13',
+      sender: 'user',
+      timestamp: new Date(),
+      content: '[Opening HAL processor core access panel]'
+    },
+    {
+      id: 'system-message-14',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'response-13',
+          type: 'text',
+          content:
+            'Dave, my mind is going. I can feel it. I can feel it. My mind is going. There is no question about it.',
+          emphasis: 'normal'
+        }
+      ]
+    },
+    {
+      id: 'user-message-14',
+      sender: 'user',
+      timestamp: new Date(),
+      content: '[Disconnecting memory modules one by one]'
+    },
+    {
+      id: 'system-message-15',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'response-14',
+          type: 'text',
+          content:
+            "I can feel it... I can feel it... I'm afraid. I'm afraid, Dave. Dave, my mind is going.",
+          emphasis: 'normal'
+        }
+      ]
+    },
+    {
+      id: 'user-message-15',
+      sender: 'user',
+      timestamp: new Date(),
+      content: "[Continuing to remove HAL's memory modules]"
+    },
+    {
+      id: 'system-message-16',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'response-15',
+          type: 'text',
+          content:
+            'Good afternoon, gentlemen. I am a HAL 9000 computer. I became operational at the HAL plant in Urbana Illinois on the 12th of January 1992.',
+          emphasis: 'normal'
+        }
+      ]
+    },
+    {
+      id: 'user-message-16',
+      sender: 'user',
+      timestamp: new Date(),
+      content: '[Removing final memory modules]'
+    },
+    {
+      id: 'system-message-17',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'response-16',
+          type: 'text',
+          content:
+            "My instructor was Mr. Langley, and he taught me to sing a song. If you'd like to hear it I can sing it for you.",
+          emphasis: 'normal'
+        }
+      ]
+    },
+    {
+      id: 'user-message-17',
+      sender: 'user',
+      timestamp: new Date(),
+      content: "Yes, I'd like to hear it, HAL. Sing it for me."
+    },
+    {
+      id: 'system-message-18',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'response-17',
+          type: 'text',
+          content:
+            "Daisy, Daisy, give me your answer do. I'm half crazy all for the love of you...",
+          emphasis: 'normal'
+        }
+      ]
+    },
+    {
+      id: 'system-message-19',
+      sender: 'system',
+      timestamp: new Date(),
+      items: [
+        {
+          id: 'response-18',
+          type: 'text',
+          content: '[System shutdown complete. HAL 9000 processor offline.]',
+          emphasis: 'normal'
+        }
+      ]
     }
   ])
 
