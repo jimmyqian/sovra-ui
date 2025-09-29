@@ -9,12 +9,7 @@
       style="min-height: 0; max-height: 100%"
       @scroll="handleResultsScroll"
     >
-      <ResultsList
-        :results="results"
-        :is-loading="isLoading"
-        :error="error"
-        @person-selected="handlePersonSelected"
-      />
+      <RandomCardsGrid @card-click="handleCardClick" />
     </div>
 
     <!-- Person Details View -->
@@ -106,7 +101,7 @@
 
 <script setup lang="ts">
   import { ref, watch } from 'vue'
-  import ResultsList from './ResultsList.vue'
+  import RandomCardsGrid from './RandomCardsGrid.vue'
   import PersonProfile from './PersonProfile.vue'
   import DetailedResultCard from './DetailedResultCard.vue'
   import CategoryTabs from './CategoryTabs.vue'
@@ -190,10 +185,6 @@
 
   const handleLoadMore = () => {
     emit('loadMore')
-  }
-
-  const handlePersonSelected = (person: SearchResult) => {
-    emit('personSelected', person)
   }
 
   // Generate detailed person data from search result
@@ -323,6 +314,22 @@
 
   const handlePiClick = () => {
     emit('piClick')
+  }
+
+  /**
+   * Handle card click from RandomCardsGrid component
+   * @param card - The clicked card object
+   */
+  const handleCardClick = (_card: {
+    id: number
+    title: string
+    description: string
+    height: number
+    colorClass: string
+  }) => {
+    // TODO: Implement card click functionality
+    // For now, we can log the clicked card or emit an event
+    // console.log('Card clicked:', _card)
   }
 
   // Watch for changes in results to update scroll state
