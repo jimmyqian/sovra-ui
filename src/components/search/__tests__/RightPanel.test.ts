@@ -201,42 +201,6 @@ describe('RightPanel', () => {
     })
   })
 
-  describe('Scroll Functionality', () => {
-    it('should handle results scroll events and show top fade', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
-      const component = wrapper.vm as any
-
-      // Mock scroll container
-      const mockContainer = {
-        scrollTop: 100,
-        scrollHeight: 500,
-        clientHeight: 300
-      }
-      component.resultsScrollContainer = mockContainer
-
-      component.handleResultsScroll()
-
-      expect(component.showTopFade).toBe(true) // scrollTop > 20
-    })
-
-    it('should not show top fade when not scrolled', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
-      const component = wrapper.vm as any
-
-      // Mock scroll container at top
-      const mockContainer = {
-        scrollTop: 0,
-        scrollHeight: 500,
-        clientHeight: 300
-      }
-      component.resultsScrollContainer = mockContainer
-
-      component.handleResultsScroll()
-
-      expect(component.showTopFade).toBe(false) // scrollTop <= 20
-    })
-  })
-
   describe('Error Handling', () => {
     it('should render RandomCardsGrid regardless of error state', () => {
       const error = 'Something went wrong'
@@ -268,10 +232,10 @@ describe('RightPanel', () => {
       expect(rootElement.classes()).toContain('overflow-hidden')
     })
 
-    it('should show fade overlays only in results view', async () => {
+    it('should not have fade overlays', async () => {
       const wrapper = mount(RightPanel, { props: defaultProps })
-      expect(wrapper.find('.fade-overlay').exists()).toBe(true)
-      expect(wrapper.find('.fade-overlay-top').exists()).toBe(true)
+      expect(wrapper.find('.fade-overlay').exists()).toBe(false)
+      expect(wrapper.find('.fade-overlay-top').exists()).toBe(false)
 
       await wrapper.setProps({ selectedPerson: mockSearchResult })
       await wrapper.vm.$nextTick()

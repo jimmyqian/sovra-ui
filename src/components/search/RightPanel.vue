@@ -7,7 +7,6 @@
       ref="resultsScrollContainer"
       class="flex-1 overflow-y-auto results-scroll"
       style="min-height: 0; max-height: 100%"
-      @scroll="handleResultsScroll"
     >
       <RandomCardsGrid @card-click="handleCardClick" />
     </div>
@@ -54,22 +53,13 @@
       </main>
     </div>
 
-    <!-- Fade-out gradient overlay at top - shows when scrolled -->
-    <div
-      v-if="!selectedPerson"
-      class="fade-overlay-top"
-      :class="[{ visible: showTopFade }]"
-    ></div>
-    <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
-    <div v-if="!selectedPerson" class="fade-overlay"></div>
-
     <!-- Page Footer -->
     <CopyrightFooter @pi-click="handlePiClick" />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue'
+  import { ref } from 'vue'
   import RandomCardsGrid from './RandomCardsGrid.vue'
   import PersonProfile from './PersonProfile.vue'
   import DetailedResultCard from './DetailedResultCard.vue'
@@ -92,11 +82,10 @@
     (_e: 'piClick'): void
   }
 
-  const props = defineProps<Props>()
+  defineProps<Props>()
   const emit = defineEmits<Emits>()
 
   const resultsScrollContainer = ref<HTMLElement | null>(null)
-  const showTopFade = ref(false)
 
   // Mock data for person details - in real app this would come from API
   const personProfile = ref({
@@ -208,16 +197,6 @@
     emit('backToResults')
   }
 
-  const handleResultsScroll = () => {
-    if (resultsScrollContainer.value) {
-      const container = resultsScrollContainer.value
-      const scrollTop = container.scrollTop
-
-      // Show top fade when scrolled more than 20px from top
-      showTopFade.value = scrollTop > 20
-    }
-  }
-
   const handleTagClick = (_tag: string) => {
     // TODO: Implement tag navigation functionality
     // console.log('Tag clicked:', tag)
@@ -255,53 +234,9 @@
     // For now, we can log the clicked card or emit an event
     // console.log('Card clicked:', _card)
   }
-
-  // Watch for changes in results to update scroll state
-  watch(
-    () => props.results.length,
-    () => {
-      // Use a small delay to avoid layout thrashing during rapid updates
-      setTimeout(() => {
-        handleResultsScroll()
-      }, 10)
-    },
-    { immediate: true }
-  )
 </script>
 
 <style scoped>
-  .fade-overlay {
-    position: absolute;
-    bottom: 128px; /* Above Load More button and footer */
-    left: 0;
-    right: 0;
-    height: 160px; /* Fixed height instead of percentage */
-    background: linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgb(248 248 248) 100%
-    );
-    pointer-events: none;
-    z-index: 10;
-  }
-
-  .fade-overlay-top {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 160px; /* Same height as bottom fade */
-    background: linear-gradient(to top, transparent 0%, rgb(248 248 248) 100%);
-    pointer-events: none;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .fade-overlay-top.visible {
-    opacity: 1;
-  }
-
   /* Hide scrollbars on results panel */
   .results-scroll {
     /* Hide scrollbar for Chrome, Safari and Opera */
