@@ -110,30 +110,6 @@ describe('RightPanel', () => {
 
       expect(cardsGrid.exists()).toBe(true)
     })
-
-    it('should show scroll buttons when results are scrollable', async () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
-
-      // Mock scroll container with scrollable content
-      const mockContainer = {
-        scrollTop: 100,
-        scrollHeight: 500,
-        clientHeight: 300
-      }
-
-      // Access component instance with proper typing
-      const component = wrapper.vm as any
-
-      // Set up scrollable state by mocking the container
-      component.resultsScrollContainer = mockContainer
-      component.handleResultsScroll()
-
-      await wrapper.vm.$nextTick()
-
-      // The buttons should appear when content is scrollable
-      // Note: These might not be visible due to v-if conditions, so we test the underlying state
-      expect(mockContainer.scrollHeight > mockContainer.clientHeight).toBe(true)
-    })
   })
 
   describe('Person Details View', () => {
@@ -226,7 +202,7 @@ describe('RightPanel', () => {
   })
 
   describe('Scroll Functionality', () => {
-    it('should handle results scroll events', () => {
+    it('should handle results scroll events and show top fade', () => {
       const wrapper = mount(RightPanel, { props: defaultProps })
       const component = wrapper.vm as any
 
@@ -241,47 +217,23 @@ describe('RightPanel', () => {
       component.handleResultsScroll()
 
       expect(component.showTopFade).toBe(true) // scrollTop > 20
-      expect(component.canScrollUp).toBe(true)
-      expect(component.canScrollDown).toBe(true)
-      expect(component.hasScrollableContent).toBe(true)
     })
 
-    it('should scroll to top when top scroll button is clicked', () => {
+    it('should not show top fade when not scrolled', () => {
       const wrapper = mount(RightPanel, { props: defaultProps })
       const component = wrapper.vm as any
 
-      const mockScrollTo = vi.fn()
-      component.resultsScrollContainer = {
-        scrollTop: 300,
-        scrollTo: mockScrollTo
-      }
-
-      component.scrollResultsToTop()
-
-      expect(mockScrollTo).toHaveBeenCalledWith({
-        top: 100, // 300 - 200
-        behavior: 'smooth'
-      })
-    })
-
-    it('should scroll to bottom when bottom scroll button is clicked', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
-      const component = wrapper.vm as any
-
-      const mockScrollTo = vi.fn()
-      component.resultsScrollContainer = {
-        scrollTop: 100,
+      // Mock scroll container at top
+      const mockContainer = {
+        scrollTop: 0,
         scrollHeight: 500,
-        clientHeight: 300,
-        scrollTo: mockScrollTo
+        clientHeight: 300
       }
+      component.resultsScrollContainer = mockContainer
 
-      component.scrollResultsToBottom()
+      component.handleResultsScroll()
 
-      expect(mockScrollTo).toHaveBeenCalledWith({
-        top: 200, // min(200, 100 + 200)
-        behavior: 'smooth'
-      })
+      expect(component.showTopFade).toBe(false) // scrollTop <= 20
     })
   })
 

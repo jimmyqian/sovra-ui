@@ -16,7 +16,9 @@ describe('useConversationStore', () => {
       expect(store.conversationHistory[0]?.items?.[0]?.type).toBe('text')
       const firstItem = store.conversationHistory[0]?.items?.[0]
       if (firstItem && 'content' in firstItem) {
-        expect(firstItem.content).toBe('Good morning, Dave. How may I assist you today?')
+        expect(firstItem.content).toBe(
+          'Good morning, Dave. How may I assist you today?'
+        )
       }
     })
 
