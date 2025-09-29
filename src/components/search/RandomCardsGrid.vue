@@ -1,8 +1,14 @@
 <template>
   <div class="w-full h-full bg-bg-primary">
     <div class="h-full px-8 py-4 md:px-4">
-      <!-- 2-column grid of random cards -->
+      <!-- 2-column grid of cards with life support monitor as first card -->
       <div class="grid grid-cols-2 gap-4 auto-rows-max">
+        <!-- Life Support Monitor (top left position) -->
+        <div class="h-80">
+          <LifeSupportMonitor />
+        </div>
+
+        <!-- Regular random cards -->
         <div
           v-for="card in cards"
           :key="card.id"
@@ -27,6 +33,7 @@
 
 <script setup lang="ts">
   import { computed } from 'vue'
+  import LifeSupportMonitor from './LifeSupportMonitor.vue'
 
   interface Card {
     id: number
@@ -147,10 +154,11 @@
 
   /**
    * Generate array of random cards with varied heights and colors
+   * Reduced to 19 cards since the first position is now the life support monitor
    */
   const cards = computed((): Card[] => {
-    return Array.from({ length: 20 }, (_, index) => ({
-      id: index + 1,
+    return Array.from({ length: 19 }, (_, index) => ({
+      id: index + 2, // Start from 2 since position 1 is the life support monitor
       title: getRandomTitle(),
       description: getRandomDescription(),
       height: getRandomHeight(120, 300),
