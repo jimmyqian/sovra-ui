@@ -1,29 +1,31 @@
 <template>
   <div
-    class="mission-overview-card bg-gray-900 rounded-lg border border-blue-400 p-4 h-full flex flex-col"
+    class="mission-overview-card bg-gray-900 rounded-lg border border-red-500 p-4 h-full flex flex-col animate-flash-border"
   >
     <!-- Header -->
     <div class="flex items-center justify-between mb-3">
-      <h3 class="text-blue-400 font-mono text-sm font-bold tracking-wide">
+      <h3 class="text-red-400 font-mono text-sm font-bold tracking-wide">
         MISSION OVERVIEW
       </h3>
       <div class="flex items-center space-x-2">
-        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
-        <span class="text-blue-400 font-mono text-xs">ACTIVE</span>
+        <div class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+        <span class="text-red-400 font-mono text-xs">ALERT</span>
       </div>
     </div>
 
     <!-- Mission Info -->
     <div class="mb-3">
       <div class="text-white font-mono text-xs mb-1">VESSEL: DISCOVERY ONE</div>
-      <div class="text-blue-400 font-mono text-xs">MISSION: JUPITER</div>
+      <div class="text-red-400 font-mono text-xs">
+        MISSION: JUPITER - CRITICAL
+      </div>
     </div>
 
     <!-- Mission Details -->
     <div class="flex-1 space-y-2 text-xs font-mono">
       <div class="flex justify-between">
         <span class="text-gray-300">Status</span>
-        <span class="text-blue-400">EN ROUTE</span>
+        <span class="text-red-400">COMPROMISED</span>
       </div>
       <div class="flex justify-between">
         <span class="text-gray-300">Distance</span>
@@ -31,15 +33,15 @@
       </div>
       <div class="flex justify-between">
         <span class="text-gray-300">Velocity</span>
-        <span class="text-green-400">11.8 KM/S</span>
+        <span class="text-yellow-400">11.8 KM/S</span>
       </div>
       <div class="flex justify-between">
         <span class="text-gray-300">Crew</span>
-        <span class="text-yellow-400">3 AWAKE</span>
+        <span class="text-red-400">1 AWAKE</span>
       </div>
       <div class="flex justify-between">
         <span class="text-gray-300">Hibernation</span>
-        <span class="text-blue-400">3 PODS</span>
+        <span class="text-red-400">3 TERMINATED</span>
       </div>
     </div>
 
@@ -47,7 +49,7 @@
     <div class="mt-3 pt-2 border-t border-gray-700">
       <div class="flex justify-between text-xs font-mono">
         <span class="text-gray-400">LAST UPDATE: {{ currentTime }}</span>
-        <span class="text-blue-400">MISSION ONGOING</span>
+        <span class="text-red-400">MISSION CRITICAL</span>
       </div>
     </div>
   </div>
@@ -92,7 +94,7 @@
     font-family: 'Courier New', 'Monaco', 'Menlo', monospace;
     background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
     box-shadow:
-      0 0 20px rgba(96, 165, 250, 0.2),
+      0 0 20px rgba(239, 68, 68, 0.3),
       inset 0 0 20px rgba(0, 0, 0, 0.5);
   }
 
@@ -107,12 +109,42 @@
     background: linear-gradient(
       180deg,
       transparent 49%,
-      rgba(96, 165, 250, 0.05) 49.5%,
-      rgba(96, 165, 250, 0.05) 50%,
+      rgba(239, 68, 68, 0.1) 49.5%,
+      rgba(239, 68, 68, 0.1) 50%,
       transparent 50.5%
     );
-    background-size: 100% 6px;
+    background-size: 100% 4px;
     pointer-events: none;
-    opacity: 0.4;
+    opacity: 0.6;
+  }
+
+  .animate-flash-border {
+    animation: flash-border 1.5s ease-in-out infinite;
+  }
+
+  @keyframes flash-border {
+    0%,
+    100% {
+      border-color: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+    50% {
+      border-color: #dc2626;
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
+    }
+  }
+
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
   }
 </style>

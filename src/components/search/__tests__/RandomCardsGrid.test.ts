@@ -177,7 +177,7 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       expect(wrapper.text()).toContain('AE-35')
     })
 
-    it('should show various system statuses', () => {
+    it('should show various system statuses including mission alert', () => {
       const wrapper = createWrapper()
 
       // Check for different status types
@@ -185,6 +185,11 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       expect(wrapper.text()).toContain('CAUTION')
       expect(wrapper.text()).toContain('WARNING')
       expect(wrapper.text()).toContain('ALERT')
+
+      // Mission should be in ALERT status
+      expect(wrapper.text()).toContain('MISSION: JUPITER - CRITICAL')
+      expect(wrapper.text()).toContain('COMPROMISED')
+      expect(wrapper.text()).toContain('MISSION CRITICAL')
     })
 
     it('should display system categories', () => {
@@ -291,7 +296,7 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
   })
 
   describe('Content Validation', () => {
-    it('should display authentic spacecraft terminology', () => {
+    it('should display authentic spacecraft terminology reflecting mission crisis', () => {
       const wrapper = createWrapper()
 
       // Check for realistic spacecraft terms
@@ -302,10 +307,10 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       expect(content).toContain('Inertial')
       expect(content).toContain('Attitude')
 
-      // Mission terms
-      expect(content).toContain('EN ROUTE')
-      expect(content).toContain('AWAKE')
-      expect(content).toContain('Hibernation')
+      // Mission crisis terms reflecting HAL's actions
+      expect(content).toContain('COMPROMISED')
+      expect(content).toContain('1 AWAKE') // Only Dave Bowman left
+      expect(content).toContain('3 TERMINATED') // Hibernation crew terminated by HAL
     })
 
     it('should show various measurement units and values', () => {
