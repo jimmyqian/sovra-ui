@@ -3,23 +3,34 @@
     <div class="h-full px-8 py-4 md:px-4">
       <!-- 2-column grid of cards with life support monitor and system status cards -->
       <div class="grid grid-cols-2 gap-4 auto-rows-max">
-        <!-- Life Support Monitor (top left position) -->
+        <!-- Life Support Monitor (top left position - critical declining vitals) -->
         <div class="h-80">
           <LifeSupportMonitor />
         </div>
 
-        <!-- Mission Overview (top right position) -->
+        <!-- Computer System Status (top right position - ALERT with flashing red border) -->
         <div class="h-80">
-          <MissionOverviewCard />
+          <ComputerStatusCard />
         </div>
 
-        <!-- System Status Cards -->
+        <!-- Priority System Status Cards (arranged by alert level) -->
+        <!-- WARNING Level Cards -->
         <div class="h-64">
-          <NavigationStatusCard />
+          <CommunicationsStatusCard />
         </div>
 
         <div class="h-64">
           <PropulsionStatusCard />
+        </div>
+
+        <!-- ACTIVE Status Card -->
+        <div class="h-64">
+          <MissionOverviewCard />
+        </div>
+
+        <!-- NOMINAL Status Cards -->
+        <div class="h-64">
+          <NavigationStatusCard />
         </div>
 
         <div class="h-64">
@@ -27,15 +38,7 @@
         </div>
 
         <div class="h-64">
-          <CommunicationsStatusCard />
-        </div>
-
-        <div class="h-64">
           <PowerStatusCard />
-        </div>
-
-        <div class="h-64">
-          <ComputerStatusCard />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div
-    class="computer-status-card bg-gray-900 rounded-lg border border-red-500 p-4 h-full flex flex-col"
+    class="computer-status-card bg-gray-900 rounded-lg border border-red-500 p-4 h-full flex flex-col animate-flash-border"
   >
     <!-- Header -->
     <div class="flex items-center justify-between mb-3">
@@ -93,6 +93,22 @@
     }
     50% {
       opacity: 0.5;
+    }
+  }
+
+  .animate-flash-border {
+    animation: flash-border 1.5s ease-in-out infinite;
+  }
+
+  @keyframes flash-border {
+    0%,
+    100% {
+      border-color: #ef4444;
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+    }
+    50% {
+      border-color: #dc2626;
+      box-shadow: 0 0 30px rgba(239, 68, 68, 0.6);
     }
   }
 </style>

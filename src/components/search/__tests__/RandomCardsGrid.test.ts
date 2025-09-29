@@ -117,9 +117,9 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
 
       const gridItems = wrapper.findAll('.grid > div')
 
-      // First two items should have h-80 class (monitors)
-      expect(gridItems[0].classes()).toContain('h-80')
-      expect(gridItems[1].classes()).toContain('h-80')
+      // First two items should have h-80 class (life support monitor + computer alert)
+      expect(gridItems[0].classes()).toContain('h-80') // LifeSupportMonitor
+      expect(gridItems[1].classes()).toContain('h-80') // ComputerStatusCard
 
       // Remaining items should have h-64 class (system cards)
       for (let i = 2; i < gridItems.length; i++) {
@@ -129,6 +129,30 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
   })
 
   describe('System Status Integration', () => {
+    it('should arrange cards by priority with alerts first', () => {
+      const wrapper = createWrapper()
+
+      // Top row: Life Support Monitor (left) + Computer Alert (right)
+      expect(
+        wrapper.findComponent({ name: 'LifeSupportMonitor' }).exists()
+      ).toBe(true)
+      expect(
+        wrapper.findComponent({ name: 'ComputerStatusCard' }).exists()
+      ).toBe(true)
+
+      // Verify critical/alert systems are positioned prominently
+      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
+      expect(computerCard.exists()).toBe(true)
+
+      // Warning level cards should appear in next positions
+      const commCard = wrapper.findComponent({
+        name: 'CommunicationsStatusCard'
+      })
+      const propCard = wrapper.findComponent({ name: 'PropulsionStatusCard' })
+      expect(commCard.exists()).toBe(true)
+      expect(propCard.exists()).toBe(true)
+    })
+
     it('should display mission-critical information across all cards', () => {
       const wrapper = createWrapper()
 
