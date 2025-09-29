@@ -105,11 +105,15 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       expect(computerCard.exists()).toBe(true)
     })
 
-    it('should render 8 total components in the grid (2 monitors + 6 system cards)', () => {
+    it('should render 8 total components in the grid with full-width mission overview', () => {
       const wrapper = createWrapper()
 
       const gridItems = wrapper.findAll('.grid > div')
       expect(gridItems).toHaveLength(8)
+
+      // First item should be full-width (col-span-2)
+      expect(gridItems[0].classes()).toContain('col-span-2')
+      expect(gridItems[0].classes()).toContain('h-64')
     })
 
     it('should apply proper height classes to different card types', () => {
@@ -117,22 +121,32 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
 
       const gridItems = wrapper.findAll('.grid > div')
 
-      // First two items should have h-80 class (life support monitor + computer alert)
-      expect(gridItems[0].classes()).toContain('h-80') // LifeSupportMonitor
-      expect(gridItems[1].classes()).toContain('h-80') // ComputerStatusCard
+      // First item should be full-width mission overview with h-64
+      expect(gridItems[0].classes()).toContain('h-64') // MissionOverviewCard
+      expect(gridItems[0].classes()).toContain('col-span-2')
+
+      // Next two items should have h-80 class (life support monitor + computer alert)
+      expect(gridItems[1].classes()).toContain('h-80') // LifeSupportMonitor
+      expect(gridItems[2].classes()).toContain('h-80') // ComputerStatusCard
 
       // Remaining items should have h-64 class (system cards)
-      for (let i = 2; i < gridItems.length; i++) {
+      for (let i = 3; i < gridItems.length; i++) {
         expect(gridItems[i].classes()).toContain('h-64')
       }
     })
   })
 
   describe('System Status Integration', () => {
-    it('should arrange cards by priority with alerts first', () => {
+    it('should arrange cards with full-width mission overview at top', () => {
       const wrapper = createWrapper()
 
-      // Top row: Life Support Monitor (left) + Computer Alert (right)
+      // Top row: Full-width Mission Overview
+      const missionOverview = wrapper.findComponent({
+        name: 'MissionOverviewCard'
+      })
+      expect(missionOverview.exists()).toBe(true)
+
+      // Second row: Life Support Monitor (left) + Computer Alert (right)
       expect(
         wrapper.findComponent({ name: 'LifeSupportMonitor' }).exists()
       ).toBe(true)
@@ -197,13 +211,17 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
   })
 
   describe('Layout and Styling', () => {
-    it('should use 2-column grid layout with proper spacing', () => {
+    it('should use 2-column grid layout with proper spacing and full-width support', () => {
       const wrapper = createWrapper()
 
       const grid = wrapper.find('.grid')
       expect(grid.classes()).toContain('grid-cols-2')
       expect(grid.classes()).toContain('gap-4')
       expect(grid.classes()).toContain('auto-rows-max')
+
+      // Check that first item spans full width
+      const firstItem = wrapper.findAll('.grid > div')[0]
+      expect(firstItem.classes()).toContain('col-span-2')
     })
 
     it('should have proper container structure', () => {
