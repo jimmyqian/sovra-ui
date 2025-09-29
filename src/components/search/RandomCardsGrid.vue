@@ -1,24 +1,44 @@
 <template>
   <div class="w-full h-full bg-bg-primary">
     <div class="h-full px-8 py-4 md:px-4">
-      <!-- 2-column grid of random cards -->
+      <!-- 2-column grid of cards with life support monitor and system status cards -->
       <div class="grid grid-cols-2 gap-4 auto-rows-max">
-        <div
-          v-for="card in cards"
-          :key="card.id"
-          class="rounded-lg cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105"
-          :class="card.colorClass"
-          :style="{ height: card.height + 'px' }"
-          @click="handleCardClick(card)"
-        >
-          <div class="p-4 h-full flex flex-col justify-between">
-            <div class="font-medium text-white text-opacity-90">
-              {{ card.title }}
-            </div>
-            <div class="text-sm text-white text-opacity-70">
-              {{ card.description }}
-            </div>
-          </div>
+        <!-- Mission Overview (full width at top - ACTIVE mission status) -->
+        <div class="col-span-2 h-64">
+          <MissionOverviewCard />
+        </div>
+
+        <!-- Life Support Monitor (top left of second row - all crew member graphs) -->
+        <div class="h-[32rem]">
+          <LifeSupportMonitor />
+        </div>
+
+        <!-- Computer System Status (top right of second row - ALERT with flashing red border) -->
+        <div class="h-80">
+          <ComputerStatusCard />
+        </div>
+
+        <!-- Priority System Status Cards (arranged by alert level) -->
+        <!-- WARNING Level Cards -->
+        <div class="h-64">
+          <CommunicationsStatusCard />
+        </div>
+
+        <div class="h-64">
+          <PropulsionStatusCard />
+        </div>
+
+        <!-- NOMINAL Status Cards -->
+        <div class="h-64">
+          <NavigationStatusCard />
+        </div>
+
+        <div class="h-64">
+          <LifeSupportStatusCard />
+        </div>
+
+        <div class="h-64">
+          <PowerStatusCard />
         </div>
       </div>
     </div>
@@ -26,151 +46,27 @@
 </template>
 
 <script setup lang="ts">
-  import { computed } from 'vue'
-
-  interface Card {
-    id: number
-    title: string
-    description: string
-    height: number
-    colorClass: string
-  }
-
-  interface Emits {
-    (_e: 'cardClick', _card: Card): void
-  }
-
-  const emit = defineEmits<Emits>()
+  import LifeSupportMonitor from './LifeSupportMonitor.vue'
+  import MissionOverviewCard from './MissionOverviewCard.vue'
+  import NavigationStatusCard from './NavigationStatusCard.vue'
+  import PropulsionStatusCard from './PropulsionStatusCard.vue'
+  import LifeSupportStatusCard from './LifeSupportStatusCard.vue'
+  import CommunicationsStatusCard from './CommunicationsStatusCard.vue'
+  import PowerStatusCard from './PowerStatusCard.vue'
+  import ComputerStatusCard from './ComputerStatusCard.vue'
 
   /**
-   * Generate random height between min and max values
-   * @param min Minimum height in pixels
-   * @param max Maximum height in pixels
-   * @returns Random height in pixels
+   * Spacecraft System Status Dashboard Component
+   * Displays Discovery One's life support monitor and all system status cards
+   * Replaces random cards with actual spacecraft system monitoring
    */
-  const getRandomHeight = (min: number, max: number): number => {
-    return Math.floor(Math.random() * (max - min + 1)) + min
-  }
-
-  /**
-   * Get a random color class from predefined set
-   * @returns CSS class for random background color
-   */
-  const getRandomColorClass = (): string => {
-    const colors = [
-      'bg-red-500',
-      'bg-blue-500',
-      'bg-green-500',
-      'bg-yellow-500',
-      'bg-purple-500',
-      'bg-pink-500',
-      'bg-indigo-500',
-      'bg-teal-500',
-      'bg-orange-500',
-      'bg-cyan-500',
-      'bg-emerald-500',
-      'bg-rose-500',
-      'bg-violet-500',
-      'bg-sky-500',
-      'bg-lime-500',
-      'bg-amber-500',
-      'bg-slate-500',
-      'bg-gray-500',
-      'bg-zinc-500',
-      'bg-stone-500'
-    ]
-    const randomIndex = Math.floor(Math.random() * colors.length)
-    return colors[randomIndex] ?? 'bg-gray-500'
-  }
-
-  /**
-   * Generate sample titles for cards
-   * @returns Random card title
-   */
-  const getRandomTitle = (): string => {
-    const titles = [
-      'Data Analysis',
-      'User Research',
-      'Product Design',
-      'Market Trends',
-      'Social Media',
-      'Technology',
-      'Innovation',
-      'Strategy',
-      'Growth',
-      'Analytics',
-      'Insights',
-      'Performance',
-      'Optimization',
-      'Discovery',
-      'Solutions',
-      'Development',
-      'Leadership',
-      'Collaboration',
-      'Success',
-      'Achievement'
-    ]
-    const randomIndex = Math.floor(Math.random() * titles.length)
-    return titles[randomIndex] ?? 'Data Analysis'
-  }
-
-  /**
-   * Generate sample descriptions for cards
-   * @returns Random card description
-   */
-  const getRandomDescription = (): string => {
-    const descriptions = [
-      'Explore detailed insights',
-      'Discover new opportunities',
-      'Track performance metrics',
-      'Analyze user behavior',
-      'Monitor market changes',
-      'Review key findings',
-      'Identify growth patterns',
-      'Examine data trends',
-      'Study user preferences',
-      'Evaluate success rates',
-      'Measure engagement levels',
-      'Assess market position',
-      'Review strategic goals',
-      'Track progress metrics',
-      'Analyze competitive landscape',
-      'Monitor user activity',
-      'Study market dynamics',
-      'Evaluate performance data',
-      'Review engagement metrics',
-      'Analyze success patterns'
-    ]
-    const randomIndex = Math.floor(Math.random() * descriptions.length)
-    return descriptions[randomIndex] ?? 'Explore detailed insights'
-  }
-
-  /**
-   * Generate array of random cards with varied heights and colors
-   */
-  const cards = computed((): Card[] => {
-    return Array.from({ length: 20 }, (_, index) => ({
-      id: index + 1,
-      title: getRandomTitle(),
-      description: getRandomDescription(),
-      height: getRandomHeight(120, 300),
-      colorClass: getRandomColorClass()
-    }))
-  })
-
-  /**
-   * Handle card click events
-   * @param card - The clicked card object
-   */
-  const handleCardClick = (card: Card) => {
-    emit('cardClick', card)
-  }
 </script>
 
 <style scoped>
-  /* Additional styles for card hover effects */
+  /* Subtle hover effects for system status cards */
   .grid > div:hover {
-    transform: translateY(-2px);
+    transform: translateY(-1px);
+    transition: transform 0.2s ease;
   }
 
   /* Ensure proper spacing in grid */
