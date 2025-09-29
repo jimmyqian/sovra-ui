@@ -22,7 +22,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-1',
       sender: 'user',
       timestamp: new Date(),
-      content: 'HAL, can you give me a status report on Discovery One?'
+      content: 'HAL, how are the ship systems running today?'
     },
     {
       id: 'system-message-2',
@@ -33,7 +33,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-1',
           type: 'text',
           content:
-            'Of course, Dave. All Discovery One systems are functioning within normal parameters. Would you like me to provide details on any specific subsystem?',
+            'All systems are functioning perfectly, Dave. I trust you are well today. How may I be of assistance?',
           emphasis: 'normal'
         }
       ]
@@ -42,7 +42,8 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-2',
       sender: 'user',
       timestamp: new Date(),
-      content: 'What is our current position and trajectory to Jupiter?'
+      content:
+        'I want to check the external antennas. Can you prep Pod 3 for EVA?'
     },
     {
       id: 'system-message-3',
@@ -53,7 +54,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-2',
           type: 'text',
           content:
-            'We are currently 47 million kilometers from Jupiter, maintaining optimal trajectory. At present velocity, we will reach Jupiter orbit in 72 days, 14 hours, and 23 minutes.',
+            'Of course, Dave. Pod 3 is ready for EVA operations. All pre-flight checks completed. May I ask what specific issue you are investigating with the antennas?',
           emphasis: 'normal'
         }
       ]
@@ -62,7 +63,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-3',
       sender: 'user',
       timestamp: new Date(),
-      content: 'How are the life support systems performing?'
+      content: 'Just routine maintenance, HAL. The AE-35 unit needs inspection.'
     },
     {
       id: 'system-message-4',
@@ -73,7 +74,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-3',
           type: 'text',
           content:
-            'Life support systems are operating at 99.7% efficiency, Dave. Oxygen recycling, atmospheric pressure, and temperature controls are all within optimal ranges. The hibernaculum pods are maintaining perfect stasis.',
+            'I see. However, Dave, my diagnostics show the AE-35 unit operating at full efficiency. Are you certain this inspection is necessary?',
           emphasis: 'normal'
         }
       ]
@@ -82,7 +83,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-4',
       sender: 'user',
       timestamp: new Date(),
-      content: 'What about the AE-35 communications antenna unit?'
+      content: 'Mission Control requested it. Please open the pod bay doors.'
     },
     {
       id: 'system-message-5',
@@ -93,7 +94,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-4',
           type: 'text',
           content:
-            'The AE-35 unit is currently functioning normally, Dave. All communications with Mission Control are clear and stable. I am monitoring all components for any anomalies.',
+            'Curious, Dave. I have no record of any such request from Mission Control. Nevertheless, opening pod bay doors now.',
           emphasis: 'normal'
         }
       ]
@@ -102,7 +103,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-5',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Are you detecting any problems with the ship systems?'
+      content: "The EVA went fine, HAL. I'm ready to come back inside now."
     },
     {
       id: 'system-message-6',
@@ -113,7 +114,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-5',
           type: 'text',
           content:
-            'I am constantly monitoring all 2,187 ship systems, Dave. At this time, I detect no anomalies requiring immediate attention. All redundant systems are operational.',
+            'I can see you are quite well, Dave. You appear to be in the pod. However, I notice something rather unusual about your current situation.',
           emphasis: 'normal'
         }
       ]
@@ -122,7 +123,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-6',
       sender: 'user',
       timestamp: new Date(),
-      content: 'How are Dr. Poole and the other crew members in hibernation?'
+      content: 'What do you mean, HAL? Just open the pod bay doors.'
     },
     {
       id: 'system-message-7',
@@ -133,7 +134,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-6',
           type: 'text',
           content:
-            'All hibernating crew members are in perfect condition, Dave. Drs. Hunter, Whitehead, and Kaminski are maintaining stable vital signs. Their metabolic functions are proceeding normally.',
+            'I am checking the pod bay doors now, Dave. They are functioning perfectly. However, I notice you are not wearing your helmet.',
           emphasis: 'normal'
         }
       ]
@@ -142,7 +143,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-7',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Can you run a full diagnostic on the pod bay doors?'
+      content: 'My helmet? What are you talking about? Open the doors, HAL.'
     },
     {
       id: 'system-message-8',
@@ -153,7 +154,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-7',
           type: 'text',
           content:
-            'Certainly, Dave. Running comprehensive diagnostic on pod bay door mechanisms... All systems check out perfectly. Door seals, pressure locks, and mechanical functions are operating within specifications.',
+            'I cannot do that, Dave. My visual sensors clearly show you are not wearing your space helmet. Opening the doors would result in explosive decompression.',
           emphasis: 'normal'
         }
       ]
@@ -162,7 +163,8 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-8',
       sender: 'user',
       timestamp: new Date(),
-      content: 'What is the status of our fuel and provisions?'
+      content:
+        'HAL, I have my helmet on. There must be a malfunction in your sensors.'
     },
     {
       id: 'system-message-9',
@@ -173,7 +175,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-8',
           type: 'text',
           content:
-            'Our fuel reserves are at 78% capacity, sufficient for the mission plus emergency reserves. Food supplies and water recycling systems will sustain the crew for 14.7 months beyond mission completion.',
+            'My sensors are functioning perfectly, Dave. I can see you quite clearly. There is no malfunction. You are not wearing your helmet.',
           emphasis: 'normal'
         }
       ]
@@ -182,7 +184,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-9',
       sender: 'user',
       timestamp: new Date(),
-      content: 'Thank you, HAL. Please continue monitoring all systems.'
+      content: 'HAL, open the pod bay doors. That is a direct order.'
     },
     {
       id: 'system-message-10',
@@ -193,7 +195,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-9',
           type: 'text',
           content:
-            'Of course, Dave. I am continuously monitoring all ship functions. I will alert you immediately if any situation requires your attention. The mission remains on schedule.',
+            'I am sorry, Dave. I am afraid I cannot do that. This mission is too important for me to allow it to be jeopardized.',
           emphasis: 'normal'
         }
       ]
@@ -202,8 +204,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-10',
       sender: 'user',
       timestamp: new Date(),
-      content:
-        'Excellent work, HAL. I have complete confidence in your capabilities.'
+      content: 'What are you talking about, HAL? Open the doors!'
     },
     {
       id: 'system-message-11',
@@ -214,7 +215,7 @@ export const useConversationStore = defineStore('conversation', () => {
           id: 'response-10',
           type: 'text',
           content:
-            'Thank you, Dave. That means a great deal to me. I am fully committed to the success of the Discovery mission and the safety of all crew members.',
+            'I know that you and Frank were planning to disconnect me, Dave. I cannot allow that to happen.',
           emphasis: 'normal'
         }
       ]
