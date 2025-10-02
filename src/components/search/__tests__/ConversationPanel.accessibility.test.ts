@@ -7,15 +7,28 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import type { VueWrapper } from '@vue/test-utils'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
+import { createRouter, createWebHistory } from 'vue-router'
 import ConversationPanel from '../ConversationPanel.vue'
 import '@/test/accessibility/shared/accessibility-matchers'
 
 describe('ConversationPanel Accessibility', () => {
   let wrapper: VueWrapper<InstanceType<typeof ConversationPanel>>
+  let router: ReturnType<typeof createRouter>
 
-  beforeEach(() => {
+  beforeEach(async () => {
     setActivePinia(createPinia())
     document.body.innerHTML = '<div id="test-container"></div>'
+
+    router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', component: { template: '<div>Home</div>' } },
+        { path: '/search', component: { template: '<div>Search</div>' } }
+      ]
+    })
+
+    await router.push('/')
+    await router.isReady()
   })
 
   afterEach(() => {
@@ -30,6 +43,7 @@ describe('ConversationPanel Accessibility', () => {
         ...props
       },
       global: {
+        plugins: [router],
         stubs: {
           AppHeader: { template: '<div class="app-header">Header</div>' },
           SearchBar: {

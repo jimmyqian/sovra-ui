@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createRouter, createWebHistory } from 'vue-router'
 import PersonProfile from '../PersonProfile.vue'
 import Button from '@/components/ui/Button.vue'
 
@@ -15,6 +16,24 @@ vi.mock('@/components/ui/Button.vue', () => ({
 }))
 
 describe('PersonProfile Accessibility', () => {
+  let router: ReturnType<typeof createRouter>
+
+  beforeEach(async () => {
+    router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', component: { template: '<div>Home</div>' } },
+        {
+          path: '/dashboard/:id',
+          component: { template: '<div>Dashboard</div>' }
+        }
+      ]
+    })
+
+    await router.push('/')
+    await router.isReady()
+  })
+
   const mockPerson = {
     name: 'Johnson Smith',
     tags: [
@@ -32,6 +51,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -45,6 +65,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -65,6 +86,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -90,6 +112,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -104,6 +127,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -130,6 +154,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -148,6 +173,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -176,6 +202,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -215,6 +242,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: personWithLongContent },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -230,6 +258,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -249,6 +278,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -268,6 +298,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -287,6 +318,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -310,6 +342,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -334,6 +367,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -367,6 +401,7 @@ describe('PersonProfile Accessibility', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
