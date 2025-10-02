@@ -228,7 +228,7 @@ describe('Search Workflow Integration', () => {
 
     // Set up search store with query and results
     const store = useSearchStore()
-    store.setQuery('Good morning, Dave. How may I assist you today?')
+    store.setQuery('Hello Dave.')
     store.updatePagination({ totalResults: 56 })
 
     // Navigate to search results (no query parameter needed)

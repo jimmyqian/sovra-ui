@@ -12,7 +12,7 @@ import { useSearchStore } from '@/stores/search'
 import type { ConversationMessage } from '@/types/conversation'
 
 describe('SearchConversation', () => {
-  const mockSearchQuery = 'Good morning, Dave. How may I assist you today?'
+  const mockSearchQuery = 'Hello Dave.'
 
   const createWrapper = (userQuery = mockSearchQuery, resultCount = 56) => {
     const defaultMessages: ConversationMessage[] = [

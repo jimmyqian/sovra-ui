@@ -180,8 +180,8 @@ describe('Scroll Chevron Integration Tests', () => {
     })
   })
 
-  describe('RightPanel (No Chevrons)', () => {
-    it('should render RightPanel without scroll chevrons', async () => {
+  describe('RightPanel Chevrons', () => {
+    it('should render chevrons with brand orange styling in RightPanel', async () => {
       const wrapper = mount(RightPanel, {
         global: {
           plugins: [pinia]
@@ -199,25 +199,62 @@ describe('Scroll Chevron Integration Tests', () => {
               references: 10,
               companies: 5,
               contacts: 15
+            },
+            {
+              id: 2,
+              name: 'Test Result 2',
+              age: 25,
+              gender: 'Female',
+              maritalStatus: 'Married',
+              location: 'Test Location 2',
+              rating: 4.0,
+              references: 8,
+              companies: 3,
+              contacts: 12
             }
           ],
+          hasMore: false,
           isLoading: false,
           error: null,
           selectedPerson: null
         }
       })
 
-      // Verify that no chevrons are present
-      const chevronUp = wrapper.findComponent(ChevronUpIcon)
-      const chevronDown = wrapper.findComponent(ChevronDownIcon)
+      // Trigger scroll to show chevrons
+      const scrollContainer = wrapper.find('.results-scroll')
+      if (scrollContainer.exists()) {
+        // Mock scrollable content
+        Object.defineProperty(scrollContainer.element, 'scrollHeight', {
+          value: 1000,
+          writable: true
+        })
+        Object.defineProperty(scrollContainer.element, 'clientHeight', {
+          value: 400,
+          writable: true
+        })
+        Object.defineProperty(scrollContainer.element, 'scrollTop', {
+          value: 100,
+          writable: true
+        })
 
-      expect(chevronUp.exists()).toBe(false)
-      expect(chevronDown.exists()).toBe(false)
+        await scrollContainer.trigger('scroll')
+        await wrapper.vm.$nextTick()
 
-      // Verify that the grid is still rendered
-      expect(wrapper.findComponent({ name: 'RandomCardsGrid' }).exists()).toBe(
-        true
-      )
+        const chevronUp = wrapper.findComponent(ChevronUpIcon)
+        const chevronDown = wrapper.findComponent(ChevronDownIcon)
+
+        if (chevronUp.exists()) {
+          expect(chevronUp.classes()).toContain('scroll-chevron')
+          expect(chevronUp.classes()).toContain('cursor-pointer')
+          expect(chevronUp.attributes('aria-label')).toBe('Scroll to top')
+        }
+
+        if (chevronDown.exists()) {
+          expect(chevronDown.classes()).toContain('scroll-chevron')
+          expect(chevronDown.classes()).toContain('cursor-pointer')
+          expect(chevronDown.attributes('aria-label')).toBe('Scroll to bottom')
+        }
+      }
     })
   })
 

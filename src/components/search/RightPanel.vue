@@ -7,8 +7,14 @@
       ref="resultsScrollContainer"
       class="flex-1 overflow-y-auto results-scroll"
       style="min-height: 0; max-height: 100%"
+      @scroll="handleResultsScroll"
     >
-      <RandomCardsGrid @card-click="handleCardClick" />
+      <ResultsList
+        :results="results"
+        :is-loading="isLoading"
+        :error="error"
+        @person-selected="handlePersonSelected"
+      />
     </div>
 
     <!-- Person Details View -->
@@ -53,39 +59,89 @@
       </main>
     </div>
 
+    <!-- Fade-out gradient overlay at top - shows when scrolled -->
+    <div
+      v-if="!selectedPerson"
+      class="fade-overlay-top"
+      :class="[{ visible: showTopFade }]"
+    ></div>
+    <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
+    <div v-if="!selectedPerson" class="fade-overlay"></div>
+
+    <!-- Scroll Control Buttons for Results -->
+    <ChevronUpIcon
+      v-if="!selectedPerson && hasScrollableContent && canScrollUp"
+      class="scroll-chevron scroll-chevron-top cursor-pointer"
+      aria-label="Scroll to top"
+      @click="scrollResultsToTop"
+    />
+    <ChevronDownIcon
+      v-if="!selectedPerson && hasScrollableContent && canScrollDown"
+      class="scroll-chevron scroll-chevron-bottom cursor-pointer"
+      aria-label="Scroll to bottom"
+      @click="scrollResultsToBottom"
+    />
+
+    <!-- Load More Button - Always visible outside scroll area -->
+    <div
+      v-if="!selectedPerson"
+      class="px-8 py-4 text-center md:px-4 bg-bg-primary border-t border-border-light"
+    >
+      <Button
+        variant="outline"
+        size="lg"
+        :disabled="isLoading"
+        class="mx-auto"
+        @click="handleLoadMore"
+      >
+        {{ isLoading ? 'Loading...' : 'Load More Results' }}
+        <MoreIcon v-if="!isLoading" />
+      </Button>
+    </div>
+
     <!-- Page Footer -->
     <CopyrightFooter @pi-click="handlePiClick" />
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue'
-  import RandomCardsGrid from './RandomCardsGrid.vue'
+  import { ref, watch } from 'vue'
+  import ResultsList from './ResultsList.vue'
   import PersonProfile from './PersonProfile.vue'
   import DetailedResultCard from './DetailedResultCard.vue'
   import CategoryTabs from './CategoryTabs.vue'
   import ActivityFooter from './ActivityFooter.vue'
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
+  import Button from '@/components/ui/Button.vue'
+  import MoreIcon from '@/components/icons/MoreIcon.vue'
+  import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
+  import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
   import type { SearchResult } from '@/types/search'
 
   interface Props {
     results: SearchResult[]
     isLoading: boolean
+    hasMore: boolean
     error: string | null
     selectedPerson: SearchResult | null
   }
 
   interface Emits {
+    (_e: 'loadMore'): void
     (_e: 'personSelected', _person: SearchResult): void
     (_e: 'backToResults'): void
     (_e: 'piClick'): void
   }
 
-  defineProps<Props>()
+  const props = defineProps<Props>()
   const emit = defineEmits<Emits>()
 
   const resultsScrollContainer = ref<HTMLElement | null>(null)
+  const showTopFade = ref(false)
+  const canScrollUp = ref(false)
+  const canScrollDown = ref(false)
+  const hasScrollableContent = ref(false)
 
   // Mock data for person details - in real app this would come from API
   const personProfile = ref({
@@ -131,6 +187,14 @@
       licenses: 'Professional Engineer License'
     }
   })
+
+  const handleLoadMore = () => {
+    emit('loadMore')
+  }
+
+  const handlePersonSelected = (person: SearchResult) => {
+    emit('personSelected', person)
+  }
 
   // Generate detailed person data from search result
   const getDetailedPersonData = (person: SearchResult) => {
@@ -197,6 +261,48 @@
     emit('backToResults')
   }
 
+  const handleResultsScroll = () => {
+    if (resultsScrollContainer.value) {
+      const container = resultsScrollContainer.value
+      const scrollTop = container.scrollTop
+      const scrollHeight = container.scrollHeight
+      const clientHeight = container.clientHeight
+
+      // Show top fade when scrolled more than 20px from top
+      showTopFade.value = scrollTop > 20
+
+      // Update scroll button states
+      canScrollUp.value = scrollTop > 0
+      canScrollDown.value = scrollTop < scrollHeight - clientHeight
+      hasScrollableContent.value = scrollHeight > clientHeight
+    }
+  }
+
+  const scrollResultsToTop = () => {
+    if (resultsScrollContainer.value) {
+      const currentScroll = resultsScrollContainer.value.scrollTop
+      const scrollAmount = 200 // Approximately 1.5 card heights
+      resultsScrollContainer.value.scrollTo({
+        top: Math.max(0, currentScroll - scrollAmount),
+        behavior: 'smooth'
+      })
+    }
+  }
+
+  const scrollResultsToBottom = () => {
+    if (resultsScrollContainer.value) {
+      const currentScroll = resultsScrollContainer.value.scrollTop
+      const scrollAmount = 200 // Approximately 1.5 card heights
+      const maxScroll =
+        resultsScrollContainer.value.scrollHeight -
+        resultsScrollContainer.value.clientHeight
+      resultsScrollContainer.value.scrollTo({
+        top: Math.min(maxScroll, currentScroll + scrollAmount),
+        behavior: 'smooth'
+      })
+    }
+  }
+
   const handleTagClick = (_tag: string) => {
     // TODO: Implement tag navigation functionality
     // console.log('Tag clicked:', tag)
@@ -219,24 +325,52 @@
     emit('piClick')
   }
 
-  /**
-   * Handle card click from RandomCardsGrid component
-   * @param card - The clicked card object
-   */
-  const handleCardClick = (_card: {
-    id: number
-    title: string
-    description: string
-    height: number
-    colorClass: string
-  }) => {
-    // TODO: Implement card click functionality
-    // For now, we can log the clicked card or emit an event
-    // console.log('Card clicked:', _card)
-  }
+  // Watch for changes in results to update scroll state
+  watch(
+    () => props.results.length,
+    () => {
+      // Use a small delay to avoid layout thrashing during rapid updates
+      setTimeout(() => {
+        handleResultsScroll()
+      }, 10)
+    },
+    { immediate: true }
+  )
 </script>
 
 <style scoped>
+  .fade-overlay {
+    position: absolute;
+    bottom: 128px; /* Above Load More button and footer */
+    left: 0;
+    right: 0;
+    height: 160px; /* Fixed height instead of percentage */
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgb(248 248 248) 100%
+    );
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .fade-overlay-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 160px; /* Same height as bottom fade */
+    background: linear-gradient(to top, transparent 0%, rgb(248 248 248) 100%);
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .fade-overlay-top.visible {
+    opacity: 1;
+  }
+
   /* Hide scrollbars on results panel */
   .results-scroll {
     /* Hide scrollbar for Chrome, Safari and Opera */
@@ -247,5 +381,34 @@
     /* Hide scrollbar for IE, Edge and Firefox */
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
+  }
+
+  /* Scroll control chevrons */
+  .scroll-chevron {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 24px;
+    height: 24px;
+    color: var(--color-brand-orange);
+    transition: all 0.2s ease;
+    z-index: 20;
+  }
+
+  .scroll-chevron:hover {
+    color: #e55a2e; /* darker orange on hover */
+    transform: translateX(-50%) scale(1.1);
+  }
+
+  .scroll-chevron:active {
+    transform: translateX(-50%) scale(0.95);
+  }
+
+  .scroll-chevron-top {
+    top: 16px;
+  }
+
+  .scroll-chevron-bottom {
+    bottom: 144px; /* Above Load More button and footer */
   }
 </style>

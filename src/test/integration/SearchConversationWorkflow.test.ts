@@ -138,17 +138,15 @@ describe('Search Conversation Integration Tests', () => {
   })
 
   describe('User Query Display', () => {
-    it('displays default HAL 9000 greeting', async () => {
+    it('displays default "Hello Dave" message', async () => {
       const wrapper = createSearchResultsWrapper()
       await wrapper.vm.$nextTick()
 
-      // Should display the default HAL 9000 greeting
-      expect(wrapper.text()).toContain(
-        'Good morning, Dave. How may I assist you today?'
-      )
+      // Should display the default "Hello Dave" message
+      expect(wrapper.text()).toContain('Hello Dave')
     })
 
-    it('displays conversation component with HAL 9000 greeting', async () => {
+    it('displays conversation component with "Hello Dave" message', async () => {
       const wrapper = createSearchResultsWrapper()
       await wrapper.vm.$nextTick()
 
