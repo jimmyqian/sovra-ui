@@ -126,7 +126,10 @@
   // Get person data from route params and search store
   // Default to Robert Schmidt 1 if no ID is provided
   const ROBERT_SCHMIDT_1_ID = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
-  const personId = computed(() => (route.params.id as string) ?? ROBERT_SCHMIDT_1_ID)
+  const personId = computed(() => {
+    const id = route.params.id as string | undefined
+    return id && id.trim() !== '' ? id : ROBERT_SCHMIDT_1_ID
+  })
   const selectedPerson = computed(() => {
     if (personId.value) {
       // First try to find in search results
