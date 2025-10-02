@@ -11,7 +11,7 @@ import './style.css'
 const routes = [
   { path: '/', component: Landing },
   { path: '/search', component: SearchResults },
-  { path: '/search/:id', component: SearchDetail, name: 'SearchDetail' },
+  { path: '/dashboard/:id', component: SearchDetail, name: 'SearchDetail' },
   { path: '/timeline', component: Timeline, name: 'Timeline' }
 ]
 
@@ -28,11 +28,11 @@ const router = createRouter({
     // preserve scroll position to maintain conversation panel state
     const isFromSearchLayout =
       from.path === '/search' ||
-      from.path.startsWith('/search/') ||
+      from.path.startsWith('/dashboard/') ||
       from.path === '/timeline'
     const isToSearchLayout =
       to.path === '/search' ||
-      to.path.startsWith('/search/') ||
+      to.path.startsWith('/dashboard/') ||
       to.path === '/timeline'
 
     if (isFromSearchLayout && isToSearchLayout) {

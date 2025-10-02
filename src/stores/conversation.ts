@@ -31,8 +31,7 @@ export const useConversationStore = defineStore('conversation', () => {
       id: 'user-message-1',
       sender: 'user',
       timestamp: new Date(),
-      content:
-        'Johnson, who is around 26 years old, works in a software company in California'
+      content: 'Robert Schmidt'
     },
     {
       id: 'system-response-1',
@@ -56,15 +55,15 @@ export const useConversationStore = defineStore('conversation', () => {
           type: 'hints-group',
           hints: [
             {
-              text: 'What specific software role does Johnson hold in his California job',
+              text: 'What specific details about Robert Schmidt can help narrow the search',
               onClick: () => {} // Will be set by components
             },
             {
-              text: 'Which California tech hubs are most likely where Johnson works',
+              text: 'Location or workplace information for Robert Schmidt',
               onClick: () => {} // Will be set by components
             },
             {
-              text: 'What skills Johnson has from his current software role',
+              text: 'Additional context about Robert Schmidt',
               onClick: () => {} // Will be set by components
             }
           ]
@@ -131,11 +130,7 @@ export const useConversationStore = defineStore('conversation', () => {
       )
       if (hintsGroup && 'hints' in hintsGroup) {
         hintsGroup.hints.forEach((hint, index) => {
-          const hintTypes = [
-            'software role',
-            'California tech hubs',
-            'software skills'
-          ]
+          const hintTypes = ['details', 'location or workplace', 'context']
           hint.onClick = () =>
             handlers.onHintClick(hintTypes[index] ?? 'unknown')
         })

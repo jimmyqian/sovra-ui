@@ -345,7 +345,7 @@ describe('Filters Store', () => {
   describe('Filter Application', () => {
     const mockResults = [
       {
-        id: 1,
+        id: 'test-uuid-1',
         name: 'John Doe',
         age: 30,
         gender: 'Male',
@@ -357,7 +357,7 @@ describe('Filters Store', () => {
         contacts: 12
       },
       {
-        id: 2,
+        id: 'test-uuid-2',
         name: 'Jane Smith',
         age: 25,
         gender: 'Female',
@@ -369,7 +369,7 @@ describe('Filters Store', () => {
         contacts: 8
       },
       {
-        id: 3,
+        id: 'test-uuid-3',
         name: 'Bob Johnson',
         age: 35,
         gender: 'Male',

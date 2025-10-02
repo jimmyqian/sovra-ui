@@ -39,7 +39,7 @@ describe('SearchDetail Integration Tests', () => {
           component: { template: '<div>Home</div>' }
         },
         {
-          path: '/search/:id',
+          path: '/dashboard/:id',
           name: 'SearchDetail',
           component: SearchDetail
         }
@@ -47,7 +47,7 @@ describe('SearchDetail Integration Tests', () => {
     })
 
     // Set initial route to avoid warnings
-    await router.push('/search/1')
+    await router.push('/dashboard/1')
   })
 
   it('renders complete SearchDetail page structure', async () => {

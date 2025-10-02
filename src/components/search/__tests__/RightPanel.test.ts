@@ -67,7 +67,7 @@ vi.mock('@/components/layout/CopyrightFooter.vue', () => ({
 }))
 
 const mockSearchResult = {
-  id: 1,
+  id: 'test-uuid-1',
   name: 'John Doe',
   age: 30,
   gender: 'Male',

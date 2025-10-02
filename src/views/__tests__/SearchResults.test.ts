@@ -107,7 +107,7 @@ describe('SearchResults Component', () => {
 
   const mockResults: SearchResult[] = [
     {
-      id: 1,
+      id: 'test-uuid-1',
       name: 'Johnson Smith',
       age: 26,
       gender: 'Male',
@@ -119,7 +119,7 @@ describe('SearchResults Component', () => {
       contacts: 7
     },
     {
-      id: 2,
+      id: 'test-uuid-2',
       name: 'Johnson Brown',
       age: 28,
       gender: 'Male',
@@ -281,12 +281,12 @@ describe('SearchResults Component', () => {
       const conversation = wrapper.findComponent({ name: 'SearchConversation' })
       const messages = conversation.props('messages')
 
-      // Check that the first message is a user message with the initial query
+      // Check that the first message is a user message with the initial query (default is Robert Schmidt)
       expect(messages).toBeDefined()
       expect(Array.isArray(messages)).toBe(true)
       expect(messages.length).toBeGreaterThan(0)
       expect(messages[0].sender).toBe('user')
-      expect(messages[0].content).toContain('Johnson')
+      expect(messages[0].content).toContain('Robert Schmidt')
     })
 
     it('should generate conversation messages', async () => {

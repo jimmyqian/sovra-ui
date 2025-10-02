@@ -184,11 +184,38 @@ export const useSearchStore = defineStore('search', () => {
           // Fallback to random results if no script available
           mockResults = Array.from(
             { length: pagination.value.pageSize },
-            (_, i) => ({
-              id:
+            (_, i) => {
+              const index =
                 (pagination.value.currentPage - 1) * pagination.value.pageSize +
                 i +
-                1,
+                1
+              return {
+                id: `fallback-uuid-${index}`,
+                name: `Johnson Smith ${i + 1}`,
+                age: Math.floor(Math.random() * 50) + 20,
+                gender: 'Male',
+                maritalStatus:
+                  ['Single', 'Married', 'Divorced'][i % 3] ?? 'Single',
+                location: 'California',
+                rating: Math.round(Math.random() * 5 * 10) / 10,
+                references: Math.floor(Math.random() * 100),
+                companies: Math.floor(Math.random() * 10),
+                contacts: Math.floor(Math.random() * 50)
+              }
+            }
+          )
+        }
+      } catch {
+        // Fallback to random results if conversation store isn't available
+        mockResults = Array.from(
+          { length: pagination.value.pageSize },
+          (_, i) => {
+            const index =
+              (pagination.value.currentPage - 1) * pagination.value.pageSize +
+              i +
+              1
+            return {
+              id: `fallback-uuid-${index}`,
               name: `Johnson Smith ${i + 1}`,
               age: Math.floor(Math.random() * 50) + 20,
               gender: 'Male',
@@ -199,28 +226,8 @@ export const useSearchStore = defineStore('search', () => {
               references: Math.floor(Math.random() * 100),
               companies: Math.floor(Math.random() * 10),
               contacts: Math.floor(Math.random() * 50)
-            })
-          )
-        }
-      } catch {
-        // Fallback to random results if conversation store isn't available
-        mockResults = Array.from(
-          { length: pagination.value.pageSize },
-          (_, i) => ({
-            id:
-              (pagination.value.currentPage - 1) * pagination.value.pageSize +
-              i +
-              1,
-            name: `Johnson Smith ${i + 1}`,
-            age: Math.floor(Math.random() * 50) + 20,
-            gender: 'Male',
-            maritalStatus: ['Single', 'Married', 'Divorced'][i % 3] ?? 'Single',
-            location: 'California',
-            rating: Math.round(Math.random() * 5 * 10) / 10,
-            references: Math.floor(Math.random() * 100),
-            companies: Math.floor(Math.random() * 10),
-            contacts: Math.floor(Math.random() * 50)
-          })
+            }
+          }
         )
       }
 
@@ -269,9 +276,8 @@ export const useSearchStore = defineStore('search', () => {
     searchHistory.value = []
   }
 
-  const findPersonById = (id: string | number): SearchResult | null => {
-    const numericId = typeof id === 'string' ? parseInt(id, 10) : id
-    return results.value.find(person => person.id === numericId) ?? null
+  const findPersonById = (id: string): SearchResult | null => {
+    return results.value.find(person => person.id === id) ?? null
   }
 
   return {

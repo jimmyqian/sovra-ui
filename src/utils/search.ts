@@ -161,7 +161,7 @@ export const validateSearchResult = (
 
   const obj = result as Record<string, unknown>
   return (
-    typeof obj.id === 'number' &&
+    typeof obj.id === 'string' &&
     typeof obj.name === 'string' &&
     typeof obj.age === 'number' &&
     typeof obj.gender === 'string' &&

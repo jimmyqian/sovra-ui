@@ -20,7 +20,7 @@ vi.mock('../ResultCard.vue', () => ({
 // Mock search results data
 const mockResults: SearchResult[] = [
   {
-    id: 1,
+    id: 'test-uuid-1',
     name: 'John Smith',
     age: 32,
     gender: 'Male',
@@ -32,7 +32,7 @@ const mockResults: SearchResult[] = [
     contacts: 15
   },
   {
-    id: 2,
+    id: 'test-uuid-2',
     name: 'Sarah Johnson',
     age: 28,
     gender: 'Female',

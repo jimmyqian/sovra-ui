@@ -55,7 +55,7 @@
     // Navigate to dedicated SearchDetail page
     router.push({
       name: 'SearchDetail',
-      params: { id: person.id.toString() }
+      params: { id: person.id }
     })
   }
 
@@ -74,8 +74,7 @@
       if (personId && results.value.length > 0) {
         const personIdStr =
           typeof personId === 'string' ? personId : personId[0]
-        const personIdNum = parseInt(personIdStr ?? '0', 10)
-        const person = results.value.find(r => r.id === personIdNum)
+        const person = results.value.find(r => r.id === personIdStr)
         if (person) {
           selectedPerson.value = person
         }

@@ -14,7 +14,7 @@ import { useUIStore } from '@/stores/ui'
 
 // Mock vue-router
 const mockRoute = {
-  params: { id: '123' }
+  params: { id: 'test-uuid-123' }
 }
 
 vi.mock('vue-router', async () => {
@@ -128,7 +128,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: { template: '<div>Home</div>' } },
-    { path: '/search/:id', component: { template: '<div>Detail</div>' } }
+    { path: '/dashboard/:id', component: { template: '<div>Detail</div>' } }
   ]
 })
 
@@ -164,7 +164,7 @@ describe('SearchDetail Component', () => {
 
     // Add mock person that matches the route ID for tests
     const mockPerson = {
-      id: 123,
+      id: 'test-uuid-123',
       name: 'Johnson Smith',
       age: 26,
       gender: 'Male',
@@ -419,7 +419,7 @@ describe('SearchDetail Component', () => {
 
     it('should handle route parameter changes', async () => {
       // Mock route parameter change
-      mockRoute.params.id = '456'
+      mockRoute.params.id = 'test-uuid-456'
 
       const wrapper = createWrapper()
 

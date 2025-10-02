@@ -75,6 +75,44 @@ describe('conversationScripts', () => {
       expect(script.responses[2]).toBe('Von Miller response 3')
     })
 
+    it('should return Robert Schmidt script for case insensitive "robert schmidt" query', () => {
+      const script = getConversationScript('robert schmidt')
+
+      expect(script.responses).toHaveLength(3)
+      expect(script.responses[0]).toBe('Robert Schmidt response 1')
+      expect(script.responses[1]).toBe('Robert Schmidt response 2')
+      expect(script.responses[2]).toBe('Robert Schmidt response 3')
+
+      // Test result stages
+      expect(script.resultStages).toHaveLength(4)
+      expect(script.resultStages[0]).toHaveLength(8) // Initial: 8 results
+      expect(script.resultStages[1]).toHaveLength(4) // Stage 1: 4 results
+      expect(script.resultStages[2]).toHaveLength(3) // Stage 2: 3 results
+      expect(script.resultStages[3]).toHaveLength(1) // Stage 3: 1 result
+
+      // Test result content
+      expect(script.resultStages[0]?.[0]?.name).toBe('Robert Schmidt 1')
+      expect(script.resultStages[0]?.[7]?.name).toBe('Robert Schmidt 8')
+    })
+
+    it('should return Robert Schmidt script for mixed case query', () => {
+      const script = getConversationScript('Robert Schmidt')
+
+      expect(script.responses).toHaveLength(3)
+      expect(script.responses[0]).toBe('Robert Schmidt response 1')
+      expect(script.responses[1]).toBe('Robert Schmidt response 2')
+      expect(script.responses[2]).toBe('Robert Schmidt response 3')
+    })
+
+    it('should return Robert Schmidt script for uppercase query', () => {
+      const script = getConversationScript('ROBERT SCHMIDT')
+
+      expect(script.responses).toHaveLength(3)
+      expect(script.responses[0]).toBe('Robert Schmidt response 1')
+      expect(script.responses[1]).toBe('Robert Schmidt response 2')
+      expect(script.responses[2]).toBe('Robert Schmidt response 3')
+    })
+
     it('should return default script for unrecognized queries', () => {
       const script = getConversationScript('John Smith')
 
@@ -203,6 +241,15 @@ describe('conversationScripts', () => {
           'John Caruso search detail response 1',
           'John Caruso search detail response 2',
           'John Caruso search detail response 3'
+        ])
+      })
+
+      it('should return Robert Schmidt detail script for robert schmidt query', () => {
+        const script = getDetailScript('robert schmidt')
+        expect(script.responses).toEqual([
+          'Robert Schmidt search detail response 1',
+          'Robert Schmidt search detail response 2',
+          'Robert Schmidt search detail response 3'
         ])
       })
 

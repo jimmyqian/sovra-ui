@@ -242,7 +242,7 @@ describe('Timeline Component', () => {
       // Timeline uses SearchLayout which contains ConversationPanel
       // This is the same component structure as:
       // - /search (SearchResults.vue uses SearchLayout)
-      // - /search/:id (SearchDetail.vue uses SearchLayout)
+      // - /dashboard/:id (SearchDetail.vue uses SearchLayout)
       // Therefore scroll behavior is identical across all screens
 
       const searchLayout = wrapper.findComponent({ name: 'SearchLayout' })

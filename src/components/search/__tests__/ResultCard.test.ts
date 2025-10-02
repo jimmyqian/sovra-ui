@@ -6,7 +6,7 @@ import type { SearchResult } from '@/types/search'
 
 describe('ResultCard', () => {
   const mockResult: SearchResult = {
-    id: 1,
+    id: 'test-uuid-1',
     name: 'John Doe',
     age: 30,
     gender: 'Male',
