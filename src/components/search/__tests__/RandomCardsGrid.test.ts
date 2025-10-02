@@ -105,42 +105,35 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       expect(computerCard.exists()).toBe(true)
     })
 
-    it('should render 8 total components in the grid with full-width mission overview (default view)', () => {
+    it('should render 8 total components in the grid with full-width mission overview', () => {
       const wrapper = createWrapper()
 
-      // In default view, should have 8 components
       const gridItems = wrapper.findAll('.grid > div')
-      expect(gridItems.length).toBeGreaterThanOrEqual(3) // Mission overview + life support + conditional content
+      expect(gridItems).toHaveLength(8)
 
       // First item should be full-width (col-span-2)
-      const firstItem = gridItems[0]
-      expect(firstItem).toBeTruthy()
-      if (firstItem) {
-        expect(firstItem.classes()).toContain('col-span-2')
-        expect(firstItem.classes()).toContain('h-64')
-      }
+      expect(gridItems[0].classes()).toContain('col-span-2')
+      expect(gridItems[0].classes()).toContain('h-64')
     })
 
-    it('should apply proper height classes to different card types in default view', () => {
+    it('should apply proper height classes to different card types', () => {
       const wrapper = createWrapper()
 
-      // Check that computer card exists in default view
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      expect(computerCard.exists()).toBe(true)
+      const gridItems = wrapper.findAll('.grid > div')
 
-      // Check that specific height containers exist
-      const missionOverviewContainer = wrapper.find('.col-span-2.h-64')
-      expect(missionOverviewContainer.exists()).toBe(true)
+      // First item should be full-width mission overview with h-64
+      expect(gridItems[0].classes()).toContain('h-64') // MissionOverviewCard
+      expect(gridItems[0].classes()).toContain('col-span-2')
 
-      const lifeSupportContainer = wrapper.find('.h-\\[32rem\\]')
-      expect(lifeSupportContainer.exists()).toBe(true)
+      // Second item should have custom height class (life support monitor with all crew graphs)
+      expect(gridItems[1].classes()).toContain('h-[32rem]') // LifeSupportMonitor
+      // Third item should have h-80 class (computer alert)
+      expect(gridItems[2].classes()).toContain('h-80') // ComputerStatusCard
 
-      // Computer and crew status cards are nested inside conditional content
-      const computerContainer = wrapper.find('.h-56')
-      expect(computerContainer.exists()).toBe(true)
-
-      const crewContainer = wrapper.find('.h-52')
-      expect(crewContainer.exists()).toBe(true)
+      // Remaining items should have h-64 class (system cards)
+      for (let i = 3; i < gridItems.length; i++) {
+        expect(gridItems[i].classes()).toContain('h-64')
+      }
     })
   })
 
@@ -233,12 +226,8 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
       expect(grid.classes()).toContain('auto-rows-max')
 
       // Check that first item spans full width
-      const gridItems = wrapper.findAll('.grid > div')
-      const firstItem = gridItems[0]
-      expect(firstItem).toBeTruthy()
-      if (firstItem) {
-        expect(firstItem.classes()).toContain('col-span-2')
-      }
+      const firstItem = wrapper.findAll('.grid > div')[0]
+      expect(firstItem.classes()).toContain('col-span-2')
     })
 
     it('should have proper container structure', () => {
@@ -363,272 +352,6 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
 
       // Verify setInterval was called for time updates
       expect(setInterval).toHaveBeenCalled()
-    })
-  })
-
-  describe('Mission Summary Lightbox Integration', () => {
-    it('should render mission summary lightbox component', () => {
-      const wrapper = createWrapper()
-
-      const lightbox = wrapper.findComponent({ name: 'MissionSummaryLightbox' })
-      expect(lightbox.exists()).toBe(true)
-    })
-
-    it('should initially render lightbox in closed state', () => {
-      const wrapper = createWrapper()
-
-      const lightbox = wrapper.findComponent({ name: 'MissionSummaryLightbox' })
-      expect(lightbox).toBeTruthy()
-      expect(lightbox.props('isOpen')).toBe(false)
-    })
-
-    it('should make computer card clickable', () => {
-      const wrapper = createWrapper()
-
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      expect(computerCard.exists()).toBe(true)
-
-      // Check that the computer card root element has cursor-pointer class
-      const computerCardElement = computerCard.find('.computer-status-card')
-      expect(computerCardElement.exists()).toBe(true)
-      expect(computerCardElement.classes()).toContain('cursor-pointer')
-    })
-
-    it('should open lightbox when computer card is clicked', async () => {
-      const wrapper = createWrapper()
-
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      expect(computerCard).toBeTruthy()
-
-      // Trigger click on computer card
-      await computerCard.trigger('click')
-
-      // Check that lightbox opens
-      const lightbox = wrapper.findComponent({ name: 'MissionSummaryLightbox' })
-      expect(lightbox).toBeTruthy()
-      expect(lightbox.props('isOpen')).toBe(true)
-    })
-
-    it('should close lightbox when close event is emitted', async () => {
-      const wrapper = createWrapper()
-
-      // First open the lightbox
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      await computerCard.trigger('click')
-
-      const lightbox = wrapper.findComponent({ name: 'MissionSummaryLightbox' })
-      expect(lightbox.props('isOpen')).toBe(true)
-
-      // Emit close event from lightbox
-      await lightbox.vm.$emit('close')
-
-      // Check that lightbox is closed
-      expect(lightbox.props('isOpen')).toBe(false)
-    })
-
-    it('should have proper accessibility attributes on computer card', () => {
-      const wrapper = createWrapper()
-
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      const computerCardElement = computerCard.find('.computer-status-card')
-
-      expect(computerCardElement.attributes('role')).toBe('button')
-      expect(computerCardElement.attributes('tabindex')).toBe('0')
-      expect(computerCardElement.attributes('aria-label')).toBe(
-        'Open mission summary'
-      )
-    })
-
-    it('should support keyboard navigation on computer card', async () => {
-      const wrapper = createWrapper()
-
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      const computerCardElement = computerCard.find('.computer-status-card')
-
-      // Test Enter key
-      await computerCardElement.trigger('keydown.enter')
-      const lightbox = wrapper.findComponent({ name: 'MissionSummaryLightbox' })
-      expect(lightbox.props('isOpen')).toBe(true)
-
-      // Close lightbox
-      await lightbox.vm.$emit('close')
-
-      // Test Space key
-      await computerCardElement.trigger('keydown.space')
-      expect(lightbox.props('isOpen')).toBe(true)
-    })
-
-    it('should include hover effects on computer card', () => {
-      const wrapper = createWrapper()
-
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      const computerCardElement = computerCard.find('.computer-status-card')
-
-      expect(computerCardElement.classes()).toContain('hover:bg-gray-800')
-      expect(computerCardElement.classes()).toContain('transition-colors')
-    })
-  })
-
-  describe('Timeline Star View Integration', () => {
-    it('should render star panel component when timeline view is active', async () => {
-      const wrapper = createWrapper()
-
-      // Initially star panel should not exist
-      let starPanel = wrapper.findComponent({ name: 'StarPanel' })
-      expect(starPanel.exists()).toBe(false)
-
-      // Open timeline view
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      await lifeSupportMonitor.trigger('click')
-
-      // Now star panel should exist
-      starPanel = wrapper.findComponent({ name: 'StarPanel' })
-      expect(starPanel.exists()).toBe(true)
-    })
-
-    it('should initially show status cards and hide timeline view', () => {
-      const wrapper = createWrapper()
-
-      // Should show status cards
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      expect(computerCard.exists()).toBe(true)
-
-      // Timeline view should be hidden
-      const timelineHeader = wrapper.find('[data-testid="timeline-header"]')
-      expect(timelineHeader.exists()).toBe(false)
-    })
-
-    it('should make life support monitor clickable', () => {
-      const wrapper = createWrapper()
-
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      expect(lifeSupportMonitor.exists()).toBe(true)
-
-      // Check that the life support monitor has cursor-pointer class
-      const lifeSupportElement = lifeSupportMonitor.find(
-        '.life-support-monitor'
-      )
-      expect(lifeSupportElement.exists()).toBe(true)
-      expect(lifeSupportElement.classes()).toContain('cursor-pointer')
-    })
-
-    it('should switch to timeline view when life support monitor is clicked', async () => {
-      const wrapper = createWrapper()
-
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      expect(lifeSupportMonitor).toBeTruthy()
-
-      // Trigger click on life support monitor
-      await lifeSupportMonitor.trigger('click')
-
-      // Check that status cards are hidden
-      await wrapper.vm.$nextTick()
-
-      // Computer card should be hidden when timeline view is active
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      expect(computerCard.exists()).toBe(false)
-
-      // Timeline header should be visible
-      expect(wrapper.text()).toContain('TIMELINE - STAR VIEW')
-    })
-
-    it('should close timeline view when close button is clicked', async () => {
-      const wrapper = createWrapper()
-
-      // First open the timeline view
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      await lifeSupportMonitor.trigger('click')
-
-      // Verify timeline view is open
-      expect(wrapper.text()).toContain('TIMELINE - STAR VIEW')
-
-      // Find and click close button
-      const closeButton = wrapper.find('[aria-label="Close timeline view"]')
-      expect(closeButton.exists()).toBe(true)
-      await closeButton.trigger('click')
-
-      // Check that status cards are visible again
-      await wrapper.vm.$nextTick()
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      expect(computerCard.exists()).toBe(true)
-
-      // Timeline header should be hidden
-      expect(wrapper.text()).not.toContain('TIMELINE - STAR VIEW')
-    })
-
-    it('should have proper accessibility attributes on life support monitor', () => {
-      const wrapper = createWrapper()
-
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      const lifeSupportElement = lifeSupportMonitor.find(
-        '.life-support-monitor'
-      )
-
-      expect(lifeSupportElement.attributes('role')).toBe('button')
-      expect(lifeSupportElement.attributes('tabindex')).toBe('0')
-      expect(lifeSupportElement.attributes('aria-label')).toBe(
-        'Open timeline view with star graph'
-      )
-    })
-
-    it('should support keyboard navigation on life support monitor', async () => {
-      const wrapper = createWrapper()
-
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      const lifeSupportElement = lifeSupportMonitor.find(
-        '.life-support-monitor'
-      )
-
-      // Test Enter key
-      await lifeSupportElement.trigger('keydown.enter')
-      expect(wrapper.text()).toContain('TIMELINE - STAR VIEW')
-
-      // Close and test Space key
-      const closeButton = wrapper.find('[aria-label="Close timeline view"]')
-      await closeButton.trigger('click')
-
-      await lifeSupportElement.trigger('keydown.space')
-      expect(wrapper.text()).toContain('TIMELINE - STAR VIEW')
-    })
-
-    it('should include hover effects on life support monitor', () => {
-      const wrapper = createWrapper()
-
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      const lifeSupportElement = lifeSupportMonitor.find(
-        '.life-support-monitor'
-      )
-
-      expect(lifeSupportElement.classes()).toContain('hover:bg-gray-800')
-      expect(lifeSupportElement.classes()).toContain('transition-colors')
-    })
-
-    it('should render star panel with correct node count in timeline view', async () => {
-      const wrapper = createWrapper()
-
-      // Open timeline view
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      await lifeSupportMonitor.trigger('click')
-
-      // Check star panel props
-      const starPanel = wrapper.findComponent({ name: 'StarPanel' })
-      expect(starPanel.props('nodeCount')).toBe(7)
     })
   })
 })

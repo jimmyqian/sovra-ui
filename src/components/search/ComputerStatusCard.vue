@@ -1,12 +1,6 @@
 <template>
   <div
-    class="computer-status-card bg-gray-900 rounded-lg border border-red-500 p-4 h-full flex flex-col animate-flash-border cursor-pointer hover:bg-gray-800 transition-colors duration-200"
-    role="button"
-    tabindex="0"
-    aria-label="Open mission summary"
-    @click="handleClick"
-    @keydown.enter="handleClick"
-    @keydown.space.prevent="handleClick"
+    class="computer-status-card bg-gray-900 rounded-lg border border-red-500 p-4 h-full flex flex-col animate-flash-border"
   >
     <!-- Header -->
     <div class="flex items-center justify-between mb-3">
@@ -53,20 +47,9 @@
 </template>
 
 <script setup lang="ts">
-  interface ComputerStatusCardEmits {
-    (_e: 'openMissionSummary'): void
-  }
-
-  const emit = defineEmits<ComputerStatusCardEmits>()
-
-  const handleClick = () => {
-    emit('openMissionSummary')
-  }
-
   /**
    * Computer Status Card Component
    * Displays spacecraft computer system status including HAL 9000 and backup systems
-   * Clickable to open mission summary lightbox
    */
 </script>
 
