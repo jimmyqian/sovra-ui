@@ -350,7 +350,7 @@
 <style scoped>
   .fade-overlay {
     position: absolute;
-    bottom: 128px; /* Above Load More button and footer */
+    bottom: 0;
     left: 0;
     right: 0;
     height: 160px; /* Fixed height instead of percentage */
@@ -418,6 +418,6 @@
   }
 
   .scroll-chevron-bottom {
-    bottom: 144px; /* Above Load More button and footer */
+    bottom: 16px;
   }
 </style>
