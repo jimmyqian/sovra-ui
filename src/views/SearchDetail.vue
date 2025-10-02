@@ -20,13 +20,7 @@
       >
         <!-- Back Navigation -->
         <div class="flex items-center gap-2 p-6 pb-0">
-          <button
-            class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
-            @click="handleBack"
-          >
-            <ChevronLeftIcon />
-            <span>Back</span>
-          </button>
+          <BackButton />
         </div>
 
         <main class="p-6 space-y-6">
@@ -89,7 +83,7 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted, watch, nextTick } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
+  import { useRoute } from 'vue-router'
   import { useConversationStore } from '@/stores/conversation'
   import { useSearchStore } from '@/stores/search'
   import { useSubscriptionStore } from '@/stores/subscription'
@@ -103,11 +97,10 @@
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
-  import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
+  import BackButton from '@/components/common/BackButton.vue'
   import UpsellPopup from '@/components/common/UpsellPopup.vue'
 
   const route = useRoute()
-  const router = useRouter()
   const conversationStore = useConversationStore()
   const searchStore = useSearchStore()
   const subscriptionStore = useSubscriptionStore()
@@ -279,11 +272,6 @@
         behavior: 'smooth'
       })
     }
-  }
-
-  const handleBack = () => {
-    // Navigate back to previous screen
-    router.back()
   }
 
   const handleSearch = async (_query: string) => {

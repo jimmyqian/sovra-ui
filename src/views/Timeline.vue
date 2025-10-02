@@ -9,13 +9,7 @@
       <!-- Back Navigation and Keyboard Shortcuts -->
       <div class="flex items-center justify-between p-6 pb-4">
         <!-- Back Button -->
-        <button
-          class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
-          @click="handleBack"
-        >
-          <ChevronLeftIcon />
-          <span>Back</span>
-        </button>
+        <BackButton />
 
         <!-- Hotkey Display -->
         <div class="bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm">
@@ -54,14 +48,11 @@
 
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue'
-  import { useRouter } from 'vue-router'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import TimelinePanel from '@/components/timeline/TimelinePanel.vue'
   import StarPanel from '@/components/star/StarPanel.vue'
   import GlobePanel from '@/components/globe/GlobePanel.vue'
-  import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
-
-  const router = useRouter()
+  import BackButton from '@/components/common/BackButton.vue'
 
   const timelinePanelRef = ref<InstanceType<typeof TimelinePanel> | null>(null)
   const starPanelRef = ref<InstanceType<typeof StarPanel> | null>(null)
@@ -87,11 +78,6 @@
 
   const handleSpeechError = (_error: string) => {
     // TODO: Implement proper speech error handling UI for timeline
-  }
-
-  const handleBack = () => {
-    // Navigate back to previous screen
-    router.back()
   }
 
   /**

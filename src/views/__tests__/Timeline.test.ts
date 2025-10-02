@@ -200,15 +200,22 @@ describe('Timeline Component', () => {
 
   describe('Navigation', () => {
     it('should call router.back() when back button is clicked', async () => {
+      // Mock window.history.length to enable the back button
+      Object.defineProperty(window.history, 'length', {
+        writable: true,
+        configurable: true,
+        value: 2
+      })
+
       const wrapper = createWrapper()
       const backSpy = vi.spyOn(router, 'back')
 
-      // Find the back button specifically
-      const buttons = wrapper.findAll('button')
-      const backButton = buttons.find(btn => btn.text().includes('Back'))
-      expect(backButton).toBeTruthy()
+      // Find the BackButton component
+      const backButtonComponent = wrapper.findComponent({ name: 'BackButton' })
+      expect(backButtonComponent.exists()).toBe(true)
 
-      await backButton?.trigger('click')
+      const backButton = backButtonComponent.find('button')
+      await backButton.trigger('click')
 
       expect(backSpy).toHaveBeenCalled()
       backSpy.mockRestore()
