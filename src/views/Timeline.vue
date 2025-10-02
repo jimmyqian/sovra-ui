@@ -5,22 +5,32 @@
     @file-upload="handleFileUpload"
     @speech-error="handleSpeechError"
   >
-    <!-- Hotkey Display -->
-    <div
-      class="absolute top-4 right-4 z-10 bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm"
-    >
-      <div class="font-semibold mb-2">Keyboard Shortcuts</div>
-      <div class="space-y-1">
-        <div class="flex justify-between items-center gap-4">
-          <span class="text-gray-300">Toggle view:</span>
-          <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">V</kbd>
-        </div>
-        <div
-          v-if="displayMode === 'timeline'"
-          class="flex justify-between items-center gap-4"
-        >
-          <span class="text-gray-300">Rotate timeline:</span>
-          <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
+    <!-- Back Navigation and Hotkey Display -->
+    <div class="absolute top-4 left-4 right-4 z-10 flex justify-between">
+      <!-- Back Button -->
+      <button
+        class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
+        @click="handleBack"
+      >
+        <ChevronLeftIcon />
+        <span>Back</span>
+      </button>
+
+      <!-- Hotkey Display -->
+      <div class="bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm">
+        <div class="font-semibold mb-2">Keyboard Shortcuts</div>
+        <div class="space-y-1">
+          <div class="flex justify-between items-center gap-4">
+            <span class="text-gray-300">Toggle view:</span>
+            <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">V</kbd>
+          </div>
+          <div
+            v-if="displayMode === 'timeline'"
+            class="flex justify-between items-center gap-4"
+          >
+            <span class="text-gray-300">Rotate timeline:</span>
+            <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
+          </div>
         </div>
       </div>
     </div>
@@ -42,10 +52,14 @@
 
 <script setup lang="ts">
   import { ref, onMounted, onUnmounted } from 'vue'
+  import { useRouter } from 'vue-router'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import TimelinePanel from '@/components/timeline/TimelinePanel.vue'
   import StarPanel from '@/components/star/StarPanel.vue'
   import GlobePanel from '@/components/globe/GlobePanel.vue'
+  import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
+
+  const router = useRouter()
 
   const timelinePanelRef = ref<InstanceType<typeof TimelinePanel> | null>(null)
   const starPanelRef = ref<InstanceType<typeof StarPanel> | null>(null)
@@ -71,6 +85,11 @@
 
   const handleSpeechError = (_error: string) => {
     // TODO: Implement proper speech error handling UI for timeline
+  }
+
+  const handleBack = () => {
+    // Navigate back to previous screen
+    router.back()
   }
 
   /**

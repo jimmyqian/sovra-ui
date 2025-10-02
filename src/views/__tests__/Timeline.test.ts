@@ -113,6 +113,16 @@ describe('Timeline Component', () => {
       expect(wrapper.find('[data-testid="search-bar"]').exists()).toBe(true)
     })
 
+    it('should render back button', () => {
+      const wrapper = createWrapper()
+
+      // Check for back button - look in the top navigation area
+      const buttons = wrapper.findAll('button')
+      const backButton = buttons.find(btn => btn.text().includes('Back'))
+      expect(backButton).toBeTruthy()
+      expect(backButton?.text()).toContain('Back')
+    })
+
     it('should render the star panel by default', () => {
       const wrapper = createWrapper()
 
@@ -185,6 +195,23 @@ describe('Timeline Component', () => {
       const panelElement = timelinePanel.find('div')
       expect(panelElement.classes()).toContain('flex-1')
       expect(panelElement.classes()).toContain('bg-bg-primary')
+    })
+  })
+
+  describe('Navigation', () => {
+    it('should call router.back() when back button is clicked', async () => {
+      const wrapper = createWrapper()
+      const backSpy = vi.spyOn(router, 'back')
+
+      // Find the back button specifically
+      const buttons = wrapper.findAll('button')
+      const backButton = buttons.find(btn => btn.text().includes('Back'))
+      expect(backButton).toBeTruthy()
+
+      await backButton?.trigger('click')
+
+      expect(backSpy).toHaveBeenCalled()
+      backSpy.mockRestore()
     })
   })
 
