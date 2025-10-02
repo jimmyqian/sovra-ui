@@ -330,7 +330,22 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 29,
     companies: 4,
     contacts: 19,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/profile.png'
+    image:
+      'https://raw.githubusercontent.com/imcnaney/donkey/main/img/profile.png'
+  },
+  // Preston Cole Whittaker III
+  '7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d': {
+    id: '7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d',
+    name: 'Preston Cole Whittaker III',
+    age: 22,
+    gender: 'Male',
+    maritalStatus: 'Single',
+    location: 'Texas',
+    rating: 3.8,
+    references: 15,
+    companies: 2,
+    contacts: 11,
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm2.jpg'
   },
   // Default Example persons
   'a3b4c5d6-e7f8-491a-0b1c-2d3e4f5a6b7c': {

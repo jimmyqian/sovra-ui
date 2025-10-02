@@ -4,7 +4,8 @@ import {
   getNextResponse,
   getScriptedResults,
   getDetailScript,
-  getDetailResponse
+  getDetailResponse,
+  getPersonById
 } from '../conversationScripts'
 
 describe('conversationScripts', () => {
@@ -299,6 +300,40 @@ describe('conversationScripts', () => {
         const response = getDetailResponse(script, 7) // Index 7 should cycle to index 1
         expect(response).toBe('John Caruso search detail response 2')
       })
+    })
+  })
+
+  describe('getPersonById', () => {
+    it('should return Preston Cole Whittaker III person by UUID', () => {
+      const person = getPersonById('7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d')
+
+      expect(person).toBeTruthy()
+      expect(person?.id).toBe('7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d')
+      expect(person?.name).toBe('Preston Cole Whittaker III')
+      expect(person?.age).toBe(22)
+      expect(person?.gender).toBe('Male')
+      expect(person?.maritalStatus).toBe('Single')
+      expect(person?.location).toBe('Texas')
+      expect(person?.rating).toBe(3.8)
+      expect(person?.references).toBe(15)
+      expect(person?.companies).toBe(2)
+      expect(person?.contacts).toBe(11)
+      expect(person?.image).toBe(
+        'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm2.jpg'
+      )
+    })
+
+    it('should return null for non-existent UUID', () => {
+      const person = getPersonById('non-existent-uuid')
+      expect(person).toBeNull()
+    })
+
+    it('should return existing John Caruso person by UUID', () => {
+      const person = getPersonById('a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d')
+
+      expect(person).toBeTruthy()
+      expect(person?.name).toBe('John Caruso')
+      expect(person?.age).toBe(28)
     })
   })
 })
