@@ -22,6 +22,7 @@ export const useUIStore = defineStore('ui', () => {
   const viewMode = ref<ViewMode>('grid')
   const notifications = ref<Notification[]>([])
   const isLoading = ref<boolean>(false)
+  const hasShownUpsellPopup = ref<boolean>(false)
   const conversationScrollPosition = ref<number>(0)
 
   // Getters
@@ -106,6 +107,18 @@ export const useUIStore = defineStore('ui', () => {
     addNotification(message, 'info')
   }
 
+  const markUpsellPopupShown = () => {
+    hasShownUpsellPopup.value = true
+  }
+
+  const canShowUpsellPopup = (): boolean => {
+    return !hasShownUpsellPopup.value
+  }
+
+  const resetUpsellPopupState = () => {
+    hasShownUpsellPopup.value = false
+  }
+
   const saveConversationScrollPosition = (position: number) => {
     conversationScrollPosition.value = position
   }
@@ -130,6 +143,7 @@ export const useUIStore = defineStore('ui', () => {
     viewMode,
     notifications,
     isLoading,
+    hasShownUpsellPopup,
     conversationScrollPosition,
 
     // Getters
@@ -152,6 +166,9 @@ export const useUIStore = defineStore('ui', () => {
     showError,
     showWarning,
     showInfo,
+    markUpsellPopupShown,
+    canShowUpsellPopup,
+    resetUpsellPopupState,
     saveConversationScrollPosition,
     getConversationScrollPosition,
     resetConversationScrollPosition

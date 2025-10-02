@@ -45,7 +45,7 @@ describe('ResultsSummary', () => {
       })
 
       const text = wrapper.text()
-      expect(text).toContain('25 persons were found in the results.')
+      expect(text).toContain('Fantastic! 25 persons were found in the results.')
       expect(text).toContain(
         "Please provide additional information about the person you're looking for."
       )
@@ -58,7 +58,7 @@ describe('ResultsSummary', () => {
       })
 
       const text = wrapper.text()
-      expect(text).toContain('0 persons were found in the results.')
+      expect(text).toContain('Fantastic! 0 persons were found in the results.')
     })
 
     it('handles single result', () => {
@@ -68,7 +68,7 @@ describe('ResultsSummary', () => {
       })
 
       const text = wrapper.text()
-      expect(text).toContain('1 persons were found in the results.')
+      expect(text).toContain('Fantastic! 1 persons were found in the results.')
     })
 
     it('handles large result counts', () => {
@@ -78,7 +78,9 @@ describe('ResultsSummary', () => {
       })
 
       const text = wrapper.text()
-      expect(text).toContain('9999 persons were found in the results.')
+      expect(text).toContain(
+        'Fantastic! 9999 persons were found in the results.'
+      )
     })
   })
 
@@ -205,7 +207,7 @@ describe('ResultsSummary', () => {
       })
 
       const text = wrapper.text()
-      expect(text).toContain('-1 persons were found in the results.')
+      expect(text).toContain('Fantastic! -1 persons were found in the results.')
     })
   })
 

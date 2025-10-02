@@ -432,4 +432,35 @@ describe('DetailedResultCard', () => {
     expect(innerGrid.exists()).toBe(true)
     expect(innerGrid.classes()).toContain('grid-cols-4')
   })
+
+  it('emits showUpsell event when redacted content is clicked', async () => {
+    // Set subscription level to Basic (1) so professional content is redacted
+    const subscriptionStore = useSubscriptionStore()
+    subscriptionStore.setLevel(1)
+
+    const wrapper = mount(DetailedResultCard, {
+      props: { person: mockPerson }
+    })
+
+    // Professional content should be redacted at level 1
+    expect(wrapper.text()).toContain('████████ Engineer')
+
+    // Find redacted content by text content and clickable class
+    const redactedElements = wrapper
+      .findAll('span')
+      .filter(
+        el =>
+          el.text().includes('████████') &&
+          el.classes().includes('cursor-pointer')
+      )
+
+    expect(redactedElements.length).toBeGreaterThan(0)
+
+    // Click on the first redacted element
+    await redactedElements[0]!.trigger('click')
+
+    // Should emit showUpsell event
+    expect(wrapper.emitted('showUpsell')).toBeDefined()
+    expect(wrapper.emitted('showUpsell')).toHaveLength(1)
+  })
 })

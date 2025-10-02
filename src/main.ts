@@ -3,20 +3,15 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import Landing from './views/Landing.vue'
-import Search from './views/Search.vue'
-import SearchResultsList from './views/SearchResultsList.vue'
+import SearchResults from './views/SearchResults.vue'
+import SearchDetail from './views/SearchDetail.vue'
 import Timeline from './views/Timeline.vue'
 import './style.css'
 
 const routes = [
   { path: '/', component: Landing },
-  { path: '/search', component: Search },
-  {
-    path: '/search-results',
-    component: SearchResultsList,
-    name: 'SearchResults'
-  },
-  { path: '/search-results/:id', component: Landing, name: 'SearchDetail' },
+  { path: '/search', component: SearchResults },
+  { path: '/search/:id', component: SearchDetail, name: 'SearchDetail' },
   { path: '/timeline', component: Timeline, name: 'Timeline' }
 ]
 
@@ -32,12 +27,12 @@ const router = createRouter({
     // For routes that use SearchLayout (search results and search detail),
     // preserve scroll position to maintain conversation panel state
     const isFromSearchLayout =
-      from.path === '/search-results' ||
-      from.path.startsWith('/search-results/') ||
+      from.path === '/search' ||
+      from.path.startsWith('/search/') ||
       from.path === '/timeline'
     const isToSearchLayout =
-      to.path === '/search-results' ||
-      to.path.startsWith('/search-results/') ||
+      to.path === '/search' ||
+      to.path.startsWith('/search/') ||
       to.path === '/timeline'
 
     if (isFromSearchLayout && isToSearchLayout) {

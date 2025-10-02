@@ -21,6 +21,6 @@
         .replace(/\{searchTerm\}/g, props.item.searchTerm ?? '')
     }
 
-    return `${props.item.resultCount} persons were found in the results. Please provide additional information about the person you're looking for.`
+    return `Fantastic! ${props.item.resultCount} persons were found in the results. Please provide additional information about the person you're looking for.`
   })
 </script>

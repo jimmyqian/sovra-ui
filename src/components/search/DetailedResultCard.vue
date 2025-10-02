@@ -586,6 +586,10 @@
 
   defineProps<Props>()
 
+  const emit = defineEmits<{
+    showUpsell: []
+  }>()
+
   const subscriptionStore = useSubscriptionStore()
 
   // Define subscription level requirements for each section
@@ -606,8 +610,8 @@
       : false
   }
 
-  // Handle clicks on redacted content (no longer shows upsell)
+  // Handle clicks on redacted content
   const handleRedactedClick = () => {
-    // Redacted content click no longer triggers anything
+    emit('showUpsell')
   }
 </script>

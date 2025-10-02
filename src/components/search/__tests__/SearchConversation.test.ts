@@ -12,7 +12,7 @@ import { useSearchStore } from '@/stores/search'
 import type { ConversationMessage } from '@/types/conversation'
 
 describe('SearchConversation', () => {
-  const mockSearchQuery = 'Hello Dave.'
+  const mockSearchQuery = 'Find Johnson who works in software in California'
 
   const createWrapper = (userQuery = mockSearchQuery, resultCount = 56) => {
     const defaultMessages: ConversationMessage[] = [
@@ -357,7 +357,7 @@ describe('SearchConversation', () => {
     it('displays the main response message', () => {
       const wrapper = createWrapper()
 
-      expect(wrapper.text()).toContain('56 persons were found')
+      expect(wrapper.text()).toContain('Fantastic!')
       expect(wrapper.text()).toContain('56 persons were found in the results')
       expect(wrapper.text()).toContain('Please provide additional information')
     })
@@ -566,7 +566,7 @@ describe('SearchConversation', () => {
 
       // User query should appear before system response
       const queryIndex = text.indexOf(mockSearchQuery)
-      const responseIndex = text.indexOf('56 persons were found')
+      const responseIndex = text.indexOf('Fantastic!')
       expect(queryIndex).toBeLessThan(responseIndex)
 
       // Hints should appear after main response

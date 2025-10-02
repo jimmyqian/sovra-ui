@@ -10,7 +10,7 @@ import LogoIcon from '@/components/icons/LogoIcon.vue'
 import type { ConversationMessage } from '@/types/conversation'
 
 describe('SearchConversation (New Component System)', () => {
-  const mockUserQuery = 'Hello Dave.'
+  const mockUserQuery = 'Find Johnson who works in software in California'
 
   const createTestMessages = (): ConversationMessage[] => [
     {
@@ -252,7 +252,7 @@ describe('SearchConversation (New Component System)', () => {
       const wrapper = createWrapper()
 
       // Results summary should show correct count
-      expect(wrapper.text()).toContain('42 persons were found')
+      expect(wrapper.text()).toContain('Fantastic! 42 persons were found')
 
       // Text should have secondary emphasis styling
       const textElements = wrapper

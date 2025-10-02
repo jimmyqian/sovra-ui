@@ -7,7 +7,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia, type Pinia } from 'pinia'
 import { createRouter, createWebHistory, type Router } from 'vue-router'
-import SearchResults from '@/views/SearchResultsList.vue'
+import SearchResults from '@/views/SearchResults.vue'
 import { useSearchStore } from '@/stores/search'
 
 describe('Search Conversation Integration Tests', () => {
@@ -44,7 +44,7 @@ describe('Search Conversation Integration Tests', () => {
   }
 
   describe('Dynamic Conversation Generation', () => {
-    it('displays no unscripted conversation content', async () => {
+    it('generates conversation based on search results', async () => {
       const wrapper = createSearchResultsWrapper()
 
       // Set search results - need to set up the search store properly
@@ -52,20 +52,21 @@ describe('Search Conversation Integration Tests', () => {
       searchStore.updatePagination({ totalResults: 56 })
       await wrapper.vm.$nextTick()
 
-      // Should not display unscripted conversation content
-      expect(wrapper.text()).not.toContain(
-        'search results display in the results'
-      )
+      // Should display results summary with count
+      expect(wrapper.text()).toContain('persons were found in the results')
 
-      // Should not display search hints
-      expect(wrapper.text()).not.toContain('What specific software role')
-      expect(wrapper.text()).not.toContain('California tech hubs')
+      // Should display search hints
+      expect(wrapper.text()).toContain('What specific software role')
+      expect(wrapper.text()).toContain('California tech hubs')
 
-      // Should not display action buttons
-      expect(wrapper.text()).not.toContain('create a filter')
+      // Should display action buttons but not file upload
+      expect(wrapper.text()).not.toContain('Upload additional documents')
+
+      // Should display action buttons
+      expect(wrapper.text()).toContain('create a filter')
     })
 
-    it('does not display conversation when search results change', async () => {
+    it('updates conversation when search results change', async () => {
       const wrapper = createSearchResultsWrapper()
 
       // Initial search with few results - use displayTotalResults logic
@@ -74,24 +75,27 @@ describe('Search Conversation Integration Tests', () => {
       searchStore.updatePagination({ totalResults: 15 })
       await wrapper.vm.$nextTick()
 
-      expect(wrapper.text()).not.toContain('15 search results display')
+      expect(wrapper.text()).toContain('15 persons were found')
 
       // Update with more results
       searchStore.updatePagination({ totalResults: 85 })
       await wrapper.vm.$nextTick()
 
-      expect(wrapper.text()).not.toContain('85 search results display')
+      expect(wrapper.text()).toContain('85 persons were found')
     })
   })
 
   describe('Interactive Elements', () => {
-    it('does not display hint elements', async () => {
+    it('handles hint clicks', async () => {
       const wrapper = createSearchResultsWrapper()
 
       const hintElements = wrapper.findAll('.text-brand-orange.cursor-pointer')
-      expect(hintElements.length).toBe(0)
+      expect(hintElements.length).toBeGreaterThan(0)
 
-      // No hints to interact with
+      // Click a hint
+      await hintElements[0]!.trigger('click')
+
+      // Should not throw error (functionality to be implemented)
       expect(wrapper.exists()).toBe(true)
     })
 
@@ -102,15 +106,18 @@ describe('Search Conversation Integration Tests', () => {
       expect(ageInputs.length).toBe(0) // no age inputs should be present
     })
 
-    it('does not display filter creation button', async () => {
+    it('handles filter creation button click', async () => {
       const wrapper = createSearchResultsWrapper()
 
       const filterButton = wrapper
         .findAll('button')
         .find(btn => btn.text().includes('create a filter'))
-      expect(filterButton?.exists()).toBe(false)
+      expect(filterButton?.exists()).toBe(true)
 
-      // No filter button to interact with
+      // Click filter button
+      await filterButton!.trigger('click')
+
+      // Should not throw error (functionality to be implemented)
       expect(wrapper.exists()).toBe(true)
     })
   })
@@ -138,27 +145,26 @@ describe('Search Conversation Integration Tests', () => {
   })
 
   describe('User Query Display', () => {
-    it('displays default "Hello Dave" message', async () => {
+    it('displays initial search query in conversation', async () => {
       const wrapper = createSearchResultsWrapper()
       await wrapper.vm.$nextTick()
 
-      // Should display the default "Hello Dave" message
-      expect(wrapper.text()).toContain('Hello Dave')
+      // Should display the initial query in the conversation
+      expect(wrapper.text()).toContain('Johnson, who is around 26 years old')
     })
 
-    it('displays conversation component with "Hello Dave" message', async () => {
+    it('displays user avatar with search query', async () => {
       const wrapper = createSearchResultsWrapper()
       await wrapper.vm.$nextTick()
 
-      // Search component should exist with default conversation
-      const searchComponent = wrapper.find('.px-8.py-8')
-      expect(searchComponent.exists()).toBe(true)
+      // Should display the initial query in the conversation
+      expect(wrapper.text()).toContain('Johnson, who is around 26 years old')
 
-      // Should have system avatar with conversation present (system message)
-      const systemAvatar = wrapper.find(
-        '.w-9.h-9.border.border-border-light.rounded-full'
+      // Should have user avatar when query is present
+      const userAvatar = wrapper.find(
+        '.w-9.h-9.border.border-black.rounded-search'
       )
-      expect(systemAvatar.exists()).toBe(true)
+      expect(userAvatar.exists()).toBe(true)
     })
   })
 
@@ -219,7 +225,7 @@ describe('Search Conversation Integration Tests', () => {
       let foundConversation = false
       for (let i = 0; i < leftPanels.length; i++) {
         const panelText = leftPanels[i]!.text()
-        if (panelText.includes('search results display')) {
+        if (panelText.includes('persons were found')) {
           foundConversation = true
           break
         }
@@ -235,7 +241,7 @@ describe('Search Conversation Integration Tests', () => {
 
       // Conversation should appear before search bar in DOM order
       const leftPanelHtml = leftPanel.html()
-      const conversationIndex = leftPanelHtml.indexOf('search results display')
+      const conversationIndex = leftPanelHtml.indexOf('persons were found')
       const searchBarIndex = leftPanelHtml.indexOf('textarea')
 
       if (conversationIndex !== -1 && searchBarIndex !== -1) {
@@ -256,7 +262,7 @@ describe('Search Conversation Integration Tests', () => {
       expect(wrapper.find('.px-8.py-8').exists()).toBe(true)
 
       // Should handle 0 results
-      expect(wrapper.text()).not.toContain('0 search results display')
+      expect(wrapper.text()).toContain('0 persons were found')
     })
 
     it('handles search store errors gracefully', async () => {
@@ -281,7 +287,7 @@ describe('Search Conversation Integration Tests', () => {
       await wrapper.vm.$nextTick()
 
       // Should render without performance issues
-      expect(wrapper.text()).not.toContain('9999 search results display')
+      expect(wrapper.text()).toContain('9999 persons were found')
       expect(wrapper.exists()).toBe(true)
     })
 
@@ -297,7 +303,7 @@ describe('Search Conversation Integration Tests', () => {
       }
 
       // Should show final result
-      expect(wrapper.text()).not.toContain('100 search results display')
+      expect(wrapper.text()).toContain('100 persons were found')
       expect(wrapper.exists()).toBe(true)
     })
   })

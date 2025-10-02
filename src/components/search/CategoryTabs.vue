@@ -280,6 +280,10 @@
 
   defineProps<Props>()
 
+  const emit = defineEmits<{
+    showUpsell: []
+  }>()
+
   const subscriptionStore = useSubscriptionStore()
   const activeTab = ref('personal')
 
@@ -316,8 +320,8 @@
   // Always use the active tab - don't auto-switch to allow viewing redacted content
   const validActiveTab = computed(() => activeTab.value)
 
-  // Handle clicks on redacted content (no longer shows upsell)
+  // Handle clicks on redacted content
   const handleRedactedClick = () => {
-    // Redacted content click no longer triggers anything
+    emit('showUpsell')
   }
 </script>

@@ -120,21 +120,72 @@
 
   // Initialize conversation script on component mount
   onMounted(() => {
-    // Ensure default "Hello Dave" message appears if conversation is empty
-    if (conversationStore.conversationHistory.length === 0) {
+    // If conversation is empty (cleared from landing), rebuild the default conversation
+    if (
+      conversationStore.conversationHistory.length === 0 &&
+      searchStore.currentQuery
+    ) {
+      // Rebuild the default conversation with the current search query
       conversationStore.addMessage({
-        id: 'system-message-1',
+        id: 'user-message-1',
+        sender: 'user',
+        timestamp: new Date(),
+        content: searchStore.currentQuery
+      })
+
+      conversationStore.addMessage({
+        id: 'system-response-1',
         sender: 'system',
         timestamp: new Date(),
         items: [
           {
-            id: 'greeting-text',
+            id: 'results-summary',
+            type: 'results-summary',
+            resultCount: searchStore.displayTotalResults
+          },
+          {
+            id: 'text-1',
             type: 'text',
-            content: 'Hello Dave',
-            emphasis: 'normal'
+            content:
+              "Alternatively, you can use the hints below for finding the person you're looking for.",
+            emphasis: 'secondary'
+          },
+          {
+            id: 'hints-group-1',
+            type: 'hints-group',
+            hints: [
+              {
+                text: `What specific details about ${searchStore.currentQuery} can help narrow the search`,
+                onClick: () => {}
+              },
+              {
+                text: `Location or workplace information for ${searchStore.currentQuery}`,
+                onClick: () => {}
+              },
+              {
+                text: `Additional context about ${searchStore.currentQuery}`,
+                onClick: () => {}
+              }
+            ]
+          },
+          {
+            id: 'text-2',
+            type: 'text',
+            content:
+              'Or include further information, such as any documents you may have about him, web links, pictures, or videos; if so, submit them by using the upload option.',
+            emphasis: 'secondary'
+          },
+          {
+            id: 'action-button-1',
+            type: 'action-button',
+            text: 'create a filter using the details that you provided',
+            variant: 'dashed',
+            onClick: () => {}
           }
         ]
       })
     }
+
+    // Note: Script initialization now happens in search store during performSearch()
   })
 </script>

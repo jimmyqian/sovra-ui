@@ -4,9 +4,6 @@
   >
     <div
       class="w-10 h-10 flex items-center justify-center rounded-lg cursor-pointer transition-colors bg-brand-orange text-bg-card"
-      aria-label="Open search"
-      title="Search"
-      @click="openSearchPopout"
     >
       <svg
         width="20"
@@ -89,51 +86,7 @@
         <circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="2" />
       </svg>
     </div>
-
-    <!-- Search Popout -->
-    <SearchPopout
-      :is-visible="showSearchPopout"
-      @close="closeSearchPopout"
-      @search="handleSearch"
-      @file-upload="handleFileUpload"
-    />
   </div>
 </template>
 
-<script setup lang="ts">
-  import { ref } from 'vue'
-  import { useRouter } from 'vue-router'
-  import { useSearchStore } from '@/stores/search'
-  import SearchPopout from './SearchPopout.vue'
-
-  const router = useRouter()
-  const searchStore = useSearchStore()
-  const showSearchPopout = ref(false)
-
-  const openSearchPopout = () => {
-    showSearchPopout.value = true
-  }
-
-  const closeSearchPopout = () => {
-    showSearchPopout.value = false
-  }
-
-  const handleSearch = (query: string) => {
-    // Update the search store with the new query
-    searchStore.setQuery(query)
-
-    // Navigate to search results page
-    router.push('/search-results')
-
-    closeSearchPopout()
-  }
-
-  const handleFileUpload = (files: FileList) => {
-    // TODO: Implement file upload functionality
-    // This could integrate with the existing file upload system
-    // For now, we'll just close the popout after file selection
-    // In production, this would trigger the file upload workflow
-    files // This prevents unused parameter warning while maintaining the interface
-    closeSearchPopout()
-  }
-</script>
+<script setup lang="ts"></script>

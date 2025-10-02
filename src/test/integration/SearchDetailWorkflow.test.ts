@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory, type Router } from 'vue-router'
 import { createPinia, setActivePinia, type Pinia } from 'pinia'
-import SearchDetail from '@/views/Landing.vue'
+import SearchDetail from '@/views/SearchDetail.vue'
 
 // Mock the router
 const mockPush = vi.fn()

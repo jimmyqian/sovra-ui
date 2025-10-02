@@ -163,28 +163,66 @@ export const useSearchStore = defineStore('search', () => {
         }, 500)
       })
 
-      // Generate mock search results
+      // Get scripted results from conversation store if available
       let mockResults: SearchResult[] = []
 
-      // Generate random results for the search
-      mockResults = Array.from(
-        { length: pagination.value.pageSize },
-        (_, i) => ({
-          id:
-            (pagination.value.currentPage - 1) * pagination.value.pageSize +
-            i +
-            1,
-          name: `Johnson Smith ${i + 1}`,
-          age: Math.floor(Math.random() * 50) + 20,
-          gender: 'Male',
-          maritalStatus: ['Single', 'Married', 'Divorced'][i % 3] ?? 'Single',
-          location: 'California',
-          rating: Math.round(Math.random() * 5 * 10) / 10,
-          references: Math.floor(Math.random() * 100),
-          companies: Math.floor(Math.random() * 10),
-          contacts: Math.floor(Math.random() * 50)
-        })
-      )
+      // Try to get scripted results from conversation store
+      try {
+        const { useConversationStore } = await import('./conversation')
+        const conversationStore = useConversationStore()
+
+        // Initialize the script only if no script exists yet (first search)
+        if (!loadMore && !conversationStore.currentScript) {
+          conversationStore.initializeScript(sanitizedQuery)
+        }
+
+        const scriptedResults = conversationStore.getCurrentScriptedResults()
+
+        if (scriptedResults.length > 0) {
+          mockResults = scriptedResults
+        } else {
+          // Fallback to random results if no script available
+          mockResults = Array.from(
+            { length: pagination.value.pageSize },
+            (_, i) => ({
+              id:
+                (pagination.value.currentPage - 1) * pagination.value.pageSize +
+                i +
+                1,
+              name: `Johnson Smith ${i + 1}`,
+              age: Math.floor(Math.random() * 50) + 20,
+              gender: 'Male',
+              maritalStatus:
+                ['Single', 'Married', 'Divorced'][i % 3] ?? 'Single',
+              location: 'California',
+              rating: Math.round(Math.random() * 5 * 10) / 10,
+              references: Math.floor(Math.random() * 100),
+              companies: Math.floor(Math.random() * 10),
+              contacts: Math.floor(Math.random() * 50)
+            })
+          )
+        }
+      } catch {
+        // Fallback to random results if conversation store isn't available
+        mockResults = Array.from(
+          { length: pagination.value.pageSize },
+          (_, i) => ({
+            id:
+              (pagination.value.currentPage - 1) * pagination.value.pageSize +
+              i +
+              1,
+            name: `Johnson Smith ${i + 1}`,
+            age: Math.floor(Math.random() * 50) + 20,
+            gender: 'Male',
+            maritalStatus: ['Single', 'Married', 'Divorced'][i % 3] ?? 'Single',
+            location: 'California',
+            rating: Math.round(Math.random() * 5 * 10) / 10,
+            references: Math.floor(Math.random() * 100),
+            companies: Math.floor(Math.random() * 10),
+            contacts: Math.floor(Math.random() * 50)
+          })
+        )
+      }
 
       if (loadMore) {
         appendResults(mockResults)
@@ -192,12 +230,26 @@ export const useSearchStore = defineStore('search', () => {
         setResults(mockResults)
       }
 
-      // Update pagination for random results
-      updatePagination({
-        currentPage: loadMore ? pagination.value.currentPage + 1 : 1,
-        totalResults: Math.floor(Math.random() * (80 - 30 + 1)) + 30, // Random total between 30-80
-        hasMore: pagination.value.currentPage < 5 // Mock has more
-      })
+      // Update pagination based on whether we're using scripted results
+      const isUsingScriptedResults =
+        mockResults.length > 0 &&
+        mockResults.length !== pagination.value.pageSize
+
+      if (isUsingScriptedResults) {
+        // For scripted results, set exact count and no pagination
+        updatePagination({
+          currentPage: 1,
+          totalResults: mockResults.length,
+          hasMore: false // Scripted results don't support pagination
+        })
+      } else {
+        // For fallback random results, use existing logic
+        updatePagination({
+          currentPage: loadMore ? pagination.value.currentPage + 1 : 1,
+          totalResults: Math.floor(Math.random() * (80 - 30 + 1)) + 30, // Random total between 30-80
+          hasMore: pagination.value.currentPage < 5 // Mock has more
+        })
+      }
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'An error occurred during search'

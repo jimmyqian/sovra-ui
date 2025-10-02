@@ -1,14 +1,14 @@
 import { describe, it, expect, vi } from 'vitest'
 import { createRouter, createWebHistory, type Router } from 'vue-router'
-import Landing from '@/views/Search.vue'
-import SearchResults from '@/views/SearchResultsList.vue'
+import Landing from '@/views/Landing.vue'
+import SearchResults from '@/views/SearchResults.vue'
 
 // Mock the view components
-vi.mock('@/views/Search.vue', () => ({
+vi.mock('@/views/Landing.vue', () => ({
   default: { name: 'Landing' }
 }))
 
-vi.mock('@/views/SearchResultsList.vue', () => ({
+vi.mock('@/views/SearchResults.vue', () => ({
   default: { name: 'SearchResults' }
 }))
 
