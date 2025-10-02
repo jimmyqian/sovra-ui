@@ -16,8 +16,16 @@
 
   const router = useRouter()
 
-  // Check if there's browser history to go back to
-  const canGoBack = computed(() => window.history.length > 1)
+  // Check if there's meaningful browser history to go back to
+  // We check if history.state.back exists, which indicates a real navigation
+  // (not just a redirect from the initial page load)
+  const canGoBack = computed(() => {
+    return (
+      window.history.length > 1 &&
+      window.history.state &&
+      window.history.state.back !== null
+    )
+  })
 
   const handleBack = () => {
     if (canGoBack.value) {

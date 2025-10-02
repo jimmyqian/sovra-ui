@@ -4,17 +4,27 @@
     <!-- Results View -->
     <div
       v-if="!selectedPerson"
-      ref="resultsScrollContainer"
-      class="flex-1 overflow-y-auto results-scroll"
-      style="min-height: 0; max-height: 100%"
-      @scroll="handleResultsScroll"
+      class="flex-1 flex flex-col max-h-full overflow-hidden"
+      style="min-height: 0"
     >
-      <ResultsList
-        :results="results"
-        :is-loading="isLoading"
-        :error="error"
-        @person-selected="handlePersonSelected"
-      />
+      <!-- Back Navigation -->
+      <div class="flex items-center gap-2 p-6 pb-4">
+        <BackButton />
+      </div>
+
+      <div
+        ref="resultsScrollContainer"
+        class="flex-1 overflow-y-auto results-scroll"
+        style="min-height: 0; max-height: 100%"
+        @scroll="handleResultsScroll"
+      >
+        <ResultsList
+          :results="results"
+          :is-loading="isLoading"
+          :error="error"
+          @person-selected="handlePersonSelected"
+        />
+      </div>
     </div>
 
     <!-- Person Details View -->
@@ -117,6 +127,7 @@
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
+  import BackButton from '@/components/common/BackButton.vue'
   import type { SearchResult } from '@/types/search'
 
   interface Props {

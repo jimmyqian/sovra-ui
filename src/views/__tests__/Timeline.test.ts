@@ -200,11 +200,16 @@ describe('Timeline Component', () => {
 
   describe('Navigation', () => {
     it('should call router.back() when back button is clicked', async () => {
-      // Mock window.history.length to enable the back button
+      // Mock window.history with proper navigation state to enable the back button
       Object.defineProperty(window.history, 'length', {
         writable: true,
         configurable: true,
         value: 2
+      })
+      Object.defineProperty(window.history, 'state', {
+        writable: true,
+        configurable: true,
+        value: { back: '/previous-page' }
       })
 
       const wrapper = createWrapper()

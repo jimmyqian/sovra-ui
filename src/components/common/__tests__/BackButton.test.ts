@@ -67,6 +67,11 @@ describe('BackButton', () => {
         configurable: true,
         value: 1
       })
+      Object.defineProperty(window.history, 'state', {
+        writable: true,
+        configurable: true,
+        value: { back: null }
+      })
 
       const wrapper = createWrapper()
       const button = wrapper.find('button')
@@ -76,12 +81,37 @@ describe('BackButton', () => {
       expect(button.classes()).toContain('disabled:cursor-not-allowed')
     })
 
-    it('is enabled when history length is greater than 1', () => {
-      // Mock window.history.length to be 2 (has previous page)
+    it('is disabled when history state.back is null (redirect case)', () => {
+      // Mock window.history to have length > 1 but state.back is null
+      // This represents a redirect scenario (e.g., / -> /dashboard)
       Object.defineProperty(window.history, 'length', {
         writable: true,
         configurable: true,
         value: 2
+      })
+      Object.defineProperty(window.history, 'state', {
+        writable: true,
+        configurable: true,
+        value: { back: null }
+      })
+
+      const wrapper = createWrapper()
+      const button = wrapper.find('button')
+
+      expect(button.attributes('disabled')).toBeDefined()
+    })
+
+    it('is enabled when history length is greater than 1 and state.back exists', () => {
+      // Mock window.history with proper navigation state
+      Object.defineProperty(window.history, 'length', {
+        writable: true,
+        configurable: true,
+        value: 2
+      })
+      Object.defineProperty(window.history, 'state', {
+        writable: true,
+        configurable: true,
+        value: { back: '/previous-page' }
       })
 
       const wrapper = createWrapper()
@@ -93,11 +123,16 @@ describe('BackButton', () => {
 
   describe('Navigation Functionality', () => {
     it('calls router.back() when clicked and enabled', async () => {
-      // Mock window.history.length to be 2 (has previous page)
+      // Mock window.history with proper state
       Object.defineProperty(window.history, 'length', {
         writable: true,
         configurable: true,
         value: 2
+      })
+      Object.defineProperty(window.history, 'state', {
+        writable: true,
+        configurable: true,
+        value: { back: '/previous-page' }
       })
 
       const wrapper = createWrapper()
@@ -111,12 +146,41 @@ describe('BackButton', () => {
       backSpy.mockRestore()
     })
 
-    it('does not navigate when clicked and disabled', async () => {
+    it('does not navigate when clicked and disabled (no history)', async () => {
       // Mock window.history.length to be 1 (no previous page)
       Object.defineProperty(window.history, 'length', {
         writable: true,
         configurable: true,
         value: 1
+      })
+      Object.defineProperty(window.history, 'state', {
+        writable: true,
+        configurable: true,
+        value: { back: null }
+      })
+
+      const wrapper = createWrapper()
+      const backSpy = vi.spyOn(router, 'back')
+
+      const button = wrapper.find('button')
+      await button.trigger('click')
+
+      expect(backSpy).not.toHaveBeenCalled()
+
+      backSpy.mockRestore()
+    })
+
+    it('does not navigate when clicked and disabled (redirect case)', async () => {
+      // Mock window.history with redirect state (back is null)
+      Object.defineProperty(window.history, 'length', {
+        writable: true,
+        configurable: true,
+        value: 2
+      })
+      Object.defineProperty(window.history, 'state', {
+        writable: true,
+        configurable: true,
+        value: { back: null }
       })
 
       const wrapper = createWrapper()
@@ -137,6 +201,11 @@ describe('BackButton', () => {
         writable: true,
         configurable: true,
         value: 1
+      })
+      Object.defineProperty(window.history, 'state', {
+        writable: true,
+        configurable: true,
+        value: { back: null }
       })
 
       const wrapper = createWrapper()
