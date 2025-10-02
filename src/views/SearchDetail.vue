@@ -22,10 +22,10 @@
         <div class="flex items-center gap-2 p-6 pb-0">
           <button
             class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
-            @click="handleBackToSearch"
+            @click="handleBack"
           >
             <ChevronLeftIcon />
-            <span>Back to Search Results</span>
+            <span>Back</span>
           </button>
         </div>
 
@@ -281,9 +281,9 @@
     }
   }
 
-  const handleBackToSearch = () => {
-    // Navigate back to search results
-    router.push('/search')
+  const handleBack = () => {
+    // Navigate back to previous screen
+    router.back()
   }
 
   const handleSearch = async (_query: string) => {
