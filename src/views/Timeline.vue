@@ -82,8 +82,21 @@
 
   /**
    * Handles keyboard shortcuts for timeline orientation toggle and display mode switching
+   * Shortcuts are disabled when user is typing in an input field
    */
   const handleKeyDown = (event: KeyboardEvent): void => {
+    // Check if the active element is an input field (input, textarea, contenteditable)
+    const activeElement = document.activeElement
+    const isInputField =
+      activeElement instanceof HTMLInputElement ||
+      activeElement instanceof HTMLTextAreaElement ||
+      (activeElement instanceof HTMLElement && activeElement.isContentEditable)
+
+    // Don't trigger shortcuts when typing in input fields
+    if (isInputField) {
+      return
+    }
+
     // 'r' key for timeline orientation
     if (event.key === 'r' || event.key === 'R') {
       event.preventDefault()

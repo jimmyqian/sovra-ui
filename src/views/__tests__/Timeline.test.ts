@@ -492,5 +492,83 @@ describe('Timeline Component', () => {
       addEventListenerSpy.mockRestore()
       removeEventListenerSpy.mockRestore()
     })
+
+    it('should not trigger shortcuts when typing in input field', async () => {
+      const wrapper = createWrapper()
+
+      // Should start in star mode
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(true)
+
+      // Create a mock input element and set it as active
+      const mockInput = document.createElement('input')
+      document.body.appendChild(mockInput)
+      mockInput.focus()
+
+      // Try to press 'v' key while input is focused
+      const keydownEvent = new KeyboardEvent('keydown', { key: 'v' })
+      document.dispatchEvent(keydownEvent)
+      await wrapper.vm.$nextTick()
+
+      // Display mode should NOT change (still in star mode)
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(true)
+      expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
+        false
+      )
+
+      // Cleanup
+      document.body.removeChild(mockInput)
+    })
+
+    it('should not trigger shortcuts when typing in textarea', async () => {
+      const wrapper = createWrapper()
+
+      // Navigate to timeline mode first
+      const initialEvent = new KeyboardEvent('keydown', { key: 'v' })
+      document.dispatchEvent(initialEvent)
+      await wrapper.vm.$nextTick()
+      expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
+        true
+      )
+
+      // Create a mock textarea element and set it as active
+      const mockTextarea = document.createElement('textarea')
+      document.body.appendChild(mockTextarea)
+      mockTextarea.focus()
+
+      // Try to press 'r' key while textarea is focused
+      const keydownEvent = new KeyboardEvent('keydown', { key: 'r' })
+      document.dispatchEvent(keydownEvent)
+      await wrapper.vm.$nextTick()
+
+      // Orientation should NOT change (still horizontal)
+      const timelinePanel = wrapper.findComponent({ name: 'TimelinePanel' })
+      expect(timelinePanel.props('orientation')).toBe('horizontal')
+
+      // Cleanup
+      document.body.removeChild(mockTextarea)
+    })
+
+    it('should trigger shortcuts when input field is not focused', async () => {
+      const wrapper = createWrapper()
+
+      // Create a mock input but don't focus it
+      const mockInput = document.createElement('input')
+      document.body.appendChild(mockInput)
+      // Don't call mockInput.focus()
+
+      // Try to press 'v' key
+      const keydownEvent = new KeyboardEvent('keydown', { key: 'v' })
+      document.dispatchEvent(keydownEvent)
+      await wrapper.vm.$nextTick()
+
+      // Display mode SHOULD change (star -> timeline)
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(false)
+      expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
+        true
+      )
+
+      // Cleanup
+      document.body.removeChild(mockInput)
+    })
   })
 })
