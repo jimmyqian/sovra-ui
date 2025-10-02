@@ -12,17 +12,38 @@
         <BackButton />
       </div>
 
-      <div
-        ref="resultsScrollContainer"
-        class="flex-1 overflow-y-auto results-scroll"
-        style="min-height: 0; max-height: 100%"
-        @scroll="handleResultsScroll"
-      >
-        <ResultsList
-          :results="results"
-          :is-loading="isLoading"
-          :error="error"
-          @person-selected="handlePersonSelected"
+      <!-- Scrollable results container with overlays -->
+      <div class="flex-1 relative overflow-hidden" style="min-height: 0">
+        <div
+          ref="resultsScrollContainer"
+          class="absolute inset-0 overflow-y-auto results-scroll"
+          @scroll="handleResultsScroll"
+        >
+          <ResultsList
+            :results="results"
+            :is-loading="isLoading"
+            :error="error"
+            @person-selected="handlePersonSelected"
+          />
+        </div>
+
+        <!-- Fade-out gradient overlay at top - shows when scrolled -->
+        <div class="fade-overlay-top" :class="[{ visible: showTopFade }]"></div>
+        <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
+        <div class="fade-overlay"></div>
+
+        <!-- Scroll Control Buttons for Results -->
+        <ChevronUpIcon
+          v-if="hasScrollableContent && canScrollUp"
+          class="scroll-chevron scroll-chevron-top cursor-pointer"
+          aria-label="Scroll to top"
+          @click="scrollResultsToTop"
+        />
+        <ChevronDownIcon
+          v-if="hasScrollableContent && canScrollDown"
+          class="scroll-chevron scroll-chevron-bottom cursor-pointer"
+          aria-label="Scroll to bottom"
+          @click="scrollResultsToBottom"
         />
       </div>
     </div>
@@ -68,29 +89,6 @@
         />
       </main>
     </div>
-
-    <!-- Fade-out gradient overlay at top - shows when scrolled -->
-    <div
-      v-if="!selectedPerson"
-      class="fade-overlay-top"
-      :class="[{ visible: showTopFade }]"
-    ></div>
-    <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
-    <div v-if="!selectedPerson" class="fade-overlay"></div>
-
-    <!-- Scroll Control Buttons for Results -->
-    <ChevronUpIcon
-      v-if="!selectedPerson && hasScrollableContent && canScrollUp"
-      class="scroll-chevron scroll-chevron-top cursor-pointer"
-      aria-label="Scroll to top"
-      @click="scrollResultsToTop"
-    />
-    <ChevronDownIcon
-      v-if="!selectedPerson && hasScrollableContent && canScrollDown"
-      class="scroll-chevron scroll-chevron-bottom cursor-pointer"
-      aria-label="Scroll to bottom"
-      @click="scrollResultsToBottom"
-    />
 
     <!-- Load More Button - Always visible outside scroll area -->
     <div
