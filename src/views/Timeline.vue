@@ -51,7 +51,7 @@
   const starPanelRef = ref<InstanceType<typeof StarPanel> | null>(null)
   const globePanelRef = ref<InstanceType<typeof GlobePanel> | null>(null)
   const orientation = ref<'horizontal' | 'vertical'>('horizontal')
-  const displayMode = ref<'timeline' | 'star' | 'globe'>('timeline')
+  const displayMode = ref<'timeline' | 'star' | 'globe'>('star')
 
   const handleSearch = async (query: string) => {
     // Handle timeline search functionality
@@ -86,18 +86,18 @@
       return
     }
 
-    // 'v' key to cycle through timeline, star, and globe display modes
+    // 'v' key to cycle through star, timeline, and globe display modes
     if (event.key === 'v' || event.key === 'V') {
       event.preventDefault()
       event.stopPropagation()
       const modes: Array<'timeline' | 'star' | 'globe'> = [
-        'timeline',
         'star',
+        'timeline',
         'globe'
       ]
       const currentIndex = modes.indexOf(displayMode.value)
       const nextIndex = (currentIndex + 1) % modes.length
-      displayMode.value = modes[nextIndex] ?? 'timeline'
+      displayMode.value = modes[nextIndex] ?? 'star'
     }
   }
 

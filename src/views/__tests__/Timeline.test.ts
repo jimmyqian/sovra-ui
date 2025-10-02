@@ -113,11 +113,12 @@ describe('Timeline Component', () => {
       expect(wrapper.find('[data-testid="search-bar"]').exists()).toBe(true)
     })
 
-    it('should render the timeline panel', () => {
+    it('should render the star panel by default', () => {
       const wrapper = createWrapper()
 
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(true)
       expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
-        true
+        false
       )
     })
 
@@ -132,10 +133,15 @@ describe('Timeline Component', () => {
   })
 
   describe('TimelinePanel Content', () => {
-    it('should render timeline panel with D3Timeline component', async () => {
+    it('should render timeline panel with D3Timeline component after cycling to timeline view', async () => {
       const wrapper = createWrapper()
 
       // Wait for component to mount
+      await wrapper.vm.$nextTick()
+
+      // Should start with star view, cycle to timeline
+      const keydownEvent = new KeyboardEvent('keydown', { key: 'v' })
+      document.dispatchEvent(keydownEvent)
       await wrapper.vm.$nextTick()
 
       const timelinePanel = wrapper.findComponent({ name: 'TimelinePanel' })
@@ -145,10 +151,15 @@ describe('Timeline Component', () => {
       expect(d3Timeline.exists()).toBe(true)
     })
 
-    it('should pass timeline events to D3Timeline', async () => {
+    it('should pass timeline events to D3Timeline when in timeline view', async () => {
       const wrapper = createWrapper()
 
       // Wait for component to mount and load data
+      await wrapper.vm.$nextTick()
+
+      // Navigate to timeline view
+      const keydownEvent = new KeyboardEvent('keydown', { key: 'v' })
+      document.dispatchEvent(keydownEvent)
       await wrapper.vm.$nextTick()
 
       const timelinePanel = wrapper.findComponent({ name: 'TimelinePanel' })
@@ -159,8 +170,13 @@ describe('Timeline Component', () => {
       expect(Array.isArray(d3Timeline.props('events'))).toBe(true)
     })
 
-    it('should have proper layout structure', () => {
+    it('should have proper layout structure when in timeline view', async () => {
       const wrapper = createWrapper()
+
+      // Navigate to timeline view
+      const keydownEvent = new KeyboardEvent('keydown', { key: 'v' })
+      document.dispatchEvent(keydownEvent)
+      await wrapper.vm.$nextTick()
 
       const timelinePanel = wrapper.findComponent({ name: 'TimelinePanel' })
       expect(timelinePanel.exists()).toBe(true)
@@ -259,62 +275,67 @@ describe('Timeline Component', () => {
   })
 
   describe('Keyboard Shortcuts and Display Mode', () => {
-    it('should default to timeline display mode', () => {
+    it('should default to star display mode', () => {
       const wrapper = createWrapper()
 
-      // Timeline panel should be visible by default
+      // Star panel should be visible by default
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(true)
       expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
-        true
+        false
       )
-      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(false)
     })
 
     it('should cycle through views with V key', async () => {
       const wrapper = createWrapper()
 
-      // Start with timeline view
+      // Start with star view
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(true)
       expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
-        true
+        false
       )
-      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(false)
       expect(wrapper.findComponent({ name: 'GlobePanel' }).exists()).toBe(false)
 
-      // Simulate V key press on document (timeline -> star)
+      // Simulate V key press on document (star -> timeline)
       const keydownEvent1 = new KeyboardEvent('keydown', { key: 'v' })
       document.dispatchEvent(keydownEvent1)
       await wrapper.vm.$nextTick()
 
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(false)
       expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
-        false
+        true
       )
-      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(true)
       expect(wrapper.findComponent({ name: 'GlobePanel' }).exists()).toBe(false)
 
-      // Press V again (star -> globe)
+      // Press V again (timeline -> globe)
       const keydownEvent2 = new KeyboardEvent('keydown', { key: 'V' })
       document.dispatchEvent(keydownEvent2)
       await wrapper.vm.$nextTick()
 
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(false)
       expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
         false
       )
-      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(false)
       expect(wrapper.findComponent({ name: 'GlobePanel' }).exists()).toBe(true)
 
-      // Press V again to cycle back to timeline (globe -> timeline)
+      // Press V again to cycle back to star (globe -> star)
       const keydownEvent3 = new KeyboardEvent('keydown', { key: 'v' })
       document.dispatchEvent(keydownEvent3)
       await wrapper.vm.$nextTick()
 
+      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(true)
       expect(wrapper.findComponent({ name: 'TimelinePanel' }).exists()).toBe(
-        true
+        false
       )
-      expect(wrapper.findComponent({ name: 'StarPanel' }).exists()).toBe(false)
       expect(wrapper.findComponent({ name: 'GlobePanel' }).exists()).toBe(false)
     })
 
     it('should toggle timeline orientation with R key when in timeline mode', async () => {
       const wrapper = createWrapper()
+
+      // Navigate to timeline view first (star -> timeline)
+      const cycleEvent = new KeyboardEvent('keydown', { key: 'v' })
+      document.dispatchEvent(cycleEvent)
+      await wrapper.vm.$nextTick()
 
       // Should start in horizontal orientation
       const timelinePanel = wrapper.findComponent({ name: 'TimelinePanel' })
@@ -342,24 +363,24 @@ describe('Timeline Component', () => {
       expect(wrapper.text()).toContain('Keyboard Shortcuts')
       expect(wrapper.text()).toContain('Toggle view:')
       expect(wrapper.text()).toContain('V')
-      expect(wrapper.text()).toContain('Rotate timeline:')
-      expect(wrapper.text()).toContain('R')
+      // Rotate timeline should not be visible in star mode (default)
+      expect(wrapper.text()).not.toContain('Rotate timeline:')
     })
 
     it('should only show rotate hotkey when in timeline mode', async () => {
       const wrapper = createWrapper()
 
-      // Should show rotate hotkey in timeline mode
+      // Should NOT show rotate hotkey in star mode (default)
       const hotkeyDisplay = wrapper.find('.bg-gray-800.text-white')
-      expect(hotkeyDisplay.text()).toContain('Rotate timeline:')
+      expect(hotkeyDisplay.text()).not.toContain('Rotate timeline:')
 
-      // Switch to star view
+      // Navigate to timeline view
       const keydownEvent1 = new KeyboardEvent('keydown', { key: 'v' })
       document.dispatchEvent(keydownEvent1)
       await wrapper.vm.$nextTick()
 
-      // Should not show rotate hotkey in star mode
-      expect(hotkeyDisplay.text()).not.toContain('Rotate timeline:')
+      // Should show rotate hotkey in timeline mode
+      expect(hotkeyDisplay.text()).toContain('Rotate timeline:')
     })
 
     it('should prevent default behavior and stop propagation for keyboard events', async () => {
@@ -390,7 +411,7 @@ describe('Timeline Component', () => {
     it('should handle 3D globe view display correctly', async () => {
       const wrapper = createWrapper()
 
-      // Navigate to globe view (timeline -> star -> globe)
+      // Navigate to globe view (star -> timeline -> globe)
       const keydownEvent1 = new KeyboardEvent('keydown', { key: 'v' })
       document.dispatchEvent(keydownEvent1)
       await wrapper.vm.$nextTick()
