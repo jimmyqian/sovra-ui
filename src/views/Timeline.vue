@@ -6,10 +6,12 @@
     @speech-error="handleSpeechError"
   >
     <!-- Back Navigation and Hotkey Display -->
-    <div class="absolute top-4 left-4 right-4 z-10 flex justify-between">
+    <div
+      class="absolute top-4 left-4 right-4 z-20 flex justify-between pointer-events-none"
+    >
       <!-- Back Button -->
       <button
-        class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
+        class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors bg-bg-primary px-3 py-2 rounded-lg shadow-lg pointer-events-auto"
         @click="handleBack"
       >
         <ChevronLeftIcon />
@@ -17,7 +19,9 @@
       </button>
 
       <!-- Hotkey Display -->
-      <div class="bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm">
+      <div
+        class="bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm pointer-events-auto"
+      >
         <div class="font-semibold mb-2">Keyboard Shortcuts</div>
         <div class="space-y-1">
           <div class="flex justify-between items-center gap-4">
