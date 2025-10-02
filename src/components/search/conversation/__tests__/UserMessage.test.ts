@@ -1,6 +1,6 @@
 /**
  * UserMessage Component Tests
- * Tests the user message component with Discovery One space helmet icon
+ * Tests the user message component with person icon
  */
 
 import { describe, it, expect } from 'vitest'
@@ -28,24 +28,20 @@ describe('UserMessage', () => {
       expect(wrapper.classes()).toContain('items-start')
     })
 
-    it('should render the space helmet image', () => {
+    it('should render the person icon', () => {
       const wrapper = createWrapper()
 
-      const spaceHelmetImg = wrapper.find(
-        'img[alt="Discovery One Space Helmet"]'
-      )
-      expect(spaceHelmetImg.exists()).toBe(true)
+      const personSvg = wrapper.find('svg')
+      expect(personSvg.exists()).toBe(true)
     })
 
-    it('should render space helmet image with correct src', () => {
+    it('should render person icon with correct dimensions', () => {
       const wrapper = createWrapper()
 
-      const spaceHelmetImg = wrapper.find(
-        'img[alt="Discovery One Space Helmet"]'
-      )
-      expect(spaceHelmetImg.attributes('src')).toBe(
-        'https://raw.githubusercontent.com/imcnaney/donkey/main/img/helmet.jpg'
-      )
+      const personSvg = wrapper.find('svg')
+      expect(personSvg.attributes('width')).toBe('26')
+      expect(personSvg.attributes('height')).toBe('26')
+      expect(personSvg.attributes('viewBox')).toBe('0 0 24 24')
     })
 
     it('should render the message content', () => {
@@ -113,21 +109,22 @@ describe('UserMessage', () => {
     })
   })
 
-  describe('Discovery One Theme Integration', () => {
-    it('should use space helmet image representing crew member', () => {
+  describe('User Icon Styling', () => {
+    it('should use person icon representing user', () => {
       const wrapper = createWrapper()
 
-      const spaceHelmetImg = wrapper.find(
-        'img[alt="Discovery One Space Helmet"]'
-      )
-      expect(spaceHelmetImg.exists()).toBe(true)
+      const personSvg = wrapper.find('svg')
+      expect(personSvg.exists()).toBe(true)
 
-      // Verify the image is properly positioned within the circular container
+      // Verify the icon is properly positioned within the circular container
       const iconContainer = wrapper.find('.w-9.h-9')
       expect(iconContainer.exists()).toBe(true)
 
-      // Verify the image has proper styling for object cover
-      expect(spaceHelmetImg.classes()).toContain('object-cover')
+      // Verify the SVG has proper stroke styling
+      const circle = personSvg.find('circle')
+      const path = personSvg.find('path')
+      expect(circle.exists()).toBe(true)
+      expect(path.exists()).toBe(true)
     })
 
     it('should maintain consistent sizing with message layout', () => {
@@ -142,7 +139,7 @@ describe('UserMessage', () => {
       expect(contentContainer.exists()).toBe(true)
     })
 
-    it('should have appropriate visual styling for space theme', () => {
+    it('should have appropriate visual styling for user icon', () => {
       const wrapper = createWrapper()
 
       // Icon should be contained in a bordered circular container
