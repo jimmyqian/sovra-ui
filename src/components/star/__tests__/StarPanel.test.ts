@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createRouter, createMemoryHistory } from 'vue-router'
 import StarPanel from '../StarPanel.vue'
 import D3StarGraph from '../D3StarGraph.vue'
 
@@ -27,12 +28,33 @@ Object.defineProperty(SVGElement.prototype, 'getComputedTextLength', {
 })
 
 describe('StarPanel', () => {
+  let router: ReturnType<typeof createRouter>
+
   beforeEach(() => {
     vi.clearAllMocks()
+    router = createRouter({
+      history: createMemoryHistory(),
+      routes: [
+        { path: '/', component: { template: '<div>Home</div>' } },
+        {
+          path: '/dashboard/:id',
+          component: { template: '<div>Dashboard</div>' }
+        }
+      ]
+    })
   })
 
+  const createWrapper = (props = {}) => {
+    return mount(StarPanel, {
+      props,
+      global: {
+        plugins: [router]
+      }
+    })
+  }
+
   it('renders star panel container', () => {
-    const wrapper = mount(StarPanel)
+    const wrapper = createWrapper()
 
     expect(wrapper.find('div').exists()).toBe(true)
     expect(wrapper.find('div').classes()).toContain('flex-1')
@@ -44,18 +66,14 @@ describe('StarPanel', () => {
   })
 
   it('renders D3StarGraph component', () => {
-    const wrapper = mount(StarPanel)
+    const wrapper = createWrapper()
 
     const d3StarGraph = wrapper.findComponent(D3StarGraph)
     expect(d3StarGraph.exists()).toBe(true)
   })
 
   it('passes nodeCount prop to D3StarGraph component', () => {
-    const wrapper = mount(StarPanel, {
-      props: {
-        nodeCount: 10
-      }
-    })
+    const wrapper = createWrapper({ nodeCount: 10 })
 
     const d3StarGraph = wrapper.findComponent(D3StarGraph)
     expect(d3StarGraph.exists()).toBe(true)
@@ -63,7 +81,7 @@ describe('StarPanel', () => {
   })
 
   it('uses default nodeCount when not provided', () => {
-    const wrapper = mount(StarPanel)
+    const wrapper = createWrapper()
 
     const d3StarGraph = wrapper.findComponent(D3StarGraph)
     expect(d3StarGraph.exists()).toBe(true)
@@ -71,7 +89,7 @@ describe('StarPanel', () => {
   })
 
   it('has proper component structure', () => {
-    const wrapper = mount(StarPanel)
+    const wrapper = createWrapper()
 
     const outerDiv = wrapper.find('div')
     expect(outerDiv.exists()).toBe(true)
@@ -83,22 +101,14 @@ describe('StarPanel', () => {
   })
 
   it('validates nodeCount prop interface', () => {
-    const wrapper = mount(StarPanel, {
-      props: {
-        nodeCount: 5
-      }
-    })
+    const wrapper = createWrapper({ nodeCount: 5 })
 
     expect(wrapper.props('nodeCount')).toBe(5)
     expect(typeof wrapper.props('nodeCount')).toBe('number')
   })
 
   it('handles nodeCount prop changes', async () => {
-    const wrapper = mount(StarPanel, {
-      props: {
-        nodeCount: 7
-      }
-    })
+    const wrapper = createWrapper({ nodeCount: 7 })
 
     const d3StarGraph = wrapper.findComponent(D3StarGraph)
     expect(d3StarGraph.props('nodeCount')).toBe(7)
@@ -108,7 +118,7 @@ describe('StarPanel', () => {
   })
 
   it('maintains proper layout structure', () => {
-    const wrapper = mount(StarPanel)
+    const wrapper = createWrapper()
 
     // Check outer container
     const container = wrapper.find('div')
@@ -130,9 +140,7 @@ describe('StarPanel', () => {
     const nodeCounts = [3, 5, 7, 10, 15]
 
     nodeCounts.forEach(nodeCount => {
-      const wrapper = mount(StarPanel, {
-        props: { nodeCount }
-      })
+      const wrapper = createWrapper({ nodeCount })
 
       const d3StarGraph = wrapper.findComponent(D3StarGraph)
       expect(d3StarGraph.exists()).toBe(true)
@@ -141,11 +149,7 @@ describe('StarPanel', () => {
   })
 
   it('validates star panel concept for hub-and-spoke visualization', () => {
-    const wrapper = mount(StarPanel, {
-      props: {
-        nodeCount: 7
-      }
-    })
+    const wrapper = createWrapper({ nodeCount: 7 })
 
     // Star panel should contain the D3StarGraph component
     const d3StarGraph = wrapper.findComponent(D3StarGraph)

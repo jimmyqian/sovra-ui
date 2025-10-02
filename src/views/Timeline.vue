@@ -5,38 +5,44 @@
     @file-upload="handleFileUpload"
     @speech-error="handleSpeechError"
   >
-    <!-- Hotkey Display -->
-    <div
-      class="absolute top-4 right-4 z-10 bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm"
-    >
-      <div class="font-semibold mb-2">Keyboard Shortcuts</div>
-      <div class="space-y-1">
-        <div class="flex justify-between items-center gap-4">
-          <span class="text-gray-300">Toggle view:</span>
-          <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">V</kbd>
-        </div>
-        <div
-          v-if="displayMode === 'timeline'"
-          class="flex justify-between items-center gap-4"
-        >
-          <span class="text-gray-300">Rotate timeline:</span>
-          <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
+    <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
+      <!-- Back Navigation and Keyboard Shortcuts -->
+      <div class="flex items-center justify-between p-6 pb-4">
+        <!-- Back Button -->
+        <BackButton />
+
+        <!-- Hotkey Display -->
+        <div class="bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm">
+          <div class="font-semibold mb-2">Keyboard Shortcuts</div>
+          <div class="space-y-1">
+            <div class="flex justify-between items-center gap-4">
+              <span class="text-gray-300">Toggle view:</span>
+              <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">V</kbd>
+            </div>
+            <div
+              v-if="displayMode === 'timeline'"
+              class="flex justify-between items-center gap-4"
+            >
+              <span class="text-gray-300">Rotate timeline:</span>
+              <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
 
-    <!-- Right Panel: Timeline or Star Panel -->
-    <TimelinePanel
-      v-if="displayMode === 'timeline'"
-      ref="timelinePanelRef"
-      :orientation="orientation"
-    />
-    <StarPanel
-      v-else-if="displayMode === 'star'"
-      ref="starPanelRef"
-      :node-count="7"
-    />
-    <GlobePanel v-else-if="displayMode === 'globe'" ref="globePanelRef" />
+      <!-- Right Panel: Timeline or Star Panel -->
+      <TimelinePanel
+        v-if="displayMode === 'timeline'"
+        ref="timelinePanelRef"
+        :orientation="orientation"
+      />
+      <StarPanel
+        v-else-if="displayMode === 'star'"
+        ref="starPanelRef"
+        :node-count="7"
+      />
+      <GlobePanel v-else-if="displayMode === 'globe'" ref="globePanelRef" />
+    </div>
   </SearchLayout>
 </template>
 
@@ -46,12 +52,13 @@
   import TimelinePanel from '@/components/timeline/TimelinePanel.vue'
   import StarPanel from '@/components/star/StarPanel.vue'
   import GlobePanel from '@/components/globe/GlobePanel.vue'
+  import BackButton from '@/components/common/BackButton.vue'
 
   const timelinePanelRef = ref<InstanceType<typeof TimelinePanel> | null>(null)
   const starPanelRef = ref<InstanceType<typeof StarPanel> | null>(null)
   const globePanelRef = ref<InstanceType<typeof GlobePanel> | null>(null)
   const orientation = ref<'horizontal' | 'vertical'>('horizontal')
-  const displayMode = ref<'timeline' | 'star' | 'globe'>('timeline')
+  const displayMode = ref<'timeline' | 'star' | 'globe'>('star')
 
   const handleSearch = async (query: string) => {
     // Handle timeline search functionality
@@ -75,8 +82,21 @@
 
   /**
    * Handles keyboard shortcuts for timeline orientation toggle and display mode switching
+   * Shortcuts are disabled when user is typing in an input field
    */
   const handleKeyDown = (event: KeyboardEvent): void => {
+    // Check if the active element is an input field (input, textarea, contenteditable)
+    const activeElement = document.activeElement
+    const isInputField =
+      activeElement instanceof HTMLInputElement ||
+      activeElement instanceof HTMLTextAreaElement ||
+      (activeElement instanceof HTMLElement && activeElement.isContentEditable)
+
+    // Don't trigger shortcuts when typing in input fields
+    if (isInputField) {
+      return
+    }
+
     // 'r' key for timeline orientation
     if (event.key === 'r' || event.key === 'R') {
       event.preventDefault()
@@ -86,18 +106,18 @@
       return
     }
 
-    // 'v' key to cycle through timeline, star, and globe display modes
+    // 'v' key to cycle through star, timeline, and globe display modes
     if (event.key === 'v' || event.key === 'V') {
       event.preventDefault()
       event.stopPropagation()
       const modes: Array<'timeline' | 'star' | 'globe'> = [
-        'timeline',
         'star',
+        'timeline',
         'globe'
       ]
       const currentIndex = modes.indexOf(displayMode.value)
       const nextIndex = (currentIndex + 1) % modes.length
-      displayMode.value = modes[nextIndex] ?? 'timeline'
+      displayMode.value = modes[nextIndex] ?? 'star'
     }
   }
 

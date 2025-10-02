@@ -26,7 +26,7 @@ describe('Search Conversation Integration Tests', () => {
       routes: [
         { path: '/', component: { template: '<div>Home</div>' } },
         {
-          path: '/search-detail/:id',
+          path: '/dashboard/:id',
           name: 'SearchDetail',
           component: { template: '<div>Detail</div>' }
         }
@@ -55,9 +55,9 @@ describe('Search Conversation Integration Tests', () => {
       // Should display results summary with count
       expect(wrapper.text()).toContain('persons were found in the results')
 
-      // Should display search hints
-      expect(wrapper.text()).toContain('What specific software role')
-      expect(wrapper.text()).toContain('California tech hubs')
+      // Should display search hints (generic ones based on default Robert Schmidt query)
+      expect(wrapper.text()).toContain('What specific details about')
+      expect(wrapper.text()).toContain('Location or workplace information')
 
       // Should display action buttons but not file upload
       expect(wrapper.text()).not.toContain('Upload additional documents')
@@ -149,16 +149,16 @@ describe('Search Conversation Integration Tests', () => {
       const wrapper = createSearchResultsWrapper()
       await wrapper.vm.$nextTick()
 
-      // Should display the initial query in the conversation
-      expect(wrapper.text()).toContain('Johnson, who is around 26 years old')
+      // Should display the initial query in the conversation (default is Robert Schmidt)
+      expect(wrapper.text()).toContain('Robert Schmidt')
     })
 
     it('displays user avatar with search query', async () => {
       const wrapper = createSearchResultsWrapper()
       await wrapper.vm.$nextTick()
 
-      // Should display the initial query in the conversation
-      expect(wrapper.text()).toContain('Johnson, who is around 26 years old')
+      // Should display the initial query in the conversation (default is Robert Schmidt)
+      expect(wrapper.text()).toContain('Robert Schmidt')
 
       // Should have user avatar when query is present
       const userAvatar = wrapper.find(
@@ -319,7 +319,7 @@ describe('Search Conversation Integration Tests', () => {
       // Add some mock results to the store to trigger ResultCard rendering
       const mockResults = [
         {
-          id: 1,
+          id: 'test-uuid-1',
           name: 'John Doe',
           age: 30,
           gender: 'Male',

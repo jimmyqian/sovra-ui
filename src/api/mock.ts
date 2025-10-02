@@ -1,5 +1,5 @@
 export interface SearchResult {
-  id: number
+  id: string
   name: string
   age: number
   gender: string
@@ -20,7 +20,7 @@ export interface SearchResponse {
 
 const mockResults: SearchResult[] = [
   {
-    id: 1,
+    id: 'f0a1b2c3-d4e5-4f6a-7b8c-9d0e1f2a3b4c',
     name: 'Johnson Smith',
     age: 26,
     gender: 'Male',
@@ -33,7 +33,7 @@ const mockResults: SearchResult[] = [
     image: 'https://picsum.photos/240/240?random=101'
   },
   {
-    id: 2,
+    id: 'a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d',
     name: 'Johnson Brown',
     age: 28,
     gender: 'Male',
@@ -46,7 +46,7 @@ const mockResults: SearchResult[] = [
     image: 'https://picsum.photos/240/240?random=102'
   },
   {
-    id: 3,
+    id: 'b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e',
     name: 'Johnson Davis',
     age: 25,
     gender: 'Male',
@@ -59,7 +59,7 @@ const mockResults: SearchResult[] = [
     image: 'https://picsum.photos/240/240?random=103'
   },
   {
-    id: 4,
+    id: 'c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f',
     name: 'Johnson Wilson',
     age: 29,
     gender: 'Male',
@@ -72,7 +72,7 @@ const mockResults: SearchResult[] = [
     image: 'https://picsum.photos/240/240?random=104'
   },
   {
-    id: 5,
+    id: 'd4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a',
     name: 'Johnson Miller',
     age: 24,
     gender: 'Male',

@@ -27,7 +27,11 @@ describe('Scroll Chevron Integration Tests', () => {
           component: { template: '<div>Landing</div>' }
         },
         { path: '/search', name: 'SearchResults', component: SearchResults },
-        { path: '/detail/:id', name: 'SearchDetail', component: SearchDetail }
+        {
+          path: '/dashboard/:id',
+          name: 'SearchDetail',
+          component: SearchDetail
+        }
       ]
     })
     vi.clearAllMocks()
@@ -189,7 +193,7 @@ describe('Scroll Chevron Integration Tests', () => {
         props: {
           results: [
             {
-              id: 1,
+              id: 'test-uuid-1',
               name: 'Test Result 1',
               age: 30,
               gender: 'Male',
@@ -201,7 +205,7 @@ describe('Scroll Chevron Integration Tests', () => {
               contacts: 15
             },
             {
-              id: 2,
+              id: 'test-uuid-2',
               name: 'Test Result 2',
               age: 25,
               gender: 'Female',

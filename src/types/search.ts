@@ -1,5 +1,5 @@
 export interface SearchResult {
-  id: number
+  id: string
   name: string
   age: number
   gender: string

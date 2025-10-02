@@ -356,7 +356,7 @@ describe('Search Results Display Integration', () => {
       expect(result).toHaveProperty('contacts')
 
       // Verify data types
-      expect(typeof result.id).toBe('number')
+      expect(typeof result.id).toBe('string')
       expect(typeof result.name).toBe('string')
       expect(typeof result.age).toBe('number')
       expect(typeof result.rating).toBe('number')

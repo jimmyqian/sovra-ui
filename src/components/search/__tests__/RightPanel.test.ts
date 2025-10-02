@@ -1,12 +1,25 @@
 /**
  * RightPanel Component Tests
  * Tests the unified right panel that can switch between results and person details
+ * Tests back button functionality in results view
+ * Tests scroll functionality and layout
+ * Tests conditional fade overlay visibility based on scroll position
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
+import { createRouter, createWebHistory } from 'vue-router'
 import RightPanel from '../RightPanel.vue'
+
+// Mock router
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: { template: '<div>Home</div>' } },
+    { path: '/search', component: { template: '<div>Search</div>' } }
+  ]
+})
 
 // Mock components
 vi.mock('../ResultsList.vue', () => ({
@@ -67,7 +80,7 @@ vi.mock('@/components/layout/CopyrightFooter.vue', () => ({
 }))
 
 const mockSearchResult = {
-  id: 1,
+  id: 'test-uuid-1',
   name: 'John Doe',
   age: 30,
   gender: 'Male',
@@ -94,9 +107,18 @@ describe('RightPanel', () => {
     setActivePinia(createPinia())
   })
 
+  const createWrapper = (props = defaultProps) => {
+    return mount(RightPanel, {
+      props,
+      global: {
+        plugins: [createPinia(), router]
+      }
+    })
+  }
+
   describe('Results View', () => {
     it('should render ResultsList when no person is selected', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
 
       expect(wrapper.find('[data-testid="results-list"]').exists()).toBe(true)
       expect(wrapper.find('[data-testid="person-profile"]').exists()).toBe(
@@ -104,8 +126,15 @@ describe('RightPanel', () => {
       )
     })
 
+    it('should render BackButton in results view', () => {
+      const wrapper = createWrapper()
+
+      const backButton = wrapper.findComponent({ name: 'BackButton' })
+      expect(backButton.exists()).toBe(true)
+    })
+
     it('should pass correct props to ResultsList', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
       const resultsList = wrapper.findComponent({ name: 'ResultsList' })
 
       expect(resultsList.props('results')).toEqual(mockResults)
@@ -114,7 +143,7 @@ describe('RightPanel', () => {
     })
 
     it('should show scroll buttons when results are scrollable', async () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
 
       // Mock scroll container with scrollable content
       const mockContainer = {
@@ -138,23 +167,23 @@ describe('RightPanel', () => {
     })
 
     it('should show load more button when hasMore is true', () => {
-      const wrapper = mount(RightPanel, {
-        props: { ...defaultProps, hasMore: true }
-      })
+      const wrapper = createWrapper({ ...defaultProps, hasMore: true })
       expect(wrapper.text()).toContain('Load More Results')
     })
 
     it('should emit loadMore when load more button is clicked', async () => {
-      const wrapper = mount(RightPanel, {
-        props: { ...defaultProps, hasMore: true }
-      })
+      const wrapper = createWrapper({ ...defaultProps, hasMore: true })
 
-      const loadMoreButton = wrapper.find('button')
-      expect(loadMoreButton.exists()).toBe(true)
-      expect(loadMoreButton.text()).toContain('Load More Results')
+      const buttons = wrapper.findAll('button')
+      const loadMoreButton = buttons.find(btn =>
+        btn.text().includes('Load More Results')
+      )
+      expect(loadMoreButton).toBeTruthy()
 
-      await loadMoreButton.trigger('click')
-      expect(wrapper.emitted('loadMore')).toBeTruthy()
+      if (loadMoreButton) {
+        await loadMoreButton.trigger('click')
+        expect(wrapper.emitted('loadMore')).toBeTruthy()
+      }
     })
   })
 
@@ -165,7 +194,7 @@ describe('RightPanel', () => {
     }
 
     it('should render person details when person is selected', () => {
-      const wrapper = mount(RightPanel, { props: propsWithSelectedPerson })
+      const wrapper = createWrapper(propsWithSelectedPerson)
 
       expect(wrapper.find('[data-testid="results-list"]').exists()).toBe(false)
       expect(wrapper.find('[data-testid="person-profile"]').exists()).toBe(true)
@@ -179,24 +208,28 @@ describe('RightPanel', () => {
     })
 
     it('should show back to results button', () => {
-      const wrapper = mount(RightPanel, { props: propsWithSelectedPerson })
+      const wrapper = createWrapper(propsWithSelectedPerson)
 
       expect(wrapper.text()).toContain('Back to Results')
     })
 
     it('should emit backToResults when back button is clicked', async () => {
-      const wrapper = mount(RightPanel, { props: propsWithSelectedPerson })
+      const wrapper = createWrapper(propsWithSelectedPerson)
 
-      const backButton = wrapper.find('button')
-      expect(backButton.exists()).toBe(true)
-      expect(backButton.text()).toContain('Back to Results')
+      const buttons = wrapper.findAll('button')
+      const backButton = buttons.find(btn =>
+        btn.text().includes('Back to Results')
+      )
+      expect(backButton).toBeTruthy()
 
-      await backButton.trigger('click')
-      expect(wrapper.emitted('backToResults')).toBeTruthy()
+      if (backButton) {
+        await backButton.trigger('click')
+        expect(wrapper.emitted('backToResults')).toBeTruthy()
+      }
     })
 
     it('should generate detailed person data from search result', () => {
-      const wrapper = mount(RightPanel, { props: propsWithSelectedPerson })
+      const wrapper = createWrapper(propsWithSelectedPerson)
       const component = wrapper.vm as any
       const detailedData = component.getDetailedPersonData(mockSearchResult)
 
@@ -210,8 +243,9 @@ describe('RightPanel', () => {
 
     it('should handle single marital status correctly', () => {
       const singlePerson = { ...mockSearchResult, maritalStatus: 'Single' }
-      const wrapper = mount(RightPanel, {
-        props: { ...defaultProps, selectedPerson: singlePerson }
+      const wrapper = createWrapper({
+        ...defaultProps,
+        selectedPerson: singlePerson
       })
       const component = wrapper.vm as any
       const detailedData = component.getDetailedPersonData(singlePerson)
@@ -222,7 +256,7 @@ describe('RightPanel', () => {
 
   describe('Event Handling', () => {
     it('should emit personSelected when ResultsList emits personSelected', async () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
       const resultsList = wrapper.findComponent({ name: 'ResultsList' })
 
       await resultsList.vm.$emit('personSelected', mockSearchResult)
@@ -231,7 +265,7 @@ describe('RightPanel', () => {
     })
 
     it('should emit piClick when footer emits piClick', async () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
       const footer = wrapper.findComponent({ name: 'CopyrightFooter' })
 
       await footer.vm.$emit('piClick')
@@ -241,7 +275,7 @@ describe('RightPanel', () => {
 
   describe('Scroll Functionality', () => {
     it('should handle results scroll events', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
       const component = wrapper.vm as any
 
       // Mock scroll container
@@ -261,7 +295,7 @@ describe('RightPanel', () => {
     })
 
     it('should scroll to top when top scroll button is clicked', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
       const component = wrapper.vm as any
 
       const mockScrollTo = vi.fn()
@@ -279,7 +313,7 @@ describe('RightPanel', () => {
     })
 
     it('should scroll to bottom when bottom scroll button is clicked', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
       const component = wrapper.vm as any
 
       const mockScrollTo = vi.fn()
@@ -302,16 +336,14 @@ describe('RightPanel', () => {
   describe('Error Handling', () => {
     it('should pass error to ResultsList', () => {
       const error = 'Something went wrong'
-      const wrapper = mount(RightPanel, { props: { ...defaultProps, error } })
+      const wrapper = createWrapper({ ...defaultProps, error })
       const resultsList = wrapper.findComponent({ name: 'ResultsList' })
 
       expect(resultsList.props('error')).toBe(error)
     })
 
     it('should handle loading state', () => {
-      const wrapper = mount(RightPanel, {
-        props: { ...defaultProps, isLoading: true }
-      })
+      const wrapper = createWrapper({ ...defaultProps, isLoading: true })
       const resultsList = wrapper.findComponent({ name: 'ResultsList' })
 
       expect(resultsList.props('isLoading')).toBe(true)
@@ -320,7 +352,7 @@ describe('RightPanel', () => {
 
   describe('Responsive Design', () => {
     it('should have proper CSS classes for responsive layout', () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
       const rootElement = wrapper.find('div')
 
       expect(rootElement.classes()).toContain('flex-1')
@@ -331,7 +363,19 @@ describe('RightPanel', () => {
     })
 
     it('should show fade overlays only in results view', async () => {
-      const wrapper = mount(RightPanel, { props: defaultProps })
+      const wrapper = createWrapper()
+      const component = wrapper.vm as any
+
+      // Setup scrollable content scenario
+      component.resultsScrollContainer = {
+        scrollTop: 0,
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      component.handleResultsScroll()
+      await wrapper.vm.$nextTick()
+
+      // Bottom fade should show when there's content below
       expect(wrapper.find('.fade-overlay').exists()).toBe(true)
       expect(wrapper.find('.fade-overlay-top').exists()).toBe(true)
 
@@ -339,6 +383,35 @@ describe('RightPanel', () => {
       await wrapper.vm.$nextTick()
       expect(wrapper.find('.fade-overlay').exists()).toBe(false)
       expect(wrapper.find('.fade-overlay-top').exists()).toBe(false)
+    })
+
+    it('should hide bottom fade when scrolled to bottom', async () => {
+      const wrapper = createWrapper()
+      const component = wrapper.vm as any
+
+      // Setup scrollable content at top
+      component.resultsScrollContainer = {
+        scrollTop: 0,
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      component.handleResultsScroll()
+      await wrapper.vm.$nextTick()
+
+      // Bottom fade should be visible
+      expect(wrapper.find('.fade-overlay').exists()).toBe(true)
+
+      // Scroll to bottom
+      component.resultsScrollContainer = {
+        scrollTop: 200, // scrollHeight - clientHeight = 500 - 300 = 200
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      component.handleResultsScroll()
+      await wrapper.vm.$nextTick()
+
+      // Bottom fade should be hidden
+      expect(wrapper.find('.fade-overlay').exists()).toBe(false)
     })
   })
 })

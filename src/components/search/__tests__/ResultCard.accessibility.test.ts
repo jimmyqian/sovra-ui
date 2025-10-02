@@ -16,7 +16,7 @@ describe('ResultCard Accessibility', () => {
   let router: Router
 
   const mockResult = {
-    id: 1,
+    id: 'test-uuid-1',
     name: 'John Smith',
     age: 35,
     gender: 'Male',
@@ -356,7 +356,7 @@ describe('ResultCard Accessibility', () => {
 
     it('should maintain accessibility with incomplete data', () => {
       const incompleteResult = {
-        id: 2,
+        id: 'test-uuid-2',
         name: '',
         age: 0,
         gender: '',

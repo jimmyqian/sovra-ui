@@ -23,7 +23,7 @@ import {
 describe('Search Utilities', () => {
   const mockResults: SearchResult[] = [
     {
-      id: 1,
+      id: 'test-uuid-1',
       name: 'John Doe',
       age: 30,
       gender: 'Male',
@@ -35,7 +35,7 @@ describe('Search Utilities', () => {
       contacts: 10
     },
     {
-      id: 2,
+      id: 'test-uuid-2',
       name: 'Jane Smith',
       age: 25,
       gender: 'Female',
@@ -47,7 +47,7 @@ describe('Search Utilities', () => {
       contacts: 8
     },
     {
-      id: 3,
+      id: 'test-uuid-3',
       name: 'Alice Johnson',
       age: 35,
       gender: 'Female',

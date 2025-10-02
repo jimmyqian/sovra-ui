@@ -5,7 +5,7 @@ describe('Type Definitions', () => {
   describe('SearchResult interface', () => {
     it('accepts valid SearchResult objects', () => {
       const validSearchResult: SearchResult = {
-        id: 1,
+        id: 'test-uuid-1',
         name: 'John Doe',
         age: 30,
         gender: 'Male',
@@ -18,7 +18,7 @@ describe('Type Definitions', () => {
       }
 
       // Verify all required properties exist
-      expect(validSearchResult.id).toBe(1)
+      expect(validSearchResult.id).toBe('test-uuid-1')
       expect(validSearchResult.name).toBe('John Doe')
       expect(validSearchResult.age).toBe(30)
       expect(validSearchResult.gender).toBe('Male')
@@ -32,7 +32,7 @@ describe('Type Definitions', () => {
 
     it('validates SearchResult property types', () => {
       const searchResult: SearchResult = {
-        id: 123,
+        id: 'test-uuid-123',
         name: 'Jane Smith',
         age: 28,
         gender: 'Female',
@@ -45,7 +45,7 @@ describe('Type Definitions', () => {
       }
 
       // Type validations
-      expect(typeof searchResult.id).toBe('number')
+      expect(typeof searchResult.id).toBe('string')
       expect(typeof searchResult.name).toBe('string')
       expect(typeof searchResult.age).toBe('number')
       expect(typeof searchResult.gender).toBe('string')
@@ -59,7 +59,7 @@ describe('Type Definitions', () => {
 
     it('handles different gender values', () => {
       const maleResult: SearchResult = {
-        id: 1,
+        id: 'test-uuid-1',
         name: 'John',
         age: 25,
         gender: 'Male',
@@ -72,7 +72,7 @@ describe('Type Definitions', () => {
       }
 
       const femaleResult: SearchResult = {
-        id: 2,
+        id: 'test-uuid-2',
         name: 'Jane',
         age: 27,
         gender: 'Female',
@@ -90,7 +90,7 @@ describe('Type Definitions', () => {
 
     it('handles different marital status values', () => {
       const singleResult: SearchResult = {
-        id: 1,
+        id: 'test-uuid-1',
         name: 'Alex',
         age: 24,
         gender: 'Male',
@@ -103,7 +103,7 @@ describe('Type Definitions', () => {
       }
 
       const marriedResult: SearchResult = {
-        id: 2,
+        id: 'test-uuid-2',
         name: 'Sarah',
         age: 32,
         gender: 'Female',
@@ -116,7 +116,7 @@ describe('Type Definitions', () => {
       }
 
       const divorcedResult: SearchResult = {
-        id: 3,
+        id: 'test-uuid-3',
         name: 'Mike',
         age: 38,
         gender: 'Male',
@@ -135,7 +135,7 @@ describe('Type Definitions', () => {
 
     it('handles various rating ranges', () => {
       const lowRatingResult: SearchResult = {
-        id: 1,
+        id: 'test-uuid-1',
         name: 'Test User',
         age: 25,
         gender: 'Male',
@@ -148,7 +148,7 @@ describe('Type Definitions', () => {
       }
 
       const highRatingResult: SearchResult = {
-        id: 2,
+        id: 'test-uuid-2',
         name: 'Another User',
         age: 30,
         gender: 'Female',
@@ -169,7 +169,7 @@ describe('Type Definitions', () => {
     it('works with array of SearchResult objects', () => {
       const searchResults: SearchResult[] = [
         {
-          id: 1,
+          id: 'test-uuid-1',
           name: 'Person One',
           age: 25,
           gender: 'Male',
@@ -181,7 +181,7 @@ describe('Type Definitions', () => {
           contacts: 8
         },
         {
-          id: 2,
+          id: 'test-uuid-2',
           name: 'Person Two',
           age: 30,
           gender: 'Female',
@@ -195,11 +195,11 @@ describe('Type Definitions', () => {
       ]
 
       expect(searchResults).toHaveLength(2)
-      expect(searchResults[0]!.id).toBe(1)
-      expect(searchResults[1]!.id).toBe(2)
+      expect(searchResults[0]!.id).toBe('test-uuid-1')
+      expect(searchResults[1]!.id).toBe('test-uuid-2')
 
       searchResults.forEach(result => {
-        expect(typeof result.id).toBe('number')
+        expect(typeof result.id).toBe('string')
         expect(typeof result.name).toBe('string')
         expect(typeof result.age).toBe('number')
         expect(typeof result.rating).toBe('number')
@@ -349,7 +349,7 @@ describe('Type Definitions', () => {
     it('SearchResult works with common data manipulation functions', () => {
       const results: SearchResult[] = [
         {
-          id: 1,
+          id: 'test-uuid-1',
           name: 'Alice',
           age: 25,
           gender: 'Female',
@@ -361,7 +361,7 @@ describe('Type Definitions', () => {
           contacts: 8
         },
         {
-          id: 2,
+          id: 'test-uuid-2',
           name: 'Bob',
           age: 30,
           gender: 'Male',

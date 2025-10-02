@@ -82,7 +82,7 @@ describe('Mock API Service', () => {
         expect(result).toHaveProperty('companies')
         expect(result).toHaveProperty('contacts')
 
-        expect(typeof result.id).toBe('number')
+        expect(typeof result.id).toBe('string')
         expect(typeof result.name).toBe('string')
         expect(typeof result.age).toBe('number')
         expect(typeof result.gender).toBe('string')
@@ -318,7 +318,7 @@ describe('Mock API Service', () => {
       // Ensure all required fields are present and have correct types
       response.results.forEach(result => {
         // Required number fields
-        expect(typeof result.id).toBe('number')
+        expect(typeof result.id).toBe('string')
         expect(typeof result.age).toBe('number')
         expect(typeof result.rating).toBe('number')
         expect(typeof result.references).toBe('number')

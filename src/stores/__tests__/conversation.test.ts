@@ -186,12 +186,45 @@ describe('useConversationStore', () => {
 
         if (hintsGroup && 'hints' in hintsGroup) {
           hintsGroup.hints[0]?.onClick?.()
-          expect(mockHintClick).toHaveBeenCalledWith('software role')
+          expect(mockHintClick).toHaveBeenCalledWith('details')
         }
 
         if (actionButton && 'onClick' in actionButton) {
           actionButton.onClick?.()
           expect(mockCreateFilter).toHaveBeenCalled()
+        }
+      }
+    })
+
+    it('should initialize with Robert Schmidt as default user query', () => {
+      const store = useConversationStore()
+
+      const userMessage = store.conversationHistory.find(
+        msg => msg.id === 'user-message-1' && msg.sender === 'user'
+      )
+
+      expect(userMessage).toBeTruthy()
+      expect(userMessage?.content).toBe('Robert Schmidt')
+    })
+
+    it('should have Robert Schmidt in default hint texts', () => {
+      const store = useConversationStore()
+
+      const systemMessage = store.conversationHistory.find(
+        msg => msg.id === 'system-response-1' && msg.sender === 'system'
+      )
+
+      expect(systemMessage).toBeTruthy()
+
+      if (systemMessage?.items) {
+        const hintsGroup = systemMessage.items.find(
+          item => item.type === 'hints-group'
+        )
+
+        if (hintsGroup && 'hints' in hintsGroup) {
+          expect(hintsGroup.hints[0]?.text).toContain('Robert Schmidt')
+          expect(hintsGroup.hints[1]?.text).toContain('Robert Schmidt')
+          expect(hintsGroup.hints[2]?.text).toContain('Robert Schmidt')
         }
       }
     })

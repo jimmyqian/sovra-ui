@@ -4,17 +4,48 @@
     <!-- Results View -->
     <div
       v-if="!selectedPerson"
-      ref="resultsScrollContainer"
-      class="flex-1 overflow-y-auto results-scroll"
-      style="min-height: 0; max-height: 100%"
-      @scroll="handleResultsScroll"
+      class="flex-1 flex flex-col max-h-full overflow-hidden"
+      style="min-height: 0"
     >
-      <ResultsList
-        :results="results"
-        :is-loading="isLoading"
-        :error="error"
-        @person-selected="handlePersonSelected"
-      />
+      <!-- Back Navigation -->
+      <div class="flex items-center gap-2 p-6 pb-4">
+        <BackButton />
+      </div>
+
+      <!-- Scrollable results container with overlays -->
+      <div class="flex-1 relative overflow-hidden" style="min-height: 0">
+        <div
+          ref="resultsScrollContainer"
+          class="absolute inset-0 overflow-y-auto results-scroll"
+          @scroll="handleResultsScroll"
+        >
+          <ResultsList
+            :results="results"
+            :is-loading="isLoading"
+            :error="error"
+            @person-selected="handlePersonSelected"
+          />
+        </div>
+
+        <!-- Fade-out gradient overlay at top - shows when scrolled -->
+        <div class="fade-overlay-top" :class="[{ visible: showTopFade }]"></div>
+        <!-- Fade-out gradient overlay at bottom - shows when more content below -->
+        <div v-if="canScrollDown" class="fade-overlay"></div>
+
+        <!-- Scroll Control Buttons for Results -->
+        <ChevronUpIcon
+          v-if="hasScrollableContent && canScrollUp"
+          class="scroll-chevron scroll-chevron-top cursor-pointer"
+          aria-label="Scroll to top"
+          @click="scrollResultsToTop"
+        />
+        <ChevronDownIcon
+          v-if="hasScrollableContent && canScrollDown"
+          class="scroll-chevron scroll-chevron-bottom cursor-pointer"
+          aria-label="Scroll to bottom"
+          @click="scrollResultsToBottom"
+        />
+      </div>
     </div>
 
     <!-- Person Details View -->
@@ -59,29 +90,6 @@
       </main>
     </div>
 
-    <!-- Fade-out gradient overlay at top - shows when scrolled -->
-    <div
-      v-if="!selectedPerson"
-      class="fade-overlay-top"
-      :class="[{ visible: showTopFade }]"
-    ></div>
-    <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
-    <div v-if="!selectedPerson" class="fade-overlay"></div>
-
-    <!-- Scroll Control Buttons for Results -->
-    <ChevronUpIcon
-      v-if="!selectedPerson && hasScrollableContent && canScrollUp"
-      class="scroll-chevron scroll-chevron-top cursor-pointer"
-      aria-label="Scroll to top"
-      @click="scrollResultsToTop"
-    />
-    <ChevronDownIcon
-      v-if="!selectedPerson && hasScrollableContent && canScrollDown"
-      class="scroll-chevron scroll-chevron-bottom cursor-pointer"
-      aria-label="Scroll to bottom"
-      @click="scrollResultsToBottom"
-    />
-
     <!-- Load More Button - Always visible outside scroll area -->
     <div
       v-if="!selectedPerson"
@@ -117,6 +125,7 @@
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
+  import BackButton from '@/components/common/BackButton.vue'
   import type { SearchResult } from '@/types/search'
 
   interface Props {
@@ -341,7 +350,7 @@
 <style scoped>
   .fade-overlay {
     position: absolute;
-    bottom: 128px; /* Above Load More button and footer */
+    bottom: 0;
     left: 0;
     right: 0;
     height: 160px; /* Fixed height instead of percentage */
@@ -409,6 +418,6 @@
   }
 
   .scroll-chevron-bottom {
-    bottom: 144px; /* Above Load More button and footer */
+    bottom: 16px;
   }
 </style>

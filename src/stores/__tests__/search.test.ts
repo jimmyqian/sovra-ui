@@ -150,7 +150,7 @@ describe('Search Store', () => {
   describe('Results Management', () => {
     const mockResults: SearchResult[] = [
       {
-        id: 1,
+        id: 'test-uuid-1',
         name: 'John Doe',
         age: 30,
         gender: 'Male',
@@ -162,7 +162,7 @@ describe('Search Store', () => {
         contacts: 25
       },
       {
-        id: 2,
+        id: 'test-uuid-2',
         name: 'Jane Smith',
         age: 28,
         gender: 'Female',

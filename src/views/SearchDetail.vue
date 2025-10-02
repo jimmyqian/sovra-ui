@@ -20,13 +20,7 @@
       >
         <!-- Back Navigation -->
         <div class="flex items-center gap-2 p-6 pb-0">
-          <button
-            class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
-            @click="handleBackToSearch"
-          >
-            <ChevronLeftIcon />
-            <span>Back to Search Results</span>
-          </button>
+          <BackButton />
         </div>
 
         <main class="p-6 space-y-6">
@@ -89,11 +83,12 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted, watch, nextTick } from 'vue'
-  import { useRoute, useRouter } from 'vue-router'
+  import { useRoute } from 'vue-router'
   import { useConversationStore } from '@/stores/conversation'
   import { useSearchStore } from '@/stores/search'
   import { useSubscriptionStore } from '@/stores/subscription'
   import { useUIStore } from '@/stores/ui'
+  import { getPersonById } from '@/utils/conversationScripts'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
@@ -102,11 +97,10 @@
   import CopyrightFooter from '@/components/layout/CopyrightFooter.vue'
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
-  import ChevronLeftIcon from '@/components/icons/ChevronLeftIcon.vue'
+  import BackButton from '@/components/common/BackButton.vue'
   import UpsellPopup from '@/components/common/UpsellPopup.vue'
 
   const route = useRoute()
-  const router = useRouter()
   const conversationStore = useConversationStore()
   const searchStore = useSearchStore()
   const subscriptionStore = useSubscriptionStore()
@@ -123,10 +117,21 @@
   const showUpsellPopup = ref(false)
 
   // Get person data from route params and search store
-  const personId = computed(() => route.params.id as string)
+  // Default to Robert Schmidt 1 if no ID is provided
+  const ROBERT_SCHMIDT_1_ID = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+  const personId = computed(() => {
+    const id = route.params.id as string | undefined
+    return id && id.trim() !== '' ? id : ROBERT_SCHMIDT_1_ID
+  })
   const selectedPerson = computed(() => {
     if (personId.value) {
-      return searchStore.findPersonById(personId.value)
+      // First try to find in search results
+      const fromSearch = searchStore.findPersonById(personId.value)
+      if (fromSearch) {
+        return fromSearch
+      }
+      // Fallback to person definitions (for direct navigation)
+      return getPersonById(personId.value)
     }
     return null
   })
@@ -269,11 +274,6 @@
     }
   }
 
-  const handleBackToSearch = () => {
-    // Navigate back to search results
-    router.push('/search')
-  }
-
   const handleSearch = async (_query: string) => {
     // Search handling is now done by ConversationPanel component
     // This is just for any additional logic specific to SearchDetail
@@ -356,11 +356,10 @@
       conversationStore.initializeDetailScript(conversationStore.originalQuery)
     }
 
-    // Load person data based on route params
-    const personId = route.params.id as string
-    if (personId) {
+    // Load person data based on route params (or default)
+    if (personId.value) {
       // TODO: Load person data for production
-      // In real app: loadPersonData(personId)
+      // In real app: loadPersonData(personId.value)
     }
 
     // If conversation is empty (cleared from landing), rebuild the default conversation

@@ -4,7 +4,8 @@ import {
   getNextResponse,
   getScriptedResults,
   getDetailScript,
-  getDetailResponse
+  getDetailResponse,
+  getPersonById
 } from '../conversationScripts'
 
 describe('conversationScripts', () => {
@@ -25,9 +26,9 @@ describe('conversationScripts', () => {
       expect(script.resultStages[3]).toHaveLength(1) // Stage 3: 1 result
 
       // Test result content
-      expect(script.resultStages[0]?.[0]?.name).toBe('John Caruso 1')
-      expect(script.resultStages[0]?.[7]?.name).toBe('John Caruso 8')
-      expect(script.resultStages[3]?.[0]?.name).toBe('John Caruso 2')
+      expect(script.resultStages[0]?.[0]?.name).toBe('John Caruso')
+      expect(script.resultStages[0]?.[7]?.name).toBe('John Caruso')
+      expect(script.resultStages[3]?.[0]?.name).toBe('John Caruso')
     })
 
     it('should return John Caruso script for mixed case query', () => {
@@ -75,6 +76,44 @@ describe('conversationScripts', () => {
       expect(script.responses[2]).toBe('Von Miller response 3')
     })
 
+    it('should return Robert Schmidt script for case insensitive "robert schmidt" query', () => {
+      const script = getConversationScript('robert schmidt')
+
+      expect(script.responses).toHaveLength(3)
+      expect(script.responses[0]).toBe('Robert Schmidt response 1')
+      expect(script.responses[1]).toBe('Robert Schmidt response 2')
+      expect(script.responses[2]).toBe('Robert Schmidt response 3')
+
+      // Test result stages
+      expect(script.resultStages).toHaveLength(4)
+      expect(script.resultStages[0]).toHaveLength(8) // Initial: 8 results
+      expect(script.resultStages[1]).toHaveLength(4) // Stage 1: 4 results
+      expect(script.resultStages[2]).toHaveLength(3) // Stage 2: 3 results
+      expect(script.resultStages[3]).toHaveLength(1) // Stage 3: 1 result
+
+      // Test result content
+      expect(script.resultStages[0]?.[0]?.name).toBe('Robert Schmidt')
+      expect(script.resultStages[0]?.[7]?.name).toBe('Robert Schmidt')
+    })
+
+    it('should return Robert Schmidt script for mixed case query', () => {
+      const script = getConversationScript('Robert Schmidt')
+
+      expect(script.responses).toHaveLength(3)
+      expect(script.responses[0]).toBe('Robert Schmidt response 1')
+      expect(script.responses[1]).toBe('Robert Schmidt response 2')
+      expect(script.responses[2]).toBe('Robert Schmidt response 3')
+    })
+
+    it('should return Robert Schmidt script for uppercase query', () => {
+      const script = getConversationScript('ROBERT SCHMIDT')
+
+      expect(script.responses).toHaveLength(3)
+      expect(script.responses[0]).toBe('Robert Schmidt response 1')
+      expect(script.responses[1]).toBe('Robert Schmidt response 2')
+      expect(script.responses[2]).toBe('Robert Schmidt response 3')
+    })
+
     it('should return default script for unrecognized queries', () => {
       const script = getConversationScript('John Smith')
 
@@ -120,34 +159,34 @@ describe('conversationScripts', () => {
     it('should return correct results for stage 0 (initial)', () => {
       const results = getScriptedResults(sampleScript, 0)
       expect(results).toHaveLength(8)
-      expect(results[0]?.name).toBe('John Caruso 1')
-      expect(results[7]?.name).toBe('John Caruso 8')
+      expect(results[0]?.name).toBe('John Caruso')
+      expect(results[7]?.name).toBe('John Caruso')
     })
 
     it('should return correct results for stage 1', () => {
       const results = getScriptedResults(sampleScript, 1)
       expect(results).toHaveLength(4)
-      expect(results[0]?.name).toBe('John Caruso 1')
-      expect(results[3]?.name).toBe('John Caruso 6')
+      expect(results[0]?.name).toBe('John Caruso')
+      expect(results[3]?.name).toBe('John Caruso')
     })
 
     it('should return correct results for stage 2', () => {
       const results = getScriptedResults(sampleScript, 2)
       expect(results).toHaveLength(3)
-      expect(results[0]?.name).toBe('John Caruso 1')
-      expect(results[2]?.name).toBe('John Caruso 4')
+      expect(results[0]?.name).toBe('John Caruso')
+      expect(results[2]?.name).toBe('John Caruso')
     })
 
     it('should return correct results for stage 3 (final)', () => {
       const results = getScriptedResults(sampleScript, 3)
       expect(results).toHaveLength(1)
-      expect(results[0]?.name).toBe('John Caruso 2')
+      expect(results[0]?.name).toBe('John Caruso')
     })
 
     it('should return last stage for out of bounds stage', () => {
       const results = getScriptedResults(sampleScript, 10)
       expect(results).toHaveLength(1)
-      expect(results[0]?.name).toBe('John Caruso 2')
+      expect(results[0]?.name).toBe('John Caruso')
     })
   })
 
@@ -206,6 +245,15 @@ describe('conversationScripts', () => {
         ])
       })
 
+      it('should return Robert Schmidt detail script for robert schmidt query', () => {
+        const script = getDetailScript('robert schmidt')
+        expect(script.responses).toEqual([
+          'Robert Schmidt search detail response 1',
+          'Robert Schmidt search detail response 2',
+          'Robert Schmidt search detail response 3'
+        ])
+      })
+
       it('should return Von Miller detail script for von miller query', () => {
         const script = getDetailScript('von miller')
         expect(script.responses).toEqual([
@@ -252,6 +300,40 @@ describe('conversationScripts', () => {
         const response = getDetailResponse(script, 7) // Index 7 should cycle to index 1
         expect(response).toBe('John Caruso search detail response 2')
       })
+    })
+  })
+
+  describe('getPersonById', () => {
+    it('should return Preston Cole Whittaker III person by UUID', () => {
+      const person = getPersonById('7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d')
+
+      expect(person).toBeTruthy()
+      expect(person?.id).toBe('7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d')
+      expect(person?.name).toBe('Preston Cole Whittaker III')
+      expect(person?.age).toBe(22)
+      expect(person?.gender).toBe('Male')
+      expect(person?.maritalStatus).toBe('Single')
+      expect(person?.location).toBe('Texas')
+      expect(person?.rating).toBe(3.8)
+      expect(person?.references).toBe(15)
+      expect(person?.companies).toBe(2)
+      expect(person?.contacts).toBe(11)
+      expect(person?.image).toBe(
+        'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm2.jpg'
+      )
+    })
+
+    it('should return null for non-existent UUID', () => {
+      const person = getPersonById('non-existent-uuid')
+      expect(person).toBeNull()
+    })
+
+    it('should return existing John Caruso person by UUID', () => {
+      const person = getPersonById('a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d')
+
+      expect(person).toBeTruthy()
+      expect(person?.name).toBe('John Caruso')
+      expect(person?.age).toBe(28)
     })
   })
 })

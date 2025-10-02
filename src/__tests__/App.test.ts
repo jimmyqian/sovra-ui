@@ -36,7 +36,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/search/:id',
+      path: '/dashboard/:id',
       component: {
         name: 'MockSearchDetail',
         template:
@@ -126,8 +126,8 @@ describe('App Component', () => {
       expect(wrapper.find('#app').exists()).toBe(true)
     })
 
-    it('should render search detail page at /search/:id route', async () => {
-      const wrapper = await createWrapper('/search/123')
+    it('should render search detail page at /dashboard/:id route', async () => {
+      const wrapper = await createWrapper('/dashboard/123')
 
       await wrapper.vm.$nextTick()
       // Just verify the router is working, not the specific component content
@@ -148,7 +148,7 @@ describe('App Component', () => {
       const wrapper = await createWrapper('/')
 
       // Navigate to search detail page
-      await router.push('/search/456')
+      await router.push('/dashboard/456')
       await wrapper.vm.$nextTick()
 
       expect(wrapper.find('#app').exists()).toBe(true)
@@ -292,7 +292,7 @@ describe('App Component', () => {
       // Navigate to different routes
       await router.push('/search')
       await wrapper.vm.$nextTick()
-      await router.push('/search/123')
+      await router.push('/dashboard/123')
       await wrapper.vm.$nextTick()
 
       // Should still only be called once
