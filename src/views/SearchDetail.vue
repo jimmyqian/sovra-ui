@@ -123,7 +123,9 @@
   const showUpsellPopup = ref(false)
 
   // Get person data from route params and search store
-  const personId = computed(() => route.params.id as string)
+  // Default to Robert Schmidt 1 if no ID is provided
+  const ROBERT_SCHMIDT_1_ID = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+  const personId = computed(() => (route.params.id as string) ?? ROBERT_SCHMIDT_1_ID)
   const selectedPerson = computed(() => {
     if (personId.value) {
       return searchStore.findPersonById(personId.value)
@@ -356,11 +358,10 @@
       conversationStore.initializeDetailScript(conversationStore.originalQuery)
     }
 
-    // Load person data based on route params
-    const personId = route.params.id as string
-    if (personId) {
+    // Load person data based on route params (or default)
+    if (personId.value) {
       // TODO: Load person data for production
-      // In real app: loadPersonData(personId)
+      // In real app: loadPersonData(personId.value)
     }
 
     // If conversation is empty (cleared from landing), rebuild the default conversation

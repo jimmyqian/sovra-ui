@@ -11,7 +11,7 @@ import './style.css'
 const routes = [
   { path: '/', component: Landing },
   { path: '/search', component: SearchResults },
-  { path: '/dashboard/:id', component: SearchDetail, name: 'SearchDetail' },
+  { path: '/dashboard/:id?', component: SearchDetail, name: 'SearchDetail' },
   { path: '/timeline', component: Timeline, name: 'Timeline' }
 ]
 
