@@ -5,52 +5,50 @@
     @file-upload="handleFileUpload"
     @speech-error="handleSpeechError"
   >
-    <!-- Back Navigation and Hotkey Display -->
-    <div
-      class="absolute top-4 left-4 right-4 z-20 flex justify-between pointer-events-none"
-    >
-      <!-- Back Button -->
-      <button
-        class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors bg-bg-primary px-3 py-2 rounded-lg shadow-lg pointer-events-auto"
-        @click="handleBack"
-      >
-        <ChevronLeftIcon />
-        <span>Back</span>
-      </button>
+    <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
+      <!-- Back Navigation and Keyboard Shortcuts -->
+      <div class="flex items-center justify-between p-6 pb-4">
+        <!-- Back Button -->
+        <button
+          class="flex items-center gap-2 text-text-secondary hover:text-text-primary transition-colors"
+          @click="handleBack"
+        >
+          <ChevronLeftIcon />
+          <span>Back</span>
+        </button>
 
-      <!-- Hotkey Display -->
-      <div
-        class="bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm pointer-events-auto"
-      >
-        <div class="font-semibold mb-2">Keyboard Shortcuts</div>
-        <div class="space-y-1">
-          <div class="flex justify-between items-center gap-4">
-            <span class="text-gray-300">Toggle view:</span>
-            <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">V</kbd>
-          </div>
-          <div
-            v-if="displayMode === 'timeline'"
-            class="flex justify-between items-center gap-4"
-          >
-            <span class="text-gray-300">Rotate timeline:</span>
-            <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
+        <!-- Hotkey Display -->
+        <div class="bg-gray-800 text-white p-3 rounded-lg shadow-lg text-sm">
+          <div class="font-semibold mb-2">Keyboard Shortcuts</div>
+          <div class="space-y-1">
+            <div class="flex justify-between items-center gap-4">
+              <span class="text-gray-300">Toggle view:</span>
+              <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">V</kbd>
+            </div>
+            <div
+              v-if="displayMode === 'timeline'"
+              class="flex justify-between items-center gap-4"
+            >
+              <span class="text-gray-300">Rotate timeline:</span>
+              <kbd class="px-2 py-1 bg-gray-700 rounded text-xs">R</kbd>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Right Panel: Timeline or Star Panel -->
-    <TimelinePanel
-      v-if="displayMode === 'timeline'"
-      ref="timelinePanelRef"
-      :orientation="orientation"
-    />
-    <StarPanel
-      v-else-if="displayMode === 'star'"
-      ref="starPanelRef"
-      :node-count="7"
-    />
-    <GlobePanel v-else-if="displayMode === 'globe'" ref="globePanelRef" />
+      <!-- Right Panel: Timeline or Star Panel -->
+      <TimelinePanel
+        v-if="displayMode === 'timeline'"
+        ref="timelinePanelRef"
+        :orientation="orientation"
+      />
+      <StarPanel
+        v-else-if="displayMode === 'star'"
+        ref="starPanelRef"
+        :node-count="7"
+      />
+      <GlobePanel v-else-if="displayMode === 'globe'" ref="globePanelRef" />
+    </div>
   </SearchLayout>
 </template>
 
