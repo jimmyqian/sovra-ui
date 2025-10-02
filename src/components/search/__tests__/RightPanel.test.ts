@@ -3,6 +3,7 @@
  * Tests the unified right panel that can switch between results and person details
  * Tests back button functionality in results view
  * Tests scroll functionality and layout
+ * Tests conditional fade overlay visibility based on scroll position
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest'
@@ -363,6 +364,18 @@ describe('RightPanel', () => {
 
     it('should show fade overlays only in results view', async () => {
       const wrapper = createWrapper()
+      const component = wrapper.vm as any
+
+      // Setup scrollable content scenario
+      component.resultsScrollContainer = {
+        scrollTop: 0,
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      component.handleResultsScroll()
+      await wrapper.vm.$nextTick()
+
+      // Bottom fade should show when there's content below
       expect(wrapper.find('.fade-overlay').exists()).toBe(true)
       expect(wrapper.find('.fade-overlay-top').exists()).toBe(true)
 
@@ -370,6 +383,35 @@ describe('RightPanel', () => {
       await wrapper.vm.$nextTick()
       expect(wrapper.find('.fade-overlay').exists()).toBe(false)
       expect(wrapper.find('.fade-overlay-top').exists()).toBe(false)
+    })
+
+    it('should hide bottom fade when scrolled to bottom', async () => {
+      const wrapper = createWrapper()
+      const component = wrapper.vm as any
+
+      // Setup scrollable content at top
+      component.resultsScrollContainer = {
+        scrollTop: 0,
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      component.handleResultsScroll()
+      await wrapper.vm.$nextTick()
+
+      // Bottom fade should be visible
+      expect(wrapper.find('.fade-overlay').exists()).toBe(true)
+
+      // Scroll to bottom
+      component.resultsScrollContainer = {
+        scrollTop: 200, // scrollHeight - clientHeight = 500 - 300 = 200
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      component.handleResultsScroll()
+      await wrapper.vm.$nextTick()
+
+      // Bottom fade should be hidden
+      expect(wrapper.find('.fade-overlay').exists()).toBe(false)
     })
   })
 })

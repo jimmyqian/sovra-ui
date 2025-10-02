@@ -29,8 +29,8 @@
 
         <!-- Fade-out gradient overlay at top - shows when scrolled -->
         <div class="fade-overlay-top" :class="[{ visible: showTopFade }]"></div>
-        <!-- Fade-out gradient overlay at bottom - fixed to viewport -->
-        <div class="fade-overlay"></div>
+        <!-- Fade-out gradient overlay at bottom - shows when more content below -->
+        <div v-if="canScrollDown" class="fade-overlay"></div>
 
         <!-- Scroll Control Buttons for Results -->
         <ChevronUpIcon

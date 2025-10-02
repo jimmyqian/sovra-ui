@@ -488,12 +488,40 @@ describe('SearchResults Component', () => {
       expect(topFade.classes()).not.toContain('visible')
     })
 
-    it('should always show bottom fade overlay', () => {
+    it('should show bottom fade overlay when content can scroll down', async () => {
       const wrapper = createWrapper()
+      const rightPanel = wrapper.findComponent({ name: 'RightPanel' })
+      const component = rightPanel.vm
+
+      // Setup scrollable content with more content below
+      component.resultsScrollContainer = {
+        scrollTop: 0,
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      component.handleResultsScroll()
+      await wrapper.vm.$nextTick()
 
       const bottomFade = wrapper.find('.fade-overlay')
       expect(bottomFade.exists()).toBe(true)
-      // Bottom fade should always be visible (no conditional visibility)
+    })
+
+    it('should hide bottom fade overlay when scrolled to bottom', async () => {
+      const wrapper = createWrapper()
+      const rightPanel = wrapper.findComponent({ name: 'RightPanel' })
+      const component = rightPanel.vm
+
+      // Setup scrolled to bottom
+      component.resultsScrollContainer = {
+        scrollTop: 200, // scrollHeight - clientHeight = 500 - 300 = 200
+        scrollHeight: 500,
+        clientHeight: 300
+      }
+      component.handleResultsScroll()
+      await wrapper.vm.$nextTick()
+
+      const bottomFade = wrapper.find('.fade-overlay')
+      expect(bottomFade.exists()).toBe(false)
     })
   })
 
