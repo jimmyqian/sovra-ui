@@ -9,7 +9,8 @@ import Timeline from './views/Timeline.vue'
 import './style.css'
 
 const routes = [
-  { path: '/', component: Landing },
+  { path: '/', redirect: '/dashboard' },
+  { path: '/landing', component: Landing },
   { path: '/search', component: SearchResults },
   { path: '/dashboard/:id?', component: SearchDetail, name: 'SearchDetail' },
   { path: '/timeline', component: Timeline, name: 'Timeline' }
