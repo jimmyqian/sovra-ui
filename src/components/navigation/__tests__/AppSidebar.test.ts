@@ -3,10 +3,12 @@
  * Tests sidebar rendering, navigation icons, layout, hover states, and search popout
  */
 
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
+import { createPinia, setActivePinia } from 'pinia'
 import AppSidebar from '../AppSidebar.vue'
+import { useSearchStore } from '@/stores/search'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -17,10 +19,14 @@ const router = createRouter({
 })
 
 describe('AppSidebar', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
   const createWrapper = () => {
     return mount(AppSidebar, {
       global: {
-        plugins: [router]
+        plugins: [createPinia(), router]
       }
     })
   }
@@ -395,9 +401,7 @@ describe('AppSidebar', () => {
 
       const input = wrapper.find('input[type="text"]')
       expect(input.exists()).toBe(true)
-      expect(input.attributes('placeholder')).toBe(
-        'Search for people, places, events...'
-      )
+      expect(input.attributes('placeholder')).toBe('Search for people')
     })
 
     it('renders search button in popout', async () => {
@@ -413,7 +417,11 @@ describe('AppSidebar', () => {
 
     it('navigates to search page when search button is clicked with query', async () => {
       const wrapper = createWrapper()
-      const pushSpy = vi.spyOn(router, 'push')
+      const searchStore = useSearchStore()
+      const performSearchSpy = vi
+        .spyOn(searchStore, 'performSearch')
+        .mockResolvedValue()
+      const pushSpy = vi.spyOn(router, 'push').mockResolvedValue(undefined)
 
       const searchIcon = wrapper.find('.bg-brand-orange')
       await searchIcon.trigger('click')
@@ -427,16 +435,21 @@ describe('AppSidebar', () => {
       expect(searchButton).toBeTruthy()
       await searchButton?.trigger('click')
 
-      expect(pushSpy).toHaveBeenCalledWith({
-        path: '/search',
-        query: { q: 'test query' }
-      })
+      // Wait for async operations to complete
+      await new Promise(resolve => setTimeout(resolve, 0))
 
+      expect(performSearchSpy).toHaveBeenCalledWith('test query')
+      expect(pushSpy).toHaveBeenCalledWith('/search')
+
+      performSearchSpy.mockRestore()
       pushSpy.mockRestore()
     })
 
     it('closes popout after successful search', async () => {
       const wrapper = createWrapper()
+      const searchStore = useSearchStore()
+      vi.spyOn(searchStore, 'performSearch').mockResolvedValue()
+      vi.spyOn(router, 'push').mockResolvedValue(undefined)
 
       const searchIconDiv = wrapper.find('.bg-brand-orange')
       await searchIconDiv.trigger('click')
@@ -446,7 +459,9 @@ describe('AppSidebar', () => {
 
       const searchButton = wrapper.find('button.bg-brand-orange')
       await searchButton.trigger('click')
-      await wrapper.vm.$nextTick()
+
+      // Wait for async operations to complete
+      await new Promise(resolve => setTimeout(resolve, 0))
 
       const popout = wrapper.find('.absolute.left-full')
       expect(popout.exists()).toBe(false)
@@ -454,7 +469,11 @@ describe('AppSidebar', () => {
 
     it('handles enter key in search input', async () => {
       const wrapper = createWrapper()
-      const pushSpy = vi.spyOn(router, 'push')
+      const searchStore = useSearchStore()
+      const performSearchSpy = vi
+        .spyOn(searchStore, 'performSearch')
+        .mockResolvedValue()
+      const pushSpy = vi.spyOn(router, 'push').mockResolvedValue(undefined)
 
       const searchIcon = wrapper.find('.bg-brand-orange')
       await searchIcon.trigger('click')
@@ -463,11 +482,13 @@ describe('AppSidebar', () => {
       await input.setValue('test query')
       await input.trigger('keyup.enter')
 
-      expect(pushSpy).toHaveBeenCalledWith({
-        path: '/search',
-        query: { q: 'test query' }
-      })
+      // Wait for async operations to complete
+      await new Promise(resolve => setTimeout(resolve, 0))
 
+      expect(performSearchSpy).toHaveBeenCalledWith('test query')
+      expect(pushSpy).toHaveBeenCalledWith('/search')
+
+      performSearchSpy.mockRestore()
       pushSpy.mockRestore()
     })
 

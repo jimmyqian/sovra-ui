@@ -59,7 +59,7 @@
             ref="searchInputRef"
             v-model="searchQuery"
             type="text"
-            placeholder="Search for people, places, events..."
+            placeholder="Search for people"
             class="w-full px-3 py-2 border border-border-light rounded-lg bg-bg-primary text-text-primary placeholder-text-secondary focus:outline-none focus:border-brand-orange"
             @keyup.enter="handleSearch"
             @keyup.esc="closeSearchPopout"
@@ -149,8 +149,12 @@
 <script setup lang="ts">
   import { ref, nextTick, onMounted, onUnmounted } from 'vue'
   import { useRouter } from 'vue-router'
+  import { useSearchStore } from '@/stores/search'
+  import { useConversationStore } from '@/stores/conversation'
 
   const router = useRouter()
+  const searchStore = useSearchStore()
+  const conversationStore = useConversationStore()
   const showSearchPopout = ref(false)
   const searchQuery = ref('')
   const searchInputRef = ref<HTMLInputElement | null>(null)
@@ -169,14 +173,20 @@
     searchQuery.value = ''
   }
 
-  const handleSearch = () => {
-    if (searchQuery.value.trim()) {
-      // Navigate to search results page with query
-      router.push({
-        path: '/search',
-        query: { q: searchQuery.value.trim() }
-      })
+  const handleSearch = async () => {
+    if (!searchQuery.value.trim()) {
+      return
+    }
+
+    try {
+      // Clear previous conversation when starting a new search from sidebar
+      conversationStore.clearConversation()
+
+      await searchStore.performSearch(searchQuery.value)
+      await router.push('/search')
       closeSearchPopout()
+    } catch {
+      // TODO: Implement proper error handling/logging
     }
   }
 
