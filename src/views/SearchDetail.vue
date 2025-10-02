@@ -94,6 +94,7 @@
   import { useSearchStore } from '@/stores/search'
   import { useSubscriptionStore } from '@/stores/subscription'
   import { useUIStore } from '@/stores/ui'
+  import { getPersonById } from '@/utils/conversationScripts'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
@@ -128,7 +129,13 @@
   const personId = computed(() => (route.params.id as string) ?? ROBERT_SCHMIDT_1_ID)
   const selectedPerson = computed(() => {
     if (personId.value) {
-      return searchStore.findPersonById(personId.value)
+      // First try to find in search results
+      const fromSearch = searchStore.findPersonById(personId.value)
+      if (fromSearch) {
+        return fromSearch
+      }
+      // Fallback to person definitions (for direct navigation)
+      return getPersonById(personId.value)
     }
     return null
   })

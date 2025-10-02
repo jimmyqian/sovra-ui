@@ -653,3 +653,11 @@ export function getDetailResponse(
     'Default search detail response'
   )
 }
+
+/**
+ * Get a person by their ID from the person definitions map
+ * Returns null if the person is not found
+ */
+export function getPersonById(id: string): SearchResult | null {
+  return personDefinitions[id] ?? null
+}
