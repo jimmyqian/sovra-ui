@@ -91,6 +91,56 @@
   }
 
   /**
+   * Calculates the distance (in edges) from the hub for each node using BFS
+   */
+  const calculateDistancesFromHub = (
+    nodes: StarNode[],
+    links: StarLink[]
+  ): Map<string, number> => {
+    const distances = new Map<string, number>()
+    const hub = nodes.find(node => node.isHub)
+    if (!hub) return distances
+
+    // Build adjacency list
+    const adjacency = new Map<string, string[]>()
+    nodes.forEach(node => adjacency.set(node.id, []))
+
+    links.forEach(link => {
+      const sourceId =
+        typeof link.source === 'string' ? link.source : link.source.id
+      const targetId =
+        typeof link.target === 'string' ? link.target : link.target.id
+      adjacency.get(sourceId)?.push(targetId)
+      adjacency.get(targetId)?.push(sourceId)
+    })
+
+    // BFS from hub
+    const queue: Array<{ id: string; distance: number }> = [
+      { id: hub.id, distance: 0 }
+    ]
+    const visited = new Set<string>()
+    visited.add(hub.id)
+    distances.set(hub.id, 0)
+
+    while (queue.length > 0) {
+      const current = queue.shift()
+      if (!current) continue
+
+      const neighbors = adjacency.get(current.id) ?? []
+      for (const neighborId of neighbors) {
+        if (!visited.has(neighborId)) {
+          visited.add(neighborId)
+          const distance = current.distance + 1
+          distances.set(neighborId, distance)
+          queue.push({ id: neighborId, distance })
+        }
+      }
+    }
+
+    return distances
+  }
+
+  /**
    * Creates and renders the D3 star graph visualization
    */
   const createStarGraph = (): void => {
@@ -109,6 +159,9 @@
     const nodes = generateNodes()
     const links = generateLinks(nodes)
 
+    // Calculate distance from hub for each node
+    const distances = calculateDistancesFromHub(nodes, links)
+
     // Create SVG
     svg = d3
       .select(container)
@@ -120,7 +173,7 @@
 
     const g = svg.append('g')
 
-    // Create force simulation
+    // Create force simulation with distance-based repulsion
     simulation = d3
       .forceSimulation<StarNode>(nodes)
       .force(
@@ -131,7 +184,18 @@
           .distance(150)
           .strength(0.8)
       )
-      .force('charge', d3.forceManyBody().strength(-100))
+      .force(
+        'charge',
+        d3.forceManyBody().strength((d: StarNode) => {
+          const distance = distances.get(d.id) ?? 1
+          // Hub (distance 0): -400
+          // Direct children (distance 1): -150
+          // Second-level nodes (distance 2): -50
+          if (distance === 0) return -400
+          if (distance === 1) return -150
+          return -50
+        })
+      )
       .force('center', d3.forceCenter(width / 2, height / 2))
       .force('collision', d3.forceCollide().radius(35).strength(0.5))
 
