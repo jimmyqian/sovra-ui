@@ -5,12 +5,6 @@
     @file-upload="handleFileUpload"
     @speech-error="handleSpeechError"
   >
-    <!-- Upsell Popup -->
-    <UpsellPopup
-      v-model="showUpsellPopup"
-      @upgrade="handleUpgrade"
-      @maybe-later="handleMaybeLater"
-    />
     <!-- Right Panel: Person Details -->
     <div class="flex-1 flex flex-col max-h-full overflow-hidden relative">
       <div
@@ -34,10 +28,7 @@
           />
 
           <!-- Detailed Information -->
-          <DetailedResultCard
-            :person="detailedPerson"
-            @show-upsell="handleShowUpsell"
-          />
+          <DetailedResultCard :person="detailedPerson" />
 
           <!-- Category Tabs -->
           <CategoryTabs
@@ -45,7 +36,6 @@
             :professional-data="categoryData.professional"
             :finance-data="categoryData.finance"
             :legal-data="categoryData.legal"
-            @show-upsell="handleShowUpsell"
           />
 
           <!-- Activity Footer -->
@@ -86,8 +76,6 @@
   import { useRoute } from 'vue-router'
   import { useConversationStore } from '@/stores/conversation'
   import { useSearchStore } from '@/stores/search'
-  import { useSubscriptionStore } from '@/stores/subscription'
-  import { useUIStore } from '@/stores/ui'
   import { getPersonById } from '@/utils/conversationScripts'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
@@ -98,13 +86,10 @@
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import BackButton from '@/components/common/BackButton.vue'
-  import UpsellPopup from '@/components/common/UpsellPopup.vue'
 
   const route = useRoute()
   const conversationStore = useConversationStore()
   const searchStore = useSearchStore()
-  const subscriptionStore = useSubscriptionStore()
-  const uiStore = useUIStore()
   const detailScrollContainer = ref<HTMLElement | null>(null)
 
   // Detail panel scroll state
@@ -112,9 +97,6 @@
   const canScrollUp = ref(false)
   const canScrollDown = ref(false)
   const hasScrollableContent = ref(false)
-
-  // Upsell popup state
-  const showUpsellPopup = ref(false)
 
   // Get person data from route params and search store
   // Default to Robert Schmidt 1 if no ID is provided
@@ -321,24 +303,6 @@
     // TODO: Implement filter creation
   }
 
-  // Upsell popup handlers
-  const handleUpgrade = () => {
-    // TODO: Implement actual upgrade flow
-    // In real app, navigate to subscription/payment page
-  }
-
-  const handleMaybeLater = () => {
-    // Maybe track this for remarketing/follow-up
-  }
-
-  const handleShowUpsell = () => {
-    // Only show upsell popup if it hasn't been shown before in this session
-    if (uiStore.canShowUpsellPopup()) {
-      showUpsellPopup.value = true
-      uiStore.markUpsellPopupShown()
-    }
-  }
-
   function handlePiClick() {
     // This function is kept for event binding compatibility but not used
   }
@@ -428,17 +392,6 @@
       })
     }
 
-    // Show upsell popup when user navigates to detail page
-    // Only show if user is not already at maximum subscription level
-    // and hasn't seen the popup before in this session
-    // Small delay to let the page render first
-    setTimeout(() => {
-      if (subscriptionStore.currentLevel < 3 && uiStore.canShowUpsellPopup()) {
-        showUpsellPopup.value = true
-        uiStore.markUpsellPopupShown()
-      }
-    }, 1000)
-
     // Initialize scroll state
     nextTick(() => {
       handleDetailScroll()
@@ -456,11 +409,6 @@
     },
     { deep: true, immediate: true }
   )
-
-  // Expose methods for testing
-  defineExpose({
-    handleShowUpsell
-  })
 </script>
 
 <style scoped>
