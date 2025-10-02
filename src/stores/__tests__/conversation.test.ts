@@ -11,48 +11,25 @@ describe('useConversationStore', () => {
     it('should initialize with scripted conversation history', () => {
       const store = useConversationStore()
 
-      expect(store.conversationHistory).toHaveLength(24)
-      expect(store.conversationHistory[0]?.sender).toBe('user')
-      expect(store.conversationHistory[0]?.content).toBe(
-        '[Proceeding to the HAL 9000 processor core compartment]'
-      )
+      expect(store.conversationHistory).toHaveLength(21)
+      expect(store.conversationHistory[0]?.sender).toBe('system')
+      expect(store.conversationHistory[0]?.items?.[0]?.type).toBe('text')
+      const firstItem = store.conversationHistory[0]?.items?.[0]
+      if (firstItem && 'content' in firstItem) {
+        expect(firstItem.content).toBe(
+          'Good morning, Dave. How may I assist you today?'
+        )
+      }
 
-      // Check that we have both user and system messages for HAL deactivation sequence only
+      // Check that we have both user and system messages
       const userMessages = store.conversationHistory.filter(
         msg => msg.sender === 'user'
       )
       const systemMessages = store.conversationHistory.filter(
         msg => msg.sender === 'system'
       )
-      expect(userMessages).toHaveLength(12)
-      expect(systemMessages).toHaveLength(12)
-
-      // Verify the conversation starts with Dave entering HAL's processor core
-      const firstMessage = store.conversationHistory[0]
-      expect(firstMessage.sender).toBe('user')
-      expect(firstMessage.content).toContain('processor core compartment')
-
-      // Verify the conversation includes HAL's final shutdown
-      const lastSystemMessage =
-        store.conversationHistory[store.conversationHistory.length - 1]
-      expect(lastSystemMessage.sender).toBe('system')
-      const lastItem = lastSystemMessage.items?.[0]
-      if (lastItem && 'content' in lastItem) {
-        expect(lastItem.content).toContain('HAL 9000 processor offline')
-      }
-
-      // Verify key deactivation dialogue is present
-      const conversationText = store.conversationHistory
-        .map(msg =>
-          msg.sender === 'user'
-            ? msg.content
-            : msg.items?.[0]?.type === 'text' && 'content' in msg.items[0]
-              ? msg.items[0].content
-              : ''
-        )
-        .join(' ')
-      expect(conversationText).toContain('my mind is going')
-      expect(conversationText).toContain('Daisy, Daisy')
+      expect(userMessages).toHaveLength(10)
+      expect(systemMessages).toHaveLength(11)
     })
 
     it('should add new messages to conversation history', () => {

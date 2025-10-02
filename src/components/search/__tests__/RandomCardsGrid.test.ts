@@ -1,49 +1,13 @@
 /**
  * Unit tests for RandomCardsGrid component
- * Tests system status dashboard layout and component integration
+ * Tests grid layout, card generation, and click functionality
  */
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import RandomCardsGrid from '../RandomCardsGrid.vue'
 
-// Mock Date for consistent time display in components
-const mockDate = new Date('2023-01-01T10:30:45Z')
-vi.stubGlobal(
-  'Date',
-  class MockDate extends Date {
-    constructor(...args: any[]) {
-      if (args.length === 0) {
-        super('2023-01-01T10:30:45Z')
-      } else {
-        super(...(args as []))
-      }
-    }
-
-    static now() {
-      return mockDate.getTime()
-    }
-
-    toLocaleTimeString(
-      _locale?: string,
-      _options?: Intl.DateTimeFormatOptions
-    ) {
-      return '10:30:45'
-    }
-  }
-)
-
-// Mock setInterval and clearInterval
-vi.stubGlobal(
-  'setInterval',
-  vi.fn((callback: () => void) => {
-    callback() // Execute immediately for testing
-    return 123 // Return fake timer ID
-  })
-)
-vi.stubGlobal('clearInterval', vi.fn())
-
-describe('RandomCardsGrid Component (System Status Dashboard)', () => {
+describe('RandomCardsGrid Component', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
@@ -57,301 +21,244 @@ describe('RandomCardsGrid Component (System Status Dashboard)', () => {
     })
   }
 
-  describe('Component Structure', () => {
-    it('should render the grid container with correct layout', () => {
+  describe('Component Rendering', () => {
+    it('should render the grid container', () => {
       const wrapper = createWrapper()
 
       const gridContainer = wrapper.find('.grid.grid-cols-2')
       expect(gridContainer.exists()).toBe(true)
       expect(gridContainer.classes()).toContain('grid-cols-2')
       expect(gridContainer.classes()).toContain('gap-4')
-      expect(gridContainer.classes()).toContain('auto-rows-max')
     })
 
-    it('should render all system status components', () => {
+    it('should render 20 cards in the grid', () => {
       const wrapper = createWrapper()
 
-      // Check for main monitor components
-      const lifeSupportMonitor = wrapper.findComponent({
-        name: 'LifeSupportMonitor'
-      })
-      const missionOverviewCard = wrapper.findComponent({
-        name: 'MissionOverviewCard'
-      })
-      expect(lifeSupportMonitor.exists()).toBe(true)
-      expect(missionOverviewCard.exists()).toBe(true)
-
-      // Check for all system status cards
-      const navigationCard = wrapper.findComponent({
-        name: 'NavigationStatusCard'
-      })
-      const propulsionCard = wrapper.findComponent({
-        name: 'PropulsionStatusCard'
-      })
-      const lifeSupportCard = wrapper.findComponent({
-        name: 'LifeSupportStatusCard'
-      })
-      const communicationsCard = wrapper.findComponent({
-        name: 'CommunicationsStatusCard'
-      })
-      const powerCard = wrapper.findComponent({ name: 'PowerStatusCard' })
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-
-      expect(navigationCard.exists()).toBe(true)
-      expect(propulsionCard.exists()).toBe(true)
-      expect(lifeSupportCard.exists()).toBe(true)
-      expect(communicationsCard.exists()).toBe(true)
-      expect(powerCard.exists()).toBe(true)
-      expect(computerCard.exists()).toBe(true)
+      const cards = wrapper.findAll('.grid > div')
+      expect(cards).toHaveLength(20)
     })
 
-    it('should render 8 total components in the grid with full-width mission overview', () => {
+    it('should apply random colors to cards', () => {
       const wrapper = createWrapper()
 
-      const gridItems = wrapper.findAll('.grid > div')
-      expect(gridItems).toHaveLength(8)
+      const cards = wrapper.findAll('.grid > div')
+      let hasColorClass = false
 
-      // First item should be full-width (col-span-2)
-      expect(gridItems[0].classes()).toContain('col-span-2')
-      expect(gridItems[0].classes()).toContain('h-64')
+      cards.forEach(card => {
+        const classes = card.classes()
+        const colorClasses = classes.filter(cls => cls.startsWith('bg-'))
+        if (colorClasses.length > 0) {
+          hasColorClass = true
+        }
+      })
+
+      expect(hasColorClass).toBe(true)
     })
 
-    it('should apply proper height classes to different card types', () => {
+    it('should apply random heights to cards', () => {
       const wrapper = createWrapper()
 
-      const gridItems = wrapper.findAll('.grid > div')
+      const cards = wrapper.findAll('.grid > div')
+      let hasHeightStyle = false
 
-      // First item should be full-width mission overview with h-64
-      expect(gridItems[0].classes()).toContain('h-64') // MissionOverviewCard
-      expect(gridItems[0].classes()).toContain('col-span-2')
+      cards.forEach(card => {
+        const style = card.attributes('style')
+        if (style?.includes('height:')) {
+          hasHeightStyle = true
+        }
+      })
 
-      // Second item should have custom height class (life support monitor with all crew graphs)
-      expect(gridItems[1].classes()).toContain('h-[32rem]') // LifeSupportMonitor
-      // Third item should have h-80 class (computer alert)
-      expect(gridItems[2].classes()).toContain('h-80') // ComputerStatusCard
+      expect(hasHeightStyle).toBe(true)
+    })
 
-      // Remaining items should have h-64 class (system cards)
-      for (let i = 3; i < gridItems.length; i++) {
-        expect(gridItems[i].classes()).toContain('h-64')
+    it('should render card content with title and description', () => {
+      const wrapper = createWrapper()
+
+      const firstCard = wrapper.find('.grid > div')
+      expect(firstCard.exists()).toBe(true)
+
+      const cardContent = firstCard.find('.p-4')
+      expect(cardContent.exists()).toBe(true)
+
+      const title = cardContent.find('.font-medium')
+      const description = cardContent.find('.text-sm')
+
+      expect(title.exists()).toBe(true)
+      expect(description.exists()).toBe(true)
+      expect(title.text().length).toBeGreaterThan(0)
+      expect(description.text().length).toBeGreaterThan(0)
+    })
+  })
+
+  describe('Card Interactions', () => {
+    it('should emit card-click event when a card is clicked', async () => {
+      const wrapper = createWrapper()
+
+      const firstCard = wrapper.find('.grid > div')
+      expect(firstCard.exists()).toBe(true)
+
+      await firstCard.trigger('click')
+
+      const emittedEvents = wrapper.emitted('cardClick')
+      expect(emittedEvents).toBeTruthy()
+      expect(emittedEvents).toHaveLength(1)
+
+      const eventPayload = emittedEvents?.[0]?.[0] as {
+        id: number
+        title: string
+        description: string
+        height: number
+        colorClass: string
       }
-    })
-  })
 
-  describe('System Status Integration', () => {
-    it('should arrange cards with full-width mission overview at top', () => {
-      const wrapper = createWrapper()
-
-      // Top row: Full-width Mission Overview
-      const missionOverview = wrapper.findComponent({
-        name: 'MissionOverviewCard'
-      })
-      expect(missionOverview.exists()).toBe(true)
-
-      // Second row: Life Support Monitor (left) + Computer Alert (right)
-      expect(
-        wrapper.findComponent({ name: 'LifeSupportMonitor' }).exists()
-      ).toBe(true)
-      expect(
-        wrapper.findComponent({ name: 'ComputerStatusCard' }).exists()
-      ).toBe(true)
-
-      // Verify critical/alert systems are positioned prominently
-      const computerCard = wrapper.findComponent({ name: 'ComputerStatusCard' })
-      expect(computerCard.exists()).toBe(true)
-
-      // Warning level cards should appear in next positions
-      const commCard = wrapper.findComponent({
-        name: 'CommunicationsStatusCard'
-      })
-      const propCard = wrapper.findComponent({ name: 'PropulsionStatusCard' })
-      expect(commCard.exists()).toBe(true)
-      expect(propCard.exists()).toBe(true)
+      expect(eventPayload).toHaveProperty('id')
+      expect(eventPayload).toHaveProperty('title')
+      expect(eventPayload).toHaveProperty('description')
+      expect(eventPayload).toHaveProperty('height')
+      expect(eventPayload).toHaveProperty('colorClass')
+      expect(typeof eventPayload.id).toBe('number')
+      expect(typeof eventPayload.title).toBe('string')
+      expect(typeof eventPayload.description).toBe('string')
+      expect(typeof eventPayload.height).toBe('number')
+      expect(typeof eventPayload.colorClass).toBe('string')
     })
 
-    it('should display mission-critical information across all cards', () => {
+    it('should apply hover styles correctly', () => {
       const wrapper = createWrapper()
 
-      // Check for 2001 Space Odyssey references
-      expect(wrapper.text()).toContain('DISCOVERY ONE')
-      expect(wrapper.text()).toContain('JUPITER')
-      expect(wrapper.text()).toContain('HAL 9000')
-      expect(wrapper.text()).toContain('AE-35')
+      const firstCard = wrapper.find('.grid > div')
+      expect(firstCard.exists()).toBe(true)
+
+      expect(firstCard.classes()).toContain('cursor-pointer')
+      expect(firstCard.classes()).toContain('transition-all')
+      expect(firstCard.classes()).toContain('hover:shadow-lg')
+      expect(firstCard.classes()).toContain('hover:scale-105')
     })
 
-    it('should show various system statuses including mission alert', () => {
+    it('should have proper accessibility attributes', () => {
       const wrapper = createWrapper()
 
-      // Check for different status types
-      expect(wrapper.text()).toContain('NOMINAL')
-      expect(wrapper.text()).toContain('CAUTION')
-      expect(wrapper.text()).toContain('WARNING')
-      expect(wrapper.text()).toContain('ALERT')
-
-      // Mission should be in ALERT status
-      expect(wrapper.text()).toContain('MISSION: JUPITER - CRITICAL')
-      expect(wrapper.text()).toContain('COMPROMISED')
-      expect(wrapper.text()).toContain('MISSION CRITICAL')
-    })
-
-    it('should display system categories', () => {
-      const wrapper = createWrapper()
-
-      // Check for all system categories
-      expect(wrapper.text()).toContain('NAVIGATION')
-      expect(wrapper.text()).toContain('PROPULSION')
-      expect(wrapper.text()).toContain('CREW STATUS')
-      expect(wrapper.text()).toContain('COMMUNICATIONS')
-      expect(wrapper.text()).toContain('POWER')
-      expect(wrapper.text()).toContain('COMPUTER')
-    })
-
-    it('should have hover effects on grid items', () => {
-      const wrapper = createWrapper()
-
-      const gridItems = wrapper.findAll('.grid > div')
-      gridItems.forEach(item => {
-        // All grid items should have some hover effect styling
-        expect(item.element).toBeDefined()
+      const cards = wrapper.findAll('.grid > div')
+      cards.forEach(card => {
+        expect(card.classes()).toContain('cursor-pointer')
       })
     })
   })
 
-  describe('Layout and Styling', () => {
-    it('should use 2-column grid layout with proper spacing and full-width support', () => {
+  describe('Grid Layout', () => {
+    it('should use 2-column grid layout', () => {
       const wrapper = createWrapper()
 
       const grid = wrapper.find('.grid')
       expect(grid.classes()).toContain('grid-cols-2')
+    })
+
+    it('should have proper gap between cards', () => {
+      const wrapper = createWrapper()
+
+      const grid = wrapper.find('.grid')
       expect(grid.classes()).toContain('gap-4')
+    })
+
+    it('should use auto-rows-max for proper layout', () => {
+      const wrapper = createWrapper()
+
+      const grid = wrapper.find('.grid')
       expect(grid.classes()).toContain('auto-rows-max')
-
-      // Check that first item spans full width
-      const firstItem = wrapper.findAll('.grid > div')[0]
-      expect(firstItem.classes()).toContain('col-span-2')
-    })
-
-    it('should have proper container structure', () => {
-      const wrapper = createWrapper()
-
-      const container = wrapper.find('.w-full.h-full.bg-bg-primary')
-      expect(container.exists()).toBe(true)
-
-      const innerContainer = wrapper.find('.h-full.px-8.py-4.md\\:px-4')
-      expect(innerContainer.exists()).toBe(true)
-    })
-
-    it('should have proper styling structure', () => {
-      const wrapper = createWrapper()
-
-      // Check that component has the expected structure
-      const gridContainer = wrapper.find('.grid')
-      expect(gridContainer.exists()).toBe(true)
-      expect(gridContainer.classes()).toContain('grid-cols-2')
     })
   })
 
-  describe('Component Integration', () => {
-    it('should render all components without errors', () => {
+  describe('Card Properties', () => {
+    it('should generate cards with valid height ranges', () => {
       const wrapper = createWrapper()
 
-      // Verify all components are properly mounted
-      expect(
-        wrapper.findComponent({ name: 'LifeSupportMonitor' }).exists()
-      ).toBe(true)
-      expect(
-        wrapper.findComponent({ name: 'MissionOverviewCard' }).exists()
-      ).toBe(true)
-      expect(
-        wrapper.findComponent({ name: 'NavigationStatusCard' }).exists()
-      ).toBe(true)
-      expect(
-        wrapper.findComponent({ name: 'PropulsionStatusCard' }).exists()
-      ).toBe(true)
-      expect(
-        wrapper.findComponent({ name: 'LifeSupportStatusCard' }).exists()
-      ).toBe(true)
-      expect(
-        wrapper.findComponent({ name: 'CommunicationsStatusCard' }).exists()
-      ).toBe(true)
-      expect(wrapper.findComponent({ name: 'PowerStatusCard' }).exists()).toBe(
-        true
-      )
-      expect(
-        wrapper.findComponent({ name: 'ComputerStatusCard' }).exists()
-      ).toBe(true)
+      const cards = wrapper.findAll('.grid > div')
+      cards.forEach(card => {
+        const style = card.attributes('style')
+        if (style) {
+          const heightMatch = style.match(/height:\s*(\d+)px/)
+          if (heightMatch?.[1]) {
+            const height = parseInt(heightMatch[1], 10)
+            expect(height).toBeGreaterThanOrEqual(120)
+            expect(height).toBeLessThanOrEqual(300)
+          }
+        }
+      })
     })
 
-    it('should have unique grid items', () => {
+    it('should generate unique card IDs', () => {
       const wrapper = createWrapper()
 
-      // Verify all grid items are unique DOM elements
-      const gridItems = wrapper.findAll('.grid > div')
-      const itemElements = new Set()
+      // Verify cards are unique by checking their data-testid attributes
+      const cards = wrapper.findAll('.grid > div')
+      const cardElements = new Set()
 
-      gridItems.forEach(item => {
-        itemElements.add(item.element)
+      cards.forEach(card => {
+        cardElements.add(card.element)
       })
 
-      expect(itemElements.size).toBe(gridItems.length)
+      expect(cardElements.size).toBe(cards.length)
     })
   })
 
-  describe('Content Validation', () => {
-    it('should display authentic spacecraft terminology reflecting mission crisis', () => {
+  describe('Text Content', () => {
+    it('should display meaningful titles', () => {
       const wrapper = createWrapper()
 
-      // Check for realistic spacecraft terms
-      const content = wrapper.text()
-
-      // Navigation terms
-      expect(content).toContain('Guidance')
-      expect(content).toContain('Inertial')
-      expect(content).toContain('Attitude')
-
-      // Mission crisis terms reflecting HAL's actions
-      expect(content).toContain('COMPROMISED')
-      expect(content).toContain('1 AWAKE') // Only Dave Bowman left
-      expect(content).toContain('3 TERMINATED') // Hibernation crew terminated by HAL
-
-      // Crew member status
-      expect(content).toContain('D. Bowman')
-      expect(content).toContain('F. Poole')
-      expect(content).toContain('DECEASED') // Frank Poole killed during EVA
-      expect(content).toContain('J. Kaminski')
-      expect(content).toContain('V. Hunter')
-      expect(content).toContain('C. Whitehead')
-      expect(content).toContain('TERMINATED') // Hibernation crew terminated by HAL
-    })
-
-    it('should show various measurement units and values', () => {
-      const wrapper = createWrapper()
-
-      const content = wrapper.text()
-
-      // Check for realistic measurements
-      expect(content).toMatch(/\d+%/) // Percentages
-      expect(content).toMatch(/\d+\.\d+\s*(AU|KM\/S|MW|KB\/S)/) // Various units
-    })
-  })
-
-  describe('Time Display Integration', () => {
-    it('should display current time in mission overview', () => {
-      const wrapper = createWrapper()
-
-      // Should contain LAST UPDATE with time from mission overview
-      expect(wrapper.text()).toContain('LAST UPDATE:')
-      // The time should be present in the mission overview component
-      const missionOverview = wrapper.findComponent({
-        name: 'MissionOverviewCard'
+      const titles = wrapper.findAll('.font-medium')
+      titles.forEach(title => {
+        expect(title.text()).toMatch(/^[A-Za-z\s]+$/) // Only letters and spaces
+        expect(title.text().length).toBeGreaterThan(3)
       })
-      expect(missionOverview.exists()).toBe(true)
     })
 
-    it('should handle time updates properly', () => {
-      createWrapper()
+    it('should display meaningful descriptions', () => {
+      const wrapper = createWrapper()
 
-      // Verify setInterval was called for time updates
-      expect(setInterval).toHaveBeenCalled()
+      const descriptions = wrapper.findAll('.text-sm')
+      descriptions.forEach(description => {
+        expect(description.text()).toMatch(/^[A-Za-z\s]+$/) // Only letters and spaces
+        expect(description.text().length).toBeGreaterThan(10)
+      })
+    })
+  })
+
+  describe('Styling', () => {
+    it('should apply proper text styling', () => {
+      const wrapper = createWrapper()
+
+      const titles = wrapper.findAll('.font-medium')
+      titles.forEach(title => {
+        expect(title.classes()).toContain('text-white')
+        expect(title.classes()).toContain('text-opacity-90')
+      })
+
+      const descriptions = wrapper.findAll('.text-sm')
+      descriptions.forEach(description => {
+        expect(description.classes()).toContain('text-white')
+        expect(description.classes()).toContain('text-opacity-70')
+      })
+    })
+
+    it('should have proper card structure', () => {
+      const wrapper = createWrapper()
+
+      const cardContents = wrapper.findAll('.p-4')
+      cardContents.forEach(content => {
+        expect(content.classes()).toContain('h-full')
+        expect(content.classes()).toContain('flex')
+        expect(content.classes()).toContain('flex-col')
+        expect(content.classes()).toContain('justify-between')
+      })
+    })
+
+    it('should have rounded corners on cards', () => {
+      const wrapper = createWrapper()
+
+      const cards = wrapper.findAll('.grid > div')
+      cards.forEach(card => {
+        expect(card.classes()).toContain('rounded-lg')
+      })
     })
   })
 })
