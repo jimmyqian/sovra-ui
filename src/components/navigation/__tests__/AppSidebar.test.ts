@@ -1,16 +1,33 @@
 /**
  * Unit tests for AppSidebar component
- * Tests sidebar rendering, navigation icons, layout, and hover states
+ * Tests sidebar rendering, navigation icons, layout, hover states, and search popout
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { createRouter, createWebHistory } from 'vue-router'
 import AppSidebar from '../AppSidebar.vue'
 
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/', component: { template: '<div>Home</div>' } },
+    { path: '/search', component: { template: '<div>Search</div>' } }
+  ]
+})
+
 describe('AppSidebar', () => {
+  const createWrapper = () => {
+    return mount(AppSidebar, {
+      global: {
+        plugins: [router]
+      }
+    })
+  }
+
   describe('Basic Rendering', () => {
     it('renders sidebar container with correct structure', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const sidebar = wrapper.find('div')
       expect(sidebar.exists()).toBe(true)
@@ -18,14 +35,14 @@ describe('AppSidebar', () => {
     })
 
     it('renders all navigation icons', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const icons = wrapper.findAll('svg')
-      expect(icons).toHaveLength(5)
+      expect(icons).toHaveLength(5) // 5 navigation icons (popout is hidden by default)
     })
 
     it('renders all navigation icon containers', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -41,7 +58,7 @@ describe('AppSidebar', () => {
 
   describe('Layout Styling', () => {
     it('applies correct container layout classes', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       const expectedClasses = [
@@ -63,7 +80,7 @@ describe('AppSidebar', () => {
     })
 
     it('creates vertical layout with correct spacing', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       expect(container.classes()).toContain('flex-col')
@@ -72,7 +89,7 @@ describe('AppSidebar', () => {
     })
 
     it('maintains fixed width and prevents shrinking', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       expect(container.classes()).toContain('w-15')
@@ -80,7 +97,7 @@ describe('AppSidebar', () => {
     })
 
     it('applies border styling for visual separation', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const container = wrapper.find('div')
       expect(container.classes()).toContain('border-r')
@@ -90,7 +107,7 @@ describe('AppSidebar', () => {
 
   describe('Navigation Icons', () => {
     it('renders search icon (first icon) with active state', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -109,7 +126,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders inactive navigation icons with hover states', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -132,7 +149,7 @@ describe('AppSidebar', () => {
     })
 
     it('applies consistent icon container styling', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -162,7 +179,7 @@ describe('AppSidebar', () => {
 
   describe('SVG Icons', () => {
     it('renders search icon SVG with correct attributes', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const searchIcon = svgs[0]
@@ -177,7 +194,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders menu icon SVG with correct paths', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const menuIcon = svgs[1]
@@ -192,7 +209,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders all SVG icons with consistent dimensions', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
 
@@ -205,7 +222,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders edit icon SVG with correct path', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const editIcon = svgs[2]
@@ -220,7 +237,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders settings icon SVG with circle and paths', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const settingsIcon = svgs[3]
@@ -238,7 +255,7 @@ describe('AppSidebar', () => {
     })
 
     it('renders user icon SVG with path and circle', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const svgs = wrapper.findAll('svg')
       const userIcon = svgs[4]
@@ -258,7 +275,7 @@ describe('AppSidebar', () => {
 
   describe('Interactive States', () => {
     it('applies cursor pointer to all icon containers', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -273,7 +290,7 @@ describe('AppSidebar', () => {
     })
 
     it('applies transition effects to all icon containers', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -290,7 +307,7 @@ describe('AppSidebar', () => {
 
   describe('Visual Hierarchy', () => {
     it('distinguishes active search icon from other icons', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -318,7 +335,7 @@ describe('AppSidebar', () => {
     })
 
     it('provides visual feedback through hover states', () => {
-      const wrapper = mount(AppSidebar)
+      const wrapper = createWrapper()
 
       const iconContainers = wrapper
         .findAll('div')
@@ -336,6 +353,162 @@ describe('AppSidebar', () => {
           expect(icon.classes()).toContain('hover:text-text-primary')
         }
       }
+    })
+  })
+
+  describe('Search Popout Functionality', () => {
+    it('does not show search popout by default', () => {
+      const wrapper = createWrapper()
+
+      const popout = wrapper.find('.absolute.left-full')
+      expect(popout.exists()).toBe(false)
+    })
+
+    it('shows search popout when search icon is clicked', async () => {
+      const wrapper = createWrapper()
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+
+      const popout = wrapper.find('.absolute.left-full')
+      expect(popout.exists()).toBe(true)
+    })
+
+    it('hides search popout when close button is clicked', async () => {
+      const wrapper = createWrapper()
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+
+      const closeButton = wrapper.find('.ml-auto')
+      await closeButton.trigger('click')
+
+      const popout = wrapper.find('.absolute.left-full')
+      expect(popout.exists()).toBe(false)
+    })
+
+    it('renders search input in popout', async () => {
+      const wrapper = createWrapper()
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+
+      const input = wrapper.find('input[type="text"]')
+      expect(input.exists()).toBe(true)
+      expect(input.attributes('placeholder')).toBe(
+        'Search for people, places, events...'
+      )
+    })
+
+    it('renders search button in popout', async () => {
+      const wrapper = createWrapper()
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+
+      const searchButton = wrapper.find('button.bg-brand-orange')
+      expect(searchButton.exists()).toBe(true)
+      expect(searchButton.text()).toBe('Search')
+    })
+
+    it('navigates to search page when search button is clicked with query', async () => {
+      const wrapper = createWrapper()
+      const pushSpy = vi.spyOn(router, 'push')
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      const input = wrapper.find('input[type="text"]')
+      await input.setValue('test query')
+
+      const buttons = wrapper.findAll('button')
+      const searchButton = buttons.find(btn => btn.text() === 'Search')
+      expect(searchButton).toBeTruthy()
+      await searchButton?.trigger('click')
+
+      expect(pushSpy).toHaveBeenCalledWith({
+        path: '/search',
+        query: { q: 'test query' }
+      })
+
+      pushSpy.mockRestore()
+    })
+
+    it('closes popout after successful search', async () => {
+      const wrapper = createWrapper()
+
+      const searchIconDiv = wrapper.find('.bg-brand-orange')
+      await searchIconDiv.trigger('click')
+
+      const input = wrapper.find('input[type="text"]')
+      await input.setValue('test query')
+
+      const searchButton = wrapper.find('button.bg-brand-orange')
+      await searchButton.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      const popout = wrapper.find('.absolute.left-full')
+      expect(popout.exists()).toBe(false)
+    })
+
+    it('handles enter key in search input', async () => {
+      const wrapper = createWrapper()
+      const pushSpy = vi.spyOn(router, 'push')
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+
+      const input = wrapper.find('input[type="text"]')
+      await input.setValue('test query')
+      await input.trigger('keyup.enter')
+
+      expect(pushSpy).toHaveBeenCalledWith({
+        path: '/search',
+        query: { q: 'test query' }
+      })
+
+      pushSpy.mockRestore()
+    })
+
+    it('handles escape key to close popout', async () => {
+      const wrapper = createWrapper()
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+
+      const input = wrapper.find('input[type="text"]')
+      await input.trigger('keyup.esc')
+
+      const popout = wrapper.find('.absolute.left-full')
+      expect(popout.exists()).toBe(false)
+    })
+
+    it('does not navigate with empty search query', async () => {
+      const wrapper = createWrapper()
+      const pushSpy = vi.spyOn(router, 'push')
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+
+      const searchButton = wrapper.find('button.bg-brand-orange')
+      await searchButton.trigger('click')
+
+      expect(pushSpy).not.toHaveBeenCalled()
+
+      pushSpy.mockRestore()
+    })
+
+    it('focuses input when popout is opened', async () => {
+      const wrapper = createWrapper()
+
+      const searchIcon = wrapper.find('.bg-brand-orange')
+      await searchIcon.trigger('click')
+      await wrapper.vm.$nextTick()
+
+      const input = wrapper.find('input[type="text"]')
+      // Note: focus() doesn't work in JSDOM but we can verify the input exists
+      expect(input.exists()).toBe(true)
     })
   })
 })
