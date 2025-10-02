@@ -29,7 +29,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 23,
     companies: 3,
     contacts: 18,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc1.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc1.webp'
   },
   'b2c3d4e5-f6a7-4b6c-9d0e-1f2a3b4c5d6e': {
     id: 'b2c3d4e5-f6a7-4b6c-9d0e-1f2a3b4c5d6e',
@@ -94,7 +94,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 33,
     companies: 6,
     contacts: 24,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc6.webp'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc6.jpeg'
   },
   'a7b8c9d0-e1f2-4a1b-4c5d-6e7f8a9b0c1d': {
     id: 'a7b8c9d0-e1f2-4a1b-4c5d-6e7f8a9b0c1d',
@@ -107,7 +107,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 16,
     companies: 2,
     contacts: 12,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc7.webp'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc7.jpg'
   },
   'b8c9d0e1-f2a3-4b2c-5d6e-7f8a9b0c1d2e': {
     id: 'b8c9d0e1-f2a3-4b2c-5d6e-7f8a9b0c1d2e',
@@ -199,7 +199,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 37,
     companies: 7,
     contacts: 27,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm6.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm6.webp'
   },
   'c5d6e7f8-a9b0-4c1d-2e3f-4a5b6c7d8e9f': {
     id: 'c5d6e7f8-a9b0-4c1d-2e3f-4a5b6c7d8e9f',
@@ -212,7 +212,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 25,
     companies: 4,
     contacts: 18,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm7.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm7.webp'
   },
   'd6e7f8a9-b0c1-4d2e-3f4a-5b6c7d8e9f0a': {
     id: 'd6e7f8a9-b0c1-4d2e-3f4a-5b6c7d8e9f0a',
@@ -239,7 +239,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 25,
     companies: 3,
     contacts: 18,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/rs1.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i1.png'
   },
   'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c': {
     id: 'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c',
@@ -252,7 +252,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 32,
     companies: 2,
     contacts: 21,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/rs2.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i2.png'
   },
   'a7b8c9d0-e1f2-4a3b-4c5d-6e7f8a9b0c1d': {
     id: 'a7b8c9d0-e1f2-4a3b-4c5d-6e7f8a9b0c1d',
@@ -265,7 +265,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 19,
     companies: 4,
     contacts: 14,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/rs3.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i3.png'
   },
   'b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e': {
     id: 'b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e',
@@ -278,7 +278,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 38,
     companies: 5,
     contacts: 27,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/rs4.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i4.png'
   },
   'c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3a': {
     id: 'c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3a',
@@ -291,7 +291,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 22,
     companies: 3,
     contacts: 16,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/rs5.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i5.png'
   },
   'd0e1f2a3-b4c5-4d6e-7f8a-9b0c1d2e3f4b': {
     id: 'd0e1f2a3-b4c5-4d6e-7f8a-9b0c1d2e3f4b',
@@ -304,7 +304,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 33,
     companies: 6,
     contacts: 24,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/rs6.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i6.png'
   },
   'e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5c': {
     id: 'e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5c',
@@ -317,7 +317,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 17,
     companies: 2,
     contacts: 12,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/rs7.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/i7.png'
   },
   'f2a3b4c5-d6e7-4f8a-9b0c-1d2e3f4a5b6d': {
     id: 'f2a3b4c5-d6e7-4f8a-9b0c-1d2e3f4a5b6d',
@@ -330,7 +330,7 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 29,
     companies: 4,
     contacts: 19,
-    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/rs8.jpg'
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/profile.png'
   },
   // Default Example persons
   'a3b4c5d6-e7f8-491a-0b1c-2d3e4f5a6b7c': {
