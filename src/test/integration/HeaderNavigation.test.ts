@@ -86,8 +86,17 @@ describe('Header Navigation Integration', () => {
     expect(leftPanel.findComponent(AppHeader).exists()).toBe(true)
   })
 
-  it('displays sidebar navigation correctly', () => {
-    const wrapper = mount(AppSidebar)
+  it('displays sidebar navigation correctly', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const router = createMockRouter()
+    await router.push('/')
+
+    const wrapper = mount(AppSidebar, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
 
     // Verify sidebar structure
     expect(wrapper.find('.w-15.bg-bg-card').exists()).toBe(true)
@@ -175,8 +184,17 @@ describe('Header Navigation Integration', () => {
     expect(searchLogo.find('span').text()).toBe('SOVRa')
   })
 
-  it('verifies navigation accessibility features', () => {
-    const sidebarWrapper = mount(AppSidebar)
+  it('verifies navigation accessibility features', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const router = createMockRouter()
+    await router.push('/')
+
+    const sidebarWrapper = mount(AppSidebar, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
 
     // Verify navigation items are properly structured for accessibility
     const navItems = sidebarWrapper.findAll('.w-10.h-10')
@@ -233,8 +251,18 @@ describe('Header Navigation Integration', () => {
     expect(mainLayout.exists()).toBe(true)
   })
 
-  it('validates navigation item icons and styling', () => {
-    const wrapper = mount(AppSidebar)
+  it('validates navigation item icons and styling', async () => {
+    const pinia = createPinia()
+    setActivePinia(pinia)
+    const router = createMockRouter()
+    await router.push('/')
+
+    const wrapper = mount(AppSidebar, {
+      global: {
+        plugins: [router, pinia]
+      }
+    })
+
     const navItems = wrapper.findAll('.w-10.h-10')
 
     // Verify search icon (first item)

@@ -136,7 +136,7 @@ describe('Scroll Chevron Integration Tests', () => {
 
   describe('SearchDetail Page Chevrons', () => {
     it('should render chevrons with brand orange styling in SearchDetail', async () => {
-      await router.push('/detail/test-id')
+      await router.push('/dashboard/test-id')
       const wrapper = mount(SearchDetail, {
         global: {
           plugins: [pinia, router]
@@ -188,7 +188,7 @@ describe('Scroll Chevron Integration Tests', () => {
     it('should render chevrons with brand orange styling in RightPanel', async () => {
       const wrapper = mount(RightPanel, {
         global: {
-          plugins: [pinia]
+          plugins: [pinia, router]
         },
         props: {
           results: [

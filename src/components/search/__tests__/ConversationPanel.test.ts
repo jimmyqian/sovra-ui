@@ -6,13 +6,27 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
+import { createRouter, createWebHistory } from 'vue-router'
 import ConversationPanel from '../ConversationPanel.vue'
 import { useSearchStore } from '@/stores/search'
 import { useConversationStore } from '@/stores/conversation'
 
 describe('ConversationPanel', () => {
-  beforeEach(() => {
+  let router: ReturnType<typeof createRouter>
+
+  beforeEach(async () => {
     setActivePinia(createPinia())
+
+    router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', component: { template: '<div>Home</div>' } },
+        { path: '/search', component: { template: '<div>Search</div>' } }
+      ]
+    })
+
+    await router.push('/')
+    await router.isReady()
   })
 
   const createWrapper = (props = {}) => {
@@ -22,6 +36,7 @@ describe('ConversationPanel', () => {
         ...props
       },
       global: {
+        plugins: [router],
         stubs: {
           AppHeader: {
             template: '<div class="app-header">Header</div>'

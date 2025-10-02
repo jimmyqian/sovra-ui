@@ -86,13 +86,19 @@ Object.defineProperty(SVGElement.prototype, 'getComputedTextLength', {
 describe('Timeline Component', () => {
   let router: any
 
-  beforeEach(() => {
+  beforeEach(async () => {
     setActivePinia(createPinia())
 
     router = createRouter({
       history: createWebHistory(),
-      routes: [{ path: '/timeline', component: Timeline }]
+      routes: [
+        { path: '/', component: { template: '<div>Home</div>' } },
+        { path: '/timeline', component: Timeline }
+      ]
     })
+
+    await router.push('/timeline')
+    await router.isReady()
   })
 
   const createWrapper = () => {

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createRouter, createWebHistory } from 'vue-router'
 import PersonProfile from '../PersonProfile.vue'
@@ -16,6 +16,24 @@ vi.mock('@/components/ui/Button.vue', () => ({
 }))
 
 describe('PersonProfile', () => {
+  let router: ReturnType<typeof createRouter>
+
+  beforeEach(async () => {
+    router = createRouter({
+      history: createWebHistory(),
+      routes: [
+        { path: '/', component: { template: '<div>Home</div>' } },
+        {
+          path: '/dashboard/:id',
+          component: { template: '<div>Dashboard</div>' }
+        }
+      ]
+    })
+
+    await router.push('/')
+    await router.isReady()
+  })
+
   const mockPerson = {
     name: 'Johnson Smith',
     tags: [
@@ -33,6 +51,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -44,6 +63,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -63,6 +83,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -74,6 +95,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -96,6 +118,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -126,6 +149,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -144,6 +168,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -168,6 +193,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -196,6 +222,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -217,6 +244,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -232,6 +260,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -253,6 +282,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: personWithoutTags },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -277,6 +307,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: personWithLongDesc },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -295,6 +326,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: personWithUnknownTags },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -310,6 +342,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -323,6 +356,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
@@ -354,6 +388,7 @@ describe('PersonProfile', () => {
     const wrapper = mount(PersonProfile, {
       props: { person: mockPerson },
       global: {
+        plugins: [router],
         components: { Button }
       }
     })
