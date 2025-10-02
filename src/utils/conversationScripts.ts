@@ -20,7 +20,7 @@ const personDefinitions: Record<string, SearchResult> = {
   // John Caruso persons
   'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d': {
     id: 'a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d',
-    name: 'John Caruso 1',
+    name: 'John Caruso',
     age: 28,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -33,7 +33,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'b2c3d4e5-f6a7-4b6c-9d0e-1f2a3b4c5d6e': {
     id: 'b2c3d4e5-f6a7-4b6c-9d0e-1f2a3b4c5d6e',
-    name: 'John Caruso 2',
+    name: 'John Caruso',
     age: 34,
     gender: 'Male',
     maritalStatus: 'Married',
@@ -46,7 +46,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'c3d4e5f6-a7b8-4c7d-0e1f-2a3b4c5d6e7f': {
     id: 'c3d4e5f6-a7b8-4c7d-0e1f-2a3b4c5d6e7f',
-    name: 'John Caruso 3',
+    name: 'John Caruso',
     age: 31,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -59,7 +59,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'd4e5f6a7-b8c9-4d8e-1f2a-3b4c5d6e7f8a': {
     id: 'd4e5f6a7-b8c9-4d8e-1f2a-3b4c5d6e7f8a',
-    name: 'John Caruso 4',
+    name: 'John Caruso',
     age: 42,
     gender: 'Male',
     maritalStatus: 'Divorced',
@@ -72,7 +72,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'e5f6a7b8-c9d0-4e9f-2a3b-4c5d6e7f8a9b': {
     id: 'e5f6a7b8-c9d0-4e9f-2a3b-4c5d6e7f8a9b',
-    name: 'John Caruso 5',
+    name: 'John Caruso',
     age: 29,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -85,7 +85,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'f6a7b8c9-d0e1-4f0a-3b4c-5d6e7f8a9b0c': {
     id: 'f6a7b8c9-d0e1-4f0a-3b4c-5d6e7f8a9b0c',
-    name: 'John Caruso 6',
+    name: 'John Caruso',
     age: 37,
     gender: 'Male',
     maritalStatus: 'Married',
@@ -98,7 +98,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'a7b8c9d0-e1f2-4a1b-4c5d-6e7f8a9b0c1d': {
     id: 'a7b8c9d0-e1f2-4a1b-4c5d-6e7f8a9b0c1d',
-    name: 'John Caruso 7',
+    name: 'John Caruso',
     age: 25,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -111,7 +111,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'b8c9d0e1-f2a3-4b2c-5d6e-7f8a9b0c1d2e': {
     id: 'b8c9d0e1-f2a3-4b2c-5d6e-7f8a9b0c1d2e',
-    name: 'John Caruso 8',
+    name: 'John Caruso',
     age: 33,
     gender: 'Male',
     maritalStatus: 'Married',
@@ -125,7 +125,7 @@ const personDefinitions: Record<string, SearchResult> = {
   // Von Miller persons
   'c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3f': {
     id: 'c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3f',
-    name: 'Von Miller 1',
+    name: 'Von Miller',
     age: 33,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -138,7 +138,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'd0e1f2a3-b4c5-4d6e-7f8a-9b0c1d2e3f4a': {
     id: 'd0e1f2a3-b4c5-4d6e-7f8a-9b0c1d2e3f4a',
-    name: 'Von Miller 2',
+    name: 'Von Miller',
     age: 29,
     gender: 'Male',
     maritalStatus: 'Married',
@@ -151,7 +151,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b': {
     id: 'e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5b',
-    name: 'Von Miller 3',
+    name: 'Von Miller',
     age: 31,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -164,7 +164,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'f2a3b4c5-d6e7-4f8a-9b0c-1d2e3f4a5b6c': {
     id: 'f2a3b4c5-d6e7-4f8a-9b0c-1d2e3f4a5b6c',
-    name: 'Von Miller 4',
+    name: 'Von Miller',
     age: 36,
     gender: 'Male',
     maritalStatus: 'Divorced',
@@ -177,7 +177,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'a3b4c5d6-e7f8-4a9b-0c1d-2e3f4a5b6c7d': {
     id: 'a3b4c5d6-e7f8-4a9b-0c1d-2e3f4a5b6c7d',
-    name: 'Von Miller 5',
+    name: 'Von Miller',
     age: 27,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -190,7 +190,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'b4c5d6e7-f8a9-4b0c-1d2e-3f4a5b6c7d8e': {
     id: 'b4c5d6e7-f8a9-4b0c-1d2e-3f4a5b6c7d8e',
-    name: 'Von Miller 6',
+    name: 'Von Miller',
     age: 40,
     gender: 'Male',
     maritalStatus: 'Married',
@@ -203,7 +203,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'c5d6e7f8-a9b0-4c1d-2e3f-4a5b6c7d8e9f': {
     id: 'c5d6e7f8-a9b0-4c1d-2e3f-4a5b6c7d8e9f',
-    name: 'Von Miller 7',
+    name: 'Von Miller',
     age: 32,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -216,7 +216,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'd6e7f8a9-b0c1-4d2e-3f4a-5b6c7d8e9f0a': {
     id: 'd6e7f8a9-b0c1-4d2e-3f4a-5b6c7d8e9f0a',
-    name: 'Von Miller 8',
+    name: 'Von Miller',
     age: 35,
     gender: 'Male',
     maritalStatus: 'Married',
@@ -230,7 +230,7 @@ const personDefinitions: Record<string, SearchResult> = {
   // Robert Schmidt persons
   'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b': {
     id: 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b',
-    name: 'Robert Schmidt 1',
+    name: 'Robert Schmidt',
     age: 32,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -243,7 +243,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c': {
     id: 'f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c',
-    name: 'Robert Schmidt 2',
+    name: 'Robert Schmidt',
     age: 28,
     gender: 'Male',
     maritalStatus: 'Married',
@@ -256,7 +256,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'a7b8c9d0-e1f2-4a3b-4c5d-6e7f8a9b0c1d': {
     id: 'a7b8c9d0-e1f2-4a3b-4c5d-6e7f8a9b0c1d',
-    name: 'Robert Schmidt 3',
+    name: 'Robert Schmidt',
     age: 35,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -269,7 +269,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e': {
     id: 'b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e',
-    name: 'Robert Schmidt 4',
+    name: 'Robert Schmidt',
     age: 41,
     gender: 'Male',
     maritalStatus: 'Divorced',
@@ -282,7 +282,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3a': {
     id: 'c9d0e1f2-a3b4-4c5d-6e7f-8a9b0c1d2e3a',
-    name: 'Robert Schmidt 5',
+    name: 'Robert Schmidt',
     age: 30,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -295,7 +295,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'd0e1f2a3-b4c5-4d6e-7f8a-9b0c1d2e3f4b': {
     id: 'd0e1f2a3-b4c5-4d6e-7f8a-9b0c1d2e3f4b',
-    name: 'Robert Schmidt 6',
+    name: 'Robert Schmidt',
     age: 37,
     gender: 'Male',
     maritalStatus: 'Married',
@@ -308,7 +308,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5c': {
     id: 'e1f2a3b4-c5d6-4e7f-8a9b-0c1d2e3f4a5c',
-    name: 'Robert Schmidt 7',
+    name: 'Robert Schmidt',
     age: 26,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -321,7 +321,7 @@ const personDefinitions: Record<string, SearchResult> = {
   },
   'f2a3b4c5-d6e7-4f8a-9b0c-1d2e3f4a5b6d': {
     id: 'f2a3b4c5-d6e7-4f8a-9b0c-1d2e3f4a5b6d',
-    name: 'Robert Schmidt 8',
+    name: 'Robert Schmidt',
     age: 34,
     gender: 'Male',
     maritalStatus: 'Married',

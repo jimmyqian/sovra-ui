@@ -25,9 +25,9 @@ describe('conversationScripts', () => {
       expect(script.resultStages[3]).toHaveLength(1) // Stage 3: 1 result
 
       // Test result content
-      expect(script.resultStages[0]?.[0]?.name).toBe('John Caruso 1')
-      expect(script.resultStages[0]?.[7]?.name).toBe('John Caruso 8')
-      expect(script.resultStages[3]?.[0]?.name).toBe('John Caruso 2')
+      expect(script.resultStages[0]?.[0]?.name).toBe('John Caruso')
+      expect(script.resultStages[0]?.[7]?.name).toBe('John Caruso')
+      expect(script.resultStages[3]?.[0]?.name).toBe('John Caruso')
     })
 
     it('should return John Caruso script for mixed case query', () => {
@@ -91,8 +91,8 @@ describe('conversationScripts', () => {
       expect(script.resultStages[3]).toHaveLength(1) // Stage 3: 1 result
 
       // Test result content
-      expect(script.resultStages[0]?.[0]?.name).toBe('Robert Schmidt 1')
-      expect(script.resultStages[0]?.[7]?.name).toBe('Robert Schmidt 8')
+      expect(script.resultStages[0]?.[0]?.name).toBe('Robert Schmidt')
+      expect(script.resultStages[0]?.[7]?.name).toBe('Robert Schmidt')
     })
 
     it('should return Robert Schmidt script for mixed case query', () => {
@@ -158,34 +158,34 @@ describe('conversationScripts', () => {
     it('should return correct results for stage 0 (initial)', () => {
       const results = getScriptedResults(sampleScript, 0)
       expect(results).toHaveLength(8)
-      expect(results[0]?.name).toBe('John Caruso 1')
-      expect(results[7]?.name).toBe('John Caruso 8')
+      expect(results[0]?.name).toBe('John Caruso')
+      expect(results[7]?.name).toBe('John Caruso')
     })
 
     it('should return correct results for stage 1', () => {
       const results = getScriptedResults(sampleScript, 1)
       expect(results).toHaveLength(4)
-      expect(results[0]?.name).toBe('John Caruso 1')
-      expect(results[3]?.name).toBe('John Caruso 6')
+      expect(results[0]?.name).toBe('John Caruso')
+      expect(results[3]?.name).toBe('John Caruso')
     })
 
     it('should return correct results for stage 2', () => {
       const results = getScriptedResults(sampleScript, 2)
       expect(results).toHaveLength(3)
-      expect(results[0]?.name).toBe('John Caruso 1')
-      expect(results[2]?.name).toBe('John Caruso 4')
+      expect(results[0]?.name).toBe('John Caruso')
+      expect(results[2]?.name).toBe('John Caruso')
     })
 
     it('should return correct results for stage 3 (final)', () => {
       const results = getScriptedResults(sampleScript, 3)
       expect(results).toHaveLength(1)
-      expect(results[0]?.name).toBe('John Caruso 2')
+      expect(results[0]?.name).toBe('John Caruso')
     })
 
     it('should return last stage for out of bounds stage', () => {
       const results = getScriptedResults(sampleScript, 10)
       expect(results).toHaveLength(1)
-      expect(results[0]?.name).toBe('John Caruso 2')
+      expect(results[0]?.name).toBe('John Caruso')
     })
   })
 
