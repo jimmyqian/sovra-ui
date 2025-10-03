@@ -326,6 +326,7 @@
             <!-- Profile Card -->
             <ProfileCard
               :name="prestonProfile.name"
+              :profile-image="prestonProfile.profileImage"
               :subtitle="`${prestonProfile.occupation} • ${prestonProfile.education}`"
               :age="prestonProfile.age.toString()"
               :location="prestonProfile.location"
