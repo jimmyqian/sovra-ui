@@ -8,6 +8,8 @@ import type { TimelineEvent, USLocation } from './robertDashboardData'
 export const getPrestonProfile = () => {
   return {
     name: 'Preston Cole Whitaker III',
+    profileImage:
+      'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=faces',
     age: 22,
     location: 'Austin, TX',
     status: 'Dating Sarah Schmidt',

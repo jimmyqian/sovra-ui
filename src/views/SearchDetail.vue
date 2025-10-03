@@ -354,7 +354,7 @@
               class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6"
             >
               <div
-                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer animate-pulse"
+                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer"
                 :class="{
                   'ring-4 ring-red-300': selectedRiskDetails === 'gambling'
                 }"
@@ -362,7 +362,7 @@
               >
                 <component
                   :is="CurrencyDollarIcon"
-                  class="w-10 h-10 mx-auto mb-2 text-red-600 animate-bounce"
+                  class="w-10 h-10 mx-auto mb-2 text-red-600"
                 />
                 <div class="text-sm font-semibold text-red-900">
                   Gambling Addiction
@@ -370,7 +370,7 @@
                 <div class="text-2xl font-bold text-red-700">CRITICAL</div>
               </div>
               <div
-                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer animate-pulse"
+                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer"
                 :class="{
                   'ring-4 ring-red-300': selectedRiskDetails === 'deception'
                 }"
@@ -378,7 +378,7 @@
               >
                 <component
                   :is="EyeSlashIcon"
-                  class="w-10 h-10 mx-auto mb-2 text-red-600 animate-bounce"
+                  class="w-10 h-10 mx-auto mb-2 text-red-600"
                 />
                 <div class="text-sm font-semibold text-red-900">
                   Deceptive Lifestyle
@@ -386,7 +386,7 @@
                 <div class="text-2xl font-bold text-red-700">CRITICAL</div>
               </div>
               <div
-                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer animate-pulse"
+                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer"
                 :class="{
                   'ring-4 ring-red-300': selectedRiskDetails === 'narcissism'
                 }"
@@ -394,7 +394,7 @@
               >
                 <component
                   :is="SparklesIcon"
-                  class="w-10 h-10 mx-auto mb-2 text-red-600 animate-bounce"
+                  class="w-10 h-10 mx-auto mb-2 text-red-600"
                 />
                 <div class="text-sm font-semibold text-red-900">
                   Dark Triad Traits
@@ -1525,11 +1525,13 @@
    */
   const handleNodeClick = (nodeId: string) => {
     if (nodeId === 'preston') {
-      // Navigate to Preston's dashboard
+      // Navigate to Preston's dashboard and scroll to top
       router.push({
         name: 'SearchDetail',
         params: { id: 'preston-cole-whitaker-iii' }
       })
+      // Scroll to top after navigation
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
