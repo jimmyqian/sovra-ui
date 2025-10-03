@@ -1,6 +1,7 @@
 <template>
   <div
     class="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow overflow-hidden"
+    :class="{ 'col-span-2': expanded }"
   >
     <div class="p-4 border-b border-gray-200">
       <h3 class="text-lg font-semibold text-gray-900">{{ title }}</h3>
@@ -19,7 +20,13 @@
   interface TimelineEvent {
     year: number
     label: string
-    category: 'education' | 'work' | 'relationship' | 'marriage' | 'children' | 'location'
+    category:
+      | 'education'
+      | 'work'
+      | 'relationship'
+      | 'marriage'
+      | 'children'
+      | 'location'
     description?: string
   }
 
@@ -29,6 +36,7 @@
     events: TimelineEvent[]
     width?: number
     height?: number
+    expanded?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -36,6 +44,10 @@
     width: 1000,
     height: 300
   })
+
+  defineEmits<{
+    toggleExpand: []
+  }>()
 
   const svgRef = ref<SVGSVGElement | null>(null)
 
@@ -83,25 +95,25 @@
     const tracks = [
       {
         name: 'Personal',
-        y: innerHeight * 0.15,
+        y: innerHeight * 0.12,
         categories: trackCategories.personal,
         color: '#ec4899'
       },
       {
         name: 'Education',
-        y: innerHeight * 0.35,
+        y: innerHeight * 0.32,
         categories: trackCategories.education,
         color: '#3b82f6'
       },
       {
         name: 'Professional',
-        y: innerHeight * 0.55,
+        y: innerHeight * 0.58,
         categories: trackCategories.professional,
         color: '#8b5cf6'
       },
       {
         name: 'Location',
-        y: innerHeight * 0.75,
+        y: innerHeight * 0.84,
         categories: trackCategories.location,
         color: '#10b981'
       }

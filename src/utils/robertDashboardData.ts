@@ -106,7 +106,13 @@ export const getRobertProfile = (): RobertProfile => {
 export interface TimelineEvent {
   year: number
   label: string
-  category: 'education' | 'work' | 'relationship' | 'marriage' | 'children' | 'location'
+  category:
+    | 'education'
+    | 'work'
+    | 'relationship'
+    | 'marriage'
+    | 'children'
+    | 'location'
   description?: string
 }
 
@@ -307,156 +313,290 @@ export const getRobertLifeEvents = (): TimelineEvent[] => {
 }
 
 export const getRobertDashboardCards = (): DashboardCard[] => {
+  return []
+}
+
+export interface PersonalityTrait {
+  label: string
+  description: string
+  iconName: string
+  colorClass: string
+}
+
+export interface TrackingSource {
+  name: string
+  description: string
+  count: number
+  status: string
+  iconName: string
+  colorClass: string
+  statusClass: string
+}
+
+export const getRobertTrackingSources = () => {
   return [
     {
-      id: 'card-1',
-      type: 'risk-assessment',
-      title: 'Cyber Profile Risk Assessment',
-      subtitle: 'Multi-domain risk analysis',
-      riskItems: [
-        {
-          domain: 'Reputation',
-          risk: 'High',
-          exposure: 'SEC investigations + indicted contacts found online'
-        },
-        {
-          domain: 'Interpersonal Risk',
-          risk: 'High',
-          exposure: 'Extramarital rumors + leadership criticism online'
-        },
-        {
-          domain: 'Cyber Security',
-          risk: 'Medium',
-          exposure: 'Family data exposed in 5+ breach datasets'
-        },
-        {
-          domain: 'Corporate Integrity',
-          risk: 'Medium',
-          exposure: 'Associate on SEC watchlist flagged this week'
-        },
-        {
-          domain: 'Family Risk',
-          risk: 'Medium',
-          exposure: 'Ex-wife posted negative comments recently'
-        },
-        {
-          domain: 'Physical Risk',
-          risk: 'Low',
-          exposure: 'Movement patterns documented, no direct threats'
-        }
-      ],
-      details: `
-        <div class="space-y-4">
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">Financial Risk: Low Risk</h4>
-            <p>You have a high net worth and are rarely questioned as to your financial bona fides. Furthermore, you invest your liquidity in areas that are meaningful or have a high potential for substantial gains. You take risks, but these are generally judicious.</p>
-          </div>
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">Physical Security Risk</h4>
-            <p>While your physical security risk is minimal, I have mapped your pattern of life and found multiple points of tracking data almost continually mapping your movements. Historical patterns of movement are typically predictable and may alert nefarious actors to your current and future locations.</p>
-          </div>
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">Interpersonal Risk: High Risk</h4>
-            <p>You have a highly controversial and disputed divorce that was cited several times in online sources. Additionally, you are remarried, but many of these same sources have noted that you are involved in extramarital affairs. Expectations for family members often match those of employees and may have created much of a similar cycle of turnover and burnout. At times others may perceive you as entitled to relationships that meet your needs over serving others.</p>
-          </div>
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">Family Risk: Medium Risk</h4>
-            <p>The increase in your family complexity with the divorce and the perception of extra marital relationships can impact the cohesion of your family structure and well being. Additionally, having high wealth may make you a target for familial exploitation. It will be important to monitor family contacts for relationship.</p>
-          </div>
-        </div>
-      `
+      name: 'Google News',
+      description: 'News articles and press mentions',
+      count: 847,
+      status: 'High Exposure',
+      iconName: 'NewspaperIcon',
+      colorClass: 'bg-red-500',
+      statusClass: 'bg-red-100 text-red-700'
     },
     {
-      id: 'card-2',
-      type: 'risk-assessment',
-      title: 'Data Breach & Credential Exposure',
-      subtitle: 'Cyber security vulnerabilities identified',
-      riskLevel: 'Medium Risk',
-      content: `
-        <div class="space-y-3">
-          <p><strong>Critical Exposures Found:</strong></p>
-          <ul class="list-disc pl-5 space-y-1">
-            <li>Two personal logins reused across travel/event platforms</li>
-            <li>Metadata exposing your children's educational affiliations</li>
-            <li>Legal documents from prior divorce with partial financials</li>
-          </ul>
-        </div>
-      `,
-      actions: [
-        'Reset credentials',
-        'Deploy monitoring',
-        'Check family exposure',
-        'Use encrypted platforms'
-      ]
+      name: 'LinkedIn',
+      description: 'Professional profile and connections',
+      count: 2400,
+      status: 'Active',
+      iconName: 'BriefcaseIcon',
+      colorClass: 'bg-blue-600',
+      statusClass: 'bg-blue-100 text-blue-700'
     },
     {
-      id: 'card-3',
-      type: 'risk-assessment',
-      title: 'Reputational Risk Analysis',
-      subtitle: 'Public visibility and narrative assessment',
-      riskLevel: 'High Risk',
-      content: `
-        <div class="space-y-4">
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">1. Divorce and Remarriage</h4>
-            <ul class="list-disc pl-5 space-y-1 text-sm">
-              <li>Your contentious divorce is cited across seven digital publications, three Reddit threads, and a long-form blog post.</li>
-              <li>A persistent "double life" narrative is being reinforced by AI summarization bots scraping metadata.</li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">2. Current Marriage, Affairs Allegation, and Spouse Reputation</h4>
-            <ul class="list-disc pl-5 space-y-1 text-sm">
-              <li>Your spouse's philanthropic presence links her name with yours across major databases—her credibility becomes a proxy for your own.</li>
-              <li>Alleged extramarital affairs appear in social commentary, AI-generated dossiers, and social listening feeds.</li>
-              <li>She also provides funds to a non-profit that may have links with nefarious personalities.</li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">3. SEC & Network Affiliations</h4>
-            <ul class="list-disc pl-5 space-y-1 text-sm">
-              <li>Legacy SEC investigations remain indexed and interlinked via knowledge graphs.</li>
-              <li>A college roommate's pyramid scheme case is currently rising in visibility, with your name attached by association.</li>
-              <li>A new associate was indicted last week—this is surfacing through online network analysis.</li>
-            </ul>
-          </div>
-          <div>
-            <h4 class="font-semibold text-gray-900 mb-2">4. Leadership Turnover & Culture</h4>
-            <p class="text-sm">Glassdoor and insider commentary describe your leadership as "charismatic but draining," with high turnover and intense expectations.</p>
-          </div>
-        </div>
-      `,
-      actions: [
-        'Clean up online content',
-        'Shift media narrative',
-        'Monitor key journalists',
-        'Plan legacy restoration'
-      ]
+      name: 'Twitter/X',
+      description: 'Social media posts and mentions',
+      count: 1256,
+      status: 'Monitored',
+      iconName: 'AtSymbolIcon',
+      colorClass: 'bg-sky-500',
+      statusClass: 'bg-sky-100 text-sky-700'
     },
     {
-      id: 'card-4',
-      type: 'action-plan',
-      title: 'Reputation Restoration Plan',
-      subtitle: 'Execution in progress',
-      riskLevel: 'High Risk',
-      content: `
-        <div class="space-y-3">
-          <p class="font-semibold text-gray-900">Your SOVRA account will automatically link and provide updates on progress.</p>
-          <p class="text-sm">Executing comprehensive reputation management strategy including:</p>
-          <ul class="list-disc pl-5 space-y-1 text-sm">
-            <li>Content removal and obfuscation services</li>
-            <li>Journalist and media monitoring</li>
-            <li>Narrative reshaping through strategic press</li>
-            <li>Legacy and stability focused messaging</li>
-          </ul>
-        </div>
-      `,
-      actions: [
-        'Engage reputation partners',
-        'Deploy monitoring tools',
-        'Build media relationships',
-        'Track progress & adjust'
-      ]
+      name: 'Facebook',
+      description: 'Social connections and public posts',
+      count: 432,
+      status: 'Limited',
+      iconName: 'UsersIcon',
+      colorClass: 'bg-blue-700',
+      statusClass: 'bg-gray-100 text-gray-700'
+    },
+    {
+      name: 'Reddit',
+      description: 'Forum discussions and threads',
+      count: 89,
+      status: 'Flagged',
+      iconName: 'ChatBubbleLeftRightIcon',
+      colorClass: 'bg-orange-600',
+      statusClass: 'bg-orange-100 text-orange-700'
+    },
+    {
+      name: 'Public Records',
+      description: 'Court filings, business registrations',
+      count: 234,
+      status: 'Public',
+      iconName: 'DocumentTextIcon',
+      colorClass: 'bg-purple-600',
+      statusClass: 'bg-purple-100 text-purple-700'
+    },
+    {
+      name: 'Data Breaches',
+      description: 'Exposed credentials and personal data',
+      count: 12,
+      status: 'Critical',
+      iconName: 'ShieldExclamationIcon',
+      colorClass: 'bg-red-700',
+      statusClass: 'bg-red-100 text-red-800'
+    },
+    {
+      name: 'Glassdoor',
+      description: 'Company reviews and employee feedback',
+      count: 156,
+      status: 'Mixed',
+      iconName: 'BuildingOfficeIcon',
+      colorClass: 'bg-green-600',
+      statusClass: 'bg-yellow-100 text-yellow-700'
     }
   ]
+}
+
+export const getRobertSummaryRecommendations = () => {
+  return {
+    summary:
+      'Robert Schmidt presents a high-risk profile across multiple domains, with critical vulnerabilities in reputation management and interpersonal relationships. While demonstrating strong business acumen and professional success ($250M+ net worth, extensive network), significant exposure through online sources (5,600+ data points), contentious personal history, and questionable professional associations create substantial risk. The combination of high ambition, limited empathy, and pattern of ethical flexibility requires immediate intervention to prevent reputational collapse and protect personal and professional interests.',
+    keyFindings: [
+      {
+        category: 'Reputation',
+        text: '847+ negative news mentions across 7+ publications',
+        iconName: 'ExclamationTriangleIcon',
+        colorClass: 'bg-red-50 text-red-700'
+      },
+      {
+        category: 'Personal',
+        text: 'Divorce narrative + extramarital affair allegations widespread',
+        iconName: 'HeartIcon',
+        colorClass: 'bg-red-50 text-red-700'
+      },
+      {
+        category: 'Security',
+        text: '12 data breaches exposing family credentials',
+        iconName: 'ShieldExclamationIcon',
+        colorClass: 'bg-orange-50 text-orange-700'
+      },
+      {
+        category: 'Network',
+        text: 'SEC-investigated associates actively surfacing online',
+        iconName: 'UsersIcon',
+        colorClass: 'bg-orange-50 text-orange-700'
+      },
+      {
+        category: 'Digital',
+        text: '5,600+ tracking data points across 8 major platforms',
+        iconName: 'GlobeAltIcon',
+        colorClass: 'bg-yellow-50 text-yellow-700'
+      },
+      {
+        category: 'Leadership',
+        text: 'High turnover, "draining" culture per Glassdoor (156 reviews)',
+        iconName: 'BuildingOfficeIcon',
+        colorClass: 'bg-yellow-50 text-yellow-700'
+      }
+    ],
+    recommendations: [
+      {
+        priority: 'CRITICAL',
+        title: 'Immediate Reputation Intervention',
+        description:
+          'Deploy comprehensive reputation management to address divorce narrative, affair allegations, and SEC association stories before they become permanent search results.',
+        actions: [
+          'Content removal services',
+          'SEO suppression',
+          'Counter-narrative PR',
+          'Legal cease & desist where applicable'
+        ],
+        iconName: 'FireIcon',
+        priorityClass: 'bg-red-600 text-white',
+        borderClass: 'border-red-500',
+        bgClass: 'bg-red-50',
+        iconBgClass: 'bg-red-600'
+      },
+      {
+        priority: 'HIGH',
+        title: 'Cybersecurity & Data Breach Response',
+        description:
+          'Reset all compromised credentials, deploy dark web monitoring, and secure family members exposed in data breaches.',
+        actions: [
+          'Password reset + 2FA',
+          'Dark web monitoring',
+          'Credit freeze',
+          'VPN & encrypted comms'
+        ],
+        iconName: 'LockClosedIcon',
+        priorityClass: 'bg-orange-600 text-white',
+        borderClass: 'border-orange-500',
+        bgClass: 'bg-orange-50',
+        iconBgClass: 'bg-orange-600'
+      },
+      {
+        priority: 'HIGH',
+        title: 'Interpersonal & Leadership Coaching',
+        description:
+          'Address empathy limitations and leadership style creating turnover and cultural issues. Executive coaching focused on sustainable leadership.',
+        actions: [
+          'Executive coaching',
+          'Empathy development',
+          'Culture assessment',
+          '360 feedback'
+        ],
+        iconName: 'AcademicCapIcon',
+        priorityClass: 'bg-orange-600 text-white',
+        borderClass: 'border-orange-500',
+        bgClass: 'bg-orange-50',
+        iconBgClass: 'bg-orange-600'
+      },
+      {
+        priority: 'MEDIUM',
+        title: 'Network Vetting & Distance Protocol',
+        description:
+          'Audit professional relationships, create distance from SEC-flagged associates, and implement vetting process for new connections.',
+        actions: [
+          'Relationship audit',
+          'Public distancing',
+          'Vetting protocols',
+          'Board review'
+        ],
+        iconName: 'UserGroupIcon',
+        priorityClass: 'bg-yellow-600 text-white',
+        borderClass: 'border-yellow-500',
+        bgClass: 'bg-yellow-50',
+        iconBgClass: 'bg-yellow-600'
+      },
+      {
+        priority: 'MEDIUM',
+        title: 'Family Communication & Relationship Repair',
+        description:
+          'Address family tensions, ex-wife negative commentary, and improve relationships with children to reduce personal risk.',
+        actions: [
+          'Family therapy',
+          'Mediation with ex-spouse',
+          'Communication rebuild',
+          'Boundary setting'
+        ],
+        iconName: 'HomeIcon',
+        priorityClass: 'bg-yellow-600 text-white',
+        borderClass: 'border-yellow-500',
+        bgClass: 'bg-yellow-50',
+        iconBgClass: 'bg-yellow-600'
+      }
+    ],
+    nextSteps: [
+      'Activate SOVRA Continuous Monitoring for real-time threat detection and alerts',
+      'Deploy SOVRA Reputation Management Suite to remove harmful content and reshape narrative',
+      'Implement SOVRA Cybersecurity Plan with credential reset and breach monitoring',
+      'Enable SOVRA Network Intelligence to vet associations and flag high-risk contacts',
+      'Utilize SOVRA Family Protection Services for wealth security and online monitoring',
+      'Schedule regular reviews with SOVRA dashboard for ongoing risk assessment and updates'
+    ]
+  }
+}
+
+export const getRobertPersonalityProfile = () => {
+  return {
+    summary:
+      'Your executive presents a complex leadership profile characterized by high ambition and charismatic influence coupled with significant interpersonal and ethical risks. While demonstrating strong resilience, technical competence, and visionary capabilities that have driven career success, your pattern of rule-bending behavior, multiple relationship failures, and associations with questionable figures create substantial vulnerabilities across personal and professional domains.',
+    traits: [
+      {
+        label: 'High Ambition & Drive',
+        description:
+          'Exceptionally high ambition marked by strong competitive drive and relentless orientation toward achievement. Values a sense of urgency in yourself and others.',
+        iconName: 'BoltIcon',
+        colorClass: 'bg-yellow-500'
+      },
+      {
+        label: 'Charismatic Influence',
+        description:
+          'Softens a dominant presentation with intuitive understanding of others and sociability. High effectiveness in roles requiring visibility, networking, and influence. Comfortable engaging publicly and building connections.',
+        iconName: 'UserGroupIcon',
+        colorClass: 'bg-blue-500'
+      },
+      {
+        label: 'Resilience Under Pressure',
+        description:
+          'Strong resilience under stress and adversity. Tends to power through adversity and naysayers, though this may at times outpace others and create conflicts.',
+        iconName: 'ShieldCheckIcon',
+        colorClass: 'bg-green-500'
+      },
+      {
+        label: 'Visionary Thinking',
+        description:
+          'Strong inquisitive nature supports visionary thinking, openness to novel ideas, and adaptability in uncertain environments.',
+        iconName: 'LightBulbIcon',
+        colorClass: 'bg-purple-500'
+      },
+      {
+        label: 'Business Trustworthiness',
+        description:
+          'Trustworthy in business relationships. Follows through with commitments and maintains professional integrity.',
+        iconName: 'HandThumbUpIcon',
+        colorClass: 'bg-teal-500'
+      },
+      {
+        label: 'Empathy Limitations',
+        description:
+          'Empathy for others is not quite as strong. At times, efforts towards connecting with others may feel forced - to you and them. May decrease leadership impact.',
+        iconName: 'ExclamationTriangleIcon',
+        colorClass: 'bg-orange-500'
+      }
+    ]
+  }
 }

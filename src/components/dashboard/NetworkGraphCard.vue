@@ -1,6 +1,7 @@
 <template>
   <div
     class="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow overflow-hidden"
+    :class="{ 'col-span-2': expanded }"
   >
     <div class="p-4 border-b border-gray-200">
       <h3 class="text-lg font-semibold text-gray-900">{{ title }}</h3>
@@ -36,6 +37,7 @@
     links: Link[]
     width?: number
     height?: number
+    expanded?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -43,6 +45,11 @@
     width: 600,
     height: 400
   })
+
+  const emit = defineEmits<{
+    toggleExpand: []
+    nodeClick: [nodeId: string]
+  }>()
 
   const svgRef = ref<SVGSVGElement | null>(null)
 
@@ -64,15 +71,21 @@
       .force('charge', d3.forceManyBody().strength(-300))
       .force('center', d3.forceCenter(props.width / 2, props.height / 2))
 
-    // Links
+    // Links - use green to yellow gradient colors for positive connections
     const link = svg
       .append('g')
       .selectAll('line')
       .data(props.links)
       .join('line')
-      .attr('stroke', '#94a3b8')
+      .attr('stroke', (d: Link) => {
+        // Use green-yellow gradient for connections
+        const colorScale = d3
+          .scaleOrdinal<string>()
+          .range(['#10b981', '#34d399', '#fbbf24', '#facc15'])
+        return colorScale(d.relationship)
+      })
       .attr('stroke-width', 2)
-      .attr('stroke-opacity', 0.6)
+      .attr('stroke-opacity', 0.7)
 
     // Node groups for images
     const nodeGroup = svg
@@ -88,6 +101,13 @@
           simulation.alpha(0.3).restart()
         })
       )
+      .on('click', (event: MouseEvent, d: Node) => {
+        // Only emit click event for Preston node
+        if (d.id === 'preston') {
+          event.stopPropagation()
+          emit('nodeClick', d.id)
+        }
+      })
 
     // Add circular clip paths for images
     nodeGroup
@@ -112,18 +132,26 @@
       .attr('r', (d: Node) => (d.type === 'primary' ? 20 : 15))
       .attr('fill', 'none')
       .attr('stroke', (d: Node) => {
+        // Highlight Preston with bright red border
+        if (d.id === 'preston') {
+          return '#ef4444'
+        }
+        // Use green-yellow colors for all other nodes
         switch (d.type) {
           case 'primary':
-            return '#3b82f6'
-          case 'family':
             return '#10b981'
+          case 'family':
+            return '#34d399'
           case 'associate':
-            return '#f59e0b'
+            return '#fbbf24'
           default:
-            return '#6b7280'
+            return '#facc15'
         }
       })
-      .attr('stroke-width', 3)
+      .attr('stroke-width', (d: Node) => (d.id === 'preston' ? 4 : 3))
+      .style('cursor', (d: Node) =>
+        d.id === 'preston' ? 'pointer' : 'default'
+      )
 
     // Labels
     const labels = svg

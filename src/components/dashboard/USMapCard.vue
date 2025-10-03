@@ -1,6 +1,7 @@
 <template>
   <div
     class="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow overflow-hidden"
+    :class="{ 'col-span-2': expanded }"
   >
     <div class="p-4 border-b border-gray-200">
       <h3 class="text-lg font-semibold text-gray-900">{{ title }}</h3>
@@ -33,6 +34,7 @@
     locations: Location[]
     width?: number
     height?: number
+    expanded?: boolean
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -40,6 +42,10 @@
     width: 800,
     height: 500
   })
+
+  defineEmits<{
+    toggleExpand: []
+  }>()
 
   const svgRef = ref<SVGSVGElement | null>(null)
 
@@ -52,8 +58,8 @@
     // Set up projection for US map
     const projection = d3
       .geoAlbersUsa()
-      .scale(props.width * 1.3)
-      .translate([props.width / 2, props.height / 2])
+      .scale(props.width * 1.0)
+      .translate([props.width / 2 + 50, props.height / 2])
 
     const path = d3.geoPath().projection(projection)
 

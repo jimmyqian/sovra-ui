@@ -138,10 +138,12 @@ describe('Dashboard Workflow Integration Tests', () => {
 
     await flushPromises()
 
-    // Verify risk cards
-    expect(wrapper.text()).toContain('Cyber Profile Risk Assessment')
+    // Verify risk cards are displayed
     expect(wrapper.text()).toContain('Reputation')
+    expect(wrapper.text()).toContain('Interpersonal')
     expect(wrapper.text()).toContain('Cyber Security')
+    expect(wrapper.text()).toContain('Corporate')
+    expect(wrapper.text()).toContain('Family')
     expect(wrapper.text()).toContain('Physical Risk')
   })
 
@@ -161,9 +163,9 @@ describe('Dashboard Workflow Integration Tests', () => {
 
     // Verify risk domains are displayed
     expect(wrapper.text()).toContain('Reputation')
-    expect(wrapper.text()).toContain('High')
-    expect(wrapper.text()).toContain('Medium')
-    expect(wrapper.text()).toContain('Low')
+    expect(wrapper.text()).toContain('HIGH')
+    expect(wrapper.text()).toContain('MED')
+    expect(wrapper.text()).toContain('LOW')
   })
 
   it('allows expanding risk cards for additional details', async () => {
@@ -182,8 +184,11 @@ describe('Dashboard Workflow Integration Tests', () => {
 
     // Find all risk cards with clickable cursor
     const riskCards = wrapper.findAll('.cursor-pointer')
-    const clickableRiskCard = riskCards.find(card =>
-      card.classes().includes('bg-white')
+    const clickableRiskCard = riskCards.find(
+      card =>
+        card.classes().includes('bg-red-50') ||
+        card.classes().includes('bg-orange-50') ||
+        card.classes().includes('bg-green-50')
     )
 
     expect(clickableRiskCard).toBeTruthy()
@@ -192,9 +197,13 @@ describe('Dashboard Workflow Integration Tests', () => {
       // Click to expand
       await clickableRiskCard.trigger('click')
       await flushPromises()
+      await wrapper.vm.$nextTick()
 
-      // Verify expanded state hint appears
-      expect(wrapper.text()).toMatch(/Click to (collapse|details)/)
+      // Verify risk details panel appears with risk content
+      const text = wrapper.text()
+      expect(
+        text.includes('Recommended Actions') || text.includes('Risk Analysis')
+      ).toBeTruthy()
     }
   })
 })

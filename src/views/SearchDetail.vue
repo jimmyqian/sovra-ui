@@ -190,14 +190,60 @@
             <!-- Risk Details Panel -->
             <div
               v-if="selectedRiskDetails"
-              class="mb-6 p-6 bg-white rounded-lg shadow-md border-2 border-gray-300"
+              class="mb-6 p-6 rounded-lg shadow-xl border-4 animate-pulse-slow"
+              :class="{
+                'bg-red-50 border-red-500':
+                  selectedRiskDetails === 'reputation' ||
+                  selectedRiskDetails === 'interpersonal',
+                'bg-orange-50 border-orange-400':
+                  selectedRiskDetails === 'cyber' ||
+                  selectedRiskDetails === 'corporate' ||
+                  selectedRiskDetails === 'family',
+                'bg-green-50 border-green-400':
+                  selectedRiskDetails === 'physical'
+              }"
             >
               <div class="flex justify-between items-start mb-4">
-                <h3 class="text-lg font-semibold text-gray-900">
-                  Risk Details
-                </h3>
+                <div class="flex items-center gap-3">
+                  <component
+                    :is="
+                      selectedRiskDetails === 'reputation' ||
+                      selectedRiskDetails === 'interpersonal'
+                        ? ExclamationTriangleIcon
+                        : selectedRiskDetails === 'physical'
+                          ? ShieldCheckIcon
+                          : ExclamationTriangleIcon
+                    "
+                    class="w-8 h-8"
+                    :class="{
+                      'text-red-600 animate-bounce':
+                        selectedRiskDetails === 'reputation' ||
+                        selectedRiskDetails === 'interpersonal',
+                      'text-orange-600':
+                        selectedRiskDetails === 'cyber' ||
+                        selectedRiskDetails === 'corporate' ||
+                        selectedRiskDetails === 'family',
+                      'text-green-600': selectedRiskDetails === 'physical'
+                    }"
+                  />
+                  <h3
+                    class="text-xl font-bold"
+                    :class="{
+                      'text-red-900':
+                        selectedRiskDetails === 'reputation' ||
+                        selectedRiskDetails === 'interpersonal',
+                      'text-orange-900':
+                        selectedRiskDetails === 'cyber' ||
+                        selectedRiskDetails === 'corporate' ||
+                        selectedRiskDetails === 'family',
+                      'text-green-900': selectedRiskDetails === 'physical'
+                    }"
+                  >
+                    Risk Details
+                  </h3>
+                </div>
                 <button
-                  class="text-gray-500 hover:text-gray-700 text-xl font-bold"
+                  class="text-gray-600 hover:text-gray-900 text-2xl font-bold"
                   @click="selectedRiskDetails = null"
                 >
                   ×
@@ -209,52 +255,68 @@
               ></div>
             </div>
 
-            <!-- Network Graph -->
-            <div class="mb-6">
-              <NetworkGraphCard
-                title="Network"
-                subtitle="Key relationships and connections"
-                :nodes="networkNodes"
-                :links="networkLinks"
-                :width="800"
-                :height="400"
+            <!-- Personality and Tracking Sources -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <PersonalityProfileCard
+                title="Personality Profile"
+                subtitle="Leadership characteristics and behavioral patterns"
+                :summary="robertPersonality.summary"
+                :traits="robertPersonality.traits"
+              />
+              <TrackingSourcesCard
+                title="Top Tracking Sources"
+                subtitle="Online data sources and exposure levels"
+                :sources="robertTrackingSources"
               />
             </div>
 
-            <!-- Life Events Timeline -->
-            <div class="mb-6">
-              <TimelineCard
-                title="Life Events Timeline"
-                subtitle="Major milestones in Robert's personal and professional journey"
-                :events="robertLifeEvents"
-                :width="1200"
-                :height="400"
-              />
+            <!-- Visualization Cards Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <!-- Network Graph -->
+              <div>
+                <NetworkGraphCard
+                  title="Network"
+                  subtitle="Key relationships and connections"
+                  :nodes="networkNodes"
+                  :links="networkLinks"
+                  :width="500"
+                  :height="450"
+                  @node-click="handleNodeClick"
+                />
+              </div>
+
+              <!-- Life Events Timeline -->
+              <div>
+                <TimelineCard
+                  title="Life Events Timeline"
+                  subtitle="Major milestones in Robert's personal and professional journey"
+                  :events="robertLifeEvents"
+                  :width="600"
+                  :height="400"
+                />
+              </div>
+
+              <!-- US Locations Map -->
+              <div class="lg:col-span-2">
+                <USMapCard
+                  title="Geographic Footprint"
+                  subtitle="Places Robert has lived, worked, and invested"
+                  :locations="robertLocations"
+                  :width="1000"
+                  :height="500"
+                />
+              </div>
             </div>
 
-            <!-- US Locations Map -->
+            <!-- Summary and Recommendations -->
             <div class="mb-6">
-              <USMapCard
-                title="Geographic Footprint"
-                subtitle="Places Robert has lived, worked, and invested"
-                :locations="robertLocations"
-                :width="800"
-                :height="500"
-              />
-            </div>
-
-            <!-- Risk Assessment Cards - Detailed -->
-            <div class="space-y-4">
-              <RiskCard
-                v-for="card in dashboardCards"
-                :key="card.id"
-                :title="card.title"
-                :subtitle="card.subtitle"
-                :risk-level="card.riskLevel"
-                :risk-items="card.riskItems"
-                :content="card.content"
-                :details="card.details"
-                :actions="card.actions"
+              <SummaryRecommendationsCard
+                title="Summary & Recommendations"
+                subtitle="Comprehensive risk assessment and action plan"
+                :summary="robertSummary.summary"
+                :key-findings="robertSummary.keyFindings"
+                :recommendations="robertSummary.recommendations"
+                :next-steps="robertSummary.nextSteps"
               />
             </div>
           </div>
@@ -322,10 +384,12 @@
   import { useSearchStore } from '@/stores/search'
   import { getPersonById } from '@/utils/conversationScripts'
   import {
-    getRobertDashboardCards,
     getRobertProfile,
     getRobertLifeEvents,
-    getRobertLocations
+    getRobertLocations,
+    getRobertPersonalityProfile,
+    getRobertTrackingSources,
+    getRobertSummaryRecommendations
   } from '@/utils/robertDashboardData'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
@@ -336,11 +400,13 @@
   import ChevronUpIcon from '@/components/icons/ChevronUpIcon.vue'
   import ChevronDownIcon from '@/components/icons/ChevronDownIcon.vue'
   import BackButton from '@/components/common/BackButton.vue'
-  import RiskCard from '@/components/dashboard/RiskCard.vue'
   import ProfileCard from '@/components/dashboard/ProfileCard.vue'
   import NetworkGraphCard from '@/components/dashboard/NetworkGraphCard.vue'
   import TimelineCard from '@/components/dashboard/TimelineCard.vue'
   import USMapCard from '@/components/dashboard/USMapCard.vue'
+  import PersonalityProfileCard from '@/components/dashboard/PersonalityProfileCard.vue'
+  import TrackingSourcesCard from '@/components/dashboard/TrackingSourcesCard.vue'
+  import SummaryRecommendationsCard from '@/components/dashboard/SummaryRecommendationsCard.vue'
   import {
     ExclamationTriangleIcon,
     UserGroupIcon,
@@ -349,7 +415,20 @@
     HomeIcon,
     ShieldCheckIcon,
     CurrencyDollarIcon,
-    GlobeAltIcon
+    GlobeAltIcon,
+    BoltIcon,
+    LightBulbIcon,
+    HandThumbUpIcon,
+    NewspaperIcon,
+    BriefcaseIcon,
+    AtSymbolIcon,
+    UsersIcon,
+    ChatBubbleLeftRightIcon,
+    DocumentTextIcon,
+    ShieldExclamationIcon,
+    HeartIcon,
+    FireIcon,
+    AcademicCapIcon
   } from '@heroicons/vue/24/solid'
 
   const route = useRoute()
@@ -362,53 +441,142 @@
   // Risk detailed descriptions
   const riskDetails: Record<string, string> = {
     reputation: `<div class="space-y-4">
-      <h4 class="font-semibold text-gray-900">1. Divorce and Remarriage</h4>
-      <p class="text-sm">Your contentious divorce is cited across seven digital publications, three Reddit threads, and a long-form blog post. A persistent "double life" narrative is being reinforced by AI summarization bots scraping metadata.</p>
+      <h4 class="font-semibold text-gray-900">Reputational Risk Analysis - High Risk</h4>
 
-      <h4 class="font-semibold text-gray-900">2. Current Marriage, Affairs Allegation, and Spouse Reputation</h4>
-      <p class="text-sm">Your spouse's philanthropic presence links her name with yours across major databases—her credibility becomes a proxy for your own. However, this credibility may be undermined by alleged extramarital affairs appear in social commentary, AI-generated dossiers, and social listening feeds. She also provides funds to a non-profit that may have links with nefarious personalities.</p>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-gray-800 mb-2">1. Divorce and Remarriage</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-gray-700">
+          <li>Your contentious divorce is cited across seven digital publications, three Reddit threads, and a long-form blog post.</li>
+          <li>A persistent "double life" narrative is being reinforced by AI summarization bots scraping metadata.</li>
+        </ul>
+      </div>
 
-      <h4 class="font-semibold text-gray-900">3. SEC & Network Affiliations</h4>
-      <p class="text-sm">Legacy SEC investigations remain indexed and interlinked via knowledge graphs. A college roommate's pyramid scheme case is currently rising in visibility, with your name attached by association. A new associate was indicted last week—this is surfacing through online network analysis.</p>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-gray-800 mb-2">2. Current Marriage, Affairs Allegation, and Spouse Reputation</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-gray-700">
+          <li>Your spouse's philanthropic presence links her name with yours across major databases—her credibility becomes a proxy for your own.</li>
+          <li>Alleged extramarital affairs appear in social commentary, AI-generated dossiers, and social listening feeds.</li>
+          <li>She also provides funds to a non-profit that may have links with nefarious personalities.</li>
+        </ul>
+      </div>
 
-      <h4 class="font-semibold text-gray-900">4. Leadership Turnover & Culture</h4>
-      <p class="text-sm">Glassdoor and insider commentary describe your leadership as "charismatic but draining," with high turnover and intense expectations.</p>
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-gray-800 mb-2">3. SEC & Network Affiliations</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-gray-700">
+          <li>Legacy SEC investigations remain indexed and interlinked via knowledge graphs.</li>
+          <li>A college roommate's pyramid scheme case is currently rising in visibility, with your name attached by association.</li>
+          <li>A new associate was indicted last week—this is surfacing through online network analysis.</li>
+        </ul>
+      </div>
+
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-gray-800 mb-2">4. Leadership Turnover & Culture</h5>
+        <p class="text-sm text-gray-700">Glassdoor and insider commentary describe your leadership as "charismatic but draining," with high turnover and intense expectations.</p>
+      </div>
+
+      <div class="mt-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
+        <h5 class="font-semibold text-blue-900 mb-2">Reputation Restoration Plan</h5>
+        <p class="text-sm text-blue-800 mb-2">Your SOVRA account will automatically link and provide updates on progress.</p>
+        <p class="text-sm text-blue-800 mb-2">Executing comprehensive reputation management strategy including:</p>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-blue-700">
+          <li>Content removal and obfuscation services</li>
+          <li>Journalist and media monitoring</li>
+          <li>Narrative reshaping through strategic press</li>
+          <li>Legacy and stability focused messaging</li>
+        </ul>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Engage reputation partners</span>
+          <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Deploy monitoring tools</span>
+          <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Build media relationships</span>
+          <span class="px-3 py-1 bg-blue-600 text-white text-xs rounded-full">Track progress & adjust</span>
+        </div>
+      </div>
     </div>`,
     interpersonal: `<div class="space-y-4">
       <h4 class="font-semibold text-gray-900">Interpersonal Risk: High Risk</h4>
       <p class="text-sm">You have a highly controversial and disputed divorce that was cited several times in online sources. Additionally, you are remarried, but many of these same sources have noted that you are involved in extramarital affairs. Expectations for family members often match those of employees and may have created much of a similar cycle of turnover and burnout. At times others may perceive you as entitled to relationships that meet your needs over serving others.</p>
-      <p class="text-sm font-semibold mt-4">Would you like me to develop out a plan of how to change this perception? Should I do this for work as well as home? I can also have a relationship with some organizations that will help you to clean up your profile online. Would you like me to help you get started?</p>
+
+      <div class="mt-4 bg-red-50 p-4 rounded-lg border border-red-200">
+        <h5 class="font-semibold text-red-900 mb-2">Recommended Actions:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-red-700">
+          <li>Engage professional relationship counseling for work and home dynamics</li>
+          <li>Work with reputation management partners to clean up online profile</li>
+          <li>Develop a perception change plan with PR specialists</li>
+          <li>Create healthier boundaries in professional and personal relationships</li>
+          <li>Address leadership style to reduce turnover and burnout patterns</li>
+        </ul>
+      </div>
     </div>`,
-    cyber: `<div class="space-y-3">
-      <p class="font-semibold">Critical Exposures Found:</p>
-      <ul class="list-disc pl-5 space-y-1 text-sm">
-        <li>Two personal logins reused across travel/event platforms</li>
-        <li>Metadata exposing your children's educational affiliations</li>
-        <li>Legal documents from prior divorce with partial financials</li>
-      </ul>
-      <p class="font-semibold mt-4">Recommended Actions:</p>
-      <ul class="list-disc pl-5 space-y-1 text-sm">
-        <li>Reset and compartmentalize credentials</li>
-        <li>Deploy monitoring to detect misuse</li>
-        <li>Initiate family monitoring for breach exposure</li>
-        <li>Transition core communications to encrypted platforms with rotating authentication</li>
-      </ul>
+    cyber: `<div class="space-y-4">
+      <h4 class="font-semibold text-gray-900">Data Breach & Credential Exposure - Medium Risk</h4>
+
+      <div class="bg-gray-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-gray-800 mb-2">Critical Exposures Found:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-gray-700">
+          <li>Two personal logins reused across travel/event platforms</li>
+          <li>Metadata exposing your children's educational affiliations</li>
+          <li>Legal documents from prior divorce with partial financials</li>
+          <li>Family data exposed in 5+ breach datasets</li>
+        </ul>
+      </div>
+
+      <div class="mt-4 bg-orange-50 p-4 rounded-lg border border-orange-200">
+        <h5 class="font-semibold text-orange-900 mb-2">Recommended Actions:</h5>
+        <div class="flex flex-wrap gap-2">
+          <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Reset credentials</span>
+          <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Deploy monitoring</span>
+          <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Check family exposure</span>
+          <span class="px-3 py-1 bg-orange-600 text-white text-xs rounded-full">Use encrypted platforms</span>
+        </div>
+        <p class="text-sm text-orange-700 mt-3">Transition core communications to encrypted platforms with rotating authentication.</p>
+      </div>
     </div>`,
     corporate: `<div class="space-y-3">
       <h4 class="font-semibold text-gray-900">Corporate Integrity Risk</h4>
       <p class="text-sm">One former associate (SEC watchlist) flagged in corporate link analysis last week. Multiple online narratives link past SEC investigations to associations with indicted contacts.</p>
+
+      <div class="mt-4 bg-orange-50 p-4 rounded-lg border border-orange-200">
+        <h5 class="font-semibold text-orange-900 mb-2">Recommended Actions:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-orange-700">
+          <li>Conduct comprehensive audit of all professional relationships</li>
+          <li>Create public distance from SEC-flagged associates</li>
+          <li>Implement vetting process for new business connections</li>
+          <li>Monitor and address online narratives linking to past investigations</li>
+          <li>Establish compliance protocols for future partnerships</li>
+        </ul>
+      </div>
     </div>`,
     family: `<div class="space-y-3">
       <h4 class="font-semibold text-gray-900">Family Risk: Medium Risk</h4>
       <p class="text-sm">The increase in your family complexity with the divorce and the perception of extra marital relationships can impact the cohesion of your family structure and well being. Additionally, having high wealth may make you a target for familial exploitation. It will be important to monitor family contacts for relationship.</p>
       <p class="text-sm">Negative comments about you by your ex-wife were recently posted online.</p>
+
+      <div class="mt-4 bg-orange-50 p-4 rounded-lg border border-orange-200">
+        <h5 class="font-semibold text-orange-900 mb-2">Recommended Actions:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-orange-700">
+          <li>Engage family counseling to improve cohesion and communication</li>
+          <li>Implement wealth protection strategies and trust structures</li>
+          <li>Monitor and address negative online commentary from ex-spouse</li>
+          <li>Establish clear boundaries to prevent familial exploitation</li>
+          <li>Create family governance plan for high-net-worth dynamics</li>
+        </ul>
+      </div>
     </div>`,
     physical: `<div class="space-y-3">
       <h4 class="font-semibold text-gray-900">Physical Security Risk: Low Risk</h4>
       <p class="text-sm">While your physical security risk is minimal, I have mapped your pattern of life and found multiple points of tracking data almost continually mapping your movements. Historical patterns of movement are typically predictable and may alert nefarious actors to your current and future locations.</p>
-      <p class="text-sm font-semibold mt-4">I have constructed a card to the right that shows your most traveled locations.</p>
-      <p class="text-sm text-gray-600 italic">Thank you SOVRA, Could you tell me what is tracking my movements?</p>
-      <p class="text-sm">Absolutely. I have just inserted a card identifying the tracking apps and wearables that are documenting your position. As you will see, your phone and oura ring seem to provide the most specific data. Would you like me to help you to limit sharing on these devices?</p>
+      <p class="text-sm mt-2">The card to the right shows your most traveled locations. Tracking apps and wearables are documenting your position - your phone and Oura ring provide the most specific data.</p>
+
+      <div class="mt-4 bg-green-50 p-4 rounded-lg border border-green-200">
+        <h5 class="font-semibold text-green-900 mb-2">Recommended Actions:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-green-700">
+          <li>Limit location sharing on phone and wearable devices</li>
+          <li>Review and adjust privacy settings on all tracking apps</li>
+          <li>Vary travel patterns to reduce predictability</li>
+          <li>Enable location obfuscation features where available</li>
+          <li>Regular audits of apps with location permissions</li>
+        </ul>
+      </div>
     </div>`
   }
 
@@ -450,11 +618,6 @@
 
   // Check if this is Robert Schmidt's dashboard
   const isRobertSchmidt = computed(() => personId.value === ROBERT_SCHMIDT_1_ID)
-
-  // Get dashboard cards for Robert
-  const dashboardCards = computed(() =>
-    isRobertSchmidt.value ? getRobertDashboardCards() : []
-  )
 
   // Get Robert's profile
   const robertProfile = computed(() =>
@@ -577,6 +740,89 @@
     { source: 'robert', target: 'board1', relationship: 'board-member' },
     { source: 'partner1', target: 'partner2', relationship: 'colleagues' }
   ])
+
+  // Get Robert's personality profile
+  const robertPersonality = computed(() => {
+    const profile = getRobertPersonalityProfile()
+    return {
+      ...profile,
+      traits: profile.traits.map(trait => ({
+        ...trait,
+        icon:
+          trait.iconName === 'BoltIcon'
+            ? BoltIcon
+            : trait.iconName === 'UserGroupIcon'
+              ? UserGroupIcon
+              : trait.iconName === 'ShieldCheckIcon'
+                ? ShieldCheckIcon
+                : trait.iconName === 'LightBulbIcon'
+                  ? LightBulbIcon
+                  : trait.iconName === 'HandThumbUpIcon'
+                    ? HandThumbUpIcon
+                    : ExclamationTriangleIcon
+      }))
+    }
+  })
+
+  // Get Robert's tracking sources
+  const robertTrackingSources = computed(() => {
+    const sources = getRobertTrackingSources()
+    return sources.map(source => ({
+      ...source,
+      icon:
+        source.iconName === 'NewspaperIcon'
+          ? NewspaperIcon
+          : source.iconName === 'BriefcaseIcon'
+            ? BriefcaseIcon
+            : source.iconName === 'AtSymbolIcon'
+              ? AtSymbolIcon
+              : source.iconName === 'UsersIcon'
+                ? UsersIcon
+                : source.iconName === 'ChatBubbleLeftRightIcon'
+                  ? ChatBubbleLeftRightIcon
+                  : source.iconName === 'DocumentTextIcon'
+                    ? DocumentTextIcon
+                    : source.iconName === 'ShieldExclamationIcon'
+                      ? ShieldExclamationIcon
+                      : BuildingOfficeIcon
+    }))
+  })
+
+  // Get Robert's summary and recommendations
+  const robertSummary = computed(() => {
+    const data = getRobertSummaryRecommendations()
+    return {
+      ...data,
+      keyFindings: data.keyFindings.map(finding => ({
+        ...finding,
+        icon:
+          finding.iconName === 'ExclamationTriangleIcon'
+            ? ExclamationTriangleIcon
+            : finding.iconName === 'HeartIcon'
+              ? HeartIcon
+              : finding.iconName === 'ShieldExclamationIcon'
+                ? ShieldExclamationIcon
+                : finding.iconName === 'UsersIcon'
+                  ? UsersIcon
+                  : finding.iconName === 'GlobeAltIcon'
+                    ? GlobeAltIcon
+                    : BuildingOfficeIcon
+      })),
+      recommendations: data.recommendations.map(rec => ({
+        ...rec,
+        icon:
+          rec.iconName === 'FireIcon'
+            ? FireIcon
+            : rec.iconName === 'LockClosedIcon'
+              ? LockClosedIcon
+              : rec.iconName === 'AcademicCapIcon'
+                ? AcademicCapIcon
+                : rec.iconName === 'UserGroupIcon'
+                  ? UserGroupIcon
+                  : HomeIcon
+      }))
+    }
+  })
 
   // Mock data - in real app this would come from API based on route params
   const personProfile = computed(() => ({
@@ -742,6 +988,19 @@
     // TODO: Implement tag navigation functionality
     // console.log('Tag clicked:', tag)
     // Implement tag navigation functionality - could scroll to section or change view
+  }
+
+  /**
+   * Handles network node click events - navigates to Preston's dashboard
+   */
+  const handleNodeClick = (nodeId: string) => {
+    if (nodeId === 'preston') {
+      // Navigate to Preston's dashboard
+      router.push({
+        name: 'SearchDetail',
+        params: { id: 'preston-cole-whitaker-iii' }
+      })
+    }
   }
 
   const handleSpeechError = (_error: string) => {
