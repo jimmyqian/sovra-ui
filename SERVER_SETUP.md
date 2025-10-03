@@ -209,6 +209,76 @@ npm run format
 
 ## Troubleshooting
 
+### GLIBC Version Error (node: version `GLIBC_2.28' not found)
+
+This error means your system's GLIBC library is older than required by Node.js 20.x. Common on older Debian/Ubuntu versions.
+
+**Solution 1: Use Node.js 18.x (Recommended for older systems)**
+```bash
+# Remove current Node.js
+sudo apt remove nodejs -y
+
+# Install Node.js 18.x (requires GLIBC 2.27)
+curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+sudo apt install -y nodejs
+
+# Verify version
+node --version  # Should show v18.x.x
+```
+
+**Solution 2: Use NVM (Best compatibility)**
+```bash
+# Install NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+# Load NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+# Install Node.js 18 (better compatibility)
+nvm install 18
+nvm use 18
+nvm alias default 18
+
+# Verify
+node --version
+```
+
+**Solution 3: Upgrade system (if possible)**
+```bash
+# Check current OS version
+cat /etc/os-release
+
+# For Ubuntu < 20.04 or Debian < 10, consider upgrading
+# Ubuntu upgrade:
+sudo do-release-upgrade
+
+# Debian upgrade (example 9 -> 10):
+# Edit /etc/apt/sources.list and update to newer version
+# Then: sudo apt update && sudo apt upgrade
+```
+
+**Solution 4: Use precompiled Node.js binaries**
+```bash
+# Download Node.js 18.x binary
+cd ~
+wget https://nodejs.org/dist/v18.19.0/node-v18.19.0-linux-x64.tar.xz
+
+# Extract
+tar -xf node-v18.19.0-linux-x64.tar.xz
+
+# Move to /opt
+sudo mv node-v18.19.0-linux-x64 /opt/nodejs
+
+# Add to PATH
+echo 'export PATH=/opt/nodejs/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+
+# Verify
+node --version
+npm --version
+```
+
 ### Port Already in Use
 ```bash
 # Check what's using port 5173
