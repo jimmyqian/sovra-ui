@@ -321,6 +321,253 @@
             </div>
           </div>
 
+          <!-- Preston Whitaker Dashboard -->
+          <div v-else-if="isPrestonWhitaker && prestonProfile">
+            <!-- Profile Card -->
+            <ProfileCard
+              :name="prestonProfile.name"
+              :subtitle="`${prestonProfile.occupation} • ${prestonProfile.education}`"
+              :age="prestonProfile.age.toString()"
+              :location="prestonProfile.location"
+              :status="prestonProfile.status"
+              :net-worth="prestonProfile.financialInfo.trust"
+              :occupation="prestonProfile.occupation"
+              :education="prestonProfile.education"
+              :stats="[
+                {
+                  label: 'Trust Fund',
+                  value: prestonProfile.financialInfo.trust
+                },
+                {
+                  label: 'Monthly Spending',
+                  value: prestonProfile.financialInfo.spending
+                },
+                {
+                  label: 'Gambling Debts',
+                  value: prestonProfile.financialInfo.debts
+                }
+              ]"
+            />
+
+            <!-- Risk Cards Grid -->
+            <div
+              class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-6"
+            >
+              <div
+                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer animate-pulse"
+                :class="{
+                  'ring-4 ring-red-300': selectedRiskDetails === 'gambling'
+                }"
+                @click="toggleRiskDetails('gambling')"
+              >
+                <component
+                  :is="CurrencyDollarIcon"
+                  class="w-10 h-10 mx-auto mb-2 text-red-600 animate-bounce"
+                />
+                <div class="text-sm font-semibold text-red-900">
+                  Gambling Addiction
+                </div>
+                <div class="text-2xl font-bold text-red-700">CRITICAL</div>
+              </div>
+              <div
+                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer animate-pulse"
+                :class="{
+                  'ring-4 ring-red-300': selectedRiskDetails === 'deception'
+                }"
+                @click="toggleRiskDetails('deception')"
+              >
+                <component
+                  :is="EyeSlashIcon"
+                  class="w-10 h-10 mx-auto mb-2 text-red-600 animate-bounce"
+                />
+                <div class="text-sm font-semibold text-red-900">
+                  Deceptive Lifestyle
+                </div>
+                <div class="text-2xl font-bold text-red-700">CRITICAL</div>
+              </div>
+              <div
+                class="bg-red-50 border-2 border-red-400 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer animate-pulse"
+                :class="{
+                  'ring-4 ring-red-300': selectedRiskDetails === 'narcissism'
+                }"
+                @click="toggleRiskDetails('narcissism')"
+              >
+                <component
+                  :is="SparklesIcon"
+                  class="w-10 h-10 mx-auto mb-2 text-red-600 animate-bounce"
+                />
+                <div class="text-sm font-semibold text-red-900">
+                  Dark Triad Traits
+                </div>
+                <div class="text-2xl font-bold text-red-700">HIGH</div>
+              </div>
+              <div
+                class="bg-orange-50 border-2 border-orange-300 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer"
+                :class="{
+                  'ring-4 ring-orange-200':
+                    selectedRiskDetails === 'family_exposure'
+                }"
+                @click="toggleRiskDetails('family_exposure')"
+              >
+                <component
+                  :is="HomeIcon"
+                  class="w-10 h-10 mx-auto mb-2 text-orange-600"
+                />
+                <div class="text-sm font-semibold text-orange-900">
+                  Family Exposure
+                </div>
+                <div class="text-2xl font-bold text-orange-700">HIGH</div>
+              </div>
+              <div
+                class="bg-orange-50 border-2 border-orange-300 rounded-lg p-4 text-center hover:shadow-lg transition-all cursor-pointer"
+                :class="{
+                  'ring-4 ring-orange-200': selectedRiskDetails === 'volatility'
+                }"
+                @click="toggleRiskDetails('volatility')"
+              >
+                <component
+                  :is="BoltIcon"
+                  class="w-10 h-10 mx-auto mb-2 text-orange-600"
+                />
+                <div class="text-sm font-semibold text-orange-900">
+                  Behavioral Volatility
+                </div>
+                <div class="text-2xl font-bold text-orange-700">HIGH</div>
+              </div>
+            </div>
+
+            <!-- Risk Details Panel (shown when a risk card is clicked) -->
+            <div
+              v-if="selectedRiskDetails"
+              class="mb-6 p-6 rounded-lg shadow-xl border-4 animate-pulse-slow"
+              :class="{
+                'bg-red-50 border-red-500': [
+                  'gambling',
+                  'deception',
+                  'narcissism'
+                ].includes(selectedRiskDetails),
+                'bg-orange-50 border-orange-400': [
+                  'family_exposure',
+                  'volatility'
+                ].includes(selectedRiskDetails)
+              }"
+            >
+              <div class="flex items-center justify-between mb-4">
+                <component
+                  :is="ExclamationTriangleIcon"
+                  class="w-8 h-8"
+                  :class="{
+                    'text-red-600 animate-bounce': [
+                      'gambling',
+                      'deception',
+                      'narcissism'
+                    ].includes(selectedRiskDetails),
+                    'text-orange-600': [
+                      'family_exposure',
+                      'volatility'
+                    ].includes(selectedRiskDetails)
+                  }"
+                />
+                <button
+                  class="text-gray-500 hover:text-gray-700"
+                  @click="selectedRiskDetails = null"
+                >
+                  ✕
+                </button>
+              </div>
+              <div
+                class="prose prose-sm max-w-none"
+                v-html="prestonRiskDetails[selectedRiskDetails]"
+              ></div>
+            </div>
+
+            <!-- Personality and Tracking Sources -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <PersonalityProfileCard
+                title="Dark Triad Profile"
+                subtitle="Narcissism, manipulation, and impulsivity indicators"
+                :summary="prestonPersonality.summary"
+                :traits="prestonPersonality.traits"
+              />
+              <TrackingSourcesCard
+                title="Critical Tracking Sources"
+                subtitle="High-risk behavioral and financial data points"
+                :sources="prestonTrackingSources"
+              />
+            </div>
+
+            <!-- Visualization Cards Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <!-- Network Graph -->
+              <div>
+                <NetworkGraphCard
+                  title="Network & Connections"
+                  subtitle="Gambling associates and family ties"
+                  :nodes="prestonNetwork.nodes"
+                  :links="prestonNetwork.links"
+                  :width="500"
+                  :height="450"
+                />
+              </div>
+
+              <!-- Life Events Timeline -->
+              <div>
+                <TimelineCard
+                  title="Life Events & Red Flags"
+                  subtitle="Pattern of escalating risk behavior"
+                  :events="prestonLifeEvents"
+                  :width="600"
+                  :height="400"
+                />
+              </div>
+
+              <!-- Gambling Transactions -->
+              <div>
+                <GamblingTransactionsCard
+                  title="Gambling Transaction History"
+                  subtitle="Net profit/loss from sports betting (10 months)"
+                  :transactions="prestonGamblingTransactions"
+                  :width="600"
+                  :height="400"
+                />
+              </div>
+
+              <!-- Social Media Sentiment -->
+              <div>
+                <SentimentAnalysisCard
+                  title="Social Media Behavioral Analysis"
+                  subtitle="Narcissistic, volatile, and positive post trends"
+                  :data="prestonSocialMediaSentiment"
+                  :width="600"
+                  :height="400"
+                />
+              </div>
+
+              <!-- US Locations Map -->
+              <div class="lg:col-span-2">
+                <USMapCard
+                  title="Geographic Risk Pattern"
+                  subtitle="Austin-Vegas travel: Hidden gambling trips"
+                  :locations="prestonLocations"
+                  :width="1000"
+                  :height="500"
+                />
+              </div>
+            </div>
+
+            <!-- Summary and Recommendations -->
+            <div class="mb-6">
+              <SummaryRecommendationsCard
+                title="Critical Family Risk Assessment"
+                subtitle="Immediate intervention required to protect Schmidt family"
+                :summary="prestonSummary.summary"
+                :key-findings="prestonSummary.keyFindings"
+                :recommendations="prestonSummary.recommendations"
+                :next-steps="prestonSummary.nextSteps"
+              />
+            </div>
+          </div>
+
           <!-- Default Person Profile View -->
           <div v-else>
             <!-- Person Profile Section -->
@@ -391,6 +638,17 @@
     getRobertTrackingSources,
     getRobertSummaryRecommendations
   } from '@/utils/robertDashboardData'
+  import {
+    getPrestonProfile,
+    getPrestonLifeEvents,
+    getPrestonLocations,
+    getPrestonPersonalityProfile,
+    getPrestonTrackingSources,
+    getPrestonSummaryRecommendations,
+    getPrestonNetwork,
+    getPrestonGamblingTransactions,
+    getPrestonSocialMediaSentiment
+  } from '@/utils/prestonDashboardData'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
@@ -407,6 +665,8 @@
   import PersonalityProfileCard from '@/components/dashboard/PersonalityProfileCard.vue'
   import TrackingSourcesCard from '@/components/dashboard/TrackingSourcesCard.vue'
   import SummaryRecommendationsCard from '@/components/dashboard/SummaryRecommendationsCard.vue'
+  import GamblingTransactionsCard from '@/components/dashboard/GamblingTransactionsCard.vue'
+  import SentimentAnalysisCard from '@/components/dashboard/SentimentAnalysisCard.vue'
   import {
     ExclamationTriangleIcon,
     UserGroupIcon,
@@ -428,7 +688,14 @@
     ShieldExclamationIcon,
     HeartIcon,
     FireIcon,
-    AcademicCapIcon
+    AcademicCapIcon,
+    EyeSlashIcon,
+    CameraIcon,
+    MapPinIcon,
+    ChartBarIcon,
+    BanknotesIcon,
+    BuildingLibraryIcon,
+    SparklesIcon
   } from '@heroicons/vue/24/solid'
 
   const route = useRoute()
@@ -580,6 +847,149 @@
     </div>`
   }
 
+  // Preston's risk detailed descriptions
+  const prestonRiskDetails: Record<string, string> = {
+    gambling: `<div class="space-y-4">
+      <h4 class="font-semibold text-gray-900">Gambling Addiction - CRITICAL RISK</h4>
+
+      <div class="bg-red-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-red-800 mb-2">Transaction Pattern Analysis</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-red-700">
+          <li>342 sports betting transactions identified via Venmo in past 10 months</li>
+          <li>Escalating bet amounts: Started $200-500, now regularly $2,000-5,000 per week</li>
+          <li>Net loss of $23,750 documented since January 2024</li>
+          <li>Venmo notes include "lock," "parlay," "UT spread" - clear gambling terminology</li>
+          <li>Finals week Vegas trip with $3,200 loss during critical exam period</li>
+        </ul>
+      </div>
+
+      <div class="mt-4 bg-red-50 p-4 rounded-lg border border-red-200">
+        <h5 class="font-semibold text-red-900 mb-2">Immediate Actions Required:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-red-700">
+          <li>Confront Preston with documented evidence in controlled setting</li>
+          <li>Demand gambling addiction assessment and treatment enrollment</li>
+          <li>Implement financial monitoring and trust fund controls</li>
+          <li>Establish no-contact boundaries if intervention refused</li>
+          <li>Document all gambling activity for potential legal proceedings</li>
+        </ul>
+      </div>
+    </div>`,
+
+    deception: `<div class="space-y-4">
+      <h4 class="font-semibold text-gray-900">Systematic Deception - CRITICAL RISK</h4>
+
+      <div class="bg-red-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-red-800 mb-2">Hidden Lifestyle Pattern</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-red-700">
+          <li>12+ Las Vegas trips never disclosed to Sarah Schmidt</li>
+          <li>Vegas travel during UT finals week - claimed to be "studying with friends"</li>
+          <li>Instagram posts from Vegas quickly deleted or hidden from Sarah's view</li>
+          <li>Separate friend groups: "gambling buddies" vs "girlfriend-approved friends"</li>
+          <li>Double-booking: Tells Sarah one thing, does another in Vegas</li>
+        </ul>
+      </div>
+
+      <div class="mt-4 bg-red-50 p-4 rounded-lg border border-red-200">
+        <h5 class="font-semibold text-red-900 mb-2">Recommended Actions:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-red-700">
+          <li>Present timeline of deception to Sarah with evidence</li>
+          <li>Demand full disclosure of gambling debts and Vegas activities</li>
+          <li>Require Preston to account for all hidden travel and expenses</li>
+          <li>Implement mandatory couples therapy if relationship continues</li>
+          <li>Monitor for continued deceptive behavior patterns</li>
+        </ul>
+      </div>
+    </div>`,
+
+    narcissism: `<div class="space-y-4">
+      <h4 class="font-semibold text-gray-900">Dark Triad Personality Traits - HIGH RISK</h4>
+
+      <div class="bg-red-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-red-800 mb-2">Narcissistic Indicators</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-red-700">
+          <li>1,847 Instagram posts analyzed - 75% show self-promotional content</li>
+          <li>Captions like "Surround yourself with winners, not whiners"</li>
+          <li>Constant need for external validation and admiration</li>
+          <li>Exploits family name (Judge Whitaker) for social leverage</li>
+          <li>Lacks empathy - blames others for gambling losses publicly</li>
+        </ul>
+      </div>
+
+      <div class="bg-red-50 p-4 rounded-lg mt-3">
+        <h5 class="font-semibold text-red-800 mb-2">Manipulative Behavior</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-red-700">
+          <li>Adapts persona based on audience (family vs. gambling friends)</li>
+          <li>Uses charm and family connections to gain trust</li>
+          <li>Gaslights Sarah about whereabouts and financial situation</li>
+          <li>Projects blame onto others when confronted</li>
+        </ul>
+      </div>
+
+      <div class="mt-4 bg-red-50 p-4 rounded-lg border border-red-200">
+        <h5 class="font-semibold text-red-900 mb-2">Recommended Actions:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-red-700">
+          <li>Psychological evaluation by Dark Triad specialist</li>
+          <li>Educate Sarah on narcissistic relationship patterns</li>
+          <li>Establish firm boundaries with consequences</li>
+          <li>Monitor for escalating manipulative behavior</li>
+          <li>Prepare exit strategy for Sarah if needed</li>
+        </ul>
+      </div>
+    </div>`,
+
+    family_exposure: `<div class="space-y-4">
+      <h4 class="font-semibold text-gray-900">Schmidt Family Exposure Risk - HIGH</h4>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-orange-800 mb-2">Reputational Threat Vectors</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-orange-700">
+          <li>Preston's gambling scandal could attach to Schmidt family name</li>
+          <li>Robert Schmidt's business reputation at risk through association</li>
+          <li>Philanthropic networks could view relationship as judgment lapse</li>
+          <li>Whitaker family (Judge, VP connections) amplifies any public fallout</li>
+          <li>Sarah's professional future compromised by association</li>
+        </ul>
+      </div>
+
+      <div class="mt-4 bg-orange-50 p-4 rounded-lg border border-orange-200">
+        <h5 class="font-semibold text-orange-900 mb-2">Recommended Actions:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-orange-700">
+          <li>Create public distance between Preston and Schmidt family events</li>
+          <li>Prepare crisis communication plan for potential scandal</li>
+          <li>Legal review of any financial entanglements</li>
+          <li>Monitor media for emerging stories linking families</li>
+          <li>Establish clear boundaries on family business exposure</li>
+        </ul>
+      </div>
+    </div>`,
+
+    volatility: `<div class="space-y-4">
+      <h4 class="font-semibold text-gray-900">Behavioral Volatility - HIGH RISK</h4>
+
+      <div class="bg-orange-50 p-4 rounded-lg">
+        <h5 class="font-semibold text-orange-800 mb-2">Documented Outbursts</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-orange-700">
+          <li>Public Instagram attack on UT football players: "Y'all cost me rent money"</li>
+          <li>534 volatile/angry social media posts identified since January</li>
+          <li>Increasing frequency: 72% of September posts were aggressive or narcissistic</li>
+          <li>Targets athletes, referees, and betting platforms when losing</li>
+          <li>Friends report Preston "explodes" when gambling losses mount</li>
+        </ul>
+      </div>
+
+      <div class="mt-4 bg-orange-50 p-4 rounded-lg border border-orange-200">
+        <h5 class="font-semibold text-orange-900 mb-2">Recommended Actions:</h5>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-orange-700">
+          <li>Anger management assessment and treatment requirement</li>
+          <li>Monitor for escalating volatility toward Sarah</li>
+          <li>Safety planning for Sarah if volatility increases</li>
+          <li>Document all volatile incidents for protective orders if needed</li>
+          <li>Assess for substance abuse compounding volatility</li>
+        </ul>
+      </div>
+    </div>`
+  }
+
   const toggleRiskDetails = (riskType: string) => {
     selectedRiskDetails.value =
       selectedRiskDetails.value === riskType ? null : riskType
@@ -594,6 +1004,7 @@
   // Get person data from route params and search store
   // Default to Robert Schmidt 1 if no ID is provided
   const ROBERT_SCHMIDT_1_ID = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+  const PRESTON_WHITAKER_ID = 'preston-cole-whitaker-iii'
   const personId = computed(() => {
     const id = route.params.id as string | undefined
     return id && id.trim() !== '' ? id : ROBERT_SCHMIDT_1_ID
@@ -820,6 +1231,125 @@
                 : rec.iconName === 'UserGroupIcon'
                   ? UserGroupIcon
                   : HomeIcon
+      }))
+    }
+  })
+
+  // Check if this is Preston Whitaker's dashboard
+  const isPrestonWhitaker = computed(
+    () => personId.value === PRESTON_WHITAKER_ID
+  )
+
+  // Get Preston's profile
+  const prestonProfile = computed(() =>
+    isPrestonWhitaker.value ? getPrestonProfile() : null
+  )
+
+  // Get Preston's life events
+  const prestonLifeEvents = computed(() =>
+    isPrestonWhitaker.value ? getPrestonLifeEvents() : []
+  )
+
+  // Get Preston's locations
+  const prestonLocations = computed(() =>
+    isPrestonWhitaker.value ? getPrestonLocations() : []
+  )
+
+  // Get Preston's network
+  const prestonNetwork = computed(() =>
+    isPrestonWhitaker.value ? getPrestonNetwork() : { nodes: [], links: [] }
+  )
+
+  // Get Preston's gambling transactions
+  const prestonGamblingTransactions = computed(() =>
+    isPrestonWhitaker.value ? getPrestonGamblingTransactions() : []
+  )
+
+  // Get Preston's social media sentiment
+  const prestonSocialMediaSentiment = computed(() =>
+    isPrestonWhitaker.value ? getPrestonSocialMediaSentiment() : []
+  )
+
+  // Get Preston's personality profile
+  const prestonPersonality = computed(() => {
+    if (!isPrestonWhitaker.value) return { summary: '', traits: [] }
+    const data = getPrestonPersonalityProfile()
+    return {
+      ...data,
+      traits: data.traits.map(trait => ({
+        ...trait,
+        icon:
+          trait.icon === 'SparklesIcon'
+            ? SparklesIcon
+            : trait.icon === 'CurrencyDollarIcon'
+              ? CurrencyDollarIcon
+              : trait.icon === 'FireIcon'
+                ? FireIcon
+                : trait.icon === 'EyeSlashIcon'
+                  ? EyeSlashIcon
+                  : trait.icon === 'UserGroupIcon'
+                    ? UserGroupIcon
+                    : ShieldExclamationIcon
+      }))
+    }
+  })
+
+  // Get Preston's tracking sources
+  const prestonTrackingSources = computed(() => {
+    const sources = getPrestonTrackingSources()
+    return sources.map(source => ({
+      ...source,
+      icon:
+        source.iconName === 'CameraIcon'
+          ? CameraIcon
+          : source.iconName === 'CurrencyDollarIcon'
+            ? CurrencyDollarIcon
+            : source.iconName === 'MapPinIcon'
+              ? MapPinIcon
+              : source.iconName === 'AcademicCapIcon'
+                ? AcademicCapIcon
+                : source.iconName === 'UsersIcon'
+                  ? UsersIcon
+                  : source.iconName === 'ChartBarIcon'
+                    ? ChartBarIcon
+                    : source.iconName === 'ChatBubbleLeftRightIcon'
+                      ? ChatBubbleLeftRightIcon
+                      : BanknotesIcon
+    }))
+  })
+
+  // Get Preston's summary and recommendations
+  const prestonSummary = computed(() => {
+    const data = getPrestonSummaryRecommendations()
+    return {
+      ...data,
+      keyFindings: data.keyFindings.map(finding => ({
+        ...finding,
+        icon:
+          finding.iconName === 'FireIcon'
+            ? FireIcon
+            : finding.iconName === 'EyeSlashIcon'
+              ? EyeSlashIcon
+              : finding.iconName === 'ExclamationTriangleIcon'
+                ? ExclamationTriangleIcon
+                : finding.iconName === 'HomeIcon'
+                  ? HomeIcon
+                  : finding.iconName === 'BuildingLibraryIcon'
+                    ? BuildingLibraryIcon
+                    : BoltIcon
+      })),
+      recommendations: data.recommendations.map(rec => ({
+        ...rec,
+        icon:
+          rec.iconName === 'ShieldExclamationIcon'
+            ? ShieldExclamationIcon
+            : rec.iconName === 'LockClosedIcon'
+              ? LockClosedIcon
+              : rec.iconName === 'NewspaperIcon'
+                ? NewspaperIcon
+                : rec.iconName === 'ShieldCheckIcon'
+                  ? ShieldCheckIcon
+                  : DocumentTextIcon
       }))
     }
   })
