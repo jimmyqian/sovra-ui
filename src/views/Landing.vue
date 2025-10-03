@@ -87,7 +87,9 @@
       conversationStore.clearConversation()
 
       await searchStore.performSearch(searchQuery.value)
-      await router.push('/search')
+      // Navigate to dashboard for default Robert Schmidt
+      const ROBERT_SCHMIDT_1_ID = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+      await router.push(`/dashboard/${ROBERT_SCHMIDT_1_ID}`)
     } catch {
       // TODO: Implement proper error handling/logging
       // console.error('Search failed:', error)

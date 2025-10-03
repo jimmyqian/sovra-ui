@@ -13,7 +13,12 @@ const createMockRouter = () => {
     history: createWebHistory(),
     routes: [
       { path: '/', component: Landing },
-      { path: '/search', component: SearchResults }
+      { path: '/search', component: SearchResults },
+      {
+        path: '/dashboard/:id?',
+        component: { template: '<div>Dashboard</div>' },
+        name: 'SearchDetail'
+      }
     ]
   })
   return router
@@ -67,8 +72,10 @@ describe('Search Workflow Integration', () => {
     // Verify store method was called
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
 
-    // Verify router navigation was called (no query parameter needed anymore)
-    expect(pushSpy).toHaveBeenCalledWith('/search')
+    // Verify router navigation was called to dashboard with Robert Schmidt ID
+    expect(pushSpy).toHaveBeenCalledWith(
+      '/dashboard/e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+    )
   })
 
   it('handles search with Enter key press', async () => {
@@ -97,7 +104,9 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(testQuery)
-    expect(pushSpy).toHaveBeenCalledWith('/search')
+    expect(pushSpy).toHaveBeenCalledWith(
+      '/dashboard/e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+    )
   })
 
   it('prevents search with empty query', async () => {
@@ -292,7 +301,9 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(specialQuery)
-    expect(pushSpy).toHaveBeenCalledWith('/search')
+    expect(pushSpy).toHaveBeenCalledWith(
+      '/dashboard/e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+    )
   })
 
   it('handles very long search queries', async () => {
@@ -327,7 +338,9 @@ describe('Search Workflow Integration', () => {
     await new Promise(resolve => setTimeout(resolve, 0))
 
     expect(performSearchSpy).toHaveBeenCalledWith(longQuery)
-    expect(pushSpy).toHaveBeenCalledWith('/search')
+    expect(pushSpy).toHaveBeenCalledWith(
+      '/dashboard/e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+    )
   })
 
   it('shows loading state during search process', async () => {

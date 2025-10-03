@@ -6,14 +6,16 @@ import Landing from './views/Landing.vue'
 import SearchResults from './views/SearchResults.vue'
 import SearchDetail from './views/SearchDetail.vue'
 import Timeline from './views/Timeline.vue'
+import Network from './views/Network.vue'
 import './style.css'
 
 const routes = [
-  { path: '/', redirect: '/dashboard' },
+  { path: '/', redirect: '/landing' },
   { path: '/landing', component: Landing },
   { path: '/search', component: SearchResults },
   { path: '/dashboard/:id?', component: SearchDetail, name: 'SearchDetail' },
-  { path: '/timeline', component: Timeline, name: 'Timeline' }
+  { path: '/timeline', component: Timeline, name: 'Timeline' },
+  { path: '/network', component: Network, name: 'Network' }
 ]
 
 const router = createRouter({
@@ -30,11 +32,13 @@ const router = createRouter({
     const isFromSearchLayout =
       from.path === '/search' ||
       from.path.startsWith('/dashboard/') ||
-      from.path === '/timeline'
+      from.path === '/timeline' ||
+      from.path === '/network'
     const isToSearchLayout =
       to.path === '/search' ||
       to.path.startsWith('/dashboard/') ||
-      to.path === '/timeline'
+      to.path === '/timeline' ||
+      to.path === '/network'
 
     if (isFromSearchLayout && isToSearchLayout) {
       // Preserve scroll position when navigating between SearchLayout routes

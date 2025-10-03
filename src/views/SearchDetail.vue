@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
   import { ref, computed, onMounted, watch, nextTick } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useConversationStore } from '@/stores/conversation'
   import { useSearchStore } from '@/stores/search'
   import { getPersonById } from '@/utils/conversationScripts'
@@ -88,6 +88,7 @@
   import BackButton from '@/components/common/BackButton.vue'
 
   const route = useRoute()
+  const router = useRouter()
   const conversationStore = useConversationStore()
   const searchStore = useSearchStore()
   const detailScrollContainer = ref<HTMLElement | null>(null)
@@ -267,8 +268,12 @@
     // Implement file upload functionality
   }
 
-  const handleCategoryToggle = (_categoryId: string, _active: boolean) => {
-    // TODO: Implement category toggle functionality
+  const handleCategoryToggle = (categoryId: string, _active: boolean) => {
+    // Handle network view navigation
+    if (categoryId === 'network') {
+      router.push('/network')
+    }
+    // TODO: Implement other category toggle functionality
     // console.log('Category toggled:', categoryId, active)
     // Implement category toggle functionality
   }
