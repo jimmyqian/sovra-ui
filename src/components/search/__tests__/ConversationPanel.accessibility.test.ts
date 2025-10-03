@@ -139,7 +139,7 @@ describe('ConversationPanel Accessibility', () => {
 
     it('should maintain accessibility across responsive breakpoints', () => {
       // Component should have responsive classes
-      expect(wrapper.classes()).toContain('md:w-2/5')
+      expect(wrapper.classes()).toContain('md:w-1/3')
 
       // Search input area should have responsive padding
       const searchInputArea = wrapper.find('.absolute.bottom-0')

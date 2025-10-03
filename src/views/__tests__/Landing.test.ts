@@ -84,8 +84,8 @@ describe('Landing Component', () => {
     it('should render hero text correctly', () => {
       const wrapper = createWrapper()
 
-      expect(wrapper.text()).toContain('Hi! I am Sovra')
-      expect(wrapper.text()).toContain('What do you want to know today?')
+      expect(wrapper.text()).toContain('Hi Robert!')
+      expect(wrapper.text()).toContain('What are you interested in now?')
     })
 
     it('should pass correct props to SearchBar', () => {
@@ -267,7 +267,7 @@ describe('Landing Component', () => {
       // Check for main heading
       const heading = wrapper.find('h1')
       expect(heading.exists()).toBe(true)
-      expect(heading.text()).toContain('Hi! I am Sovra')
+      expect(heading.text()).toContain('Hi Robert!')
 
       // Check for descriptive text
       const description = wrapper.find('p')

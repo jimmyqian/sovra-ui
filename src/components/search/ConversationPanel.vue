@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full bg-bg-card flex flex-col md:w-2/5 max-h-full relative overflow-hidden"
+    class="w-full bg-bg-card flex flex-col md:w-1/3 max-h-full relative overflow-hidden"
   >
     <AppHeader />
 

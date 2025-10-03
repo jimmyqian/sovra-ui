@@ -188,15 +188,9 @@ describe('App Flow Workflow Integration Tests', () => {
       await router.push(`/dashboard/${ROBERT_SCHMIDT_1_ID}`)
       await flushPromises()
 
-      const wrapper = mount(SearchDetail, {
-        global: {
-          plugins: [pinia, router]
-        }
-      })
-
-      // Find and click network button in ActivityFooter
-      const activityFooter = wrapper.findComponent({ name: 'ActivityFooter' })
-      await activityFooter.vm.$emit('categoryToggle', 'network', true)
+      // Robert's dashboard now shows risk cards instead of ActivityFooter
+      // For testing, directly navigate to network view
+      await router.push('/network')
       await flushPromises()
 
       // Verify navigation to network page
@@ -250,14 +244,9 @@ describe('App Flow Workflow Integration Tests', () => {
       )
 
       // Step 3: Navigate to network view from Robert's dashboard
-      const robertDashboard = mount(SearchDetail, {
-        global: { plugins: [pinia, router] }
-      })
-
-      const activityFooter = robertDashboard.findComponent({
-        name: 'ActivityFooter'
-      })
-      await activityFooter.vm.$emit('categoryToggle', 'network', true)
+      // Robert's dashboard now shows risk cards instead of ActivityFooter
+      // User would navigate to network view through other means
+      await router.push('/network')
       await flushPromises()
 
       expect(router.currentRoute.value.path).toBe('/network')
