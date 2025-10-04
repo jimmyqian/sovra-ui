@@ -1,0 +1,24 @@
+---
+# Application settings
+app_name: sovra-ui
+app_root: /var/www/sovra-ui
+deploy_user: ubuntu
+
+# Domain settings
+domain_name: your-domain.com
+www_domain: true  # Set to false if you don't want www subdomain
+
+# SSL settings
+obtain_ssl_cert: true  # Set to false if you want to configure SSL manually
+ssl_email: your-email@example.com
+
+# Basic Authentication
+basic_auth_username: admin
+basic_auth_password: changeme123  # CHANGE THIS!
+
+# Git repository (for deployment script)
+git_repo_url: https://github.com/your-org/sovra-ui.git
+git_branch: main
+
+# Node.js settings
+node_version: 20

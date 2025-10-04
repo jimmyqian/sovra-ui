@@ -1,0 +1,10 @@
+---
+all:
+  children:
+    production:
+      hosts:
+        sovra-ui-prod:
+          ansible_host: YOUR_EC2_IP_ADDRESS
+          ansible_user: ubuntu
+          ansible_ssh_private_key_file: ~/.ssh/your-ec2-key.pem
+          ansible_python_interpreter: /usr/bin/python3
