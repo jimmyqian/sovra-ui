@@ -53,11 +53,23 @@ export default defineConfig({
       name: 'basic-auth',
       configureServer(server) {
         server.middlewares.use(basicAuthMiddleware)
+      },
+      configurePreviewServer(server) {
+        server.middlewares.use(basicAuthMiddleware)
       }
     },
     {
       name: 'ip-logger',
       configureServer(server) {
+        server.middlewares.use((req, _res, next) => {
+          const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
+          const timestamp = new Date().toISOString()
+          const logEntry = `${timestamp} - ${ip} - ${req.method} ${req.url}\n`
+          fs.appendFileSync('access.log', logEntry)
+          next()
+        })
+      },
+      configurePreviewServer(server) {
         server.middlewares.use((req, _res, next) => {
           const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress
           const timestamp = new Date().toISOString()
