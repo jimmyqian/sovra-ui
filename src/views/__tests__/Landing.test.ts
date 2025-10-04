@@ -49,7 +49,12 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: { template: '<div>Home</div>' } },
-    { path: '/search', component: { template: '<div>Search</div>' } }
+    { path: '/search', component: { template: '<div>Search</div>' } },
+    {
+      path: '/dashboard/:id?',
+      component: { template: '<div>Dashboard</div>' },
+      name: 'SearchDetail'
+    }
   ]
 })
 
@@ -79,8 +84,8 @@ describe('Landing Component', () => {
     it('should render hero text correctly', () => {
       const wrapper = createWrapper()
 
-      expect(wrapper.text()).toContain('Hi! I am Sovra')
-      expect(wrapper.text()).toContain('What do you want to know today?')
+      expect(wrapper.text()).toContain('Hi Robert!')
+      expect(wrapper.text()).toContain('What are you interested in now?')
     })
 
     it('should pass correct props to SearchBar', () => {
@@ -196,7 +201,7 @@ describe('Landing Component', () => {
       expect(performSearchSpy).not.toHaveBeenCalled()
     })
 
-    it('should navigate to search page after successful search', async () => {
+    it('should navigate to dashboard with Robert Schmidt ID after successful search', async () => {
       const wrapper = createWrapper()
       const searchStore = useSearchStore()
 
@@ -216,7 +221,9 @@ describe('Landing Component', () => {
       // Wait for async operations
       await new Promise(resolve => setTimeout(resolve, 0))
 
-      expect(routerPushSpy).toHaveBeenCalledWith('/search')
+      expect(routerPushSpy).toHaveBeenCalledWith(
+        '/dashboard/e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+      )
     })
 
     it('should handle search errors gracefully', async () => {
@@ -260,7 +267,7 @@ describe('Landing Component', () => {
       // Check for main heading
       const heading = wrapper.find('h1')
       expect(heading.exists()).toBe(true)
-      expect(heading.text()).toContain('Hi! I am Sovra')
+      expect(heading.text()).toContain('Hi Robert!')
 
       // Check for descriptive text
       const description = wrapper.find('p')
@@ -309,7 +316,9 @@ describe('Landing Component', () => {
       // Verify conversation was cleared before navigation
       expect(clearConversationSpy).toHaveBeenCalled()
       expect(performSearchSpy).toHaveBeenCalledWith('John Caruso')
-      expect(routerPushSpy).toHaveBeenCalledWith('/search')
+      expect(routerPushSpy).toHaveBeenCalledWith(
+        '/dashboard/e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+      )
     })
   })
 })

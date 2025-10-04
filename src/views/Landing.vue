@@ -16,12 +16,12 @@
         <h1
           class="text-hero font-normal text-text-primary mb-2 md:text-3xl sm:text-2xl"
         >
-          Hi! I am <span class="font-semibold">Sovra</span>...
+          Hi <span class="font-semibold">Robert</span>!
         </h1>
         <h2
           class="text-hero font-normal text-text-primary mb-4 md:text-3xl sm:text-2xl"
         >
-          What do you <strong>want to know</strong> today?
+          What are you <strong>interested in</strong> now?
         </h2>
         <p class="text-text-secondary text-sm mb-12">
           Try adding more detail: works better when you give more context or
@@ -87,7 +87,9 @@
       conversationStore.clearConversation()
 
       await searchStore.performSearch(searchQuery.value)
-      await router.push('/search')
+      // Navigate to dashboard for default Robert Schmidt
+      const ROBERT_SCHMIDT_1_ID = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+      await router.push(`/dashboard/${ROBERT_SCHMIDT_1_ID}`)
     } catch {
       // TODO: Implement proper error handling/logging
       // console.error('Search failed:', error)

@@ -24,6 +24,37 @@ This will start the Vite development server at `http://localhost:3000/`
 - `npm run format:check` - Check code formatting
 - `npm run typecheck` - Run TypeScript type checking
 
+## Dashboard Features
+
+The application includes a visual dashboard for Robert Schmidt at `/dashboard/e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b`.
+
+### Dashboard Components
+
+**Visual Components** (`src/components/dashboard/`)
+
+- `StatsCard.vue` - Statistical display cards with icons and trend indicators
+- `RiskGauge.vue` - Circular gauge visualization for risk assessment
+- `InfoGraphicCard.vue` - Multi-purpose infographic cards with stats, progress bars, and tags
+- `RiskCard.vue` - Enhanced risk assessment cards with visual grid layout
+- `ProfileCard.vue` - User profile display component
+
+### Dashboard Layout
+
+The dashboard features a responsive horizontal and vertical grid layout:
+
+- **Profile Section**: 2/3 width profile card + 1/3 width quick stats
+- **Risk Overview**: Risk gauge + 2 infographic cards in horizontal layout
+- **Detailed Risk Cards**: Visual grid display with color-coded indicators
+
+### Key Features
+
+- Horizontal and vertical responsive layouts
+- Visual infographics with minimal text
+- Color-coded risk indicators (High/Moderate/Low)
+- Interactive expandable cards for detailed information
+- Progress bars and statistical visualizations
+- Responsive grid system for various screen sizes
+
 ## Testing
 
 The project includes comprehensive unit and integration tests using Vitest and Vue Test Utils.

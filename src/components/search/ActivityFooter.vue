@@ -45,6 +45,7 @@
     { id: 'vehicles', label: 'Vehicles', active: false },
     { id: 'averagePay', label: 'Average Pay', active: true },
     { id: 'timeLine', label: 'Time Line View', active: false },
+    { id: 'network', label: 'Network View', active: false },
     { id: 'ssnFinance', label: 'SSN & Finance', active: false }
   ])
 

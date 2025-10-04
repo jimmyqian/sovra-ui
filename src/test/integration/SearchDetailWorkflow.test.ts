@@ -293,7 +293,7 @@ describe('SearchDetail Integration Tests', () => {
     expect(
       wrapper
         .find(
-          '.w-full.bg-bg-card.flex.flex-col.md\\:w-2\\/5.max-h-full.relative.overflow-hidden'
+          '.w-full.bg-bg-card.flex.flex-col.md\\:w-1\\/3.max-h-full.relative.overflow-hidden'
         )
         .exists()
     ).toBe(true)

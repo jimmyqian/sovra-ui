@@ -409,7 +409,7 @@ describe('SearchResults Component', () => {
       const wrapper = createWrapper()
 
       // Check for responsive classes
-      expect(wrapper.find('.md\\:w-2\\/5').exists()).toBe(true)
+      expect(wrapper.find('.md\\:w-1\\/3').exists()).toBe(true)
       expect(wrapper.find('.max-h-full').exists()).toBe(true)
     })
   })

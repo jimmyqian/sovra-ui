@@ -1,6 +1,6 @@
 <template>
   <div
-    class="w-full bg-bg-card flex flex-col md:w-2/5 max-h-full relative overflow-hidden"
+    class="w-full bg-bg-card flex flex-col md:w-1/3 max-h-full relative overflow-hidden"
   >
     <AppHeader />
 
@@ -61,7 +61,7 @@
     onMounted,
     onBeforeUnmount
   } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { useSearchStore } from '@/stores/search'
   import { useConversationStore } from '@/stores/conversation'
   import { useUIStore } from '@/stores/ui'
@@ -87,6 +87,7 @@
   }>()
 
   const route = useRoute()
+  const router = useRouter()
   const searchStore = useSearchStore()
   const conversationStore = useConversationStore()
   const uiStore = useUIStore()
@@ -225,6 +226,13 @@
 
       // Emit search event for parent to handle
       emit('search', queryToSearch)
+
+      // Navigate to search page if user is performing a quick search from network or dashboard
+      const isNetworkPage = route?.path === '/network'
+      const isDashboardPage = route?.path?.startsWith('/dashboard')
+      if (isNetworkPage || isDashboardPage) {
+        await router.push('/search')
+      }
 
       // Wait 3 seconds before performing search and replacing thinking placeholder
       setTimeout(async () => {

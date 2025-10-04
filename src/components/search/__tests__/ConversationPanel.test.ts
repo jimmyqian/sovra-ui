@@ -74,7 +74,7 @@ describe('ConversationPanel', () => {
       expect(wrapper.classes()).toContain('bg-bg-card')
       expect(wrapper.classes()).toContain('flex')
       expect(wrapper.classes()).toContain('flex-col')
-      expect(wrapper.classes()).toContain('md:w-2/5')
+      expect(wrapper.classes()).toContain('md:w-1/3')
       expect(wrapper.classes()).toContain('max-h-full')
       expect(wrapper.classes()).toContain('relative')
       expect(wrapper.classes()).toContain('overflow-hidden')
