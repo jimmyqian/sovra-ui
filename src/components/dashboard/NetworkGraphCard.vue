@@ -93,6 +93,9 @@
       .selectAll('g')
       .data(props.nodes)
       .join('g')
+      .style('cursor', (d: Node) =>
+        d.id === 'preston' ? 'pointer' : 'default'
+      )
       .call(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         d3.drag<any, Node>().on('drag', (event, d) => {
@@ -149,9 +152,6 @@
         }
       })
       .attr('stroke-width', (d: Node) => (d.id === 'preston' ? 4 : 3))
-      .style('cursor', (d: Node) =>
-        d.id === 'preston' ? 'pointer' : 'default'
-      )
 
     // Labels
     const labels = svg
