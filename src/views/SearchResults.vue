@@ -53,9 +53,15 @@
 
   const handlePersonSelected = (person: SearchResult) => {
     // Navigate to dedicated SearchDetail page
+    // Use special route for Preston Whitaker
+    const personId =
+      person.name === 'Preston Whitaker'
+        ? 'preston-cole-whitaker-iii'
+        : person.id
+
     router.push({
       name: 'SearchDetail',
-      params: { id: person.id }
+      params: { id: personId }
     })
   }
 

@@ -128,6 +128,35 @@ export default [
     }
   },
 
+  // Config files (vite.config.ts, etc.) - TypeScript without type-aware linting
+  {
+    files: ['vite.config.ts', '*.config.ts'],
+    languageOptions: {
+      parser: typescriptParser,
+      parserOptions: {
+        ecmaVersion: 2020,
+        sourceType: 'module'
+      }
+    },
+    plugins: {
+      '@typescript-eslint': typescript,
+      prettier
+    },
+    rules: {
+      'no-unused-vars': 'off',
+      'no-undef': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_'
+        }
+      ],
+      '@typescript-eslint/no-explicit-any': 'off',
+      'no-console': 'off'
+    }
+  },
+
   // Vue-specific configuration
   {
     files: ['**/*.vue'],

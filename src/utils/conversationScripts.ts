@@ -333,10 +333,10 @@ const personDefinitions: Record<string, SearchResult> = {
     image:
       'https://raw.githubusercontent.com/imcnaney/donkey/main/img/profile.png'
   },
-  // Preston Cole Whittaker III
-  '7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d': {
-    id: '7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d',
-    name: 'Preston Cole Whittaker III',
+  // Preston Whitaker persons
+  '5c8a9f2d-6e3b-4a7c-9d1e-8f4b2a6c3d5e': {
+    id: '5c8a9f2d-6e3b-4a7c-9d1e-8f4b2a6c3d5e',
+    name: 'Preston Whitaker',
     age: 22,
     gender: 'Male',
     maritalStatus: 'Single',
@@ -345,7 +345,98 @@ const personDefinitions: Record<string, SearchResult> = {
     references: 15,
     companies: 2,
     contacts: 11,
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm3.jpg'
+  },
+  '6d9b0a3e-7f4c-4b8d-0e2f-9a5c3b7d4e6f': {
+    id: '6d9b0a3e-7f4c-4b8d-0e2f-9a5c3b7d4e6f',
+    name: 'Preston Whitaker',
+    age: 24,
+    gender: 'Male',
+    maritalStatus: 'Single',
+    location: 'Texas',
+    rating: 3.9,
+    references: 18,
+    companies: 3,
+    contacts: 13,
     image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm2.jpg'
+  },
+  '7e0c1b4f-8a5d-4c9e-1f3a-0b6d4c8e5f7a': {
+    id: '7e0c1b4f-8a5d-4c9e-1f3a-0b6d4c8e5f7a',
+    name: 'Preston Whitaker',
+    age: 26,
+    gender: 'Male',
+    maritalStatus: 'Married',
+    location: 'Texas',
+    rating: 4.1,
+    references: 21,
+    companies: 2,
+    contacts: 15,
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm4.jpg'
+  },
+  '8f1d2c5a-9b6e-4d0f-2a4b-1c7e5d9f6a8b': {
+    id: '8f1d2c5a-9b6e-4d0f-2a4b-1c7e5d9f6a8b',
+    name: 'Preston Whitaker',
+    age: 28,
+    gender: 'Male',
+    maritalStatus: 'Single',
+    location: 'Texas',
+    rating: 4.2,
+    references: 24,
+    companies: 4,
+    contacts: 17,
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm5.jpg'
+  },
+  '9a2e3d6b-0c7f-4e1a-3b5c-2d8f6e0a7b9c': {
+    id: '9a2e3d6b-0c7f-4e1a-3b5c-2d8f6e0a7b9c',
+    name: 'Preston Whitaker',
+    age: 30,
+    gender: 'Male',
+    maritalStatus: 'Divorced',
+    location: 'Texas',
+    rating: 4.0,
+    references: 19,
+    companies: 3,
+    contacts: 14,
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm6.webp'
+  },
+  '0b3f4e7c-1d8a-4f2b-4c6d-3e9a7f1b8c0d': {
+    id: '0b3f4e7c-1d8a-4f2b-4c6d-3e9a7f1b8c0d',
+    name: 'Preston Whitaker',
+    age: 32,
+    gender: 'Male',
+    maritalStatus: 'Married',
+    location: 'Texas',
+    rating: 4.3,
+    references: 26,
+    companies: 5,
+    contacts: 19,
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm7.webp'
+  },
+  '1c4a5f8d-2e9b-4a3c-5d7e-4f0b8a2c9d1e': {
+    id: '1c4a5f8d-2e9b-4a3c-5d7e-4f0b8a2c9d1e',
+    name: 'Preston Whitaker',
+    age: 25,
+    gender: 'Male',
+    maritalStatus: 'Single',
+    location: 'Texas',
+    rating: 3.7,
+    references: 16,
+    companies: 2,
+    contacts: 12,
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm8.jpg'
+  },
+  '2d5b6a9e-3f0c-4b4d-6e8f-5a1c9b3d0e2f': {
+    id: '2d5b6a9e-3f0c-4b4d-6e8f-5a1c9b3d0e2f',
+    name: 'Preston Whitaker',
+    age: 27,
+    gender: 'Male',
+    maritalStatus: 'Single',
+    location: 'Texas',
+    rating: 4.4,
+    references: 28,
+    companies: 4,
+    contacts: 20,
+    image: 'https://raw.githubusercontent.com/imcnaney/donkey/main/img/jc1.webp'
   },
   // Default Example persons
   'a3b4c5d6-e7f8-491a-0b1c-2d3e4f5a6b7c': {
@@ -519,6 +610,32 @@ export function getConversationScript(query: string): ConversationScript {
     }
   }
 
+  // Check for Preston (case insensitive)
+  if (normalizedQuery.includes('preston')) {
+    const pw1 = '5c8a9f2d-6e3b-4a7c-9d1e-8f4b2a6c3d5e'
+    const pw2 = '6d9b0a3e-7f4c-4b8d-0e2f-9a5c3b7d4e6f'
+    const pw3 = '7e0c1b4f-8a5d-4c9e-1f3a-0b6d4c8e5f7a'
+    const pw4 = '8f1d2c5a-9b6e-4d0f-2a4b-1c7e5d9f6a8b'
+    const pw5 = '9a2e3d6b-0c7f-4e1a-3b5c-2d8f6e0a7b9c'
+    const pw6 = '0b3f4e7c-1d8a-4f2b-4c6d-3e9a7f1b8c0d'
+    const pw7 = '1c4a5f8d-2e9b-4a3c-5d7e-4f0b8a2c9d1e'
+    const pw8 = '2d5b6a9e-3f0c-4b4d-6e8f-5a1c9b3d0e2f'
+
+    return {
+      responses: [
+        'Preston Whitaker response 1',
+        'Preston Whitaker response 2',
+        'Preston Whitaker response 3'
+      ],
+      resultStages: [
+        getPersonsByIds([pw1, pw2, pw3, pw4, pw5, pw6, pw7, pw8]), // Stage 0: All 8
+        getPersonsByIds([pw1, pw2, pw4, pw6]), // Stage 1: 4 persons
+        getPersonsByIds([pw1, pw2, pw4]), // Stage 2: 3 persons
+        getPersonsByIds([pw1]) // Stage 3: 1 person
+      ]
+    }
+  }
+
   // Check for Robert Schmidt (case insensitive)
   if (normalizedQuery.includes('robert schmidt')) {
     const rs1 = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
@@ -628,6 +745,16 @@ export function getDetailScript(query: string): DetailScript {
         'Von Miller search detail response 1',
         'Von Miller search detail response 2',
         'Von Miller search detail response 3'
+      ]
+    }
+  }
+
+  if (normalizedQuery.includes('preston')) {
+    return {
+      responses: [
+        'Preston Whitaker search detail response 1',
+        'Preston Whitaker search detail response 2',
+        'Preston Whitaker search detail response 3'
       ]
     }
   }
