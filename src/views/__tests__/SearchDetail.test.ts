@@ -484,4 +484,115 @@ describe('SearchDetail Component', () => {
       expect(wrapper.find('.px-8.py-4').exists()).toBe(true)
     })
   })
+
+  describe('Dashboard Layout', () => {
+    it('should render visualization cards in a vertical stack for Robert Schmidt', () => {
+      // Update mock route to Robert Schmidt ID
+      mockRoute.params.id = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+
+      const wrapper = createWrapper()
+
+      // Find the visualization cards container
+      const cardsContainer = wrapper.find('.flex.flex-col.gap-6.mb-6')
+      expect(cardsContainer.exists()).toBe(true)
+
+      // Verify it's a flex column layout (vertical stack)
+      expect(cardsContainer.classes()).toContain('flex')
+      expect(cardsContainer.classes()).toContain('flex-col')
+      expect(cardsContainer.classes()).toContain('gap-6')
+    })
+
+    it('should render visualization cards with full width for Robert Schmidt', () => {
+      // Update mock route to Robert Schmidt ID
+      mockRoute.params.id = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+
+      const wrapper = createWrapper()
+
+      // Find all card wrapper divs within the visualization cards container
+      const cardWrappers = wrapper.findAll(
+        '.flex.flex-col.gap-6.mb-6 > .w-full'
+      )
+
+      // Should have cards (Network, Timeline, Map)
+      expect(cardWrappers.length).toBeGreaterThanOrEqual(3)
+
+      // Each card wrapper should have w-full class
+      cardWrappers.forEach(cardWrapper => {
+        expect(cardWrapper.classes()).toContain('w-full')
+      })
+    })
+
+    it('should not use grid layout for visualization cards', () => {
+      // Update mock route to Robert Schmidt ID
+      mockRoute.params.id = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+
+      const wrapper = createWrapper()
+
+      // Find the visualization cards container by looking for cards with specific visualization content
+      const visualizationContainer = wrapper.find('.flex.flex-col.gap-6.mb-6')
+      expect(visualizationContainer.exists()).toBe(true)
+
+      // Check that the visualization container does not use grid classes
+      expect(visualizationContainer.classes()).not.toContain('grid')
+      expect(visualizationContainer.classes()).not.toContain('grid-cols-1')
+      expect(visualizationContainer.classes()).not.toContain('lg:grid-cols-2')
+    })
+
+    it('should render visualization cards in a vertical stack for gambling profiles', () => {
+      // Update mock route to Preston Whitaker ID
+      mockRoute.params.id = 'preston-cole-whitaker-iii'
+
+      const wrapper = createWrapper()
+
+      // Find the visualization cards container
+      const cardsContainer = wrapper.find('.flex.flex-col.gap-6.mb-6')
+      expect(cardsContainer.exists()).toBe(true)
+
+      // Verify it's a flex column layout (vertical stack)
+      expect(cardsContainer.classes()).toContain('flex')
+      expect(cardsContainer.classes()).toContain('flex-col')
+      expect(cardsContainer.classes()).toContain('gap-6')
+    })
+
+    it('should render visualization cards with full width for gambling profiles', () => {
+      // Update mock route to John Caruso ID
+      mockRoute.params.id = 'john-caruso'
+
+      const wrapper = createWrapper()
+
+      // Find all card wrapper divs within the visualization cards container
+      const cardWrappers = wrapper.findAll(
+        '.flex.flex-col.gap-6.mb-6 > .w-full'
+      )
+
+      // Should have cards (Network, Timeline, Transactions, Sentiment, Map)
+      expect(cardWrappers.length).toBeGreaterThanOrEqual(5)
+
+      // Each card wrapper should have w-full class
+      cardWrappers.forEach(cardWrapper => {
+        expect(cardWrapper.classes()).toContain('w-full')
+      })
+    })
+
+    it('should render all dashboard cards in a single vertical stack container', () => {
+      // Update mock route to Robert Schmidt ID
+      mockRoute.params.id = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
+
+      const wrapper = createWrapper()
+
+      // Find the main dashboard cards container
+      const stackContainer = wrapper.find('.flex.flex-col.gap-6.mb-6')
+      expect(stackContainer.exists()).toBe(true)
+
+      // Should be flex column, not grid
+      expect(stackContainer.classes()).toContain('flex')
+      expect(stackContainer.classes()).toContain('flex-col')
+      expect(stackContainer.classes()).not.toContain('grid')
+
+      // Should contain all card wrappers with w-full class
+      const cardWrappers = stackContainer.findAll('.w-full')
+      // Should have at least 5 cards (Personality, Tracking, Network, Timeline, Map)
+      expect(cardWrappers.length).toBeGreaterThanOrEqual(5)
+    })
+  })
 })

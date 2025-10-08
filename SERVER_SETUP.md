@@ -5,12 +5,14 @@ This guide provides step-by-step instructions for setting up the SOVRA UI web ap
 ## Prerequisites
 
 ### System Requirements
+
 - Ubuntu 20.04+ / Debian 11+ / CentOS 8+ (or similar Linux distribution)
 - At least 2GB RAM
 - 10GB available disk space
 - Root or sudo access
 
 ### Required Software
+
 - Node.js 18.x or higher
 - npm 9.x or higher
 - Git
@@ -168,11 +170,13 @@ pm2 list               # List all apps
 ## Step 8: Access the Application
 
 ### Direct Access (if using --host flag)
+
 ```
 http://your-server-ip:5173
 ```
 
 ### SSH Tunnel Access (if not using --host)
+
 ```bash
 # From your local machine, create SSH tunnel
 ssh -L 5173:localhost:5173 username@your-server-ip
@@ -214,6 +218,7 @@ npm run format
 This error means your system's GLIBC library is older than required by Node.js 20.x. Common on older Debian/Ubuntu versions.
 
 **Solution 1: Use Node.js 18.x (Recommended for older systems)**
+
 ```bash
 # Remove current Node.js
 sudo apt remove nodejs -y
@@ -227,6 +232,7 @@ node --version  # Should show v18.x.x
 ```
 
 **Solution 2: Use NVM (Best compatibility)**
+
 ```bash
 # Install NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
@@ -245,6 +251,7 @@ node --version
 ```
 
 **Solution 3: Upgrade system (if possible)**
+
 ```bash
 # Check current OS version
 cat /etc/os-release
@@ -259,6 +266,7 @@ sudo do-release-upgrade
 ```
 
 **Solution 4: Use precompiled Node.js binaries**
+
 ```bash
 # Download Node.js 18.x binary
 cd ~
@@ -280,6 +288,7 @@ npm --version
 ```
 
 ### Port Already in Use
+
 ```bash
 # Check what's using port 5173
 sudo lsof -i :5173
@@ -292,6 +301,7 @@ npm run dev -- --port 3000 --host
 ```
 
 ### Permission Errors
+
 ```bash
 # Fix npm permissions
 sudo chown -R $USER:$(id -gn $USER) ~/.npm
@@ -302,6 +312,7 @@ npm cache clean --force
 ```
 
 ### Module Not Found Errors
+
 ```bash
 # Remove node_modules and reinstall
 rm -rf node_modules package-lock.json
@@ -309,6 +320,7 @@ npm install
 ```
 
 ### Out of Memory
+
 ```bash
 # Increase Node.js memory limit
 export NODE_OPTIONS="--max-old-space-size=4096"
@@ -316,6 +328,7 @@ npm run dev -- --host
 ```
 
 ### Connection Refused from External IP
+
 ```bash
 # Ensure firewall allows the port
 sudo ufw status
@@ -400,6 +413,7 @@ tail -f ~/.pm2/logs/*   # Follow PM2 logs
 ## Support
 
 For issues or questions:
+
 - Check the project README: `/sovra-ui/README.md`
 - Review existing issues: https://github.com/jimmyqian/sovra-ui/issues
 - Check project documentation in `/sovra-ui/CLAUDE_PROJECT_INFO.md`

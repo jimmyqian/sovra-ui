@@ -255,25 +255,41 @@
               ></div>
             </div>
 
-            <!-- Personality and Tracking Sources -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <PersonalityProfileCard
-                title="Personality Profile"
-                subtitle="Leadership characteristics and behavioral patterns"
-                :summary="robertPersonality.summary"
-                :traits="robertPersonality.traits"
-              />
-              <TrackingSourcesCard
-                title="Top Tracking Sources"
-                subtitle="Online data sources and exposure levels"
-                :sources="robertTrackingSources"
-              />
-            </div>
+            <!-- Dashboard Cards Stack -->
+            <div class="flex flex-col gap-6 mb-6">
+              <!-- Summary and Recommendations -->
+              <div class="w-full">
+                <SummaryRecommendationsCard
+                  title="Summary & Recommendations"
+                  subtitle="Comprehensive risk assessment and action plan"
+                  :summary="robertSummary.summary"
+                  :key-findings="robertSummary.keyFindings"
+                  :recommendations="robertSummary.recommendations"
+                  :next-steps="robertSummary.nextSteps"
+                />
+              </div>
 
-            <!-- Visualization Cards Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <!-- Personality Profile -->
+              <div class="w-full">
+                <PersonalityProfileCard
+                  title="Personality Profile"
+                  subtitle="Leadership characteristics and behavioral patterns"
+                  :summary="robertPersonality.summary"
+                  :traits="robertPersonality.traits"
+                />
+              </div>
+
+              <!-- Tracking Sources -->
+              <div class="w-full">
+                <TrackingSourcesCard
+                  title="Top Tracking Sources"
+                  subtitle="Online data sources and exposure levels"
+                  :sources="robertTrackingSources"
+                />
+              </div>
+
               <!-- Network Graph -->
-              <div>
+              <div class="w-full">
                 <NetworkGraphCard
                   title="Network"
                   subtitle="Key relationships and connections"
@@ -286,18 +302,18 @@
               </div>
 
               <!-- Life Events Timeline -->
-              <div>
+              <div class="w-full">
                 <TimelineCard
                   title="Life Events Timeline"
                   subtitle="Major milestones in Robert's personal and professional journey"
                   :events="robertLifeEvents"
-                  :width="600"
+                  :width="1400"
                   :height="400"
                 />
               </div>
 
               <!-- US Locations Map -->
-              <div class="lg:col-span-2">
+              <div class="w-full">
                 <USMapCard
                   title="Geographic Footprint"
                   subtitle="Places Robert has lived, worked, and invested"
@@ -306,18 +322,6 @@
                   :height="500"
                 />
               </div>
-            </div>
-
-            <!-- Summary and Recommendations -->
-            <div class="mb-6">
-              <SummaryRecommendationsCard
-                title="Summary & Recommendations"
-                subtitle="Comprehensive risk assessment and action plan"
-                :summary="robertSummary.summary"
-                :key-findings="robertSummary.keyFindings"
-                :recommendations="robertSummary.recommendations"
-                :next-steps="robertSummary.nextSteps"
-              />
             </div>
           </div>
 
@@ -482,25 +486,41 @@
               ></div>
             </div>
 
-            <!-- Personality and Tracking Sources -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <PersonalityProfileCard
-                title="Dark Triad Profile"
-                subtitle="Narcissism, manipulation, and impulsivity indicators"
-                :summary="gamblingPersonality.summary"
-                :traits="gamblingPersonality.traits"
-              />
-              <TrackingSourcesCard
-                title="Critical Tracking Sources"
-                subtitle="High-risk behavioral and financial data points"
-                :sources="gamblingTrackingSources"
-              />
-            </div>
+            <!-- Dashboard Cards Stack -->
+            <div class="flex flex-col gap-6 mb-6">
+              <!-- Summary and Recommendations -->
+              <div class="w-full">
+                <SummaryRecommendationsCard
+                  title="Critical Family Risk Assessment"
+                  subtitle="Immediate intervention required to protect Schmidt family"
+                  :summary="gamblingSummary.summary"
+                  :key-findings="gamblingSummary.keyFindings"
+                  :recommendations="gamblingSummary.recommendations"
+                  :next-steps="gamblingSummary.nextSteps"
+                />
+              </div>
 
-            <!-- Visualization Cards Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              <!-- Dark Triad Profile -->
+              <div class="w-full">
+                <PersonalityProfileCard
+                  title="Dark Triad Profile"
+                  subtitle="Narcissism, manipulation, and impulsivity indicators"
+                  :summary="gamblingPersonality.summary"
+                  :traits="gamblingPersonality.traits"
+                />
+              </div>
+
+              <!-- Critical Tracking Sources -->
+              <div class="w-full">
+                <TrackingSourcesCard
+                  title="Critical Tracking Sources"
+                  subtitle="High-risk behavioral and financial data points"
+                  :sources="gamblingTrackingSources"
+                />
+              </div>
+
               <!-- Network Graph -->
-              <div>
+              <div class="w-full">
                 <NetworkGraphCard
                   title="Network & Connections"
                   subtitle="Gambling associates and family ties"
@@ -512,18 +532,18 @@
               </div>
 
               <!-- Life Events Timeline -->
-              <div>
+              <div class="w-full">
                 <TimelineCard
                   title="Life Events & Red Flags"
                   subtitle="Pattern of escalating risk behavior"
                   :events="gamblingLifeEvents"
-                  :width="600"
+                  :width="1400"
                   :height="400"
                 />
               </div>
 
               <!-- Gambling Transactions -->
-              <div>
+              <div class="w-full">
                 <GamblingTransactionsCard
                   title="Gambling Transaction History"
                   subtitle="Net profit/loss from sports betting (10 months)"
@@ -534,7 +554,7 @@
               </div>
 
               <!-- Social Media Sentiment -->
-              <div>
+              <div class="w-full">
                 <SentimentAnalysisCard
                   title="Social Media Behavioral Analysis"
                   subtitle="Narcissistic, volatile, and positive post trends"
@@ -545,7 +565,7 @@
               </div>
 
               <!-- US Locations Map -->
-              <div class="lg:col-span-2">
+              <div class="w-full">
                 <USMapCard
                   title="Geographic Risk Pattern"
                   subtitle="Austin-Vegas travel: Hidden gambling trips"
@@ -554,18 +574,6 @@
                   :height="500"
                 />
               </div>
-            </div>
-
-            <!-- Summary and Recommendations -->
-            <div class="mb-6">
-              <SummaryRecommendationsCard
-                title="Critical Family Risk Assessment"
-                subtitle="Immediate intervention required to protect Schmidt family"
-                :summary="gamblingSummary.summary"
-                :key-findings="gamblingSummary.keyFindings"
-                :recommendations="gamblingSummary.recommendations"
-                :next-steps="gamblingSummary.nextSteps"
-              />
             </div>
           </div>
 
