@@ -322,30 +322,30 @@
           </div>
 
           <!-- Preston Whitaker Dashboard -->
-          <div v-else-if="isPrestonWhitaker && prestonProfile">
+          <div v-else-if="isGamblingProfile && gamblingProfile">
             <!-- Profile Card -->
             <ProfileCard
-              :name="prestonProfile.name"
-              :profile-image="prestonProfile.profileImage"
-              :subtitle="`${prestonProfile.occupation} • ${prestonProfile.education}`"
-              :age="prestonProfile.age.toString()"
-              :location="prestonProfile.location"
-              :status="prestonProfile.status"
-              :net-worth="prestonProfile.financialInfo.trust"
-              :occupation="prestonProfile.occupation"
-              :education="prestonProfile.education"
+              :name="gamblingProfile.name"
+              :profile-image="gamblingProfile.profileImage"
+              :subtitle="`${gamblingProfile.occupation} • ${gamblingProfile.education}`"
+              :age="gamblingProfile.age.toString()"
+              :location="gamblingProfile.location"
+              :status="gamblingProfile.status"
+              :net-worth="gamblingProfile.financialInfo.trust"
+              :occupation="gamblingProfile.occupation"
+              :education="gamblingProfile.education"
               :stats="[
                 {
                   label: 'Trust Fund',
-                  value: prestonProfile.financialInfo.trust
+                  value: gamblingProfile.financialInfo.trust
                 },
                 {
                   label: 'Monthly Spending',
-                  value: prestonProfile.financialInfo.spending
+                  value: gamblingProfile.financialInfo.spending
                 },
                 {
                   label: 'Gambling Debts',
-                  value: prestonProfile.financialInfo.debts
+                  value: gamblingProfile.financialInfo.debts
                 }
               ]"
             />
@@ -478,7 +478,7 @@
               </div>
               <div
                 class="prose prose-sm max-w-none"
-                v-html="prestonRiskDetails[selectedRiskDetails]"
+                v-html="gamblingRiskDetails[selectedRiskDetails]"
               ></div>
             </div>
 
@@ -487,13 +487,13 @@
               <PersonalityProfileCard
                 title="Dark Triad Profile"
                 subtitle="Narcissism, manipulation, and impulsivity indicators"
-                :summary="prestonPersonality.summary"
-                :traits="prestonPersonality.traits"
+                :summary="gamblingPersonality.summary"
+                :traits="gamblingPersonality.traits"
               />
               <TrackingSourcesCard
                 title="Critical Tracking Sources"
                 subtitle="High-risk behavioral and financial data points"
-                :sources="prestonTrackingSources"
+                :sources="gamblingTrackingSources"
               />
             </div>
 
@@ -504,8 +504,8 @@
                 <NetworkGraphCard
                   title="Network & Connections"
                   subtitle="Gambling associates and family ties"
-                  :nodes="prestonNetwork.nodes"
-                  :links="prestonNetwork.links"
+                  :nodes="gamblingNetwork.nodes"
+                  :links="gamblingNetwork.links"
                   :width="500"
                   :height="450"
                 />
@@ -516,7 +516,7 @@
                 <TimelineCard
                   title="Life Events & Red Flags"
                   subtitle="Pattern of escalating risk behavior"
-                  :events="prestonLifeEvents"
+                  :events="gamblingLifeEvents"
                   :width="600"
                   :height="400"
                 />
@@ -527,7 +527,7 @@
                 <GamblingTransactionsCard
                   title="Gambling Transaction History"
                   subtitle="Net profit/loss from sports betting (10 months)"
-                  :transactions="prestonGamblingTransactions"
+                  :transactions="gamblingTransactions"
                   :width="600"
                   :height="400"
                 />
@@ -538,7 +538,7 @@
                 <SentimentAnalysisCard
                   title="Social Media Behavioral Analysis"
                   subtitle="Narcissistic, volatile, and positive post trends"
-                  :data="prestonSocialMediaSentiment"
+                  :data="gamblingSocialMediaSentiment"
                   :width="600"
                   :height="400"
                 />
@@ -549,7 +549,7 @@
                 <USMapCard
                   title="Geographic Risk Pattern"
                   subtitle="Austin-Vegas travel: Hidden gambling trips"
-                  :locations="prestonLocations"
+                  :locations="gamblingLocations"
                   :width="1000"
                   :height="500"
                 />
@@ -561,10 +561,10 @@
               <SummaryRecommendationsCard
                 title="Critical Family Risk Assessment"
                 subtitle="Immediate intervention required to protect Schmidt family"
-                :summary="prestonSummary.summary"
-                :key-findings="prestonSummary.keyFindings"
-                :recommendations="prestonSummary.recommendations"
-                :next-steps="prestonSummary.nextSteps"
+                :summary="gamblingSummary.summary"
+                :key-findings="gamblingSummary.keyFindings"
+                :recommendations="gamblingSummary.recommendations"
+                :next-steps="gamblingSummary.nextSteps"
               />
             </div>
           </div>
@@ -650,6 +650,17 @@
     getPrestonGamblingTransactions,
     getPrestonSocialMediaSentiment
   } from '@/utils/prestonDashboardData'
+  import {
+    getJohnCarusoProfile,
+    getJohnCarusoLifeEvents,
+    getJohnCarusoLocations,
+    getJohnCarusoPersonalityProfile,
+    getJohnCarusoTrackingSources,
+    getJohnCarusoSummaryRecommendations,
+    getJohnCarusoNetwork,
+    getJohnCarusoGamblingTransactions,
+    getJohnCarusoSocialMediaSentiment
+  } from '@/utils/johnCarusoDashboardData'
   import SearchLayout from '@/components/layouts/SearchLayout.vue'
   import PersonProfile from '@/components/search/PersonProfile.vue'
   import DetailedResultCard from '@/components/search/DetailedResultCard.vue'
@@ -1006,6 +1017,7 @@
   // Default to Robert Schmidt 1 if no ID is provided
   const ROBERT_SCHMIDT_1_ID = 'e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b'
   const PRESTON_WHITAKER_ID = 'preston-cole-whitaker-iii'
+  const JOHN_CARUSO_ID = 'john-caruso'
   const personId = computed(() => {
     const id = route.params.id as string | undefined
     return id && id.trim() !== '' ? id : ROBERT_SCHMIDT_1_ID
@@ -1064,7 +1076,7 @@
     },
     {
       id: 'preston',
-      name: 'Preston Cole Whitaker III',
+      name: 'John Caruso',
       type: 'associate' as const,
       image:
         'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=faces'
@@ -1241,40 +1253,61 @@
     () => personId.value === PRESTON_WHITAKER_ID
   )
 
-  // Get Preston's profile
-  const prestonProfile = computed(() =>
-    isPrestonWhitaker.value ? getPrestonProfile() : null
+  // Check if this is John Caruso's dashboard
+  const isJohnCaruso = computed(() => personId.value === JOHN_CARUSO_ID)
+
+  // Check if this is a gambling profile dashboard (Preston or John)
+  const isGamblingProfile = computed(
+    () => isPrestonWhitaker.value || isJohnCaruso.value
   )
 
-  // Get Preston's life events
-  const prestonLifeEvents = computed(() =>
-    isPrestonWhitaker.value ? getPrestonLifeEvents() : []
-  )
+  // Get unified gambling profile (works for both Preston and John)
+  const gamblingProfile = computed(() => {
+    if (isPrestonWhitaker.value) return getPrestonProfile()
+    if (isJohnCaruso.value) return getJohnCarusoProfile()
+    return null
+  })
 
-  // Get Preston's locations
-  const prestonLocations = computed(() =>
-    isPrestonWhitaker.value ? getPrestonLocations() : []
-  )
+  // Unified gambling profile data
+  const gamblingLifeEvents = computed(() => {
+    if (isPrestonWhitaker.value) return getPrestonLifeEvents()
+    if (isJohnCaruso.value) return getJohnCarusoLifeEvents()
+    return []
+  })
 
-  // Get Preston's network
-  const prestonNetwork = computed(() =>
-    isPrestonWhitaker.value ? getPrestonNetwork() : { nodes: [], links: [] }
-  )
+  const gamblingLocations = computed(() => {
+    if (isPrestonWhitaker.value) return getPrestonLocations()
+    if (isJohnCaruso.value) return getJohnCarusoLocations()
+    return []
+  })
 
-  // Get Preston's gambling transactions
-  const prestonGamblingTransactions = computed(() =>
-    isPrestonWhitaker.value ? getPrestonGamblingTransactions() : []
-  )
+  const gamblingNetwork = computed(() => {
+    if (isPrestonWhitaker.value) return getPrestonNetwork()
+    if (isJohnCaruso.value) return getJohnCarusoNetwork()
+    return { nodes: [], links: [] }
+  })
 
-  // Get Preston's social media sentiment
-  const prestonSocialMediaSentiment = computed(() =>
-    isPrestonWhitaker.value ? getPrestonSocialMediaSentiment() : []
-  )
+  const gamblingTransactions = computed(() => {
+    if (isPrestonWhitaker.value) return getPrestonGamblingTransactions()
+    if (isJohnCaruso.value) return getJohnCarusoGamblingTransactions()
+    return []
+  })
 
-  // Get Preston's personality profile
-  const prestonPersonality = computed(() => {
-    if (!isPrestonWhitaker.value) return { summary: '', traits: [] }
-    const data = getPrestonPersonalityProfile()
+  const gamblingSocialMediaSentiment = computed(() => {
+    if (isPrestonWhitaker.value) return getPrestonSocialMediaSentiment()
+    if (isJohnCaruso.value) return getJohnCarusoSocialMediaSentiment()
+    return []
+  })
+
+  const gamblingPersonality = computed(() => {
+    const data = isPrestonWhitaker.value
+      ? getPrestonPersonalityProfile()
+      : isJohnCaruso.value
+        ? getJohnCarusoPersonalityProfile()
+        : { summary: '', traits: [] }
+
+    if (!data.summary) return { summary: '', traits: [] }
+
     return {
       ...data,
       traits: data.traits.map(trait => ({
@@ -1295,9 +1328,13 @@
     }
   })
 
-  // Get Preston's tracking sources
-  const prestonTrackingSources = computed(() => {
-    const sources = getPrestonTrackingSources()
+  const gamblingTrackingSources = computed(() => {
+    const sources = isPrestonWhitaker.value
+      ? getPrestonTrackingSources()
+      : isJohnCaruso.value
+        ? getJohnCarusoTrackingSources()
+        : []
+
     return sources.map(source => ({
       ...source,
       icon:
@@ -1319,9 +1356,13 @@
     }))
   })
 
-  // Get Preston's summary and recommendations
-  const prestonSummary = computed(() => {
-    const data = getPrestonSummaryRecommendations()
+  const gamblingSummary = computed(() => {
+    const data = isPrestonWhitaker.value
+      ? getPrestonSummaryRecommendations()
+      : isJohnCaruso.value
+        ? getJohnCarusoSummaryRecommendations()
+        : { summary: '', keyFindings: [], recommendations: [], nextSteps: [] }
+
     return {
       ...data,
       keyFindings: data.keyFindings.map(finding => ({
@@ -1352,6 +1393,21 @@
                   ? ShieldCheckIcon
                   : DocumentTextIcon
       }))
+    }
+  })
+
+  const gamblingRiskDetails = computed<Record<string, string>>(() => {
+    const name = isPrestonWhitaker.value ? 'Preston' : 'John'
+    const family = isPrestonWhitaker.value ? 'Whitaker' : 'Caruso'
+
+    return {
+      gambling: prestonRiskDetails.gambling.replace(/Preston/g, name),
+      deception: prestonRiskDetails.deception.replace(/Preston/g, name),
+      narcissism: prestonRiskDetails.narcissism.replace(/Preston/g, name),
+      family_exposure: prestonRiskDetails.family_exposure
+        .replace(/Preston/g, name)
+        .replace(/Whitaker/g, family),
+      volatility: prestonRiskDetails.volatility.replace(/Preston/g, name)
     }
   })
 
@@ -1522,14 +1578,14 @@
   }
 
   /**
-   * Handles network node click events - navigates to Preston's dashboard
+   * Handles network node click events - navigates to John Caruso's dashboard
    */
   const handleNodeClick = (nodeId: string) => {
     if (nodeId === 'preston') {
-      // Navigate to Preston's dashboard and scroll to top
+      // Navigate to John Caruso's dashboard and scroll to top
       router.push({
         name: 'SearchDetail',
-        params: { id: 'preston-cole-whitaker-iii' }
+        params: { id: 'john-caruso' }
       })
       // Scroll to top after navigation
       window.scrollTo({ top: 0, behavior: 'smooth' })

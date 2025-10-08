@@ -43,7 +43,7 @@ const basicAuthMiddleware: Connect.NextHandleFunction = (req, res, next) => {
   console.log('[AUTH] Requesting authentication')
   res.setHeader('WWW-Authenticate', 'Basic realm="Secure Area"')
   res.statusCode = 401
-  res.end('Unauthorized')
+  return res.end('Unauthorized')
 }
 
 export default defineConfig({

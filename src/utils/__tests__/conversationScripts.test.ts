@@ -304,12 +304,12 @@ describe('conversationScripts', () => {
   })
 
   describe('getPersonById', () => {
-    it('should return Preston Cole Whittaker III person by UUID', () => {
-      const person = getPersonById('7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d')
+    it('should return Preston Whitaker person by UUID', () => {
+      const person = getPersonById('5c8a9f2d-6e3b-4a7c-9d1e-8f4b2a6c3d5e')
 
       expect(person).toBeTruthy()
-      expect(person?.id).toBe('7f3e8d9a-2c5b-4e1f-9a6d-3b8c5e2f7a4d')
-      expect(person?.name).toBe('Preston Cole Whittaker III')
+      expect(person?.id).toBe('5c8a9f2d-6e3b-4a7c-9d1e-8f4b2a6c3d5e')
+      expect(person?.name).toBe('Preston Whitaker')
       expect(person?.age).toBe(22)
       expect(person?.gender).toBe('Male')
       expect(person?.maritalStatus).toBe('Single')
@@ -319,7 +319,7 @@ describe('conversationScripts', () => {
       expect(person?.companies).toBe(2)
       expect(person?.contacts).toBe(11)
       expect(person?.image).toBe(
-        'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm2.jpg'
+        'https://raw.githubusercontent.com/imcnaney/donkey/main/img/vm3.jpg'
       )
     })
 
