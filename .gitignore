@@ -19,3 +19,8 @@ dist/
 
 # Logs
 access.log
+
+# Ansible sensitive files
+ansible/inventory.yml
+ansible/vars.yml
+ansible/*.retry

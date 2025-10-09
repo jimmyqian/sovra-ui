@@ -1,0 +1,167 @@
+---
+- name: Setup Sovra UI Production Server
+  hosts: production
+  become: true
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Remove broken NodeSource repository file
+      file:
+        path: /etc/apt/sources.list.d/nodesource.list
+        state: absent
+      ignore_errors: true
+
+    - name: Remove broken NodeSource GPG key
+      file:
+        path: /usr/share/keyrings/nodesource.gpg
+        state: absent
+      ignore_errors: true
+
+    - name: Update apt cache
+      apt:
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
+
+    - name: Install required system packages
+      apt:
+        name:
+          - curl
+          - git
+          - gnupg
+          - ca-certificates
+          - apache2-utils
+          - nginx
+          - certbot
+          - python3-certbot-nginx
+        state: present
+
+    - name: Check if Node.js is already installed
+      command: node --version
+      register: node_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Remove existing NodeSource repository if present
+      file:
+        path: /etc/apt/sources.list.d/nodesource.list
+        state: absent
+      when: node_check.rc != 0
+
+    - name: Remove existing NodeSource GPG key
+      file:
+        path: /usr/share/keyrings/nodesource.gpg
+        state: absent
+      when: node_check.rc != 0
+
+    - name: Download NodeSource setup script
+      get_url:
+        url: https://deb.nodesource.com/setup_20.x
+        dest: /tmp/nodesource_setup.sh
+        mode: '0755'
+      when: node_check.rc != 0
+
+    - name: Run NodeSource setup script
+      command: bash /tmp/nodesource_setup.sh
+      args:
+        creates: /etc/apt/sources.list.d/nodesource.list
+      when: node_check.rc != 0
+
+    - name: Install Node.js
+      apt:
+        name: nodejs
+        state: present
+        update_cache: true
+      when: node_check.rc != 0
+
+    - name: Install PM2 globally
+      npm:
+        name: pm2
+        global: true
+        state: present
+
+    - name: Create application directory structure
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ deploy_user }}"
+        group: "{{ deploy_user }}"
+        mode: '0755'
+      loop:
+        - "{{ app_root }}"
+        - "{{ app_root }}/releases"
+        - "{{ app_root }}/shared"
+        - "{{ app_root }}/shared/logs"
+
+    - name: Create basic auth password file
+      shell: |
+        htpasswd -cb /etc/nginx/.htpasswd "{{ basic_auth_username }}" "{{ basic_auth_password }}"
+        chown root:www-data /etc/nginx/.htpasswd
+        chmod 0640 /etc/nginx/.htpasswd
+      args:
+        creates: /etc/nginx/.htpasswd
+
+    - name: Create Nginx configuration from template
+      template:
+        src: templates/nginx.conf.j2
+        dest: "/etc/nginx/sites-available/{{ app_name }}"
+        mode: '0644'
+      notify: Test and reload nginx
+
+    - name: Enable Nginx site
+      file:
+        src: "/etc/nginx/sites-available/{{ app_name }}"
+        dest: "/etc/nginx/sites-enabled/{{ app_name }}"
+        state: link
+      notify: Test and reload nginx
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Test and reload nginx
+
+    - name: Create deployment script
+      template:
+        src: templates/deploy.sh.j2
+        dest: "{{ app_root }}/deploy.sh"
+        mode: '0755'
+        owner: "{{ deploy_user }}"
+        group: "{{ deploy_user }}"
+
+    - name: Ensure Nginx is started and enabled
+      systemd:
+        name: nginx
+        state: started
+        enabled: true
+
+    - name: Check if SSL certificate exists
+      stat:
+        path: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+      register: ssl_cert
+
+    - name: Obtain SSL certificate with Certbot
+      command: >
+        certbot --nginx
+        -d {{ domain_name }}
+        {% if www_domain %}-d www.{{ domain_name }}{% endif %}
+        --email {{ ssl_email }}
+        --agree-tos
+        --non-interactive
+        --redirect
+      when: not ssl_cert.stat.exists and obtain_ssl_cert
+
+    - name: Set up Certbot auto-renewal
+      cron:
+        name: "Certbot renewal"
+        minute: "0"
+        hour: "0,12"
+        job: "certbot renew --quiet --post-hook 'systemctl reload nginx'"
+
+  handlers:
+    - name: Test and reload nginx
+      shell: nginx -t && systemctl reload nginx
