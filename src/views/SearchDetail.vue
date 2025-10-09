@@ -257,6 +257,30 @@
 
             <!-- Dashboard Cards Stack -->
             <div class="flex flex-col gap-6 mb-6">
+              <!-- Network Graph -->
+              <div class="w-full">
+                <NetworkGraphCard
+                  title="Network"
+                  subtitle="Key relationships and connections"
+                  :nodes="networkNodes"
+                  :links="networkLinks"
+                  :width="500"
+                  :height="450"
+                  @node-click="handleNodeClick"
+                />
+              </div>
+
+              <!-- Life Events Timeline -->
+              <div class="w-full">
+                <TimelineCard
+                  title="Life Events Timeline"
+                  subtitle="Major milestones in Robert's personal and professional journey"
+                  :events="robertLifeEvents"
+                  :width="1400"
+                  :height="400"
+                />
+              </div>
+
               <!-- Summary and Recommendations -->
               <div class="w-full">
                 <SummaryRecommendationsCard
@@ -285,30 +309,6 @@
                   title="Top Tracking Sources"
                   subtitle="Online data sources and exposure levels"
                   :sources="robertTrackingSources"
-                />
-              </div>
-
-              <!-- Network Graph -->
-              <div class="w-full">
-                <NetworkGraphCard
-                  title="Network"
-                  subtitle="Key relationships and connections"
-                  :nodes="networkNodes"
-                  :links="networkLinks"
-                  :width="500"
-                  :height="450"
-                  @node-click="handleNodeClick"
-                />
-              </div>
-
-              <!-- Life Events Timeline -->
-              <div class="w-full">
-                <TimelineCard
-                  title="Life Events Timeline"
-                  subtitle="Major milestones in Robert's personal and professional journey"
-                  :events="robertLifeEvents"
-                  :width="1400"
-                  :height="400"
                 />
               </div>
 
@@ -488,6 +488,29 @@
 
             <!-- Dashboard Cards Stack -->
             <div class="flex flex-col gap-6 mb-6">
+              <!-- Network Graph -->
+              <div class="w-full">
+                <NetworkGraphCard
+                  title="Network & Connections"
+                  subtitle="Gambling associates and family ties"
+                  :nodes="gamblingNetwork.nodes"
+                  :links="gamblingNetwork.links"
+                  :width="500"
+                  :height="450"
+                />
+              </div>
+
+              <!-- Life Events Timeline -->
+              <div class="w-full">
+                <TimelineCard
+                  title="Life Events & Red Flags"
+                  subtitle="Pattern of escalating risk behavior"
+                  :events="gamblingLifeEvents"
+                  :width="1400"
+                  :height="400"
+                />
+              </div>
+
               <!-- Summary and Recommendations -->
               <div class="w-full">
                 <SummaryRecommendationsCard
@@ -516,29 +539,6 @@
                   title="Critical Tracking Sources"
                   subtitle="High-risk behavioral and financial data points"
                   :sources="gamblingTrackingSources"
-                />
-              </div>
-
-              <!-- Network Graph -->
-              <div class="w-full">
-                <NetworkGraphCard
-                  title="Network & Connections"
-                  subtitle="Gambling associates and family ties"
-                  :nodes="gamblingNetwork.nodes"
-                  :links="gamblingNetwork.links"
-                  :width="500"
-                  :height="450"
-                />
-              </div>
-
-              <!-- Life Events Timeline -->
-              <div class="w-full">
-                <TimelineCard
-                  title="Life Events & Red Flags"
-                  subtitle="Pattern of escalating risk behavior"
-                  :events="gamblingLifeEvents"
-                  :width="1400"
-                  :height="400"
                 />
               </div>
 
@@ -1159,7 +1159,7 @@
     { source: 'robert', target: 'son1', relationship: 'father-son' },
     { source: 'robert', target: 'son2', relationship: 'father-son' },
     { source: 'robert', target: 'spouse', relationship: 'married' },
-    { source: 'daughter', target: 'preston', relationship: 'dating' },
+    { source: 'robert', target: 'preston', relationship: 'business-associate' },
     { source: 'robert', target: 'partner1', relationship: 'business-partner' },
     { source: 'robert', target: 'partner2', relationship: 'business-partner' },
     {
@@ -1588,15 +1588,18 @@
   /**
    * Handles network node click events - navigates to John Caruso's dashboard
    */
-  const handleNodeClick = (nodeId: string) => {
+  const handleNodeClick = async (nodeId: string) => {
     if (nodeId === 'preston') {
       // Navigate to John Caruso's dashboard and scroll to top
-      router.push({
+      await router.push({
         name: 'SearchDetail',
         params: { id: 'john-caruso' }
       })
-      // Scroll to top after navigation
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      // Wait for DOM to update, then scroll to top
+      await nextTick()
+      if (detailScrollContainer.value) {
+        detailScrollContainer.value.scrollTo({ top: 0, behavior: 'smooth' })
+      }
     }
   }
 

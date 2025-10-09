@@ -50,8 +50,11 @@
         </div>
       </div>
 
-      <!-- Priority Recommendations -->
-      <div class="bg-white rounded-lg p-5 shadow-md border border-indigo-100">
+      <!-- Priority Recommendations - Hidden -->
+      <div
+        v-if="false"
+        class="bg-white rounded-lg p-5 shadow-md border border-indigo-100"
+      >
         <div class="flex items-center gap-2 mb-4">
           <component :is="LightBulbIcon" class="w-6 h-6 text-yellow-500" />
           <h4 class="text-lg font-semibold text-gray-900">
@@ -102,15 +105,10 @@
           <component :is="RocketLaunchIcon" class="w-6 h-6" />
           <h4 class="text-lg font-semibold">Next Steps</h4>
         </div>
-        <ol class="space-y-2 list-decimal list-inside">
-          <li
-            v-for="(step, index) in nextSteps"
-            :key="index"
-            class="text-sm text-indigo-100"
-          >
-            {{ step }}
-          </li>
-        </ol>
+        <p class="text-sm text-indigo-100">
+          Please reach out to the SOVRA concierge for assistance mitigating
+          these identified risks.
+        </p>
       </div>
     </div>
   </div>
