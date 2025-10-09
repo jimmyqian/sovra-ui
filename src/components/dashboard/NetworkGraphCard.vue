@@ -7,7 +7,11 @@
       <h3 class="text-lg font-semibold text-gray-900">{{ title }}</h3>
       <p v-if="subtitle" class="text-sm text-gray-600 mt-1">{{ subtitle }}</p>
     </div>
-    <div ref="graphContainer" class="p-4" :style="{ height: `${height}px` }">
+    <div
+      ref="graphContainer"
+      class="p-4 flex items-center justify-center"
+      :style="{ height: `${height}px` }"
+    >
       <svg ref="svgRef" :width="width" :height="height"></svg>
     </div>
   </div>

@@ -1,6 +1,7 @@
 /**
  * Unit tests for SummaryRecommendationsCard component
- * Tests rendering of summary, findings, recommendations, and next steps
+ * Tests rendering of summary, findings, and next steps
+ * Note: Priority Recommendations section is hidden (v-if="false")
  */
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -91,48 +92,53 @@ describe('SummaryRecommendationsCard', () => {
     expect(wrapper.text()).toContain('Strong background')
   })
 
-  it('renders all recommendations with priorities', () => {
+  it('does not render Priority Recommendations section (hidden)', () => {
     const wrapper = mount(SummaryRecommendationsCard, {
       props: mockProps
     })
 
-    expect(wrapper.text()).toContain('Priority Recommendations')
-    expect(wrapper.text()).toContain('CRITICAL')
-    expect(wrapper.text()).toContain('Reputation Management')
-    expect(wrapper.text()).toContain('HIGH')
-    expect(wrapper.text()).toContain('Security Review')
+    // Priority Recommendations section is hidden
+    expect(wrapper.text()).not.toContain('CRITICAL')
+    expect(wrapper.text()).not.toContain('Reputation Management')
+    expect(wrapper.text()).not.toContain('HIGH')
+    expect(wrapper.text()).not.toContain('Security Review')
   })
 
-  it('renders recommendation actions', () => {
+  it('does not render recommendation actions (hidden)', () => {
     const wrapper = mount(SummaryRecommendationsCard, {
       props: mockProps
     })
 
-    expect(wrapper.text()).toContain('Action 1')
-    expect(wrapper.text()).toContain('Action 2')
-    expect(wrapper.text()).toContain('Review logs')
-    expect(wrapper.text()).toContain('Update policies')
+    // Recommendation actions are hidden with Priority Recommendations
+    expect(wrapper.text()).not.toContain('Action 1')
+    expect(wrapper.text()).not.toContain('Action 2')
+    expect(wrapper.text()).not.toContain('Review logs')
+    expect(wrapper.text()).not.toContain('Update policies')
   })
 
-  it('renders all next steps', () => {
+  it('renders Next Steps with concierge message', () => {
     const wrapper = mount(SummaryRecommendationsCard, {
       props: mockProps
     })
 
     expect(wrapper.text()).toContain('Next Steps')
-    expect(wrapper.text()).toContain('Activate monitoring')
-    expect(wrapper.text()).toContain('Deploy security measures')
-    expect(wrapper.text()).toContain('Schedule review')
+    expect(wrapper.text()).toContain(
+      'Please reach out to the SOVRA concierge for assistance mitigating these identified risks.'
+    )
+    // Should not contain the old list items
+    expect(wrapper.text()).not.toContain('Activate monitoring')
+    expect(wrapper.text()).not.toContain('Deploy security measures')
+    expect(wrapper.text()).not.toContain('Schedule review')
   })
 
-  it('applies correct styling classes for critical priority', () => {
+  it('does not apply recommendation styling classes (hidden)', () => {
     const wrapper = mount(SummaryRecommendationsCard, {
       props: mockProps
     })
 
     const html = wrapper.html()
-    expect(html).toContain('border-red-500')
-    expect(html).toContain('bg-red-50')
+    // Recommendation styling is hidden
+    expect(html).not.toContain('border-red-500')
   })
 
   it('renders without subtitle when not provided', () => {
@@ -145,16 +151,19 @@ describe('SummaryRecommendationsCard', () => {
     expect(wrapper.text()).not.toContain('Comprehensive assessment')
   })
 
-  it('renders recommendation descriptions', () => {
+  it('does not render recommendation descriptions (hidden)', () => {
     const wrapper = mount(SummaryRecommendationsCard, {
       props: mockProps
     })
 
-    expect(wrapper.text()).toContain('Address reputation issues immediately')
-    expect(wrapper.text()).toContain('Conduct security audit')
+    // Recommendation descriptions are hidden
+    expect(wrapper.text()).not.toContain(
+      'Address reputation issues immediately'
+    )
+    expect(wrapper.text()).not.toContain('Conduct security audit')
   })
 
-  it('has proper structure with all main sections', () => {
+  it('has proper structure with visible sections only', () => {
     const wrapper = mount(SummaryRecommendationsCard, {
       props: mockProps
     })
@@ -162,7 +171,7 @@ describe('SummaryRecommendationsCard', () => {
     const html = wrapper.html()
     expect(html).toContain('Executive Summary')
     expect(html).toContain('Key Findings')
-    expect(html).toContain('Priority Recommendations')
     expect(html).toContain('Next Steps')
+    // Priority Recommendations is in HTML but hidden with v-if="false"
   })
 })
