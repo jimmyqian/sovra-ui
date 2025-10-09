@@ -1,3 +1,4 @@
+{% if obtain_ssl_cert %}
 # HTTP server block - redirect to HTTPS
 server {
     listen 80;
@@ -35,6 +36,13 @@ server {
     ssl_stapling on;
     ssl_stapling_verify on;
     ssl_trusted_certificate /etc/letsencrypt/live/{{ domain_name }}/chain.pem;
+{% else %}
+# HTTP-only server block (no SSL)
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ domain_name }}{% if www_domain %} www.{{ domain_name }}{% endif %};
+{% endif %}
 
     # Basic Authentication
     auth_basic "Secure Area";

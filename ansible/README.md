@@ -116,9 +116,42 @@ ansible-playbook -i inventory.yml playbook.yml --extra-vars "obtain_ssl_cert=fal
 
 ### Initial Deployment
 
-SSH into your server and run the deployment script:
+This setup uses a **local build and deploy** workflow. You build the application on your local machine and upload the built files to the server.
+
+#### Option 1: Automated Local Deployment (Recommended)
+
+Run the provided deployment script from your project root:
 
 ```bash
+cd /path/to/sovra-ui
+./ansible/local-deploy.sh
+```
+
+This script will:
+1. Run tests and linting
+2. Build the application locally
+3. Create a tarball of the dist folder
+4. Upload to the remote server
+5. Execute the deployment script on the server
+6. Clean up temporary files
+
+#### Option 2: Manual Deployment
+
+Build and deploy manually:
+
+```bash
+# Build locally
+npm run build
+
+# Create tarball
+cd dist
+tar -czf ../dist.tar.gz .
+cd ..
+
+# Upload to server
+scp -i ~/.ssh/your-ec2-key.pem dist.tar.gz ubuntu@YOUR_EC2_IP:/var/www/sovra-ui/
+
+# Run deployment script on server
 ssh -i ~/.ssh/your-ec2-key.pem ubuntu@YOUR_EC2_IP
 cd /var/www/sovra-ui
 ./deploy.sh
@@ -126,19 +159,11 @@ cd /var/www/sovra-ui
 
 ### Verify Deployment
 
-Visit `https://your-domain.com` in your browser. You should:
+Visit `http://your-domain-or-ip` in your browser. You should:
 1. Be prompted for basic auth credentials
-2. See your application running over HTTPS
+2. See your application running
 
-### Manual Deployments
-
-To deploy new versions manually:
-
-```bash
-ssh ubuntu@YOUR_EC2_IP
-cd /var/www/sovra-ui
-./deploy.sh
-```
+**Note:** If you configured SSL, use `https://` instead of `http://`
 
 ## File Structure
 
@@ -148,10 +173,37 @@ ansible/
 ├── playbook.yml                 # Main Ansible playbook
 ├── inventory.yml                # Server inventory
 ├── vars.yml                     # Configuration variables
+├── local-deploy.sh              # Local build and deploy script
+├── inventory.yml.example        # Example inventory file
+├── vars.yml.example             # Example variables file
 └── templates/
     ├── nginx.conf.j2            # Nginx configuration template
     └── deploy.sh.j2             # Deployment script template
 ```
+
+## Rolling Back to Vite Dev Server
+
+If you need to revert to the original Vite dev server setup:
+
+```bash
+# SSH into server
+ssh -i ~/.ssh/new-2025.pem ubuntu@44.247.48.76
+
+# Stop and disable nginx
+sudo systemctl stop nginx
+sudo systemctl disable nginx
+
+# Kill any existing node processes
+sudo pkill -9 node
+
+# Navigate to your project directory (adjust path as needed)
+cd /path/to/your/project
+
+# Restart vite dev server
+sudo npm run dev -- --host --port 80
+```
+
+To make it permanent again, you can re-enable your original startup method.
 
 ## Troubleshooting
 

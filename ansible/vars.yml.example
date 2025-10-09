@@ -5,20 +5,16 @@ app_root: /var/www/sovra-ui
 deploy_user: ubuntu
 
 # Domain settings
-domain_name: your-domain.com
-www_domain: true  # Set to false if you don't want www subdomain
+domain_name: your-domain.com  # Or use IP address like 1.2.3.4 if no domain yet
+www_domain: true  # Set to false if you don't want www subdomain (or if using IP)
 
 # SSL settings
-obtain_ssl_cert: true  # Set to false if you want to configure SSL manually
+obtain_ssl_cert: true  # Set to false for HTTP-only (required if using IP instead of domain)
 ssl_email: your-email@example.com
 
 # Basic Authentication
 basic_auth_username: admin
 basic_auth_password: changeme123  # CHANGE THIS!
-
-# Git repository (for deployment script)
-git_repo_url: https://github.com/your-org/sovra-ui.git
-git_branch: main
 
 # Node.js settings
 node_version: 20
