@@ -1,0 +1,59 @@
+#!/bin/bash
+set -e
+
+# Deployment script for {{ app_name }}
+# This script expects a pre-built dist.tar.gz file to be uploaded to {{ app_root }}
+
+DEPLOY_DIR="{{ app_root }}"
+TIMESTAMP=$(date +%Y-%m-%d-%H%M%S)
+RELEASE_DIR="$DEPLOY_DIR/releases/$TIMESTAMP"
+DIST_TARBALL="$DEPLOY_DIR/dist.tar.gz"
+
+echo "==> Starting deployment at $TIMESTAMP"
+
+# Check if dist tarball exists
+if [ ! -f "$DIST_TARBALL" ]; then
+    echo "ERROR: dist.tar.gz not found at $DIST_TARBALL"
+    echo "Please upload your built application first:"
+    echo "  scp dist.tar.gz ubuntu@{{ ansible_host }}:{{ app_root }}/"
+    exit 1
+fi
+
+# Create release directory
+echo "==> Creating release directory: $RELEASE_DIR"
+mkdir -p "$RELEASE_DIR/dist"
+
+# Extract tarball to release directory
+echo "==> Extracting dist.tar.gz"
+tar -xzf "$DIST_TARBALL" -C "$RELEASE_DIR/dist"
+
+# Verify extraction
+if [ ! -f "$RELEASE_DIR/dist/index.html" ]; then
+    echo "ERROR: Extraction failed - index.html not found in dist"
+    exit 1
+fi
+
+# Update symlink
+echo "==> Updating current symlink"
+ln -nfs "$RELEASE_DIR" "$DEPLOY_DIR/current"
+
+# Test nginx configuration
+echo "==> Testing nginx configuration"
+sudo nginx -t
+
+# Reload nginx
+echo "==> Reloading nginx"
+sudo systemctl reload nginx
+
+# Remove the uploaded tarball
+echo "==> Removing uploaded tarball"
+rm -f "$DIST_TARBALL"
+
+# Clean up old releases (keep last 5)
+echo "==> Cleaning up old releases (keeping last 5)"
+cd "$DEPLOY_DIR/releases"
+ls -t | tail -n +6 | xargs -r rm -rf
+
+echo "==> Deployment complete: $TIMESTAMP"
+echo "==> Current release: $RELEASE_DIR"
+echo "==> Application is now live at http://{{ domain_name }}"
