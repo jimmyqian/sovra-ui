@@ -32,7 +32,7 @@ rm -rf dist dist.tar.gz
 
 # Run tests
 echo -e "${BLUE}==> Running tests${NC}"
-npm run test:unit || {
+npm run test:run || {
     echo -e "${RED}ERROR: Tests failed. Aborting deployment.${NC}"
     exit 1
 }
