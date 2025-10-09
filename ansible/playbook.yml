@@ -6,6 +6,18 @@
     - vars.yml
 
   tasks:
+    - name: Remove broken NodeSource repository file
+      file:
+        path: /etc/apt/sources.list.d/nodesource.list
+        state: absent
+      ignore_errors: true
+
+    - name: Remove broken NodeSource GPG key
+      file:
+        path: /usr/share/keyrings/nodesource.gpg
+        state: absent
+      ignore_errors: true
+
     - name: Update apt cache
       apt:
         update_cache: true
@@ -28,22 +40,43 @@
           - python3-certbot-nginx
         state: present
 
-    - name: Add NodeSource GPG key
-      apt_key:
-        url: https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key
-        state: present
+    - name: Check if Node.js is already installed
+      command: node --version
+      register: node_check
+      ignore_errors: true
+      changed_when: false
 
-    - name: Add NodeSource repository
-      apt_repository:
-        repo: "deb https://deb.nodesource.com/node_20.x nodistro main"
-        state: present
-        filename: nodesource
+    - name: Remove existing NodeSource repository if present
+      file:
+        path: /etc/apt/sources.list.d/nodesource.list
+        state: absent
+      when: node_check.rc != 0
+
+    - name: Remove existing NodeSource GPG key
+      file:
+        path: /usr/share/keyrings/nodesource.gpg
+        state: absent
+      when: node_check.rc != 0
+
+    - name: Download NodeSource setup script
+      get_url:
+        url: https://deb.nodesource.com/setup_20.x
+        dest: /tmp/nodesource_setup.sh
+        mode: '0755'
+      when: node_check.rc != 0
+
+    - name: Run NodeSource setup script
+      command: bash /tmp/nodesource_setup.sh
+      args:
+        creates: /etc/apt/sources.list.d/nodesource.list
+      when: node_check.rc != 0
 
     - name: Install Node.js
       apt:
         name: nodejs
         state: present
         update_cache: true
+      when: node_check.rc != 0
 
     - name: Install PM2 globally
       npm:
@@ -65,13 +98,12 @@
         - "{{ app_root }}/shared/logs"
 
     - name: Create basic auth password file
-      htpasswd:
-        path: /etc/nginx/.htpasswd
-        name: "{{ basic_auth_username }}"
-        password: "{{ basic_auth_password }}"
-        mode: '0640'
-        owner: root
-        group: www-data
+      shell: |
+        htpasswd -cb /etc/nginx/.htpasswd "{{ basic_auth_username }}" "{{ basic_auth_password }}"
+        chown root:www-data /etc/nginx/.htpasswd
+        chmod 0640 /etc/nginx/.htpasswd
+      args:
+        creates: /etc/nginx/.htpasswd
 
     - name: Create Nginx configuration from template
       template:
