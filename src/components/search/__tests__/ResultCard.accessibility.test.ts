@@ -64,7 +64,7 @@ describe('ResultCard Accessibility', () => {
 
       const heading = wrapper.find('h3').element
       expect(heading.textContent?.trim()).toBe('John Smith')
-      expect(heading.className).toContain('text-xl font-semibold')
+      expect(heading.className).toContain('text-xl font-bold')
 
       // Verify it's properly structured as a heading
       expect(heading.tagName).toBe('H3')
@@ -117,7 +117,7 @@ describe('ResultCard Accessibility', () => {
       wrapper = createWrapper()
 
       // Rating should be accessible
-      const ratingText = wrapper.find('.text-sm.font-semibold').element
+      const ratingText = wrapper.find('.text-sm.font-bold').element
       expect(ratingText.textContent).toBe('4.5')
 
       // Rating label should be present
@@ -253,7 +253,7 @@ describe('ResultCard Accessibility', () => {
       expect(ageElement.textContent).toBe('35 Years')
 
       // Rating should be clear
-      const ratingElement = wrapper.find('.text-sm.font-semibold').element
+      const ratingElement = wrapper.find('.text-sm.font-bold').element
       expect(ratingElement.textContent).toBe('4.5')
 
       // Statistics should be clear
@@ -297,7 +297,7 @@ describe('ResultCard Accessibility', () => {
       const ratingLabel = wrapper.find('.text-xs.text-text-secondary')
       expect(ratingLabel.text()).toBe('Sovra Rating')
 
-      const ratingValue = wrapper.find('.text-sm.font-semibold')
+      const ratingValue = wrapper.find('.text-sm.font-bold')
       expect(ratingValue.text()).toBe('4.5')
 
       // ScoreBar component should be present
@@ -315,7 +315,7 @@ describe('ResultCard Accessibility', () => {
 
       // Image container should have proper structure for screen readers
       const imageContainer = wrapper.find(
-        '.w-15.h-15.rounded-full.overflow-hidden'
+        '.w-16.h-16.rounded-full.overflow-hidden'
       )
       expect(imageContainer.exists()).toBe(true)
     })

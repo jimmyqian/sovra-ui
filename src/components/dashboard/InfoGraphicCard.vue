@@ -1,6 +1,6 @@
 <template>
   <div
-    class="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow overflow-hidden"
+    class="bg-white rounded-2xl shadow-lg-modern border border-slate-100 hover:shadow-xl-modern transition-all overflow-hidden"
     :class="[sizeClass]"
   >
     <!-- Header with Image/Icon -->
@@ -22,9 +22,9 @@
     </div>
 
     <!-- Content -->
-    <div class="p-6">
-      <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ title }}</h3>
-      <p v-if="subtitle" class="text-sm text-gray-600 mb-4">{{ subtitle }}</p>
+    <div class="p-8">
+      <h3 class="text-lg font-bold text-slate-900 mb-2">{{ title }}</h3>
+      <p v-if="subtitle" class="text-sm text-slate-600 mb-4">{{ subtitle }}</p>
 
       <!-- Stats Grid -->
       <div v-if="stats && stats.length > 0" class="grid grid-cols-2 gap-4 mb-4">
@@ -33,8 +33,8 @@
           :key="index"
           class="text-center p-3 bg-gray-50 rounded-lg"
         >
-          <div class="text-2xl font-bold text-gray-900">{{ stat.value }}</div>
-          <div class="text-xs text-gray-600 mt-1">{{ stat.label }}</div>
+          <div class="text-2xl font-bold text-slate-900">{{ stat.value }}</div>
+          <div class="text-xs text-slate-600 mt-1">{{ stat.label }}</div>
         </div>
       </div>
 
@@ -43,7 +43,7 @@
         <div v-for="(item, index) in progress" :key="index">
           <div class="flex items-center justify-between text-sm mb-1">
             <span class="text-gray-700">{{ item.label }}</span>
-            <span class="font-medium text-gray-900">{{ item.value }}%</span>
+            <span class="font-medium text-slate-900">{{ item.value }}%</span>
           </div>
           <div class="w-full bg-gray-200 rounded-full h-2">
             <div

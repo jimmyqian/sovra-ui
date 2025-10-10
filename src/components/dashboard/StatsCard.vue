@@ -1,13 +1,13 @@
 <template>
   <div
-    class="bg-white rounded-lg shadow-md p-6 border border-gray-200 hover:shadow-lg transition-shadow"
+    class="bg-white rounded-2xl shadow-lg-modern p-8 border border-slate-100 hover:shadow-xl-modern transition-all"
     :class="[sizeClass]"
   >
     <div class="flex items-start justify-between mb-3">
       <div class="flex-1">
         <div class="text-sm text-gray-500 mb-1">{{ label }}</div>
-        <div class="text-3xl font-bold text-gray-900">{{ value }}</div>
-        <div v-if="subtitle" class="text-xs text-gray-600 mt-1">
+        <div class="text-3xl font-bold text-slate-900">{{ value }}</div>
+        <div v-if="subtitle" class="text-xs text-slate-600 mt-1">
           {{ subtitle }}
         </div>
       </div>

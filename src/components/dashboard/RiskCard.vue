@@ -1,14 +1,14 @@
 <template>
   <div
-    class="bg-white rounded-lg shadow-md p-6 mb-4 border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer"
+    class="bg-white rounded-2xl shadow-lg-modern p-8 mb-4 border border-slate-100 hover:shadow-xl-modern transition-all cursor-pointer"
     @click="toggleExpanded"
   >
     <div class="flex items-start justify-between mb-4">
       <div class="flex-1">
-        <h3 class="text-lg font-semibold text-gray-900 mb-1">
+        <h3 class="text-lg font-bold text-slate-900 mb-1">
           {{ title }}
         </h3>
-        <div v-if="subtitle" class="text-sm text-gray-600">{{ subtitle }}</div>
+        <div v-if="subtitle" class="text-sm text-slate-600">{{ subtitle }}</div>
       </div>
       <div v-if="riskLevel" class="ml-4">
         <span
@@ -28,7 +28,7 @@
       <div
         v-for="(item, index) in riskItems"
         :key="index"
-        class="relative p-4 rounded-lg border-2 transition-all hover:shadow-lg"
+        class="relative p-4 rounded-lg border-2 transition-all hover:shadow-xl-modern"
         :class="[
           getRiskBorderClass(item.risk),
           getRiskBackgroundClass(item.risk)
@@ -64,11 +64,11 @@
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between mb-2">
               <span
-                class="font-semibold"
+                class="font-bold"
                 :class="[
                   item.risk === 'High'
                     ? 'text-red-900 text-lg'
-                    : 'text-gray-900'
+                    : 'text-slate-900'
                 ]"
                 >{{ item.domain }}</span
               >
@@ -79,7 +79,7 @@
                 {{ item.risk }}
               </span>
             </div>
-            <p class="text-sm text-gray-600 leading-relaxed">
+            <p class="text-sm text-slate-600 leading-relaxed">
               {{ item.exposure }}
             </p>
           </div>
@@ -95,23 +95,23 @@
     <!-- Expandable Details -->
     <div
       v-if="isExpanded && details"
-      class="mt-4 pt-4 border-t border-gray-200"
+      class="mt-4 pt-4 border-t border-slate-100"
     >
-      <div class="prose prose-sm max-w-none text-gray-600">
+      <div class="prose prose-sm max-w-none text-slate-600">
         <div v-html="details"></div>
       </div>
     </div>
 
     <!-- Actions -->
     <div v-if="actions && actions.length > 0" class="mt-4 space-y-2">
-      <div class="text-sm font-semibold text-gray-700 mb-2">
+      <div class="text-sm font-bold text-gray-700 mb-2">
         Recommended Actions:
       </div>
       <ul class="space-y-1">
         <li
           v-for="(action, index) in actions"
           :key="index"
-          class="text-sm text-gray-600 flex items-start gap-2"
+          class="text-sm text-slate-600 flex items-start gap-2"
         >
           <span class="text-brand-orange mt-1">•</span>
           <span>{{ action }}</span>
@@ -190,7 +190,7 @@
       case 'Low':
         return 'border-green-200 hover:border-green-300'
       default:
-        return 'border-gray-200 hover:border-gray-300'
+        return 'border-slate-100 hover:border-gray-300'
     }
   }
 

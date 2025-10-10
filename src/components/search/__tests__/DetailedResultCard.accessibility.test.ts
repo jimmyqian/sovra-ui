@@ -124,24 +124,24 @@ describe('DetailedResultCard Accessibility', () => {
       expect(countIndicator.exists()).toBe(true)
 
       // Check that the count text is readable and properly styled
-      const countText = countIndicator.find('.text-brand-orange')
+      const countText = countIndicator.find('.text-indigo-600')
       expect(countText.exists()).toBe(true)
       expect(countText.text()).toBe('21+ Images')
 
       // Ensure the indicator has proper visual hierarchy
-      expect(countText.classes()).toContain('font-medium')
+      expect(countText.classes()).toContain('font-semibold')
       expect(countIndicator.classes()).toContain('flex')
       expect(countIndicator.classes()).toContain('items-center')
       expect(countIndicator.classes()).toContain('justify-center')
     })
 
     it('should maintain proper color contrast for image count indicator', () => {
-      const countIndicator = wrapper.find('.bg-card-dark .text-brand-orange')
+      const countIndicator = wrapper.find('.bg-card-dark .text-indigo-600')
       expect(countIndicator.exists()).toBe(true)
 
-      // The bg-card-dark (#FFEDE2) with brand-orange text should provide sufficient contrast
+      // The bg-card-dark with indigo-600 text should provide sufficient contrast
       // This is a visual design choice that should be validated
-      expect(countIndicator.classes()).toContain('text-brand-orange')
+      expect(countIndicator.classes()).toContain('text-indigo-600')
     })
 
     it('should handle empty image arrays accessibly', () => {
@@ -185,10 +185,9 @@ describe('DetailedResultCard Accessibility', () => {
       // All section headings should be h3 elements
       headings.forEach(heading => {
         expect(heading.element.tagName).toBe('H3')
-        // Some headings use font-semibold, font-medium, or font-bold
+        // Headings should use font-extrabold for modern styling
         expect(
-          heading.classes().includes('font-semibold') ||
-            heading.classes().includes('font-medium') ||
+          heading.classes().includes('font-extrabold') ||
             heading.classes().includes('font-bold')
         ).toBe(true)
       })
@@ -200,11 +199,10 @@ describe('DetailedResultCard Accessibility', () => {
       sectionHeadings.forEach(heading => {
         // Consistent typography for screen readers and visual users
         expect(
-          heading.classes().includes('font-semibold') ||
-            heading.classes().includes('font-medium') ||
+          heading.classes().includes('font-extrabold') ||
             heading.classes().includes('font-bold')
         ).toBe(true)
-        expect(heading.classes()).toContain('text-text-primary')
+        expect(heading.classes()).toContain('text-slate-900')
       })
     })
   })
@@ -232,12 +230,12 @@ describe('DetailedResultCard Accessibility', () => {
     })
 
     it('should use semantic color coding with sufficient contrast', () => {
-      // Orange brand color is used for interactive elements and highlights
-      const orangeElements = wrapper.findAll('.text-brand-orange')
-      expect(orangeElements.length).toBeGreaterThan(0)
+      // Indigo color is used for interactive elements and highlights
+      const indigoElements = wrapper.findAll('.text-indigo-600')
+      expect(indigoElements.length).toBeGreaterThan(0)
 
-      // Check specific use cases of brand orange
-      const imageCountElements = wrapper.findAll('.text-brand-orange')
+      // Check specific use cases of indigo color
+      const imageCountElements = wrapper.findAll('.text-indigo-600')
       const imageCountElement = imageCountElements.find(el =>
         el.text().includes('21+ Images')
       )
@@ -253,11 +251,11 @@ describe('DetailedResultCard Accessibility', () => {
 
     it('should maintain proper text hierarchy for screen readers', () => {
       // Secondary text should be clearly distinguished
-      const secondaryTexts = wrapper.findAll('.text-text-secondary')
+      const secondaryTexts = wrapper.findAll('.text-slate-600')
       expect(secondaryTexts.length).toBeGreaterThan(0)
 
       // Primary data should use primary text color
-      const primaryTexts = wrapper.findAll('.text-text-primary')
+      const primaryTexts = wrapper.findAll('.text-slate-900')
       expect(primaryTexts.length).toBeGreaterThan(0)
     })
   })
@@ -272,7 +270,7 @@ describe('DetailedResultCard Accessibility', () => {
     it('should handle focus for interactive elements', () => {
       // Find interactive elements like buttons and links
       const knowMoreLink = wrapper.find(
-        '.text-brand-orange.hover\\:underline.cursor-pointer'
+        '.text-indigo-600.hover\\:underline.cursor-pointer'
       )
       expect(knowMoreLink.exists()).toBe(true)
 
@@ -336,7 +334,7 @@ describe('DetailedResultCard Accessibility', () => {
 
     it('should maintain proper spacing and layout for accessibility', () => {
       // Component should use semantic spacing
-      const mainContainer = wrapper.find('.p-6.space-y-6')
+      const mainContainer = wrapper.find('.p-8.space-y-6')
       expect(mainContainer.exists()).toBe(true)
 
       // Text content should have proper spacing

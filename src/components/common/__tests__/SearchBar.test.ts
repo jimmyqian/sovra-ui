@@ -142,9 +142,9 @@ describe('SearchBar', () => {
     const uploadButton = wrapper.find('button')
 
     // Check for button component styling
-    expect(uploadButton.classes()).toContain('bg-transparent')
-    expect(uploadButton.classes()).toContain('border-brand-orange')
-    expect(uploadButton.classes()).toContain('text-brand-orange')
+    expect(uploadButton.classes()).toContain('bg-white')
+    expect(uploadButton.classes()).toContain('border-slate-300')
+    expect(uploadButton.classes()).toContain('text-slate-700')
     expect(uploadButton.text()).toContain('Upload')
   })
 
@@ -168,7 +168,7 @@ describe('SearchBar', () => {
       expect(micButton.classes()).toContain('bg-transparent')
     }
     if (searchButton) {
-      expect(searchButton.classes()).toContain('bg-brand-orange')
+      expect(searchButton.classes()).toContain('bg-gradient-to-r')
     }
   })
 

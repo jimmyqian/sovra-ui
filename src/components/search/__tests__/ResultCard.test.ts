@@ -83,7 +83,7 @@ describe('ResultCard', () => {
     })
 
     const avatarContainer = wrapper.find(
-      '.w-15.h-15.rounded-full.overflow-hidden'
+      '.w-16.h-16.rounded-full.overflow-hidden'
     )
     expect(avatarContainer.exists()).toBe(true)
 
@@ -292,7 +292,7 @@ describe('ResultCard', () => {
 
     const nameHeading = wrapper.find('h3')
     expect(nameHeading.classes()).toContain('text-xl')
-    expect(nameHeading.classes()).toContain('font-semibold')
+    expect(nameHeading.classes()).toContain('font-bold')
     expect(nameHeading.classes()).toContain('text-text-primary')
   })
 })

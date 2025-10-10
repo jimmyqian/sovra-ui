@@ -7,6 +7,7 @@ This directory contains Ansible playbooks and configuration for setting up a pro
 ### On Your Local Machine
 
 1. **Install Ansible**
+
    ```bash
    # macOS
    brew install ansible
@@ -42,11 +43,12 @@ This directory contains Ansible playbooks and configuration for setting up a pro
 ### 1. Update Inventory File
 
 Edit `inventory.yml` and replace:
+
 - `YOUR_EC2_IP_ADDRESS` with your EC2 Elastic IP
 - `~/.ssh/your-ec2-key.pem` with the path to your EC2 SSH key
 
 ```yaml
-ansible_host: 1.2.3.4  # Your EC2 IP
+ansible_host: 1.2.3.4 # Your EC2 IP
 ansible_ssh_private_key_file: ~/.ssh/my-ec2-key.pem
 ```
 
@@ -65,7 +67,7 @@ basic_auth_password: your_secure_password
 
 # Git repository
 git_repo_url: https://github.com/your-org/sovra-ui.git
-git_branch: main  # or production
+git_branch: main # or production
 ```
 
 **IMPORTANT**: Change the `basic_auth_password` to a strong password!
@@ -128,6 +130,7 @@ cd /path/to/sovra-ui
 ```
 
 This script will:
+
 1. Run tests and linting
 2. Build the application locally
 3. Create a tarball of the dist folder
@@ -160,6 +163,7 @@ cd /var/www/sovra-ui
 ### Verify Deployment
 
 Visit `http://your-domain-or-ip` in your browser. You should:
+
 1. Be prompted for basic auth credentials
 2. See your application running
 
@@ -275,6 +279,7 @@ If you need to update Nginx config or other settings:
 ## Next Steps
 
 After the initial setup is complete, you can:
+
 1. Set up GitHub Actions for automated deployments
 2. Configure monitoring and alerts
 3. Set up automated backups
