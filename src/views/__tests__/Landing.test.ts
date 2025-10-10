@@ -93,7 +93,7 @@ describe('Landing Component', () => {
       const searchBar = wrapper.findComponent({ name: 'SearchBar' })
 
       expect(searchBar.props('placeholder')).toContain(
-        'enter keyword of the person'
+        'Enter keyword of the person'
       )
       expect(searchBar.props('disabled')).toBe(false)
     })
@@ -128,9 +128,9 @@ describe('Landing Component', () => {
       store.setLoading(true)
       await wrapper.vm.$nextTick()
 
-      const spinner = wrapper.find('.animate-spin')
-      expect(spinner.exists()).toBe(true)
-      expect(spinner.classes()).toContain('border-brand-orange')
+      const spinner = wrapper.findAll('.animate-spin')[1]
+      expect(spinner).toBeTruthy()
+      expect(spinner!.classes()).toContain('border-brand-accent')
     })
 
     it('should show error message when search fails', async () => {
@@ -140,9 +140,9 @@ describe('Landing Component', () => {
       store.setError('Search failed')
       await wrapper.vm.$nextTick()
 
-      const errorMessage = wrapper.find('.text-red-600')
+      const errorMessage = wrapper.find('.text-red-700')
       expect(errorMessage.exists()).toBe(true)
-      expect(errorMessage.text()).toBe('Search failed')
+      expect(errorMessage.text()).toContain('Search failed')
     })
   })
 

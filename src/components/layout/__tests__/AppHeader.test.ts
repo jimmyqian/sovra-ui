@@ -49,7 +49,7 @@ describe('AppHeader', () => {
       const wrapper = createWrapper()
 
       const header = wrapper.find('header')
-      expect(header.classes()).toContain('bg-bg-card')
+      expect(header.classes()).toContain('bg-white/80')
     })
 
     it('applies correct padding classes', () => {
@@ -57,7 +57,7 @@ describe('AppHeader', () => {
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('px-8')
-      expect(header.classes()).toContain('py-4')
+      expect(header.classes()).toContain('py-5')
     })
 
     it('applies correct border styling classes', () => {
@@ -65,7 +65,7 @@ describe('AppHeader', () => {
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('border-b')
-      expect(header.classes()).toContain('border-border-light')
+      expect(header.classes()).toContain('border-slate-200/60')
     })
 
     it('applies all expected CSS classes', () => {
@@ -73,11 +73,11 @@ describe('AppHeader', () => {
 
       const header = wrapper.find('header')
       const expectedClasses = [
-        'bg-bg-card',
+        'bg-white/80',
         'px-8',
-        'py-4',
+        'py-5',
         'border-b',
-        'border-border-light'
+        'border-slate-200/60'
       ]
 
       expectedClasses.forEach(className => {
@@ -123,7 +123,7 @@ describe('AppHeader', () => {
       const wrapper = createWrapper()
 
       const header = wrapper.find('header')
-      expect(header.classes()).toContain('py-4')
+      expect(header.classes()).toContain('py-5')
     })
 
     it('provides horizontal spacing for header content', () => {
@@ -138,7 +138,7 @@ describe('AppHeader', () => {
 
       const header = wrapper.find('header')
       expect(header.classes()).toContain('border-b')
-      expect(header.classes()).toContain('border-border-light')
+      expect(header.classes()).toContain('border-slate-200/60')
     })
   })
 })

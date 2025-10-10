@@ -147,7 +147,7 @@ describe('DetailedResultCard', () => {
     expect(countIndicator.classes()).toContain('items-center')
     expect(countIndicator.classes()).toContain('justify-center')
 
-    const countText = countIndicator.find('.text-brand-orange')
+    const countText = countIndicator.find('.text-indigo-600')
     expect(countText.exists()).toBe(true)
     expect(countText.text()).toBe('21+ Images')
   })
@@ -260,9 +260,9 @@ describe('DetailedResultCard', () => {
       props: { person: mockPerson }
     })
 
-    expect(wrapper.classes()).toContain('bg-bg-card')
+    expect(wrapper.classes()).toContain('bg-white')
     expect(wrapper.classes()).toContain('border')
-    expect(wrapper.classes()).toContain('rounded-lg')
+    expect(wrapper.classes()).toContain('rounded-2xl')
   })
 
   it('handles empty image array gracefully', () => {
@@ -330,7 +330,7 @@ describe('DetailedResultCard', () => {
     expect(statsGrid.exists()).toBe(true)
 
     // Stats grid should contain all 4 stat cards
-    const statCards = statsGrid.findAll('.bg-gray-50')
+    const statCards = statsGrid.findAll('.bg-slate-50')
     expect(statCards).toHaveLength(4)
 
     // Verify stats content is present
@@ -353,7 +353,7 @@ describe('DetailedResultCard', () => {
     expect(imageContainers.length).toBeGreaterThan(0) // Should have images and count indicator
 
     // Stats cards should have smaller padding for compact layout
-    const statCardsWithPadding = wrapper.findAll('.p-2\\.5')
+    const statCardsWithPadding = wrapper.findAll('.p-3')
     expect(statCardsWithPadding).toHaveLength(4)
 
     // Stats container should use flex layout with proper min-width

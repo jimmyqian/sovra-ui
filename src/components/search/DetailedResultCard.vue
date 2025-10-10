@@ -1,6 +1,8 @@
 <template>
-  <div class="bg-bg-card border rounded-lg overflow-hidden">
-    <div class="p-6 space-y-6">
+  <div
+    class="bg-white border border-slate-100 rounded-2xl shadow-lg-modern overflow-hidden"
+  >
+    <div class="p-8 space-y-6">
       <!-- Image Gallery and Stats Section -->
       <div class="flex flex-wrap gap-6">
         <!-- Image Gallery -->
@@ -11,7 +13,7 @@
               <div
                 v-for="(image, index) in person.images?.slice(0, 4) || []"
                 :key="index"
-                class="bg-gray-200 overflow-hidden"
+                class="bg-slate-100 overflow-hidden"
                 style="aspect-ratio: 1.85 / 1"
                 :class="[
                   index === 0 ? 'rounded-tl-xl' : '',
@@ -30,7 +32,7 @@
               <div
                 v-for="(image, index) in person.images?.slice(4, 7) || []"
                 :key="index + 4"
-                class="bg-gray-200 overflow-hidden"
+                class="bg-slate-100 overflow-hidden"
                 style="aspect-ratio: 1.85 / 1"
                 :class="[index === 0 ? 'rounded-bl-xl' : '']"
               >
@@ -45,7 +47,7 @@
                 class="bg-card-dark rounded-br-xl overflow-hidden flex items-center justify-center"
                 style="aspect-ratio: 1.85 / 1"
               >
-                <span class="text-brand-orange font-medium text-sm"
+                <span class="text-indigo-600 font-semibold text-sm"
                   >{{ person.imageCount ?? 21 }}+ Images</span
                 >
               </div>
@@ -57,57 +59,57 @@
         <div class="flex-1" style="min-width: 350px">
           <div class="grid grid-cols-4 gap-4">
             <!-- Height/Weight -->
-            <div class="bg-gray-50 p-2.5 rounded-lg text-center">
-              <div class="text-base font-semibold text-text-primary">
+            <div class="bg-slate-50 p-3 rounded-lg text-center">
+              <div class="text-base font-bold text-slate-900">
                 {{ person.personal.height.split(' ')[0] }}
               </div>
-              <div class="text-xs text-text-secondary uppercase">CMS</div>
-              <div class="text-base font-semibold text-text-primary mt-0.5">
+              <div class="text-xs text-slate-500 uppercase">CMS</div>
+              <div class="text-base font-bold text-slate-900 mt-0.5">
                 {{ person.personal.weight.split(' ')[0] }}
               </div>
-              <div class="text-xs text-text-secondary uppercase">KG</div>
+              <div class="text-xs text-slate-500 uppercase">KG</div>
             </div>
 
             <!-- Age -->
-            <div class="bg-gray-50 p-2.5 rounded-lg text-center">
-              <div class="text-xs text-text-secondary mb-0.5">Age</div>
-              <div class="text-xl font-semibold text-text-primary">
+            <div class="bg-slate-50 p-3 rounded-lg text-center">
+              <div class="text-xs text-slate-500 mb-0.5">Age</div>
+              <div class="text-xl font-bold text-slate-900">
                 {{ person.stats.age }}
               </div>
-              <div class="text-xs text-text-secondary">Years</div>
-              <div class="text-xs text-text-secondary mt-0.5">
+              <div class="text-xs text-slate-500">Years</div>
+              <div class="text-xs text-slate-500 mt-0.5">
                 {{ person.personal.birthDate }}
               </div>
             </div>
 
             <!-- Net Worth -->
-            <div class="bg-gray-50 p-2.5 rounded-lg text-center">
-              <div class="text-xs text-text-secondary mb-0.5">Net Worth</div>
-              <div class="text-base font-semibold text-text-primary">
+            <div class="bg-slate-50 p-3 rounded-lg text-center">
+              <div class="text-xs text-slate-500 mb-0.5">Net Worth</div>
+              <div class="text-base font-bold text-slate-900">
                 {{ person.stats.netWorth.split(' ')[0] }}
               </div>
-              <div class="text-xs text-text-secondary">
+              <div class="text-xs text-slate-500">
                 {{ person.stats.netWorth.split(' ').slice(1).join(' ') }}
               </div>
               <button
-                class="text-xs text-brand-orange hover:underline cursor-pointer"
+                class="text-xs text-indigo-600 hover:underline cursor-pointer"
               >
                 Reference
               </button>
             </div>
 
             <!-- Spouse -->
-            <div class="bg-gray-50 p-2.5 rounded-lg text-center">
-              <div class="text-xs text-text-secondary mb-1">Spouse</div>
+            <div class="bg-slate-50 p-3 rounded-lg text-center">
+              <div class="text-xs text-slate-500 mb-1">Spouse</div>
               <img
                 src="https://randomuser.me/api/portraits/women/44.jpg"
                 alt="Spouse"
                 class="w-8 h-8 rounded-full mx-auto mb-1 object-cover"
               />
-              <div class="text-xs font-semibold text-text-primary">
+              <div class="text-xs font-bold text-slate-900">
                 {{ person.personal.spouse.split(' ')[0] }}
               </div>
-              <div class="text-xs text-text-secondary">
+              <div class="text-xs text-slate-500">
                 {{ person.personal.spouse.split(' ').slice(1).join(' ') }}
               </div>
             </div>
@@ -118,7 +120,7 @@
       <!-- Accounts Section -->
       <div>
         <div class="flex flex-wrap items-center gap-3">
-          <h3 class="text-lg font-bold text-text-primary">Accounts</h3>
+          <h3 class="text-lg font-extrabold text-slate-900">Accounts</h3>
           <div class="w-4"></div>
           <!-- Instagram -->
           <div
@@ -163,7 +165,7 @@
             </svg>
           </div>
           <!-- Login Button -->
-          <button class="text-sm text-brand-orange hover:underline ml-3">
+          <button class="text-sm text-indigo-600 hover:underline ml-3">
             Login for more details →
           </button>
         </div>
@@ -180,15 +182,15 @@
               : 'bg-bg-muted rounded-lg p-4 opacity-60'
           "
         >
-          <h3 class="text-lg font-semibold text-text-primary">Personal</h3>
+          <h3 class="text-lg font-extrabold text-slate-900">Personal</h3>
 
           <div class="space-y-3 text-sm">
             <div>
-              <div class="text-text-secondary">Born</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Born</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('personal')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ████████ Age ██ years
@@ -202,11 +204,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Place of birth</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Place of birth</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('personal')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ████████, USA
@@ -218,11 +220,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Spouse</div>
-              <div class="font-medium text-brand-orange">
+              <div class="text-slate-600">Spouse</div>
+              <div class="font-medium text-indigo-600">
                 <span
                   v-if="!isSectionAccessible('personal')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors text-text-primary"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors text-slate-900"
                   @click="handleRedactedClick"
                 >
                   ████████
@@ -234,11 +236,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Live In</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Live In</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('personal')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ████████
@@ -250,11 +252,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Height/Weight</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Height/Weight</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('personal')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ███ CMs / ██ KG
@@ -266,11 +268,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Education</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Education</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('personal')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ████████ University (████)
@@ -283,7 +285,7 @@
               </div>
               <div
                 v-if="isSectionAccessible('personal')"
-                class="text-brand-orange text-sm hover:underline cursor-pointer"
+                class="text-indigo-600 text-sm hover:underline cursor-pointer"
               >
                 Know More
               </div>
@@ -300,15 +302,15 @@
               : 'bg-bg-muted rounded-lg p-4 opacity-60'
           "
         >
-          <h3 class="text-lg font-semibold text-text-primary">Professional</h3>
+          <h3 class="text-lg font-extrabold text-slate-900">Professional</h3>
 
           <div class="space-y-3 text-sm">
             <div>
-              <div class="text-text-secondary">Current job title</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Current job title</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('professional')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ████████ Engineer
@@ -320,11 +322,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">avg pay</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">avg pay</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('professional')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   $██████/year
@@ -336,11 +338,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">current employee</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">current employee</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('professional')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ████████ Inc.
@@ -352,11 +354,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Time in current field</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Time in current field</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('professional')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   █ years
@@ -368,13 +370,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">
-                Boards/Charities/Voluntaries
-              </div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Boards/Charities/Voluntaries</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('professional')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ████████
@@ -396,15 +396,15 @@
               : 'bg-bg-muted rounded-lg p-4 opacity-60'
           "
         >
-          <h3 class="text-lg font-semibold text-text-primary">Finance</h3>
+          <h3 class="text-lg font-extrabold text-slate-900">Finance</h3>
 
           <div class="space-y-3 text-sm">
             <div>
-              <div class="text-text-secondary">$$$ worth</div>
-              <div class="text-text-secondary">
+              <div class="text-slate-600">$$$ worth</div>
+              <div class="text-slate-600">
                 <span
                   v-if="!isSectionAccessible('finance')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   (████████)
@@ -414,11 +414,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Housing status Rent/Own</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Housing status Rent/Own</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('finance')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ████
@@ -430,11 +430,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">House worth</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">House worth</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('finance')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   $███████
@@ -446,11 +446,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Business entities</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Business entities</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('finance')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   █ ████
@@ -462,11 +462,11 @@
             </div>
 
             <div>
-              <div class="text-text-secondary">Bis ent status</div>
-              <div class="font-medium text-text-primary">
+              <div class="text-slate-600">Bis ent status</div>
+              <div class="font-medium text-slate-900">
                 <span
                   v-if="!isSectionAccessible('finance')"
-                  class="cursor-pointer hover:bg-gray-200 rounded px-1 transition-colors"
+                  class="cursor-pointer hover:bg-slate-100 rounded px-1 transition-colors"
                   @click="handleRedactedClick"
                 >
                   ██████
@@ -481,36 +481,36 @@
       </div>
 
       <!-- Legal Section -->
-      <div class="bg-gray-50 p-4 rounded-lg">
-        <h3 class="text-lg font-semibold text-text-primary mb-4">Legal</h3>
+      <div class="bg-slate-50 p-6 rounded-lg">
+        <h3 class="text-lg font-extrabold text-slate-900 mb-4">Legal</h3>
         <div class="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
           <div class="flex justify-between">
-            <span class="text-text-secondary">News articles</span>
-            <span class="text-text-primary">{{
+            <span class="text-slate-600">News articles</span>
+            <span class="text-slate-900">{{
               person.legal.newsArticles || 'N/A'
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-text-secondary">bankruptcies</span>
-            <span class="text-text-primary">{{
+            <span class="text-slate-600">bankruptcies</span>
+            <span class="text-slate-900">{{
               person.legal.bankruptcies || 'None'
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-text-secondary">child support</span>
-            <span class="text-text-primary">{{
+            <span class="text-slate-600">child support</span>
+            <span class="text-slate-900">{{
               person.legal.childSupport || 'N/A'
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-text-secondary">crimes</span>
-            <span class="text-text-primary">{{
+            <span class="text-slate-600">crimes</span>
+            <span class="text-slate-900">{{
               person.legal.crimes || 'None'
             }}</span>
           </div>
           <div class="flex justify-between">
-            <span class="text-text-secondary">alligations</span>
-            <span class="text-text-primary">{{
+            <span class="text-slate-600">alligations</span>
+            <span class="text-slate-900">{{
               person.legal.allegations || 'None'
             }}</span>
           </div>

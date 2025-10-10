@@ -12,10 +12,12 @@
 
     <div class="p-6 space-y-6">
       <!-- Executive Summary -->
-      <div class="bg-white rounded-lg p-5 shadow-md border border-indigo-100">
+      <div
+        class="bg-white rounded-2xl p-6 shadow-lg-modern border border-slate-100"
+      >
         <div class="flex items-center gap-2 mb-3">
           <component :is="DocumentTextIcon" class="w-6 h-6 text-indigo-600" />
-          <h4 class="text-lg font-semibold text-gray-900">Executive Summary</h4>
+          <h4 class="text-lg font-bold text-slate-900">Executive Summary</h4>
         </div>
         <p class="text-sm text-gray-700 leading-relaxed">
           {{ summary }}
@@ -23,13 +25,15 @@
       </div>
 
       <!-- Key Findings -->
-      <div class="bg-white rounded-lg p-5 shadow-md border border-indigo-100">
+      <div
+        class="bg-white rounded-2xl p-6 shadow-lg-modern border border-slate-100"
+      >
         <div class="flex items-center gap-2 mb-4">
           <component
             :is="MagnifyingGlassIcon"
             class="w-6 h-6 text-indigo-600"
           />
-          <h4 class="text-lg font-semibold text-gray-900">Key Findings</h4>
+          <h4 class="text-lg font-bold text-slate-900">Key Findings</h4>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div
@@ -43,7 +47,7 @@
               class="w-5 h-5 flex-shrink-0 mt-0.5"
             />
             <div class="text-sm">
-              <span class="font-semibold">{{ finding.category }}:</span>
+              <span class="font-bold">{{ finding.category }}:</span>
               {{ finding.text }}
             </div>
           </div>
@@ -53,11 +57,11 @@
       <!-- Priority Recommendations - Hidden -->
       <div
         v-if="false"
-        class="bg-white rounded-lg p-5 shadow-md border border-indigo-100"
+        class="bg-white rounded-2xl p-6 shadow-lg-modern border border-slate-100"
       >
         <div class="flex items-center gap-2 mb-4">
           <component :is="LightBulbIcon" class="w-6 h-6 text-yellow-500" />
-          <h4 class="text-lg font-semibold text-gray-900">
+          <h4 class="text-lg font-bold text-slate-900">
             Priority Recommendations
           </h4>
         </div>
@@ -65,7 +69,7 @@
           <div
             v-for="(rec, index) in recommendations"
             :key="index"
-            class="flex items-start gap-3 p-4 rounded-lg border-l-4 transition-all hover:shadow-md"
+            class="flex items-start gap-3 p-4 rounded-lg border-l-4 transition-all hover:shadow-xl-modern"
             :class="rec.borderClass + ' ' + rec.bgClass"
           >
             <div
@@ -82,14 +86,14 @@
                 >
                   {{ rec.priority }}
                 </span>
-                <h5 class="font-semibold text-gray-900">{{ rec.title }}</h5>
+                <h5 class="font-bold text-slate-900">{{ rec.title }}</h5>
               </div>
               <p class="text-sm text-gray-700 mb-2">{{ rec.description }}</p>
               <div class="flex flex-wrap gap-2">
                 <span
                   v-for="(action, i) in rec.actions"
                   :key="i"
-                  class="px-2 py-1 bg-white border border-gray-300 rounded text-xs text-gray-700"
+                  class="px-2 py-1 bg-white border border-slate-100 rounded text-xs text-gray-700"
                 >
                   {{ action }}
                 </span>
@@ -100,10 +104,10 @@
       </div>
 
       <!-- Next Steps -->
-      <div class="bg-indigo-600 rounded-lg p-5 text-white shadow-md">
+      <div class="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg-modern">
         <div class="flex items-center gap-2 mb-4">
           <component :is="RocketLaunchIcon" class="w-6 h-6" />
-          <h4 class="text-lg font-semibold">Next Steps</h4>
+          <h4 class="text-lg font-bold">Next Steps</h4>
         </div>
         <p class="text-sm text-indigo-100">
           Please reach out to the SOVRA concierge for assistance mitigating

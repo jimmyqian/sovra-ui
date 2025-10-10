@@ -33,9 +33,9 @@ describe('Header Navigation Integration', () => {
 
     // Verify header structure
     expect(wrapper.find('header').exists()).toBe(true)
-    expect(wrapper.find('header').classes()).toContain('bg-bg-card')
+    expect(wrapper.find('header').classes()).toContain('bg-white/80')
     expect(wrapper.find('header').classes()).toContain('border-b')
-    expect(wrapper.find('header').classes()).toContain('border-border-light')
+    expect(wrapper.find('header').classes()).toContain('border-slate-200/60')
 
     // Verify logo component is present
     const logoComponent = wrapper.findComponent(Logo)
@@ -220,7 +220,7 @@ describe('Header Navigation Integration', () => {
     // Verify header has responsive padding
     const header = wrapper.find('header')
     expect(header.classes()).toContain('px-8')
-    expect(header.classes()).toContain('py-4')
+    expect(header.classes()).toContain('py-5')
 
     // Logo should maintain proper sizing
     const logoComponent = wrapper.findComponent(Logo)
@@ -294,12 +294,12 @@ describe('Header Navigation Integration', () => {
 
     // Verify border styling
     expect(header.classes()).toContain('border-b')
-    expect(header.classes()).toContain('border-border-light')
+    expect(header.classes()).toContain('border-slate-200/60')
 
     // Verify background and padding
-    expect(header.classes()).toContain('bg-bg-card')
+    expect(header.classes()).toContain('bg-white/80')
     expect(header.classes()).toContain('px-8')
-    expect(header.classes()).toContain('py-4')
+    expect(header.classes()).toContain('py-5')
   })
 
   it('ensures proper component hierarchy in navigation', async () => {

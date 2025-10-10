@@ -1,10 +1,10 @@
 <template>
   <div
-    class="result-card cursor-pointer transition-all duration-200 hover:shadow-card hover:bg-bg-secondary"
+    class="result-card cursor-pointer transition-all duration-200 hover:shadow-xl-modern hover:-translate-y-1 hover:bg-bg-secondary"
     @click="handlePersonSelect"
   >
     <div class="flex items-start gap-4 flex-1 md:min-w-80">
-      <div class="w-15 h-15 rounded-full flex-shrink-0 overflow-hidden">
+      <div class="w-16 h-16 rounded-full flex-shrink-0 overflow-hidden">
         <img
           :src="result.image ?? 'https://picsum.photos/240/240?random=1'"
           alt="Profile"
@@ -12,7 +12,7 @@
         />
       </div>
       <div class="flex-1 min-w-0">
-        <h3 class="text-xl font-semibold mb-2 text-text-primary">
+        <h3 class="text-xl font-bold mb-2 text-text-primary">
           {{ result.name }}
         </h3>
         <div class="flex gap-4 mb-3 text-sm text-text-secondary">
@@ -24,7 +24,7 @@
         <div class="flex items-center gap-2">
           <span class="text-xs text-text-secondary">Sovra Rating</span>
           <ScoreBar :rating="result.rating" />
-          <span class="text-sm font-semibold text-text-primary">{{
+          <span class="text-sm font-bold text-text-primary">{{
             result.rating
           }}</span>
         </div>

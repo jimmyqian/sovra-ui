@@ -40,26 +40,27 @@
 
   const buttonClasses = computed(() => {
     const baseClasses =
-      'inline-flex items-center justify-center gap-2 rounded-search font-medium cursor-pointer transition-all transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+      'inline-flex items-center justify-center gap-2 rounded-xl font-semibold cursor-pointer transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-md hover:shadow-lg active:scale-95'
 
     const focusClasses =
       props.variant === 'outline'
         ? 'focus:outline-none focus:ring-0 focus:ring-offset-0'
-        : 'focus:outline-none focus:ring-2 focus:ring-brand-orange focus:ring-offset-2'
+        : 'focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2'
 
     const variantClasses = {
-      primary: 'bg-brand-orange text-bg-card border-none hover:scale-110',
+      primary:
+        'bg-gradient-to-r from-brand-accent to-purple-600 text-white border-none hover:from-brand-accent-dark hover:to-purple-700 hover:-translate-y-0.5',
       outline: props.active
-        ? 'bg-transparent-active border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-bg-card'
-        : 'bg-transparent border border-brand-orange text-brand-orange hover:bg-brand-orange hover:text-bg-card',
+        ? 'bg-slate-50 border-2 border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-white'
+        : 'bg-white border-2 border-slate-300 text-slate-700 hover:border-brand-accent hover:text-brand-accent',
       ghost:
-        'bg-transparent border-none text-brand-orange hover:bg-brand-orange hover:text-bg-card'
+        'bg-transparent border-none text-brand-accent hover:bg-slate-50 shadow-none'
     }
 
     const sizeClasses = {
-      sm: 'px-3 py-1.5 text-xs',
-      md: 'px-4 py-2 text-sm',
-      lg: 'px-8 py-3 text-base'
+      sm: 'px-4 py-2 text-sm',
+      md: 'px-6 py-3 text-base',
+      lg: 'px-8 py-4 text-lg'
     }
 
     const widthClass = props.fullWidth ? 'w-full' : ''

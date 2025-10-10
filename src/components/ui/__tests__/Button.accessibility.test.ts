@@ -304,7 +304,7 @@ describe('Button Accessibility', () => {
           // Small buttons should still be reasonably sized for accessibility
           // const styles = window.getComputedStyle(buttonElement)
           // This is a guideline check - actual implementation may vary
-          expect(buttonElement.className).toContain('px-3 py-1.5')
+          expect(buttonElement.className).toContain('px-4 py-2')
         }
       })
     })

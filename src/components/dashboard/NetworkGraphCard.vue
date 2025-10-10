@@ -1,11 +1,15 @@
 <template>
   <div
-    class="bg-white rounded-lg shadow-md border border-gray-200 hover:shadow-lg transition-shadow overflow-hidden"
+    class="bg-white rounded-2xl shadow-lg-modern border border-slate-100 hover:shadow-xl-modern transition-all overflow-hidden"
     :class="{ 'col-span-2': expanded }"
   >
-    <div class="p-4 border-b border-gray-200">
-      <h3 class="text-lg font-semibold text-gray-900">{{ title }}</h3>
-      <p v-if="subtitle" class="text-sm text-gray-600 mt-1">{{ subtitle }}</p>
+    <div
+      class="p-6 border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white"
+    >
+      <h3 class="text-xl font-bold text-slate-900">{{ title }}</h3>
+      <p v-if="subtitle" class="text-sm text-slate-600 mt-1 font-medium">
+        {{ subtitle }}
+      </p>
     </div>
     <div
       ref="graphContainer"

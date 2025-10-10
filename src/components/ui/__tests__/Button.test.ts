@@ -49,7 +49,9 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('bg-brand-orange')
+        expect(wrapper.classes()).toContain('bg-gradient-to-r')
+        expect(wrapper.classes()).toContain('from-brand-accent')
+        expect(wrapper.classes()).toContain('to-purple-600')
       })
 
       it('applies outline variant classes', () => {
@@ -58,8 +60,8 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('bg-transparent')
-        expect(wrapper.classes()).not.toContain('bg-brand-orange')
+        expect(wrapper.classes()).toContain('bg-white')
+        expect(wrapper.classes()).not.toContain('bg-gradient-to-r')
       })
 
       it('applies ghost variant classes', () => {
@@ -69,7 +71,7 @@ describe('Button', () => {
         })
 
         expect(wrapper.classes()).toContain('bg-transparent')
-        expect(wrapper.classes()).not.toContain('bg-brand-orange')
+        expect(wrapper.classes()).not.toContain('bg-gradient-to-r')
       })
     })
 
@@ -79,9 +81,9 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('px-4')
-        expect(wrapper.classes()).toContain('py-2')
-        expect(wrapper.classes()).toContain('text-sm')
+        expect(wrapper.classes()).toContain('px-6')
+        expect(wrapper.classes()).toContain('py-3')
+        expect(wrapper.classes()).toContain('text-base')
       })
 
       it('applies small size classes', () => {
@@ -90,9 +92,9 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('px-3')
-        expect(wrapper.classes()).toContain('py-1.5')
-        expect(wrapper.classes()).toContain('text-xs')
+        expect(wrapper.classes()).toContain('px-4')
+        expect(wrapper.classes()).toContain('py-2')
+        expect(wrapper.classes()).toContain('text-sm')
       })
 
       it('applies large size classes', () => {
@@ -102,8 +104,8 @@ describe('Button', () => {
         })
 
         expect(wrapper.classes()).toContain('px-8')
-        expect(wrapper.classes()).toContain('py-3')
-        expect(wrapper.classes()).toContain('text-base')
+        expect(wrapper.classes()).toContain('py-4')
+        expect(wrapper.classes()).toContain('text-lg')
       })
     })
 
@@ -192,8 +194,8 @@ describe('Button', () => {
           slots: { default: 'Button' }
         })
 
-        expect(wrapper.classes()).toContain('bg-transparent')
-        expect(wrapper.classes()).not.toContain('bg-transparent-active')
+        expect(wrapper.classes()).toContain('bg-white')
+        expect(wrapper.classes()).not.toContain('bg-slate-50')
       })
 
       it('applies active outline variant when active is true', () => {
@@ -202,8 +204,8 @@ describe('Button', () => {
           slots: { default: 'Active Button' }
         })
 
-        expect(wrapper.classes()).toContain('bg-transparent-active')
-        expect(wrapper.classes()).not.toContain('bg-transparent')
+        expect(wrapper.classes()).toContain('bg-slate-50')
+        expect(wrapper.classes()).not.toContain('bg-white')
       })
 
       it('does not affect non-outline variants', () => {
@@ -212,8 +214,8 @@ describe('Button', () => {
           slots: { default: 'Primary Active' }
         })
 
-        expect(wrapper.classes()).toContain('bg-brand-orange')
-        expect(wrapper.classes()).not.toContain('bg-transparent-active')
+        expect(wrapper.classes()).toContain('bg-gradient-to-r')
+        expect(wrapper.classes()).not.toContain('bg-slate-50')
       })
     })
   })
@@ -266,15 +268,14 @@ describe('Button', () => {
         'items-center',
         'justify-center',
         'gap-2',
-        'rounded-search',
-        'font-medium',
+        'rounded-xl',
+        'font-semibold',
         'cursor-pointer',
         'transition-all',
-        'transition-colors',
         'duration-200',
         'focus:outline-none',
         'focus:ring-2',
-        'focus:ring-brand-orange',
+        'focus:ring-brand-accent',
         'focus:ring-offset-2',
         'disabled:opacity-50',
         'disabled:cursor-not-allowed'
@@ -295,10 +296,10 @@ describe('Button', () => {
         slots: { default: 'Large Outline Full Width' }
       })
 
-      expect(wrapper.classes()).toContain('bg-transparent')
+      expect(wrapper.classes()).toContain('bg-white')
       expect(wrapper.classes()).toContain('px-8')
-      expect(wrapper.classes()).toContain('py-3')
-      expect(wrapper.classes()).toContain('text-base')
+      expect(wrapper.classes()).toContain('py-4')
+      expect(wrapper.classes()).toContain('text-lg')
       expect(wrapper.classes()).toContain('w-full')
     })
 
@@ -313,12 +314,12 @@ describe('Button', () => {
         slots: { default: 'Active Small Outline Full Width' }
       })
 
-      expect(wrapper.classes()).toContain('bg-transparent-active')
-      expect(wrapper.classes()).toContain('px-3')
-      expect(wrapper.classes()).toContain('py-1.5')
-      expect(wrapper.classes()).toContain('text-xs')
+      expect(wrapper.classes()).toContain('bg-slate-50')
+      expect(wrapper.classes()).toContain('px-4')
+      expect(wrapper.classes()).toContain('py-2')
+      expect(wrapper.classes()).toContain('text-sm')
       expect(wrapper.classes()).toContain('w-full')
-      expect(wrapper.classes()).not.toContain('bg-transparent')
+      expect(wrapper.classes()).not.toContain('bg-white')
     })
   })
 
@@ -330,7 +331,7 @@ describe('Button', () => {
 
       expect(wrapper.classes()).toContain('focus:outline-none')
       expect(wrapper.classes()).toContain('focus:ring-2')
-      expect(wrapper.classes()).toContain('focus:ring-brand-orange')
+      expect(wrapper.classes()).toContain('focus:ring-brand-accent')
     })
 
     it('provides proper disabled state for screen readers', () => {

@@ -364,7 +364,11 @@ describe('Search Workflow Integration', () => {
 
     // Should show loading spinner
     expect(wrapper.find('.animate-spin').exists()).toBe(true)
-    expect(wrapper.find('.border-brand-orange').exists()).toBe(true)
+    const spinners = wrapper.findAll('.animate-spin')
+    const accentSpinner = spinners.find(s =>
+      s.classes().includes('border-brand-accent')
+    )
+    expect(accentSpinner).toBeTruthy()
   })
 
   it('shows error state when search fails', async () => {
@@ -380,16 +384,16 @@ describe('Search Workflow Integration', () => {
     const store = useSearchStore()
 
     // Initially should not show error
-    expect(wrapper.find('.text-red-600').exists()).toBe(false)
+    expect(wrapper.find('.text-red-700').exists()).toBe(false)
 
     // Set error state
     store.setError('Search failed')
     await wrapper.vm.$nextTick()
 
     // Should show error message
-    const errorElement = wrapper.find('.text-red-600')
+    const errorElement = wrapper.find('.text-red-700')
     expect(errorElement.exists()).toBe(true)
-    expect(errorElement.text()).toBe('Search failed')
+    expect(errorElement.text()).toContain('Search failed')
   })
 
   it('updates search input height as user types', async () => {

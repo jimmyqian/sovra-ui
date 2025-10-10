@@ -21,6 +21,7 @@ brew install ansible
 ### 2. Review Configuration
 
 Files are already configured for your server:
+
 - `ansible/inventory.yml` - Server connection details
 - `ansible/vars.yml` - Basic auth password, paths, etc.
 
@@ -34,6 +35,7 @@ ansible-playbook -i inventory.yml playbook.yml
 ```
 
 This will:
+
 - Install Node.js, nginx, and dependencies
 - Create directory structure at `/var/www/sovra-ui`
 - Set up basic authentication
@@ -53,6 +55,7 @@ From project root:
 ```
 
 This automatically:
+
 1. Runs tests and lint
 2. Builds production bundle
 3. Uploads to server
@@ -142,6 +145,7 @@ sudo systemctl reload nginx
 When you have a domain name:
 
 1. Update `vars.yml`:
+
    ```yaml
    domain_name: your-domain.com
    obtain_ssl_cert: true

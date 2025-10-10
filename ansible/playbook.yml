@@ -86,16 +86,16 @@
 
     - name: Create application directory structure
       file:
-        path: "{{ item }}"
+        path: '{{ item }}'
         state: directory
-        owner: "{{ deploy_user }}"
-        group: "{{ deploy_user }}"
+        owner: '{{ deploy_user }}'
+        group: '{{ deploy_user }}'
         mode: '0755'
       loop:
-        - "{{ app_root }}"
-        - "{{ app_root }}/releases"
-        - "{{ app_root }}/shared"
-        - "{{ app_root }}/shared/logs"
+        - '{{ app_root }}'
+        - '{{ app_root }}/releases'
+        - '{{ app_root }}/shared'
+        - '{{ app_root }}/shared/logs'
 
     - name: Create basic auth password file
       shell: |
@@ -108,14 +108,14 @@
     - name: Create Nginx configuration from template
       template:
         src: templates/nginx.conf.j2
-        dest: "/etc/nginx/sites-available/{{ app_name }}"
+        dest: '/etc/nginx/sites-available/{{ app_name }}'
         mode: '0644'
       notify: Test and reload nginx
 
     - name: Enable Nginx site
       file:
-        src: "/etc/nginx/sites-available/{{ app_name }}"
-        dest: "/etc/nginx/sites-enabled/{{ app_name }}"
+        src: '/etc/nginx/sites-available/{{ app_name }}'
+        dest: '/etc/nginx/sites-enabled/{{ app_name }}'
         state: link
       notify: Test and reload nginx
 
@@ -128,10 +128,10 @@
     - name: Create deployment script
       template:
         src: templates/deploy.sh.j2
-        dest: "{{ app_root }}/deploy.sh"
+        dest: '{{ app_root }}/deploy.sh'
         mode: '0755'
-        owner: "{{ deploy_user }}"
-        group: "{{ deploy_user }}"
+        owner: '{{ deploy_user }}'
+        group: '{{ deploy_user }}'
 
     - name: Ensure Nginx is started and enabled
       systemd:
@@ -141,7 +141,7 @@
 
     - name: Check if SSL certificate exists
       stat:
-        path: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+        path: '/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem'
       register: ssl_cert
 
     - name: Obtain SSL certificate with Certbot
@@ -157,9 +157,9 @@
 
     - name: Set up Certbot auto-renewal
       cron:
-        name: "Certbot renewal"
-        minute: "0"
-        hour: "0,12"
+        name: 'Certbot renewal'
+        minute: '0'
+        hour: '0,12'
         job: "certbot renew --quiet --post-hook 'systemctl reload nginx'"
 
   handlers:
